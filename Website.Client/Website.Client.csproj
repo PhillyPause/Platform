@@ -4,6 +4,20 @@
     <NoDefaultLaunchSettingsFile>true</NoDefaultLaunchSettingsFile>
     <StaticWebAssetProjectMode>Default</StaticWebAssetProjectMode>
     <BlazorDisableThrowNavigationException>true</BlazorDisableThrowNavigationException>
+
+    <!-- `dotnet publish Platform.slnx` publishes this project TWICE at once:
+         as a solution member in its own right, and as a dependency of
+         Website.Portal. The two runs share obj/ and fight over the same
+         files — static-asset .gz first, then the IL-trimmer's linked/ output
+         and the webcil conversion — and the build fails
+         (dotnet/aspnetcore#38429).
+
+         App Platform's buildpack publishes the solution and its SOLUTION_FILE
+         setting rejects a project path, so the duplicate cannot be avoided
+         from the deploy side. Marking this unpublishable removes the
+         standalone run; it is still published as Website.Portal's dependency,
+         which is the only way its assets are ever served. -->
+    <IsPublishable>false</IsPublishable>
   </PropertyGroup>
 
   <ItemGroup>
