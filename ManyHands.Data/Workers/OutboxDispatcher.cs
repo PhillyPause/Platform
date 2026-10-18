@@ -1,7 +1,9 @@
 using System.Text.Json;
 using ManyHands.Core;
+using ManyHands.Data.Discord;
 using ManyHands.Data.Email;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace ManyHands.Data.Workers;
 
@@ -23,9 +25,16 @@ public sealed class OutboxDispatcher(
     PingRepository pings,
     InviteRepository invites,
     EmailDispatcher email,
+    DiscordQueries discordQueries,
+    IDiscordSender discord,
+    IOptions<DiscordOptions> discordOptions,
     ILogger<OutboxDispatcher> logger)
 {
+    private readonly DiscordOptions _discord = discordOptions.Value;
+
     private string ManageUrl => email.Link(ManyHandsPaths.Me);
+
+    private string BaseUrl => email.PublicBaseUrl;
 
     public async Task DispatchAsync(OutboxMessage message, CancellationToken ct)
     {
@@ -76,6 +85,48 @@ public sealed class OutboxDispatcher(
             ManageUrl, email.UnsubscribeUrl(n.CommsKey));
 
         await email.SendAsync(n.AsVolunteer(), subject, body, "signup.confirmation", ct: ct);
+
+        // Nothing past the email may fail this row: the retry would send the
+        // email again. Both Discord steps are best effort.
+        if (n.DiscordUserId is ulong discordUserId && !n.IsDeleted)
+        {
+            // A nudge beside the email, not instead of it. No idempotency key
+            // exists for a DM, so a redelivery repeats it, as it does the email.
+            await TryDiscordAsync(() => discord.SendDirectMessageAsync(
+                discordUserId, DiscordMessages.SignupConfirmation(n, BaseUrl), ct), "signup DM", n.SignupId);
+        }
+
+        await NoteSignupInThreadAsync(n, ct);
+    }
+
+    /// <summary>
+    /// Keeps the activity's thread visibly filling up. Claimed like a ping, so
+    /// a redelivered row does not post the note twice.
+    /// </summary>
+    private async Task NoteSignupInThreadAsync(SignupNotification n, CancellationToken ct)
+    {
+        await TryDiscordAsync(async () =>
+        {
+            if (await discordQueries.GetAnnouncementThreadAsync(n.ActivityId, ct) is not ulong thread) return true;
+            if (!await pings.TryClaimAsync(n.ActivityId, n.VolunteerId, PingChannel.Thread, ct)) return true;
+
+            var delivered = await discord.PostToThreadAsync(thread, DiscordMessages.ThreadSignupNote(n.Status), ct);
+            await pings.MarkDeliveredAsync(n.ActivityId, n.VolunteerId, PingChannel.Thread, delivered, ct);
+            return delivered;
+        }, "thread note", n.SignupId);
+    }
+
+    private async Task TryDiscordAsync(Func<Task<bool>> send, string what, Guid signupId)
+    {
+        try
+        {
+            if (!await send())
+                logger.LogInformation("Discord {What} for signup {SignupId} not delivered; the email was sent", what, signupId);
+        }
+        catch (Exception ex) when (ex is not OperationCanceledException)
+        {
+            logger.LogWarning(ex, "Discord {What} for signup {SignupId} failed; the email was sent", what, signupId);
+        }
     }
 
     /// <summary>
@@ -132,10 +183,11 @@ public sealed class OutboxDispatcher(
     }
 
     /// <summary>
-    /// Tells the people whose interests match. Each person carries their own
-    /// claim, so a redelivered row resumes where it stopped rather than mailing
-    /// anyone twice, and an activity with no types pings nobody: there is no
-    /// interest to match.
+    /// Announces the activity on Discord, then tells the people whose interests
+    /// match: by DM if they linked Discord, by email if not, never both. Each
+    /// person carries their own claim, so a redelivered row resumes where it
+    /// stopped rather than reaching anyone twice, and an activity with no types
+    /// pings nobody: there is no interest to match.
     /// </summary>
     private async Task HandlePublishedAsync(OutboxMessage message, CancellationToken ct)
     {
@@ -146,11 +198,41 @@ public sealed class OutboxDispatcher(
         var draft = await activityAdmin.GetAsync(activityId, ct);
         if (activity is null || draft is null) return;
 
-        var audience = await reporting.GetInterestedAsync(draft.TypeIds, ct);
-        var sent = 0;
+        await AnnounceAsync(activity, ct);
 
-        foreach (var volunteer in audience.Where(v => v.CanReceiveEmail))
+        // Reached whether or not this delivery is the one that announced: a row
+        // redelivered after the pings half-finished must pick up the rest.
+        var audience = await reporting.GetInterestedAsync(draft.TypeIds, ct);
+        var dm = DiscordMessages.InterestPing(activity, BaseUrl);
+        int dms = 0, emails = 0;
+
+        foreach (var volunteer in audience.Where(v => v.MayContact))
         {
+            if (volunteer.DiscordUserId is ulong discordUserId)
+            {
+                if (!await pings.TryClaimAsync(activityId, volunteer.Id, PingChannel.DirectMessage, ct)) continue;
+
+                bool delivered;
+                try
+                {
+                    delivered = await discord.SendDirectMessageAsync(discordUserId, dm, ct);
+                }
+                catch (Exception ex) when (ex is not OperationCanceledException)
+                {
+                    // One person's DM must not abort everyone else's.
+                    logger.LogWarning(ex, "Interest DM to volunteer {VolunteerId} threw", volunteer.Id);
+                    delivered = false;
+                }
+
+                await pings.MarkDeliveredAsync(activityId, volunteer.Id, PingChannel.DirectMessage, delivered, ct);
+                if (delivered) dms++;
+
+                // Discord throttles a burst of DMs hard and silently.
+                if (_discord.SendDelay > TimeSpan.Zero && discord.IsLive) await Task.Delay(_discord.SendDelay, ct);
+                continue;
+            }
+
+            if (!volunteer.CanReceiveEmail) continue;
             if (!await pings.TryClaimAsync(activityId, volunteer.Id, PingChannel.Email, ct)) continue;
 
             var (subject, body) = EmailTemplates.InterestPing(
@@ -159,13 +241,40 @@ public sealed class OutboxDispatcher(
                 unsubscribeUrl: email.UnsubscribeUrl(volunteer.CommsKey));
 
             var status = await email.SendAsync(volunteer, subject, body, "interest.ping", ct: ct);
-            var delivered = status is EmailStatus.Sent or EmailStatus.Simulated;
-            await pings.MarkDeliveredAsync(activityId, volunteer.Id, PingChannel.Email, delivered, ct);
-            if (delivered) sent++;
+            var sent = status is EmailStatus.Sent or EmailStatus.Simulated;
+            await pings.MarkDeliveredAsync(activityId, volunteer.Id, PingChannel.Email, sent, ct);
+            if (sent) emails++;
         }
 
-        logger.LogInformation("Interest emails for activity {ActivityId}: {Sent} of {Audience} interested",
-            activityId, sent, audience.Count);
+        logger.LogInformation(
+            "Interest pings for activity {ActivityId}: {Dms} by Discord, {Emails} by email, of {Audience} interested",
+            activityId, dms, emails, audience.Count);
+    }
+
+    /// <summary>
+    /// The Discord post and its thread, once per activity. Discord offers no
+    /// idempotency key, so the claim in <c>external_publications</c> is the
+    /// guard. An undelivered post throws, leaving the claim open for the
+    /// outbox to retry; the pings that follow carry their own claims.
+    /// </summary>
+    private async Task AnnounceAsync(ActivityListItem activity, CancellationToken ct)
+    {
+        if (!await discordQueries.TryClaimAnnouncementAsync(activity.Id, ct)) return;
+
+        var posted = await discord.AnnounceWithThreadAsync(
+            DiscordMessages.Announcement(activity, BaseUrl), DiscordMessages.ThreadName(activity), ct);
+
+        if (!posted.Delivered)
+        {
+            var error = $"The Discord announcement for activity {activity.Id} was not delivered.";
+            await discordQueries.MarkAnnouncementFailedAsync(activity.Id, error, ct);
+            throw new InvalidOperationException(error);
+        }
+
+        // Closed whether it reached Discord or only the log, so a token added
+        // later does not announce months-old work.
+        await discordQueries.MarkAnnouncedAsync(activity.Id, posted.MessageId, posted.ThreadId,
+            _discord.GuildId is ulong guild ? DiscordMessages.MessageUrl(guild, posted.ChannelId, posted.MessageId) : null, ct);
     }
 
     /// <summary>

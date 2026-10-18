@@ -1,0 +1,86 @@
+@page "/volunteer/link-discord/{Token}"
+@using ManyHands.Data.Discord
+@inject DiscordLinks Links
+@inject DiscordQueries Discord
+@inject VolunteerRepository Volunteers
+@inject NavigationManager Navigation
+
+<PageMeta Title="Link Discord" Description="Link your Discord account to PhillyPause." NoIndex="true" />
+
+@if (_account is null)
+{
+    <div class="wrap page-head">
+        <h1>That link has run out</h1>
+        <p class="lead">Type <code>/link</code> in our Discord server again for a fresh one. Each lasts @((int)DiscordLinks.Lifetime.TotalMinutes) minutes.</p>
+    </div>
+    return;
+}
+
+<div class="wrap page-head">
+    <h1>Link Discord</h1>
+    <p class="lead">Discord account: <strong>@_account.Value.DiscordName</strong></p>
+</div>
+
+<div class="wrap vol-body">
+    <section class="vol-card vol-narrow" aria-live="polite">
+        @if (_volunteer is null)
+        {
+            <p>Sign in first, so we know whose account this is. Then open this link again; it works for @((int)DiscordLinks.Lifetime.TotalMinutes) minutes from when you typed <code>/link</code>.</p>
+            <a class="btn" href="@ManyHandsPaths.SignIn">Sign in</a>
+        }
+        else if (_linked)
+        {
+            <h2>Linked</h2>
+            <p>Thanks, @_volunteer.DisplayName. Activities that match your interests now reach you as a Discord message instead of an email, and <code>/mysignups</code> knows who you are.</p>
+            <p><a href="@ManyHandsPaths.Me">Your signups and interests</a></p>
+        }
+        else
+        {
+            <p>Link it to <strong>@_volunteer.DisplayName</strong>? Activities that match your interests will then reach you as a Discord message instead of an email. You can unlink it from your page at any time.</p>
+            <EditForm Model="Input" FormName="link-discord" OnSubmit="LinkAsync" class="vol-form">
+                <button class="btn" type="submit">Link my Discord</button>
+            </EditForm>
+        }
+    </section>
+</div>
+
+@code {
+    [Parameter] public string Token { get; set; } = string.Empty;
+
+    [CascadingParameter] private HttpContext HttpContext { get; set; } = default!;
+
+    [SupplyParameterFromForm(FormName = "link-discord")] private LinkInput? Input { get; set; }
+
+    private (ulong DiscordUserId, string DiscordName)? _account;
+    private Volunteer? _volunteer;
+    private bool _linked;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Input ??= new();
+
+        _account = Links.Read(Token);
+        if (_account is null)
+        {
+            HttpContext.Response.StatusCode = StatusCodes.Status404NotFound;
+            return;
+        }
+
+        if (HttpContext.User.VolunteerId() is Guid id && await Volunteers.GetByIdAsync(id) is { IsDeleted: false } volunteer)
+        {
+            _volunteer = volunteer;
+            _linked = volunteer.DiscordUserId == _account.Value.DiscordUserId;
+        }
+    }
+
+    // A button rather than linking on GET, so a link preview cannot do it.
+    private async Task LinkAsync()
+    {
+        if (_account is null || _volunteer is null) return;
+
+        await Discord.LinkAsync(_volunteer.Id, _account.Value.DiscordUserId);
+        _linked = true;
+    }
+
+    private sealed class LinkInput;
+}

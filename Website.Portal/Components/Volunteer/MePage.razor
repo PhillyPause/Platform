@@ -5,6 +5,7 @@
 @inject ActivityTypeRepository Types
 @inject VolunteerDataRepository Data
 @inject ManyHands.Data.Email.EmailDispatcher Email
+@inject ManyHands.Data.Discord.DiscordQueries Discord
 @inject NavigationManager Navigation
 
 <PageMeta Title="My page" Description="Your PhillyPause signups, interests and email settings." NoIndex="true" />
@@ -79,10 +80,25 @@
             <InterestChoices Types="_types" Selected="_interests" Legend="We tell you when one of these is on" />
             <label class="vol-check">
                 <InputCheckbox @bind-Value="Interests!.EmailOptIn" />
-                <span>Email me about new activities like these</span>
+                <span>@(_me.DiscordUserId is null ? "Email me" : "Message me on Discord") about new activities like these</span>
             </label>
             <button class="btn" type="submit">Save</button>
         </EditForm>
+    </section>
+
+    <section aria-labelledby="discord-head">
+        <h2 id="discord-head">Discord</h2>
+        @if (_me.DiscordUserId is null)
+        {
+            <p>In our Discord server, type <code>/link</code> to link your account. New activities that match your interests then arrive as a Discord message instead of an email.</p>
+        }
+        else
+        {
+            <p>Your Discord account is linked. Unlink it and we go back to email, and the volunteer role in the server comes off within a quarter of an hour.</p>
+            <EditForm Model="Unlink" FormName="unlink-discord" OnSubmit="UnlinkAsync" class="vol-form">
+                <button class="btn btn-ghost" type="submit">Unlink Discord</button>
+            </EditForm>
+        }
     </section>
 
     <section aria-labelledby="data-head">
@@ -115,6 +131,7 @@
     [SupplyParameterFromForm(FormName = "interests")] private InterestsInput? Interests { get; set; }
     [SupplyParameterFromForm(FormName = "delete")] private DeleteInput? Delete { get; set; }
     [SupplyParameterFromForm(FormName = "sign-out")] private SignOutInput? SignOut { get; set; }
+    [SupplyParameterFromForm(FormName = "unlink-discord")] private UnlinkInput? Unlink { get; set; }
 
     private Volunteer? _me;
     private IReadOnlyList<ActivityType> _types = [];
@@ -130,8 +147,9 @@
         Interests ??= new();
         Delete ??= new();
         SignOut ??= new();
+        Unlink ??= new();
 
-        _me = HttpContext.User.VolunteerId() is Guid id ? await Volunteers.GetByIdAsync(id) : null;
+        _me =HttpContext.User.VolunteerId() is Guid id ? await Volunteers.GetByIdAsync(id) : null;
 
         // A cookie can outlive the person it names: deleted, or a database
         // rebuilt underneath it. Either way it signs nobody in.
@@ -185,6 +203,13 @@
         Navigation.NavigateTo($"{ManyHandsPaths.Activities}?deleted=true");
     }
 
+    private async Task UnlinkAsync()
+    {
+        await Discord.UnlinkAsync(_me!.Id);
+        _me = _me with { DiscordUserId = null };
+        _notice = "Unlinked. We are back to email.";
+    }
+
     private async Task SignOutAsync()
     {
         await VolunteerSession.SignOutAsync(HttpContext);
@@ -208,4 +233,6 @@
     }
 
     private sealed class SignOutInput;
+
+    private sealed class UnlinkInput;
 }

@@ -2,6 +2,8 @@ using System.Net;
 using Dapper;
 using ManyHands.Core;
 using ManyHands.Data;
+using ManyHands.Data.Discord;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ManyHands.Tests;
 
@@ -176,5 +178,37 @@ public sealed class VolunteerPagesTests(DatabaseFixture db) : IAsyncLifetime
         Assert.True(row.Deleted);
         Assert.Null(row.Email);
         Assert.Equal(HttpStatusCode.Redirect, (await browser.GetAsync(ManyHandsPaths.Me)).StatusCode);
+    }
+
+    [Fact]
+    public async Task A_Discord_link_asks_a_stranger_to_sign_in_and_links_on_the_button_only()
+    {
+        var links = _portal.Services.GetRequiredService<DiscordLinks>();
+        var discordId = (ulong)Random.Shared.NextInt64(1L << 50, 1L << 60);
+        var path = ManyHandsPaths.LinkDiscord(links.Issue(discordId, "maya"));
+        var volunteer = await TestData.VolunteerAsync(db.DataSource, "Maya Discord");
+        var queries = new DiscordQueries(db.DataSource);
+
+        var stranger = await _portal.Browser().GetStringAsync(path);
+        Assert.Contains(ManyHandsPaths.SignIn, stranger);
+
+        var browser = _portal.Browser();
+        await Forms.SignInAsync(browser, db.DataSource, volunteer.Id);
+        Assert.Contains("Link my Discord", await browser.GetStringAsync(path));
+        Assert.Null(await queries.GetVolunteerByDiscordIdAsync(discordId));
+
+        await Forms.SubmitAsync(browser, path, "link-discord");
+        Assert.Equal(volunteer.Id, (await queries.GetVolunteerByDiscordIdAsync(discordId))!.Id);
+
+        await Forms.SubmitAsync(browser, ManyHandsPaths.Me, "unlink-discord");
+        Assert.Null(await queries.GetVolunteerByDiscordIdAsync(discordId));
+    }
+
+    [Fact]
+    public async Task A_forged_Discord_link_is_not_found()
+    {
+        var response = await _portal.Browser().GetAsync(ManyHandsPaths.LinkDiscord("forged"));
+
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
     }
 }

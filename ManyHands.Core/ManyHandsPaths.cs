@@ -33,6 +33,9 @@ public static class ManyHandsPaths
     /// <summary>The List-Unsubscribe header's target: a mail client's own button POSTs here (RFC 8058).</summary>
     public static string OneClickUnsubscribe(Guid commsKey) => $"/volunteer/unsubscribe/{commsKey}/one-click";
 
+    /// <summary>Where <c>/link</c> in Discord sends someone, to link that account to theirs.</summary>
+    public static string LinkDiscord(string token) => $"/volunteer/link-discord/{token}";
+
     /// <summary>Everything held about the signed-in volunteer, as a file to keep.</summary>
     public const string Export = "/volunteer/me/export.json";
 

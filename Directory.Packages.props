@@ -27,6 +27,8 @@
     <PackageVersion Include="dbup-postgresql" Version="7.0.1" />
     <!-- The check-in code at the door, drawn as SVG on the server. MIT. -->
     <PackageVersion Include="QRCoder" Version="1.6.0" />
+    <!-- The Discord bot: announcements, threads, DMs, roles, slash commands. MIT. -->
+    <PackageVersion Include="Discord.Net.WebSocket" Version="3.20.1" />
   </ItemGroup>
 
   <ItemGroup Label="Testing">

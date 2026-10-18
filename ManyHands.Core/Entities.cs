@@ -21,9 +21,14 @@ public sealed record Volunteer(
     Guid CalendarKey,
     bool IsDeleted)
 {
+    /// <summary>
+    /// Opted in and never unsubscribed. The consent is one consent: a Discord DM
+    /// is a different pipe, not a different permission.
+    /// </summary>
+    public bool MayContact => EmailOptIn && UnsubscribedAt is null && !IsDeleted;
+
     /// <summary>Mail may only be sent when opted in and never unsubscribed.</summary>
-    public bool CanReceiveEmail =>
-        EmailOptIn && UnsubscribedAt is null && !IsDeleted && !string.IsNullOrWhiteSpace(Email);
+    public bool CanReceiveEmail => MayContact && !string.IsNullOrWhiteSpace(Email);
 
     public bool IsAtLeast(VolunteerRole role) => !IsDeleted && Role >= role;
 }

@@ -8,6 +8,8 @@ public sealed record VolunteerExport(
     Guid VolunteerId,
     string DisplayName,
     string? Email,
+    /// <summary>As text: a Discord id is wider than a JSON reader's numbers hold exactly.</summary>
+    string? DiscordAccount,
     string Role,
     DateTimeOffset JoinedAt,
     bool EmailOptIn,
@@ -33,7 +35,7 @@ public sealed class VolunteerDataRepository(NpgsqlDataSource db)
 {
     private sealed record ExportHeader(
         Guid Id, string DisplayName, string? Email, int Role, DateTimeOffset CreatedAt,
-        bool EmailOptIn, DateTimeOffset? UnsubscribedAt);
+        bool EmailOptIn, DateTimeOffset? UnsubscribedAt, ulong? DiscordUserId);
 
     public async Task<VolunteerExport?> ExportAsync(Guid volunteerId, CancellationToken ct = default)
     {
@@ -41,7 +43,7 @@ public sealed class VolunteerDataRepository(NpgsqlDataSource db)
 
         var volunteer = await conn.QuerySingleOrDefaultAsync<ExportHeader>(new CommandDefinition(
             """
-            SELECT id, display_name, email, role, created_at, email_opt_in, unsubscribed_at
+            SELECT id, display_name, email, role, created_at, email_opt_in, unsubscribed_at, discord_user_id
             FROM volunteers WHERE id = @volunteerId AND NOT is_deleted
             """,
             new { volunteerId }, cancellationToken: ct));
@@ -83,7 +85,7 @@ public sealed class VolunteerDataRepository(NpgsqlDataSource db)
             new { volunteerId }, cancellationToken: ct))).AsList();
 
         return new VolunteerExport(
-            volunteer.Id, volunteer.DisplayName, volunteer.Email,
+            volunteer.Id, volunteer.DisplayName, volunteer.Email, volunteer.DiscordUserId?.ToString(),
             ((Core.VolunteerRole)volunteer.Role).ToString(), volunteer.CreatedAt,
             volunteer.EmailOptIn, volunteer.UnsubscribedAt,
             interests, signups, messages);
@@ -92,8 +94,8 @@ public sealed class VolunteerDataRepository(NpgsqlDataSource db)
     /// <summary>
     /// Erases the person while leaving the record honest: signups become
     /// anonymous rather than vanishing, so "twelve people came" stays true.
-    /// Identifying columns are cleared; credentials, interests and Discord
-    /// grants are destroyed outright.
+    /// Identifying columns are cleared; credentials and interests are
+    /// destroyed outright. The Discord role goes at the next role sweep.
     /// </summary>
     public async Task<bool> DeleteAsync(Guid volunteerId, CancellationToken ct = default)
     {
@@ -126,7 +128,9 @@ public sealed class VolunteerDataRepository(NpgsqlDataSource db)
             return false;
         }
 
-        foreach (var table in new[] { "auth_tokens", "volunteer_interests", "discord_role_grants" })
+        // The Discord role grant is kept on purpose: it is how the role sweep
+        // knows to take the role back, and the sweep deletes it once it has.
+        foreach (var table in new[] { "auth_tokens", "volunteer_interests" })
         {
             await conn.ExecuteAsync(new CommandDefinition(
                 $"DELETE FROM {table} WHERE volunteer_id = @volunteerId",

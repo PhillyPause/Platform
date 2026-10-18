@@ -98,8 +98,9 @@ Static SSR Razor components in `Website.Portal/Components/Volunteer`, on
 | `/volunteer/join` | Joining: name, email, interests; a welcome the first time |
 | `/volunteer/sign-in` | Ask for a sign-in link |
 | `/volunteer/sign-in/{token}` | Opening the link shows a button; **pressing it** spends the token |
-| `/volunteer/me` | Signups and cancelling, interests and email, the personal calendar feed, export, delete, sign out |
+| `/volunteer/me` | Signups and cancelling, interests and email, Discord unlink, the personal calendar feed, export, delete, sign out |
 | `/volunteer/unsubscribe/{key}` | Asks, then unsubscribes |
+| `/volunteer/link-discord/{token}` | Where `/link` in Discord sends someone: signed in, one press links the account |
 
 Endpoints that are not pages: `/volunteer/calendar.ics`,
 `/volunteer/calendar/{key}.ics`, `/volunteer/me/export.json`, and
@@ -204,6 +205,41 @@ rather than the page view: five sign-in links in fifteen minutes, twenty
 signups or joins in five. The address is Cloudflare's `CF-Connecting-IP`;
 behind it every reader would otherwise share one.
 
+### Discord
+
+In `ManyHands.Data/Discord`, running in the portal process like the other
+workers. **The token is the switch**: with `Discord:BotToken` set,
+`DiscordGateway` holds one connection and is the sender; without it,
+`LoggingDiscordSender` writes what it would have sent and reports it
+delivered, so a token added later does not announce months-old work.
+
+| Does | How |
+|---|---|
+| Announces a published activity | One post in the announcement channel, with a public thread opened on it |
+| Keeps the thread alive | "Someone just signed up for this one", naming nobody: a thread is public |
+| DMs the interested | Instead of the email, for people who linked Discord. Opted out of email is opted out of DMs: one consent, two pipes |
+| DMs on signup | Beside the confirmation email, never instead of it |
+| `/activities`, `/mysignups`, `/link` | Slash commands on our one server; every reply is visible only to the person who asked |
+| Gives the volunteer role | A sweep every 15 minutes grants `Discord:RoleId` to linked volunteers and takes back only roles it gave itself |
+
+**Linking.** `/link` replies with a sealed, fifteen-minute link naming the
+caller's Discord account. Opening it signed in on the site, and pressing the
+button, links the two. Discord proves one side and the sign-in the other, so
+nobody can link an account that is not theirs. An account belongs to one
+person: linking it to someone moves it. Unlinking is a button on
+`/volunteer/me`, and deleting someone unlinks them; either way the role goes
+at the next sweep.
+
+Nothing Discord does can fail mail. A failed DM or thread note is logged and
+the row still succeeds, because a retry would send the email again. The one
+Discord step that does fail its row is the announcement itself, whose claim
+stays open for the retry.
+
+The bot asks for the Guilds intent only, so the Discord application needs no
+privileged intents. In the server it needs Send Messages, Create Public
+Threads and Send Messages in Threads, and Manage Roles with its own role
+above `Discord:RoleId`.
+
 ## 4. Data
 
 Postgres, one schema (`public`), defined by
@@ -237,11 +273,11 @@ day-before reminders every five minutes.
 
 | `kind` | Payload | Sends |
 |---|---|---|
-| `signup.confirmed` | `signupId` | The confirmation, or the waitlist notice |
+| `signup.confirmed` | `signupId` | The confirmation, or the waitlist notice; a DM beside it if they linked Discord, and an unnamed note in the activity's thread |
 | `signup.promoted` | `signupId` | "You are in", off the waitlist |
 | `activity.reminder` | `signupId` | The reminder, a day before |
 | `member.welcome` | `volunteerId` | One welcome, the first time someone joins |
-| `activity.published` | `activityId` | An email to everyone whose interests match, once each (claimed in `activity_pings`) |
+| `activity.published` | `activityId` | The Discord post and its thread, once (claimed in `external_publications`); then a DM to everyone interested who linked Discord, an email to everyone else, once each (claimed in `activity_pings`) |
 | `invite.sent` | `inviteId` | Mints the invite link and emails it |
 
 Until the first real deploy, `0001_schema.sql` is edited in place; nothing is
@@ -280,6 +316,13 @@ against real Postgres. Test against the real thing.
 | `FederalOfficials:Enabled` | `false` | The weekly refresh of the Congress directory. Off, nothing calls out |
 | `FederalOfficials:SourceUrl` | the `congress-legislators` JSON | Where the directory comes from |
 | `FederalOfficials:RefreshInterval` | 7 days | How often, at most 30 days |
+| `Discord:BotToken` | — | The bot. Unset, every Discord call is a log line |
+| `Discord:Enabled` | `false` | Says this environment must have a bot: set with no token, startup fails |
+| `Discord:GuildId` | — | PhillyPause's server. Required with a token |
+| `Discord:AnnouncementChannelId` | — | Where announcements go. Unset, the server's system channel, else the first the bot may post in |
+| `Discord:RoleId` | — | The role every linked volunteer holds. Unset, nobody is given one, and any the bot gave are taken back |
+| `Discord:SendDelay` | 250 ms | The pause between DMs, and between role edits |
+| `Discord:RoleSyncInterval` | 15 minutes | How often roles are reconciled |
 
 The organisation's name and its timezone, `America/New_York`, are constants
 in `ManyHands.Core/Organisation.cs`, not configuration: there is no second
@@ -290,7 +333,7 @@ organizers' under `/team`.
 
 Locally, secrets go in `dotnet user-secrets` on `Website.Portal`; in
 production they are App Platform environment variables
-(`ManyHands__Enabled`, `ConnectionStrings__ManyHands`).
+(`ManyHands__Enabled`, `ConnectionStrings__ManyHands`, `Discord__BotToken`).
 
 ## 6. Running it locally
 
@@ -324,5 +367,5 @@ Coming across in phases, one PR each.
 | 3. Public pages: activities, signup, join, sign-in, my activities, unsubscribe, calendar | **built** |
 | 4. Organizer console: editor, roster, check-in, invites, roles, export | **built** |
 | 5. CRM, outreach email and the inbound webhook, the officials directory | **built** |
-| 6. Discord | not started |
+| 6. Discord: announcements and threads, DMs, slash commands, linking, role sync | **built** |
 | 7. The site links to it; Small Print, privacy and hosting updated | not started |
