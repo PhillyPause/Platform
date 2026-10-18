@@ -69,6 +69,19 @@ direction.
   a placeholder. The replacement mark is produced separately; its spec is
   PLAN.md §3.1.
 
+## Addresses
+
+All aliases on `phillypause.org`. Every `mailto:` carries a `?subject=`, so
+mail arrives pre-sorted — a bare `mailto:` is a bug.
+
+| Alias | Carries |
+|---|---|
+| `info@` | general enquiries, the footer greeting |
+| `join@` | Count Me In, I can help — the two joining links, and the list to import from when a provider lands |
+| `support@` | corrections, privacy and deletion requests |
+
+`press@` is not set up; the archived press page still points at `info@`.
+
 ## Domain rules (do not relitigate)
 
 - Content is **Markdown compiled at build time**, never parsed at runtime and
