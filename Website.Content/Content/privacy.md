@@ -2,7 +2,7 @@
 title: Privacy
 description: What this site collects, which is almost nothing, and what happens to your details if you join us.
 order: 93
-updated: 2026-10-16
+updated: 2026-10-18
 ---
 
 Short, because there is not much to say.
@@ -14,6 +14,11 @@ Short, because there is not much to say.
 - **No account needed** to read anything here.
 - **Fonts** are served from Google Fonts, which means Google sees the request.
   We are looking at self-hosting them to remove even that.
+- **The video** on the home page is YouTube's, in its privacy-enhanced
+  player. Nothing is fetched from YouTube until you press play; from then on
+  Google sees you as it would on YouTube itself.
+- **One note in your browser** records that you have seen the video, so it
+  does not open on you twice. It stays on your device and is never sent to us.
 - **Server logs** record requests, as every web server does. They are kept
   only as long as needed to run the site and diagnose faults.
 

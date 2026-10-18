@@ -2,8 +2,8 @@
 @layout BroadsheetLayout
 
 @* The home page, as a broadsheet front: masthead and nav, the lead story on
-   the July 2026 incident, and six dialogs: panelists, join us, the primer,
-   volunteer, educate and organize.
+   the July 2026 incident, and the dialogs: watch, panelists, join us, the
+   primer, volunteer, educate, organize and the small print.
 
    The dialogs are driven by one hidden radio group and `:checked ~` sibling
    selectors, not script. Radios rather than checkboxes so that opening one
@@ -25,6 +25,7 @@
      to another. Every close control points at dlg-none, which is checked on
      load, so nothing shows until something is chosen. No script involved. *@
   <input type="radio" name="dlg" id="dlg-none" class="dlgtoggle" checked aria-label="No panel open">
+  <input type="radio" name="dlg" id="watch-open" class="dlgtoggle" aria-label="Watch">
   <input type="radio" name="dlg" id="panel-open" class="dlgtoggle" aria-label="Who is on the panel">
   <input type="radio" name="dlg" id="join-open" class="dlgtoggle" aria-label="Join us">
   <input type="radio" name="dlg" id="primer-open" class="dlgtoggle" aria-label="The primer">
@@ -59,7 +60,8 @@
 
     <div class="navband" style="border-top: 3px double #15110C; border-bottom: 1px solid #15110C">
       <div style="padding-top: 4px; padding-bottom: 4px; display: flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; flex-wrap: wrap">
-        <label class="navlink" for="primer-open" style="color: #15110C; margin-left: -15px; cursor: pointer">Learn</label>
+        <label class="navlink navwatch" for="watch-open" style="color: #15110C; margin-left: -15px; cursor: pointer"><svg width="9" height="10" viewBox="0 0 9 10" aria-hidden="true"><path d="M0 0 9 5 0 10z" fill="currentColor"></path></svg>Watch</label>
+        <label class="navlink" for="primer-open" style="color: #15110C; cursor: pointer">Learn</label>
         <label class="navlink" for="volunteer-open" style="color: #15110C; cursor: pointer">Volunteer</label>
         <label class="navlink" for="educate-open" style="color: #15110C; cursor: pointer">Educate</label>
         <label class="navlink" for="organize-open" style="color: #15110C; cursor: pointer">Organize</label>
@@ -266,6 +268,39 @@
     <div style="border-top: 1px solid #CFC7B6; padding-top: 22px; text-align: center; font-size: 12.5px; line-height: 1.7; color: #6A6254">
       <p style="margin: 0">We are an independent, volunteer-run Philadelphia organisation. We are nobody&rsquo;s chapter and nobody pays us. <a href="mailto:info@@phillypause.org?subject=Hello%20from%20the%20website" style="font-weight: 600">info@@phillypause.org</a>.
       <label for="notices-open" class="primerlink" style="margin-left: 6px">Small Print</label></p>
+    </div>
+  </div>
+
+  @* Watch. Opens by itself on a reader's first visit, and from the nav after
+     that (wwwroot/watch.js). It never autoplays: the poster is a plain link to
+     the video on YouTube, which the script turns into an embedded player only
+     when pressed, so nothing is fetched from YouTube until the reader asks
+     for it. Closing the dialog removes the player, which stops the sound. *@
+  <div class="paneldlg d-watch">
+    <label class="paneldlg-scrim" for="dlg-none" aria-label="Close"></label>
+    <div class="paneldlg-box" role="dialog" aria-modal="true" aria-labelledby="watchdlg-title">
+      <div class="paneldlg-head">
+        <span id="watchdlg-title">Watch</span>
+        <label class="paneldlg-x" for="dlg-none" aria-label="Close">&times;</label>
+      </div>
+      <div class="paneldlg-body">
+        <p class="joinform-ask">@VideoPitch</p>
+
+        <div class="watchframe">
+          <a class="watchposter" href="https://www.youtube.com/watch?v=@VideoId" target="_blank" rel="noopener"
+             data-watch-play data-video="@VideoId" data-title="@VideoTitle">
+            <span class="watchkicker">Start here &middot; @VideoLength</span>
+            <span class="watchtitle">@VideoTitle</span>
+            <span class="watchplay" aria-hidden="true"><svg width="26" height="30" viewBox="0 0 9 10"><path d="M0 0 9 5 0 10z" fill="currentColor"></path></svg></span>
+            <span class="watchcta">Press play</span>
+          </a>
+        </div>
+
+        <div class="watchmeta">
+          <span>@VideoCredit, on YouTube. Nothing loads from YouTube until you press play.</span>
+          <label for="primer-open" class="primerlink">Then the primer &rarr;</label>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -532,11 +567,11 @@
           </div>
           <div class="joinway">
             <div class="joinway-k">Cookies, of which there is one</div>
-            <p>The web framework sets a single <code>.AspNetCore.Antiforgery</code> cookie to protect form submissions. It identifies a request, not a person, we never read it, and it tells us nothing about you.</p>
+            <p>The web framework sets a single <code>.AspNetCore.Antiforgery</code> cookie to protect form submissions. It identifies a request, not a person, we never read it, and it tells us nothing about you. Separately, your browser keeps one note in its own storage, never sent to us, that you have seen the video, so it does not open on you twice.</p>
           </div>
           <div class="joinway">
             <div class="joinway-k">What leaves this page</div>
-            <p>Two typefaces load from Google Fonts, so Google sees the request and your IP address. We would rather self-host them and intend to. Everything else on the page is served from here.</p>
+            <p>Two typefaces load from Google Fonts, so Google sees the request and your IP address. We would rather self-host them and intend to. The video is YouTube&rsquo;s, in its privacy-enhanced player, and nothing is fetched from YouTube until you press play; from then on Google sees you as it would on YouTube itself. Everything else on the page is served from here.</p>
           </div>
           <div class="joinway">
             <div class="joinway-k">Server logs</div>
@@ -563,3 +598,16 @@
     </div>
   </div>
 </div>
+
+@code {
+    // The Watch dialog's video. A stand-in until our own is cut; swapping it
+    // is these five lines. A new id also re-opens the dialog once for readers
+    // who saw the old one, because watch.js remembers by id.
+    private const string VideoId = "pYXy-A4siMw";
+    private const string VideoTitle = "Intro to AI Safety, Remastered";
+    private const string VideoCredit = "Rob Miles";
+    private const string VideoLength = "18 minutes";
+    private const string VideoPitch =
+        "If you watch one thing about why the people who build AI are worried, make it this. "
+        + "It is the clearest first explainer there is, and everything else on this page makes more sense afterwards.";
+}
