@@ -16,10 +16,30 @@ a:hover { color: #15110C; }
 .broadsheet h2,
 .broadsheet h3 { color: inherit; }
 
+/* The nav band: five links and the JOIN US button on one rule-bounded line.
+   The first link's negative margin puts its text, not its hover field, on
+   the column edge. */
+.navband {
+  grid-area: nav;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 4px 0;
+  border-top: 3px double #15110C;
+  border-bottom: 1px solid #15110C;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
 .navlink {
   padding: 9px 15px;
+  color: #15110C;
+  cursor: pointer;
   transition: background 140ms ease, color 140ms ease;
 }
+.navlink:first-child { margin-left: -15px; }
 .navlink:hover,
 .navlink:focus-visible {
   background: #EBE3D2;
@@ -31,8 +51,11 @@ a:hover { color: #15110C; }
 .navwatch svg { color: #AE2012; }
 
 .joinbtn {
+  margin-left: auto;
+  padding: 9px 16px;
   background: #AE2012;
   color: #FBF8F1;
+  cursor: pointer;
   transition: background 140ms ease;
 }
 .joinbtn:hover,
@@ -41,40 +64,110 @@ a:hover { color: #15110C; }
   color: #FBF8F1;
 }
 
-/* The event box is lifted out of the flow and pinned to the top-right of the
-   whole masthead region, so it starts level with the logo and runs DOWN
-   THROUGH the nav rules into the lead story. It sits above them, so the double
-   rule and the hairline both stop dead at its edge — the box breaks the
-   horizontal structure instead of obeying it.
-   min-height guarantees the pierce: without it the depth would drift with the
-   copy inside the box.
-   352px is one column of the three-column lead story below: 1180px container
-   less 64px of gutters is 1116px of content, less two 30px gaps, divided by
-   three. The box is flush right, so its edges land on that column's. Change
-   this and the two clearance values below must move with it. */
+/* The front, as one grid. Three equal columns on a desktop: the masthead, the
+   nav band and the headline take the first two, and the event box takes the
+   third from the top of the page down, so it starts level with the logo and
+   runs through the nav rules into the lead story. The rules stop dead at the
+   column gap — the box breaks the horizontal structure instead of obeying it.
+   The three lead paragraphs sit in the row beneath, one per column, so the
+   third always starts below the box: a taller box pushes the row down rather
+   than covering it. Two columns on a tablet (the story beside the box) and
+   one on a phone, below. */
+.front {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 32px 30px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  column-gap: 30px;
+  grid-template-areas:
+    "mast mast box"
+    "nav  nav  box"
+    "lead lead box"
+    "p1   p2   p3";
+}
+
+/* Pushed right, so the title and the strapline end on the same vertical as
+   the JOIN US button. The title is sized from the room it actually has
+   (container units on .mastline), never from the viewport, so it holds one
+   line at every width: it measures about 9.8em, so 9.6cqi leaves it a little
+   air. The strapline is 0.3 of the title's size, which is the ratio at which
+   the two share one measure; it justifies to close the last few pixels, and
+   its negative right margin offsets the trailing letter-space. */
+.masthead {
+  grid-area: mast;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 24px 0 14px;
+}
+.mastline {
+  flex: 1 1 auto;
+  min-width: 0;
+  container-type: inline-size;
+  display: flex;
+  justify-content: flex-end;
+}
+.mastblock { width: fit-content; max-width: 100%; }
+.masttitle {
+  font-family: 'Playfair Display', serif;
+  font-size: min(50px, 9.6cqi);
+  font-weight: 800;
+  line-height: 1.02;
+  letter-spacing: -0.028em;
+  text-align: right;
+  white-space: nowrap;
+}
+.maststrap {
+  margin: 0.87em -0.18em 0 0;
+  font-size: min(15px, 2.88cqi);
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #6A6254;
+  text-align: justify;
+  text-align-last: justify;
+  white-space: nowrap;
+}
+.maststrap span { white-space: nowrap; }
+
+.lead { grid-area: lead; padding: 28px 0 24px; }
+.leadkicker {
+  font-size: 11px; font-weight: 600; letter-spacing: 0.18em;
+  text-transform: uppercase; color: #AE2012;
+}
+.lead h1 {
+  margin: 12px 0 16px;
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(40px, 5.2vw, 72px);
+  font-weight: 900;
+  line-height: 0.94;
+  letter-spacing: -0.028em;
+}
+.leaddek {
+  max-width: 46ch;
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(18px, 2vw, 25px);
+  font-weight: 700;
+  line-height: 1.3;
+  color: #3C372E;
+}
+/* On a desktop the wrapper steps aside and each paragraph takes a column of
+   the front; on narrower screens it becomes one column of running text. */
+.leadtext { display: contents; }
+.leadtext p { margin: 0; font-size: 15px; line-height: 1.62; color: #3C372E; }
+.leadtext p:nth-child(1) { grid-area: p1; }
+.leadtext p:nth-child(2) { grid-area: p2; }
+.leadtext p:nth-child(3) { grid-area: p3; }
+
 .eventbox {
-  position: absolute;
-  top: 26px;
-  right: 32px;
-  width: 352px;
-  min-height: 432px;
-  z-index: 3;
+  grid-area: box;
+  align-self: start;
+  margin: 26px 0 24px;
   border: 1px solid #15110C;
   background: #F5F0E4;
   scroll-margin-top: 20px;
 }
-
-/* Everything the box would otherwise sit on top of keeps clear of it: the
-   box's 352px plus 36px of air. */
-.clearbox { padding-right: 388px; }
-
-/* The masthead reserves the same width as the nav band below it, so the title
-   block and the JOIN US button share a right edge. */
-.masthead { padding-right: 388px; }
-
-/* The nav rules stop short of the box rather than running under it, so there
-   is clean air between the end of each rule and the box's edge. */
-.navband { width: calc(100% - 388px); }
 
 /* Panellist names in the callout jump to their own entry below. They stay
    set as names, with a hairline rule to say they are clickable. */
@@ -429,32 +522,122 @@ a:hover { color: #15110C; }
    bottom inside its own viewBox. Scaling it just scales the emptiness, so the
    mark is cropped to its true bounding box (x 211-1049, y 183-1104 of 1254):
    the window is the artwork's real size, and the image is enlarged and offset
-   behind it. */
+   behind it. --s scales the window and the offsets together, for smaller
+   screens. */
 .mark {
+  --s: 1;
   position: relative;
   flex: none;
-  width: 219px;
-  height: 240px;
+  width: calc(219px * var(--s));
+  height: calc(240px * var(--s));
   overflow: hidden;
 }
 .mark img {
   position: absolute;
-  top: -48px;
-  left: -55px;
-  width: 327px;
-  height: 327px;
+  top: calc(-48px * var(--s));
+  left: calc(-55px * var(--s));
+  width: calc(327px * var(--s));
+  height: calc(327px * var(--s));
   filter: brightness(0);
 }
 
-@media (max-width: 900px) {
-  .eventbox {
-    position: static;
-    width: auto;
-    min-height: 0;
-    margin: 0 0 24px;
-  }
-  .clearbox { padding-right: 0; }
-  .masthead { padding-right: 0; }
-  .navband { width: auto; }
+/* The four figures under the lead. Rules run between neighbours only, so the
+   band reads as one strip at four across, a two-by-two block on a tablet and
+   a list on a phone; each layout redraws its own rules. The figure is sized
+   from its own cell (container units), so "They knew" never breaks. */
+.statband { border-top: 1px solid #15110C; border-bottom: 1px solid #15110C; background: #F5F0E4; }
+.stats {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 32px;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+.stat { container-type: inline-size; padding: 24px 26px; border-left: 1px solid #CFC7B6; }
+.stat:first-child { padding-left: 0; border-left: 0; }
+.stat:last-child { padding-right: 0; }
+.statnum {
+  font-family: 'Playfair Display', serif;
+  font-size: min(42px, 20cqi);
+  font-weight: 900;
+  color: #AE2012;
+  line-height: 0.9;
+  letter-spacing: -0.03em;
+  white-space: nowrap;
+}
+.stattext { margin-top: 12px; font-size: 13.5px; line-height: 1.5; color: #4A443A; }
 
+/* Tablet. The masthead and headline run full width, and the lead story sits
+   beside the event box. The logo steps down a size. Below 1024px two thirds
+   of the page is too narrow for the nav on one line, so this is where the
+   three columns give way. */
+@media (max-width: 1023px) {
+  .front {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-areas:
+      "mast mast"
+      "nav  nav"
+      "lead lead"
+      "text box";
+  }
+  .leadtext { display: block; grid-area: text; }
+  .leadtext p + p { margin-top: 16px; }
+  .eventbox { margin: 0; }
+  .mark { --s: 0.8; }
+
+  .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .stat:nth-child(odd) { padding-left: 0; padding-right: 26px; border-left: 0; }
+  .stat:nth-child(even) { padding-left: 26px; padding-right: 0; border-left: 1px solid #CFC7B6; }
+  .stat:nth-child(n+3) { border-top: 1px solid #CFC7B6; }
+}
+
+/* Under 680px the six nav items no longer fit one line, and wrapping them
+   strands JOIN US on a line of its own. They become a three-by-two grid
+   instead, JOIN US as the last cell. */
+@media (max-width: 679px) {
+  .navband {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0;
+    padding: 0;
+  }
+  .navlink, .joinbtn { margin: 0; padding: 13px 4px; text-align: center; }
+  .navlink:first-child { margin-left: 0; }
+  .navwatch { justify-content: center; }
+  .navband > :nth-child(-n+3) { border-bottom: 1px solid #CFC7B6; }
+}
+
+/* Phone. One column; the nameplate stacks and centres, the way a paper's does
+   on its narrow editions. The strapline may wrap here, between phrases, so it
+   centres rather than justifies. */
+@media (max-width: 639px) {
+  .front {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: "mast" "nav" "lead" "text" "box";
+  }
+  .eventbox { margin-top: 28px; }
+
+  .masthead { flex-direction: column; gap: 14px; }
+  .mark { --s: 0.62; }
+  .mastline { width: 100%; justify-content: center; }
+  .masttitle { text-align: center; }
+  .maststrap {
+    margin-right: 0;
+    font-size: max(10px, 2.88cqi);
+    letter-spacing: 0.12em;
+    text-align: center;
+    text-align-last: center;
+    white-space: normal;
+  }
+
+  .lead h1 { font-size: clamp(32px, 9.6vw, 40px); }
+  .lead h1 br { display: none; }
+
+  .stats { grid-template-columns: minmax(0, 1fr); }
+  .stats .stat { padding: 20px 0; border-left: 0; border-top: 0; }
+  .stats .stat + .stat { border-top: 1px solid #CFC7B6; }
+}
+
+@media (max-width: 400px) {
+  .navband { letter-spacing: 0.06em; }
 }

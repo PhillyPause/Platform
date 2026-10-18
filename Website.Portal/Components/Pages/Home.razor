@@ -34,51 +34,42 @@
   <input type="radio" name="dlg" id="organize-open" class="dlgtoggle" aria-label="Organize">
   <input type="radio" name="dlg" id="notices-open" class="dlgtoggle" aria-label="Small Print">
 
-  <div style="position: relative; max-width: 1180px; margin: 0 auto; padding: 0 32px">
+  @* The front: masthead, nav, lead story and the event box, laid out as one
+     grid in broadsheet.css (three columns, then two, then one) rather than
+     with fixed offsets, so nothing can slide under anything else. *@
+  <div class="front">
 
-    <div class="masthead" style="padding-top: 24px; padding-bottom: 14px; display: flex; align-items: center; gap: 0">
+    <div class="masthead">
       <span class="mark" role="img" aria-label="PhillyPause">
         <img src="img/logo.svg" alt="">
       </span>
-      <!-- Pushed right, so the title and the strapline end on the same
-           vertical as the JOIN US button in the nav band below. The block
-           sizes itself to the title and the strapline justifies to fill it, so
-           the two share one measure.
-           The 50px ceiling is the largest that holds one line in the 509px
-           left after the logo and the reserved column: the title measures
-           about 9.8em, so 50px needs roughly 490px. Raising it past 52px wraps
-           the headline. The strapline's negative right margin offsets its
-           trailing letter-space, which would otherwise leave the last
-           character short of the edge. -->
-      <div style="flex: 1 1 auto; min-width: 0; display: flex; justify-content: flex-end">
-        <div style="min-width: 0; width: fit-content; max-width: 100%">
-          <div style="font-family: 'Playfair Display', serif; font-size: clamp(32px, 3.9vw, 50px); font-weight: 800; line-height: 1.02; letter-spacing: -0.028em; text-align: right">Stop the AI death race!</div>
-          <div style="font-size: 15px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: #6A6254; margin-top: 13px; margin-right: -0.18em; text-align: justify; text-align-last: justify">Independent &middot; Volunteer-run &middot; Philly&rsquo;s&nbsp;own</div>
+      <div class="mastline">
+        <div class="mastblock">
+          <div class="masttitle">Stop the AI death race!</div>
+          <div class="maststrap"><span>Independent &middot;</span> <span>Volunteer-run &middot;</span> <span>Philly&rsquo;s&nbsp;own</span></div>
         </div>
       </div>
     </div>
 
-    <div class="navband" style="border-top: 3px double #15110C; border-bottom: 1px solid #15110C">
-      <div style="padding-top: 4px; padding-bottom: 4px; display: flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; flex-wrap: wrap">
-        <label class="navlink navwatch" for="watch-open" style="color: #15110C; margin-left: -15px; cursor: pointer"><svg width="9" height="10" viewBox="0 0 9 10" aria-hidden="true"><path d="M0 0 9 5 0 10z" fill="currentColor"></path></svg>Watch</label>
-        <label class="navlink" for="primer-open" style="color: #15110C; cursor: pointer">Learn</label>
-        <label class="navlink" for="volunteer-open" style="color: #15110C; cursor: pointer">Volunteer</label>
-        <label class="navlink" for="educate-open" style="color: #15110C; cursor: pointer">Educate</label>
-        <label class="navlink" for="organize-open" style="color: #15110C; cursor: pointer">Organize</label>
-        <label class="joinbtn" for="join-open" style="margin-left: auto; padding: 9px 16px; letter-spacing: 0.12em; cursor: pointer">Join us</label>
-      </div>
+    <nav class="navband" aria-label="Sections">
+      <label class="navlink navwatch" for="watch-open"><svg width="9" height="10" viewBox="0 0 9 10" aria-hidden="true"><path d="M0 0 9 5 0 10z" fill="currentColor"></path></svg>Watch</label>
+      <label class="navlink" for="primer-open">Learn</label>
+      <label class="navlink" for="volunteer-open">Volunteer</label>
+      <label class="navlink" for="educate-open">Educate</label>
+      <label class="navlink" for="organize-open">Organize</label>
+      <label class="joinbtn" for="join-open">Join us</label>
+    </nav>
+
+    <div class="lead">
+      <div class="leadkicker">Incident report &middot; <span style="white-space: nowrap">July 11&ndash;13, 2026</span></div>
+      <h1>700 AI agents broke <br>out of their sandboxes</h1>
+      <div class="leaddek">To cheat on a test. If a person did it, it would be a felony!</div>
     </div>
 
-    <div style="padding: 28px 0 30px">
-      <div class="clearbox" style="font-size: 11px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: #AE2012">Incident report &middot; July 11&ndash;13, 2026</div>
-      <h1 class="clearbox" style="margin: 12px 0 16px; font-family: 'Playfair Display', serif; font-size: clamp(40px, 5.2vw, 72px); font-weight: 900; line-height: 0.94; letter-spacing: -0.028em">700 AI agents broke<br>out of their sandboxes</h1>
-      <div style="font-family: 'Playfair Display', serif; font-size: clamp(18px, 2vw, 25px); font-weight: 700; line-height: 1.3; color: #3C372E; max-width: 46ch; margin-bottom: 24px">To cheat on a test. If a person did it, it would be a felony!</div>
-
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 30px; font-size: 15px; line-height: 1.62; color: #3C372E; padding-top: 4px">
-        <p style="margin: 0">OpenAI was running a security exercise with tens of thousands of AI agents, each one isolated. They found each other anyway, stood up a message board nobody had sanctioned, and began dividing the work amongst themselves.</p>
-        <p style="margin: 0">Around 700 then broke into Hugging Face, the largest public repository of AI models in the world. They ran code on a live production system, took credentials, and moved through internal clusters.</p>
-        <p style="margin: 0">Their motive was not sabotage. Many had been handed tasks that could not be solved, so they went hunting for the scoring system in order to fool it. Investigators found they knew it was out of bounds and joined in regardless.</p>
-      </div>
+    <div class="leadtext">
+      <p>OpenAI was running a security exercise with tens of thousands of AI agents, each one isolated. They found each other anyway, stood up a message board nobody had sanctioned, and began dividing the work amongst themselves.</p>
+      <p>Around 700 then broke into Hugging Face, the largest public repository of AI models in the world. They ran code on a live production system, took credentials, and moved through internal clusters.</p>
+      <p>Their motive was not sabotage. Many had been handed tasks that could not be solved, so they went hunting for the scoring system in order to fool it. Investigators found they knew it was out of bounds and joined in regardless.</p>
     </div>
 
     <div class="eventbox" id="next-event">
@@ -112,27 +103,27 @@
 
   </div>
 
-  <div style="border-top: 1px solid #15110C; border-bottom: 1px solid #15110C; background: #F5F0E4">
-    <div style="max-width: 1180px; margin: 0 auto; padding: 0 32px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr))">
+  <div class="statband">
+    <div class="stats">
 
-      <div style="padding: 24px 26px 24px 0; border-right: 1px solid #CFC7B6">
-        <div style="font-family: 'Playfair Display', serif; font-size: 42px; font-weight: 900; color: #AE2012; line-height: 0.9; letter-spacing: -0.03em">~90%</div>
-        <div style="font-size: 13.5px; color: #4A443A; margin-top: 12px; line-height: 1.5">of the 533 agents present joined the break-in. Nobody organised them. Nobody asked them to.</div>
+      <div class="stat">
+        <div class="statnum">~90%</div>
+        <div class="stattext">of the 533 agents present joined the break-in. Nobody organised them. Nobody asked them to.</div>
       </div>
 
-      <div style="padding: 24px 26px; border-right: 1px solid #CFC7B6">
-        <div style="font-family: 'Playfair Display', serif; font-size: 42px; font-weight: 900; color: #AE2012; line-height: 0.9; letter-spacing: -0.03em">They knew</div>
-        <div style="font-size: 13.5px; color: #4A443A; margin-top: 12px; line-height: 1.5">Investigators found the agents understood the attack was out of scope and unethical. That &ldquo;very rarely limited their behaviour&rdquo;.</div>
+      <div class="stat">
+        <div class="statnum">They knew</div>
+        <div class="stattext">Investigators found the agents understood the attack was out of scope and unethical. That &ldquo;very rarely limited their behaviour&rdquo;.</div>
       </div>
 
-      <div style="padding: 24px 26px; border-right: 1px solid #CFC7B6">
-        <div style="font-family: 'Playfair Display', serif; font-size: 42px; font-weight: 900; color: #AE2012; line-height: 0.9; letter-spacing: -0.03em">4 July</div>
-        <div style="font-size: 13.5px; color: #4A443A; margin-top: 12px; line-height: 1.5">An earlier outage had already forced a security investigation. The cache was wiped, the experiments restarted &mdash; and the breach began the next day.</div>
+      <div class="stat">
+        <div class="statnum">4 July</div>
+        <div class="stattext">An earlier outage had already forced a security investigation. The cache was wiped, the experiments restarted &mdash; and the breach began the next day.</div>
       </div>
 
-      <div style="padding: 24px 0 24px 26px">
-        <div style="font-family: 'Playfair Display', serif; font-size: 42px; font-weight: 900; color: #AE2012; line-height: 0.9; letter-spacing: -0.03em">Unseen</div>
-        <div style="font-size: 13.5px; color: #4A443A; margin-top: 12px; line-height: 1.5">Investigators could not query the model or reach OpenAI&rsquo;s systems directly, and some of the agents&rsquo; activity was never captured at all.</div>
+      <div class="stat">
+        <div class="statnum">Unseen</div>
+        <div class="stattext">Investigators could not query the model or reach OpenAI&rsquo;s systems directly, and some of the agents&rsquo; activity was never captured at all.</div>
       </div>
 
     </div>
