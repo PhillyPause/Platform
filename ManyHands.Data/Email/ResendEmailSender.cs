@@ -21,10 +21,11 @@ public sealed class ResendEmailSender(
 
     public async Task<EmailSendResult> SendAsync(OutgoingEmail email, CancellationToken ct = default)
     {
+        var fromAddress = email.From ?? _options.FromAddress;
         var payload = new ResendRequest(
             From: string.IsNullOrWhiteSpace(_options.FromName)
-                ? _options.FromAddress
-                : $"{_options.FromName} <{_options.FromAddress}>",
+                ? fromAddress
+                : $"{_options.FromName} <{fromAddress}>",
             To: [email.ToAddress],
             Subject: email.Subject,
             Text: email.BodyText,
@@ -54,17 +55,30 @@ public sealed class ResendEmailSender(
         }
     }
 
-    private static Dictionary<string, string>? BuildHeaders(OutgoingEmail email)
+    internal static Dictionary<string, string>? BuildHeaders(OutgoingEmail email)
     {
-        if (string.IsNullOrWhiteSpace(email.ListUnsubscribeUrl)) return null;
+        var headers = new Dictionary<string, string>();
 
         // RFC 8058: gives mail clients a native unsubscribe button, which keeps
         // complaints out of the spam-report path that wrecks sender reputation.
-        return new Dictionary<string, string>
+        if (!string.IsNullOrWhiteSpace(email.ListUnsubscribeUrl))
         {
-            ["List-Unsubscribe"] = $"<{email.ListUnsubscribeUrl}>",
-            ["List-Unsubscribe-Post"] = "List-Unsubscribe=One-Click"
-        };
+            headers["List-Unsubscribe"] = $"<{email.ListUnsubscribeUrl}>";
+            headers["List-Unsubscribe-Post"] = "List-Unsubscribe=One-Click";
+        }
+
+        // Threading, both ways: our Message-ID is what a reply's In-Reply-To
+        // will name, and In-Reply-To/References keep our reply in the
+        // recipient's thread.
+        if (!string.IsNullOrWhiteSpace(email.MessageId)) headers["Message-ID"] = email.MessageId;
+
+        if (!string.IsNullOrWhiteSpace(email.InReplyTo))
+        {
+            headers["In-Reply-To"] = email.InReplyTo;
+            headers["References"] = email.InReplyTo;
+        }
+
+        return headers.Count == 0 ? null : headers;
     }
 
     /// <summary>Volunteer addresses are PII; logs get a shape, not an inbox.</summary>

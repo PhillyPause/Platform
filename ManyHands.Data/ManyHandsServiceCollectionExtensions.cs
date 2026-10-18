@@ -1,4 +1,5 @@
 using ManyHands.Data.Email;
+using ManyHands.Data.Lookup;
 using ManyHands.Data.Workers;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.DataProtection.KeyManagement;
@@ -53,6 +54,9 @@ public static class ManyHandsServiceCollectionExtensions
         services.AddSingleton<PingRepository>();
         services.AddSingleton<InviteRepository>();
         services.AddSingleton<SelfCheckInRepository>();
+        services.AddSingleton<CrmRepository>();
+        services.AddSingleton<CrmEmailRepository>();
+        services.AddSingleton<FederalOfficialsRepository>();
 
         // Sign-in cookies and antiforgery tokens survive a deploy only if the
         // keys that sign them do.
@@ -68,7 +72,42 @@ public static class ManyHandsServiceCollectionExtensions
         services.AddHostedService<OutboxWorker>();
         services.AddHostedService<ReminderWorker>();
 
+        services.AddFederalOfficials(configuration);
+
         return services;
+    }
+
+    /// <summary>
+    /// The weekly refresh of the Congress directory. The client is wired either
+    /// way — constructing one sends nothing — and <c>FederalOfficials:Enabled</c>,
+    /// false by default, decides whether the worker ever calls it.
+    /// </summary>
+    private static void AddFederalOfficials(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddOptions<FederalOfficialsOptions>()
+            .Bind(configuration.GetSection(FederalOfficialsOptions.SectionName))
+            .Validate(o => !o.Enabled || Uri.TryCreate(o.SourceUrl, UriKind.Absolute, out _),
+                "FederalOfficials:SourceUrl must be an absolute URL.")
+            // PeriodicTimer's ceiling is about 49 days, and a directory refreshed
+            // less than monthly is not one anyone should trust.
+            .Validate(o => o.RefreshInterval > TimeSpan.Zero && o.RefreshInterval <= TimeSpan.FromDays(30),
+                "FederalOfficials:RefreshInterval must be between zero and 30 days.")
+            .ValidateOnStart();
+
+        services.AddHttpClient<CongressLegislatorsSource>(http =>
+        {
+            // Megabytes of JSON over a link we do not control, once a week.
+            http.Timeout = TimeSpan.FromMinutes(2);
+            http.DefaultRequestHeaders.UserAgent.ParseAdd("PhillyPause/1.0 (+https://phillypause.org)");
+        })
+        // Served gzipped; without this the whole uncompressed file comes down.
+        .ConfigurePrimaryHttpMessageHandler(() => new System.Net.Http.SocketsHttpHandler
+        {
+            AutomaticDecompression = System.Net.DecompressionMethods.All
+        });
+
+        services.AddSingleton<IFederalOfficialsSource>(sp => sp.GetRequiredService<CongressLegislatorsSource>());
+        services.AddHostedService<FederalOfficialsSyncWorker>();
     }
 
     private static void AddManyHandsEmail(this IServiceCollection services, IConfiguration configuration)
@@ -106,6 +145,7 @@ public static class ManyHandsServiceCollectionExtensions
         }
 
         services.AddSingleton<EmailDispatcher>();
+        services.AddSingleton<OutreachEmail>();
     }
 
     /// <summary>

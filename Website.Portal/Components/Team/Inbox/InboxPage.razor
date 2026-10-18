@@ -1,0 +1,60 @@
+@page "/team/inbox"
+@inject CrmEmailRepository Emails
+@inject ManyHands.Data.Email.OutreachEmail Outreach
+
+<PageMeta Title="Inbox" Description="PhillyPause's outreach mail." NoIndex="true" />
+
+<div class="wrap page-head">
+    <h1>Inbox</h1>
+    <p class="lead">
+        Outreach mail to and from @Outreach.Mailbox, whoever sent it. Nothing lives in anyone&rsquo;s
+        personal inbox, so a conversation survives the person who started it.
+    </p>
+</div>
+
+<div class="wrap vol-body">
+    <p class="vol-actions">
+        <a class="btn" href="@ManyHandsPaths.InboxCompose">Write</a>
+        <a class="btn btn-ghost" href="@ManyHandsPaths.InboxTemplates">Templates</a>
+    </p>
+
+    <nav class="vol-filter" aria-label="Which threads">
+        <a href="@ManyHandsPaths.Inbox" aria-current="@(!Triage ? "page" : null)">Everything</a>
+        <a href="@($"{ManyHandsPaths.Inbox}?triage=true")" aria-current="@(Triage ? "page" : null)">From people we do not know yet</a>
+    </nav>
+
+    @if (_threads.Count == 0)
+    {
+        <p class="vol-empty">@(Triage ? "Nobody waiting to be identified." : "No mail yet.")</p>
+    }
+    else
+    {
+        <table class="vol-table">
+            <thead><tr><th scope="col">Conversation</th><th scope="col">With</th><th scope="col">Last</th></tr></thead>
+            <tbody>
+                @foreach (var thread in _threads)
+                {
+                    <tr>
+                        <td>
+                            <a href="@ManyHandsPaths.InboxThread(thread.ConversationId)">@thread.Subject</a>
+                            @if (thread.NeedsTriage) { <div class="vol-room">Who is this?</div> }
+                        </td>
+                        <td>
+                            @(thread.ContactName ?? (thread.Direction == EmailDirection.Inbound ? thread.FromAddress : thread.ToAddress))
+                            @if (thread.OrganizationName is { } org) { <div class="vol-small">@org</div> }
+                        </td>
+                        <td class="vol-small">@Show.Stamp(thread.LastMessageAt) · @thread.MessageCount</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>
+
+@code {
+    [SupplyParameterFromQuery(Name = "triage")] private bool Triage { get; set; }
+
+    private IReadOnlyList<EmailThreadSummary> _threads = [];
+
+    protected override async Task OnInitializedAsync() => _threads = await Emails.GetThreadsAsync(Triage);
+}

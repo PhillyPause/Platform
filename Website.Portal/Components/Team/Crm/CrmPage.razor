@@ -1,0 +1,123 @@
+@page "/team/crm"
+@inject CrmRepository Crm
+@inject NavigationManager Navigation
+
+<PageMeta Title="CRM" Description="The offices and people PhillyPause works with." NoIndex="true" />
+
+<div class="wrap page-head">
+    <h1>CRM</h1>
+    <p class="lead">The offices, venues, partners and press we work with, what we have said to them, and what is still to do.</p>
+</div>
+
+<div class="wrap vol-body vol-stack">
+    <p class="vol-actions">
+        <a class="btn btn-ghost" href="@ManyHandsPaths.CrmPipeline">Pipeline</a>
+        <a class="btn btn-ghost" href="@ManyHandsPaths.CrmOfficials">Members of Congress</a>
+        <a class="btn btn-ghost" href="@ManyHandsPaths.Inbox">Inbox</a>
+    </p>
+
+    @if (_tasks.Count > 0)
+    {
+        <section aria-labelledby="tasks-head">
+            <h2 id="tasks-head">Still to do</h2>
+            <TaskList Tasks="_tasks" />
+        </section>
+    }
+
+    <section aria-labelledby="orgs-head">
+        <h2 id="orgs-head">Organizations</h2>
+
+        <nav class="vol-filter" aria-label="Filter by kind">
+            <a href="@ManyHandsPaths.Crm" aria-current="@(Kind is null ? "page" : null)">Everything</a>
+            @foreach (var kind in Enum.GetValues<OrganizationKind>())
+            {
+                <a href="@($"{ManyHandsPaths.Crm}?kind={kind}")" aria-current="@(Kind == kind ? "page" : null)">@Show.Words(kind)</a>
+            }
+        </nav>
+
+        @if (_organizations.Count == 0)
+        {
+            <p class="vol-empty">None yet. Add one below, or import a member of Congress.</p>
+        }
+        else
+        {
+            <table class="vol-table">
+                <thead><tr><th scope="col">Name</th><th scope="col">Kind</th><th scope="col" class="num">People</th><th scope="col">Last contact</th></tr></thead>
+                <tbody>
+                    @foreach (var org in _organizations)
+                    {
+                        <tr>
+                            <td>
+                                <a href="@ManyHandsPaths.CrmOrganization(org.Id)">@org.Name</a>
+                                @if (org.OpenEngagementCount > 0) { <div class="vol-small">@org.OpenEngagementCount open</div> }
+                            </td>
+                            <td>@Show.Words(org.Kind)@(org.State is { } st ? $" · {st}{(org.District is { } d ? "-" + d : "")}" : "")</td>
+                            <td class="num">@org.ContactCount</td>
+                            <td>@(org.LastInteractionAt is { } last ? Show.Stamp(last) : "never")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </section>
+
+    <section aria-labelledby="new-org-head">
+        <h2 id="new-org-head">Add an organization</h2>
+        <EditForm Model="Input" FormName="organization" OnValidSubmit="CreateAsync" class="vol-form vol-narrow">
+            <DataAnnotationsValidator />
+            <label>
+                <span>Name</span>
+                <InputText @bind-Value="Input!.Name" />
+                <ValidationMessage For="() => Input!.Name" />
+            </label>
+            <label>
+                <span>Kind</span>
+                <InputSelect @bind-Value="Input!.Kind">
+                    @foreach (var kind in Enum.GetValues<OrganizationKind>())
+                    {
+                        <option value="@kind">@Show.Words(kind)</option>
+                    }
+                </InputSelect>
+            </label>
+            <button class="btn" type="submit">Add</button>
+        </EditForm>
+    </section>
+</div>
+
+@code {
+    [CascadingParameter] private HttpContext HttpContext { get; set; } = default!;
+
+    // A string, because query binding does not do enums.
+    [SupplyParameterFromQuery(Name = "kind")] private string? KindName { get; set; }
+
+    private OrganizationKind? Kind => Enum.TryParse<OrganizationKind>(KindName, out var kind) ? kind : null;
+
+    [SupplyParameterFromForm(FormName = "organization")] private NewOrganization? Input { get; set; }
+
+    private IReadOnlyList<OrganizationSummary> _organizations = [];
+    private IReadOnlyList<CrmTaskSummary> _tasks = [];
+
+    protected override async Task OnInitializedAsync()
+    {
+        Input ??= new();
+        _organizations = await Crm.GetOrganizationsAsync(Kind);
+        _tasks = await Crm.GetTasksAsync(CrmTaskStatus.Open);
+    }
+
+    private async Task CreateAsync()
+    {
+        var id = await Crm.CreateOrganizationAsync(
+            new OrganizationFields(Input!.Kind, Input.Name.Trim(), null, null, null, null, null),
+            externalRef: null, createdBy: HttpContext.User.VolunteerId());
+        Navigation.NavigateTo(ManyHandsPaths.CrmOrganization(id));
+    }
+
+    private sealed class NewOrganization
+    {
+        [Required(ErrorMessage = "It needs a name.")]
+        [StringLength(200)]
+        public string Name { get; set; } = string.Empty;
+
+        public OrganizationKind Kind { get; set; } = OrganizationKind.PartnerOrg;
+    }
+}

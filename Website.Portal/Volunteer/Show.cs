@@ -39,6 +39,23 @@ public static class Show
             ? uri.AbsoluteUri
             : null;
 
+    /// <summary>"CongressionalOffice" as "Congressional office": an enum name, as a person would say it.</summary>
+    public static string Words(Enum value)
+    {
+        var name = value.ToString();
+        var words = new System.Text.StringBuilder(name.Length + 4);
+        for (var i = 0; i < name.Length; i++)
+        {
+            if (i > 0 && char.IsUpper(name[i])) words.Append(' ').Append(char.ToLowerInvariant(name[i]));
+            else words.Append(name[i]);
+        }
+        return words.ToString();
+    }
+
+    /// <summary>A date and time on Philadelphia's clock, short: "Oct 22, 3:05 PM".</summary>
+    public static string Stamp(DateTimeOffset instant) =>
+        LocalTime.ToLocal(instant).ToString("MMM d, h:mm tt", System.Globalization.CultureInfo.InvariantCulture);
+
     public static string Status(SignupStatus status) => status switch
     {
         SignupStatus.Confirmed => "Signed up",

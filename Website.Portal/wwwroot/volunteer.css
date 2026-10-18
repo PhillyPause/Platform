@@ -148,3 +148,42 @@
 .vol-qr-code { width: min(26rem, 100%); background: #fff; padding: 1rem; border-radius: var(--radius); }
 .vol-qr-code svg { display: block; width: 100%; height: auto; }
 .vol-form label > span.vol-small, .vol-choice label > span { font-weight: 400; }
+
+/* --- CRM and inbox ---------------------------------------------------------- */
+
+.vol-people { list-style: none; margin: 0 0 1rem; padding: 0; max-width: 44rem; }
+.vol-people li { display: flex; flex-wrap: wrap; gap: 0.2rem 0.8rem; align-items: baseline; padding: 0.55rem 0; border-bottom: 1px solid var(--line); }
+.vol-people li .vol-link-button { margin-left: auto; }
+
+.vol-inline-form { display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: flex-end; max-width: 52rem; }
+.vol-inline-form label { flex: 1 1 12rem; }
+.vol-inline-form textarea { min-height: 3.2rem; }
+.vol-inline-form .validation-message { flex-basis: 100%; }
+
+.vol-tasks { list-style: none; margin: 0 0 1rem; padding: 0; max-width: 44rem; }
+.vol-tasks li { display: flex; gap: 0.9rem; align-items: baseline; padding: 0.5rem 0; border-bottom: 1px solid var(--line); }
+.vol-tasks strong { display: block; }
+.vol-tasks .is-late strong { color: var(--alarm-ink); }
+
+.vol-timeline { list-style: none; margin: 1.25rem 0 0; padding: 0; max-width: 44rem; }
+.vol-timeline li { padding: 0.75rem 0 0.75rem 1rem; border-left: 2px solid var(--rule); }
+.vol-timeline p { margin: 0.25rem 0 0; }
+
+.vol-board { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(14rem, 1fr); gap: 1rem; overflow-x: auto; padding-bottom: 1rem; }
+.vol-column { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 0.75rem; min-height: 8rem; }
+.vol-column h2 { font-size: 0.85rem !important; letter-spacing: 0.06em; text-transform: uppercase; margin: 0 0 0.75rem; }
+.vol-board-card { background: var(--bg); border: 1px solid var(--line); border-radius: 6px; padding: 0.6rem 0.7rem; margin-bottom: 0.6rem; }
+.vol-board-card > a { font-weight: 700; color: var(--heading); text-decoration: none; }
+.vol-board-moves { display: flex; justify-content: space-between; margin-top: 0.4rem; }
+.vol-board-moves .vol-link-button { margin: 0; font-size: 0.82rem; }
+
+.vol-thread { list-style: none; margin: 0; padding: 0; max-width: 44rem; display: grid; gap: 0.75rem; }
+.vol-thread li { padding: 0.9rem 1rem; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); }
+.vol-thread li.is-out { margin-left: 2rem; border-left: 4px solid var(--navy); }
+.vol-thread li.is-in { margin-right: 2rem; border-left: 4px solid var(--alarm); }
+.vol-thread p { margin: 0.4rem 0 0; }
+.vol-form select, .vol-form input[type="date"] {
+  width: 100%; min-height: 48px; padding: 0.6rem 0.8rem;
+  font: inherit; color: var(--ink); background: var(--bg);
+  border: 1px solid var(--rule); border-radius: 4px;
+}

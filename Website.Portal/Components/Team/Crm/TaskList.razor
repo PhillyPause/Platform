@@ -1,0 +1,50 @@
+@inject CrmRepository Crm
+
+@* A list of CRM tasks with a Done button each. Its own form, so any page can
+   show tasks without wiring the buttons itself; one per page. *@
+
+<EditForm Model="Done" FormName="task-done" OnSubmit="CompleteAsync">
+    <ul class="vol-tasks">
+        @foreach (var task in Tasks.Where(t => !_completed.Contains(t.Id)))
+        {
+            <li class="@(task.IsOverdueOn(_today) ? "is-late" : null)">
+                <button class="vol-link-button" type="submit" name="Done.TaskId" value="@task.Id">Done</button>
+                <span>
+                    <strong>@task.Title</strong>
+                    <span class="vol-small">
+                        @(task.DueOn is { } due ? $"due {due:MMM d}" : "no date")
+                        @if (task.AssignedToName is { } who) { <text> · @who</text> }
+                        @if (task.OrganizationId is { } org) { <text> · <a href="@ManyHandsPaths.CrmOrganization(org)">@task.OrganizationName</a></text> }
+                        @if (task.EngagementId is { } eng) { <text> · <a href="@ManyHandsPaths.CrmEngagement(eng)">@task.EngagementTitle</a></text> }
+                    </span>
+                </span>
+            </li>
+        }
+    </ul>
+</EditForm>
+
+@code {
+    [Parameter, EditorRequired] public required IReadOnlyList<CrmTaskSummary> Tasks { get; set; }
+
+    [SupplyParameterFromForm(FormName = "task-done")] private DoneInput? Done { get; set; }
+
+    private readonly HashSet<Guid> _completed = [];
+    private DateOnly _today;
+
+    protected override void OnInitialized()
+    {
+        Done ??= new();
+        _today = DateOnly.FromDateTime(LocalTime.ToLocal(DateTimeOffset.UtcNow));
+    }
+
+    private async Task CompleteAsync()
+    {
+        if (Done!.TaskId is Guid id && await Crm.SetTaskStatusAsync(id, CrmTaskStatus.Done))
+            _completed.Add(id);
+    }
+
+    private sealed class DoneInput
+    {
+        public Guid? TaskId { get; set; }
+    }
+}

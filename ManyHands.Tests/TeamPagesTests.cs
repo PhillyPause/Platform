@@ -40,6 +40,56 @@ public sealed partial class TeamPagesTests(DatabaseFixture db) : IAsyncLifetime
         Assert.StartsWith(ManyHandsPaths.SignIn, response.Headers.Location?.AbsolutePath);
     }
 
+    /// <summary>Every team page opens for an organizer: a page that throws fails here, not in front of one.</summary>
+    [Theory]
+    [InlineData(ManyHandsPaths.Team)]
+    [InlineData(ManyHandsPaths.TeamNewActivity)]
+    [InlineData(ManyHandsPaths.TeamMembers)]
+    [InlineData(ManyHandsPaths.TeamInvites)]
+    [InlineData(ManyHandsPaths.Crm)]
+    [InlineData(ManyHandsPaths.Crm + "?kind=Venue")]
+    [InlineData(ManyHandsPaths.CrmPipeline)]
+    [InlineData(ManyHandsPaths.CrmOfficials)]
+    [InlineData(ManyHandsPaths.Inbox)]
+    [InlineData(ManyHandsPaths.Inbox + "?triage=true")]
+    [InlineData(ManyHandsPaths.InboxCompose)]
+    [InlineData(ManyHandsPaths.InboxTemplates)]
+    public async Task Every_team_page_opens_for_an_organizer(string path)
+    {
+        var organizer = await SignedInAsync(VolunteerRole.Organizer);
+
+        var response = await organizer.GetAsync(path);
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task Every_record_page_opens_for_an_organizer()
+    {
+        var crm = new CrmRepository(db.DataSource);
+        var org = await crm.CreateOrganizationAsync(
+            new OrganizationFields(OrganizationKind.Venue, $"Venue {Guid.NewGuid():N}", null, null, null, null, null), null, null);
+        var engagement = await crm.SaveEngagementAsync(null,
+            new EngagementFields(org, "Book the room", EngagementStatus.Outreach, null, null, null, null, null, null));
+        var activity = await TestData.ActivityAsync(db.DataSource);
+        var thread = Guid.NewGuid();
+        await new CrmEmailRepository(db.DataSource).RecordAsync(new CrmEmail(
+            Guid.Empty, EmailDirection.Inbound, org, null, null, "someone@example.test", "outreach@example.test",
+            "Hello", "Hi.", null, null, thread, EmailStatus.Sent, null, null, null,
+            DateTimeOffset.UtcNow, DateTimeOffset.UtcNow, NeedsTriage: true));
+        var organizer = await SignedInAsync(VolunteerRole.Organizer);
+
+        foreach (var path in new[]
+                 {
+                     ManyHandsPaths.CrmOrganization(org), ManyHandsPaths.CrmEngagement(engagement),
+                     ManyHandsPaths.InboxThread(thread), ManyHandsPaths.TeamActivity(activity),
+                     ManyHandsPaths.TeamEditActivity(activity), ManyHandsPaths.TeamCheckInCode(activity)
+                 })
+        {
+            Assert.True((await organizer.GetAsync(path)).StatusCode == HttpStatusCode.OK, path);
+        }
+    }
+
     [Fact]
     public async Task To_a_member_the_team_pages_do_not_exist()
     {
@@ -130,7 +180,7 @@ public sealed partial class TeamPagesTests(DatabaseFixture db) : IAsyncLifetime
     public async Task A_listed_address_is_an_admin_once_it_signs_in()
     {
         var email = TestData.NewEmail();
-        await using var portal = new PortalFactory(db.ConnectionString, email);
+        await using var portal = new PortalFactory(db.ConnectionString, ("ManyHands:Admins:0", email));
         var volunteers = new VolunteerRepository(db.DataSource);
         var id = await volunteers.UpsertByEmailAsync(email, "Founder");
 

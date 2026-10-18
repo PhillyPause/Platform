@@ -1,0 +1,51 @@
+@inject CrmRepository Crm
+
+@* "Log something": a call, a meeting, a note. Its own form, so the
+   organization and engagement pages share it; one per page. *@
+
+<EditForm Model="Input" FormName="log" OnValidSubmit="LogAsync" class="vol-form vol-inline-form">
+    <DataAnnotationsValidator />
+    <label>
+        <span>What happened</span>
+        <InputTextArea @bind-Value="Input!.Body" rows="2" placeholder="Called the DC office; they will look at the letter this week." />
+    </label>
+    <label>
+        <span>How</span>
+        <InputSelect @bind-Value="Input!.Kind">
+            @foreach (var kind in Enum.GetValues<InteractionKind>()) { <option value="@kind">@Show.Words(kind)</option> }
+        </InputSelect>
+    </label>
+    <ValidationMessage For="() => Input!.Body" />
+    <button class="btn btn-ghost" type="submit">Log it</button>
+</EditForm>
+
+@code {
+    [Parameter] public Guid? OrganizationId { get; set; }
+
+    [Parameter] public Guid? EngagementId { get; set; }
+
+    [Parameter] public EventCallback OnLogged { get; set; }
+
+    [CascadingParameter] private HttpContext HttpContext { get; set; } = default!;
+
+    [SupplyParameterFromForm(FormName = "log")] private LogInput? Input { get; set; }
+
+    protected override void OnInitialized() => Input ??= new();
+
+    private async Task LogAsync()
+    {
+        await Crm.LogInteractionAsync(OrganizationId, null, EngagementId, Input!.Kind,
+            DateTimeOffset.UtcNow, Input.Body.Trim(), HttpContext.User.VolunteerId());
+        Input = new();
+        await OnLogged.InvokeAsync();
+    }
+
+    private sealed class LogInput
+    {
+        [Required(ErrorMessage = "Say what happened.")]
+        [StringLength(5000)]
+        public string Body { get; set; } = string.Empty;
+
+        public InteractionKind Kind { get; set; } = InteractionKind.Note;
+    }
+}

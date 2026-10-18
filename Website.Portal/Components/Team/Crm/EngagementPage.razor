@@ -1,0 +1,209 @@
+@page "/team/crm/engagement/{Id:guid}"
+@inject CrmRepository Crm
+@inject VolunteerRepository Volunteers
+@inject NavigationManager Navigation
+
+<PageMeta Title="@(_engagement?.Title ?? "Engagement")" Description="An engagement in the CRM." NoIndex="true" />
+
+@if (_engagement is null)
+{
+    return;
+}
+
+<div class="wrap page-head">
+    <h1>@_engagement.Title</h1>
+    <p class="vol-meta vol-meta-lead">
+        <span class="vol-status">@Show.Words(_engagement.Status)</span>
+        @if (_organization is not null) { <span><a href="@ManyHandsPaths.CrmOrganization(_organization.Id)">@_organization.Name</a></span> }
+        @if (_engagement.ScheduledAt is { } at) { <span>@LocalTime.Format(at)</span> }
+    </p>
+</div>
+
+<div class="wrap vol-body vol-stack">
+    @if (_notice is not null)
+    {
+        <p class="vol-notice" role="status">@_notice</p>
+    }
+
+    <section aria-labelledby="todo-head">
+        <h2 id="todo-head">Still to do</h2>
+        <TaskList Tasks="_tasks" />
+        <EditForm Model="NewTask" FormName="task" OnValidSubmit="AddTaskAsync" class="vol-form vol-inline-form">
+            <DataAnnotationsValidator />
+            <label><span>Task</span><InputText @bind-Value="NewTask!.Title" placeholder="Confirm the room" /></label>
+            <label><span>By</span><InputDate @bind-Value="NewTask!.DueOn" /></label>
+            <label>
+                <span>Who</span>
+                <InputSelect @bind-Value="NewTask!.AssignedTo">
+                    <option value="">Nobody yet</option>
+                    @foreach (var person in _organizers) { <option value="@person.Id">@person.DisplayName</option> }
+                </InputSelect>
+            </label>
+            <ValidationMessage For="() => NewTask!.Title" />
+            <button class="btn btn-ghost" type="submit">Add</button>
+        </EditForm>
+    </section>
+
+    <section aria-labelledby="timeline-head">
+        <h2 id="timeline-head">What has happened</h2>
+        <LogInteraction OrganizationId="_engagement.OrganizationId" EngagementId="Id" OnLogged="ReloadAsync" />
+        <Timeline Entries="_timeline" />
+    </section>
+
+    <section aria-labelledby="details-head">
+        <h2 id="details-head">Details</h2>
+        <EditForm Model="Details" FormName="details" OnValidSubmit="SaveAsync" class="vol-form vol-editor">
+            <DataAnnotationsValidator />
+            <label><span>Title</span><InputText @bind-Value="Details!.Title" /><ValidationMessage For="() => Details!.Title" /></label>
+            <div class="vol-pair">
+                <label>
+                    <span>Where it stands</span>
+                    <InputSelect @bind-Value="Details!.Status">
+                        @foreach (var status in Enum.GetValues<EngagementStatus>()) { <option value="@status">@Show.Words(status)</option> }
+                    </InputSelect>
+                </label>
+                <label>
+                    <span>Category, for reporting</span>
+                    <InputSelect @bind-Value="Details!.Category">
+                        <option value="">Not set</option>
+                        @foreach (var category in Enum.GetValues<ActivityCategory>()) { <option value="@category">@Show.Words(category)</option> }
+                    </InputSelect>
+                </label>
+            </div>
+            <label>
+                <span>Organization</span>
+                <InputSelect @bind-Value="Details!.OrganizationId">
+                    <option value="">None</option>
+                    @foreach (var org in _organizations) { <option value="@org.Id">@org.Name</option> }
+                </InputSelect>
+            </label>
+            <label>
+                <span>Whose it is</span>
+                <InputSelect @bind-Value="Details!.OwnerId">
+                    <option value="">Nobody yet</option>
+                    @foreach (var person in _organizers) { <option value="@person.Id">@person.DisplayName</option> }
+                </InputSelect>
+            </label>
+            <div class="vol-pair">
+                <label><span>When (Philadelphia time)</span><InputDate Type="InputDateType.DateTimeLocal" @bind-Value="Details!.ScheduledAt" /></label>
+                <label><span>Where</span><InputText @bind-Value="Details!.Location" /></label>
+            </div>
+            <label><span>Online meeting link</span><InputText @bind-Value="Details!.MeetingUrl" type="url" /></label>
+            <label><span>Summary</span><InputTextArea @bind-Value="Details!.Summary" rows="4" /></label>
+            <button class="btn" type="submit">Save</button>
+        </EditForm>
+        <EditForm Model="Remove" FormName="remove" OnSubmit="RemoveAsync" class="vol-danger">
+            <button class="btn btn-ghost" type="submit">Remove this engagement</button>
+        </EditForm>
+    </section>
+</div>
+
+@code {
+    [Parameter] public Guid Id { get; set; }
+
+    [CascadingParameter] private HttpContext HttpContext { get; set; } = default!;
+
+    [SupplyParameterFromForm(FormName = "task")] private TaskInput? NewTask { get; set; }
+    [SupplyParameterFromForm(FormName = "details")] private DetailsInput? Details { get; set; }
+    [SupplyParameterFromForm(FormName = "remove")] private RemoveInput? Remove { get; set; }
+
+    private CrmEngagement? _engagement;
+    private CrmOrganization? _organization;
+    private IReadOnlyList<OrganizationSummary> _organizations = [];
+    private IReadOnlyList<Member> _organizers = [];
+    private IReadOnlyList<CrmTaskSummary> _tasks = [];
+    private IReadOnlyList<TimelineEntry> _timeline = [];
+    private string? _notice;
+
+    protected override async Task OnInitializedAsync()
+    {
+        NewTask ??= new();
+        Remove ??= new();
+
+        _engagement = await Crm.GetEngagementAsync(Id);
+        if (_engagement is null)
+        {
+            HttpContext.Response.StatusCode = StatusCodes.Status404NotFound;
+            return;
+        }
+
+        Details ??= DetailsInput.From(_engagement);
+        _organizations = await Crm.GetOrganizationsAsync();
+        _organizers = (await Volunteers.GetMembersAsync()).Where(m => m.Role >= VolunteerRole.Organizer).ToList();
+        await ReloadAsync();
+    }
+
+    private async Task ReloadAsync()
+    {
+        _engagement = await Crm.GetEngagementAsync(Id);
+        _organization = _engagement?.OrganizationId is Guid orgId ? await Crm.GetOrganizationAsync(orgId) : null;
+        _tasks = await Crm.GetTasksAsync(CrmTaskStatus.Open, engagementId: Id);
+        _timeline = await Crm.GetTimelineAsync(engagementId: Id);
+    }
+
+    private async Task AddTaskAsync()
+    {
+        await Crm.AddTaskAsync(NewTask!.Title.Trim(), Id, null, NewTask.DueOn, NewTask.AssignedTo);
+        NewTask = new();
+        await ReloadAsync();
+    }
+
+    private async Task SaveAsync()
+    {
+        await Crm.SaveEngagementAsync(Id, new EngagementFields(
+            Details!.OrganizationId, Details.Title.Trim(), Details.Status, Details.Category, Details.OwnerId,
+            Details.ScheduledAt is { } at ? LocalTime.FromLocal(at) : null,
+            Blank(Details.Location), Blank(Details.MeetingUrl), Blank(Details.Summary)));
+        _notice = "Saved.";
+        await ReloadAsync();
+    }
+
+    private async Task RemoveAsync()
+    {
+        await Crm.DeleteEngagementAsync(Id);
+        Navigation.NavigateTo(ManyHandsPaths.CrmPipeline);
+    }
+
+    private static string? Blank(string? value) => string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+
+    private sealed class RemoveInput;
+
+    private sealed class TaskInput
+    {
+        [Required(ErrorMessage = "Say what needs doing.")]
+        [StringLength(300)]
+        public string Title { get; set; } = string.Empty;
+
+        public DateOnly? DueOn { get; set; }
+        public Guid? AssignedTo { get; set; }
+    }
+
+    private sealed class DetailsInput : IValidatableObject
+    {
+        [Required(ErrorMessage = "It needs a title.")]
+        [StringLength(200)]
+        public string Title { get; set; } = string.Empty;
+
+        public EngagementStatus Status { get; set; }
+        public ActivityCategory? Category { get; set; }
+        public Guid? OrganizationId { get; set; }
+        public Guid? OwnerId { get; set; }
+        public DateTime? ScheduledAt { get; set; }
+        [StringLength(300)] public string? Location { get; set; }
+        [StringLength(500)] public string? MeetingUrl { get; set; }
+        [StringLength(5000)] public string? Summary { get; set; }
+
+        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+        {
+            if (!string.IsNullOrWhiteSpace(MeetingUrl) && Show.SafeLink(MeetingUrl) is null)
+                yield return new("A meeting link has to be a full https:// address.", [nameof(MeetingUrl)]);
+        }
+
+        public static DetailsInput From(CrmEngagement e) => new()
+        {
+            Title = e.Title, Status = e.Status, Category = e.ActivityCategory, OrganizationId = e.OrganizationId,
+            OwnerId = e.OwnerId, ScheduledAt = e.ScheduledAt is { } at ? LocalTime.ToLocal(at) : null,
+            Location = e.Location, MeetingUrl = e.MeetingUrl, Summary = e.Summary
+        };
+    }
+}

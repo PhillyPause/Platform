@@ -1,0 +1,79 @@
+@page "/team/crm/pipeline"
+@inject CrmRepository Crm
+
+<PageMeta Title="Pipeline" Description="Every engagement, by where it stands." NoIndex="true" />
+
+<div class="wrap page-head">
+    <h1>Pipeline</h1>
+    <p class="lead">Every effort, by where it stands. Move a card with its arrows.</p>
+</div>
+
+<div class="wrap vol-body">
+    <EditForm Model="Move" FormName="move" OnSubmit="MoveAsync">
+        <div class="vol-board">
+            @foreach (var status in Columns)
+            {
+                var cards = _engagements.Where(e => e.Status == status).ToList();
+                <section class="vol-column" aria-labelledby="@($"col-{status}")">
+                    <h2 id="@($"col-{status}")">@Show.Words(status) <span class="vol-small">@cards.Count</span></h2>
+                    @foreach (var card in cards)
+                    {
+                        <article class="vol-board-card">
+                            <a href="@ManyHandsPaths.CrmEngagement(card.Id)">@card.Title</a>
+                            <div class="vol-small">
+                                @card.OrganizationName
+                                @if (card.ScheduledAt is { } at) { <text> · @Show.Stamp(at)</text> }
+                                @if (card.OpenTaskCount > 0) { <text> · @card.OpenTaskCount to do</text> }
+                            </div>
+                            <div class="vol-board-moves">
+                                @if (Previous(status) is { } back)
+                                {
+                                    <button class="vol-link-button" type="submit" name="Move.Value" value="@($"{card.Id}:{back}")" aria-label="@($"Move {card.Title} back to {Show.Words(back)}")">&larr; @Show.Words(back)</button>
+                                }
+                                @if (Next(status) is { } forward)
+                                {
+                                    <button class="vol-link-button" type="submit" name="Move.Value" value="@($"{card.Id}:{forward}")" aria-label="@($"Move {card.Title} on to {Show.Words(forward)}")">@Show.Words(forward) &rarr;</button>
+                                }
+                            </div>
+                        </article>
+                    }
+                </section>
+            }
+        </div>
+    </EditForm>
+</div>
+
+@code {
+    // Declined sits at the end: a card goes there from anywhere, by editing it.
+    private static readonly EngagementStatus[] Columns = Enum.GetValues<EngagementStatus>();
+    private static readonly EngagementStatus[] Flow = Columns.Where(s => s != EngagementStatus.Declined).ToArray();
+
+    [SupplyParameterFromForm(FormName = "move")] private MoveInput? Move { get; set; }
+
+    private IReadOnlyList<EngagementSummary> _engagements = [];
+
+    protected override async Task OnInitializedAsync()
+    {
+        Move ??= new();
+        _engagements = await Crm.GetEngagementsAsync();
+    }
+
+    private async Task MoveAsync()
+    {
+        var parts = Move!.Value?.Split(':') ?? [];
+        if (parts.Length == 2 && Guid.TryParse(parts[0], out var id) && Enum.TryParse<EngagementStatus>(parts[1], out var status))
+            await Crm.SetEngagementStatusAsync(id, status);
+        _engagements = await Crm.GetEngagementsAsync();
+    }
+
+    private static EngagementStatus? Previous(EngagementStatus status) =>
+        Array.IndexOf(Flow, status) is > 0 and var i ? Flow[i - 1] : null;
+
+    private static EngagementStatus? Next(EngagementStatus status) =>
+        Array.IndexOf(Flow, status) is >= 0 and var i && i < Flow.Length - 1 ? Flow[i + 1] : null;
+
+    private sealed class MoveInput
+    {
+        public string? Value { get; set; }
+    }
+}

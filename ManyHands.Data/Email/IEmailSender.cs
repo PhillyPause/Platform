@@ -1,11 +1,17 @@
 namespace ManyHands.Data.Email;
 
+/// <param name="MessageId">Our own Message-ID, so a reply can be threaded back to the row that recorded it.</param>
+/// <param name="InReplyTo">The message this answers, so the recipient's mail client threads it too.</param>
+/// <param name="From">An address other than the default sender, for outreach mail.</param>
 public sealed record OutgoingEmail(
     string ToAddress,
     string Subject,
     string BodyText,
     string? ReplyTo = null,
-    string? ListUnsubscribeUrl = null);
+    string? ListUnsubscribeUrl = null,
+    string? MessageId = null,
+    string? InReplyTo = null,
+    string? From = null);
 
 public sealed record EmailSendResult(bool Delivered, string? ProviderMessageId, string? Error)
 {

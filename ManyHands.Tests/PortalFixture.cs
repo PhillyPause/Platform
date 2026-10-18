@@ -13,15 +13,16 @@ namespace ManyHands.Tests;
 /// database. The background workers are left out: they would dispatch rows
 /// other tests queued and send mail those tests count.
 /// </summary>
-public sealed class PortalFactory(string connectionString, params string[] admins) : WebApplicationFactory<Program>
+public sealed class PortalFactory(string connectionString, params (string Key, string Value)[] settings)
+    : WebApplicationFactory<Program>
 {
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         builder.UseSetting("ManyHands:Enabled", "true");
         builder.UseSetting("ConnectionStrings:ManyHands", connectionString);
 
-        for (var i = 0; i < admins.Length; i++)
-            builder.UseSetting($"ManyHands:Admins:{i}", admins[i]);
+        foreach (var (key, value) in settings)
+            builder.UseSetting(key, value);
 
         builder.ConfigureTestServices(services =>
         {

@@ -10,8 +10,44 @@ public static class TeamEndpoints
 {
     public const string ParticipationPath = "/team/participation.csv";
 
+    /// <summary>Where the mail provider posts outreach replies.</summary>
+    public const string InboundMailPath = "/team/mail/inbound";
+
+    public const string InboundTokenHeader = "X-Inbound-Token";
+
     public static IEndpointRouteBuilder MapTeamEndpoints(this IEndpointRouteBuilder app)
     {
+        // Replies to outreach mail, posted by whatever receives mail for the
+        // outreach address (a Cloudflare Email Worker, or a provider's inbound
+        // webhook), as JSON with the shared secret in a header. No secret
+        // configured means the webhook is off, not open.
+        app.MapPost(InboundMailPath, async (
+            HttpContext http,
+            InboundMailPayload payload,
+            ManyHands.Data.Email.OutreachEmail outreach,
+            Microsoft.Extensions.Options.IOptions<ManyHands.Data.Email.EmailOptions> options,
+            CancellationToken ct) =>
+        {
+            // A machine is asking, so it gets a bare status, not the site's
+            // not-found page re-run as a POST.
+            if (http.Features.Get<Microsoft.AspNetCore.Diagnostics.IStatusCodePagesFeature>() is { } pages)
+                pages.Enabled = false;
+
+            if (string.IsNullOrWhiteSpace(options.Value.InboundSecret)) return Results.NotFound();
+            if (!SameSecret(http.Request.Headers[InboundTokenHeader].ToString(), options.Value.InboundSecret))
+                return Results.Unauthorized();
+
+            var stored = await outreach.ReceiveAsync(new ManyHands.Data.Email.InboundEmail(
+                payload.From ?? string.Empty, payload.To ?? string.Empty, payload.Subject ?? string.Empty,
+                payload.Text ?? string.Empty, payload.MessageId, payload.InReplyTo, payload.ReceivedAt), ct);
+
+            // Anything understood is a 200, so the sender does not retry it forever.
+            return stored is null
+                ? Results.BadRequest(new { error = "from and to are required" })
+                : Results.Ok(new { stored = true, stored.ConversationId, stored.NeedsTriage });
+        })
+        .DisableAntiforgery();
+
         // CSV on purpose: every organizer can open one, and it is where any
         // report ends up anyway.
         app.MapGet(ParticipationPath, async (ReportingRepository reporting, CancellationToken ct) =>
@@ -34,7 +70,25 @@ public static class TeamEndpoints
 
         return app;
     }
+
+    /// <summary>Constant time: a shared secret must not leak through how long the comparison takes.</summary>
+    internal static bool SameSecret(string presented, string expected)
+    {
+        var a = Encoding.UTF8.GetBytes(presented);
+        var b = Encoding.UTF8.GetBytes(expected);
+        return a.Length == b.Length && System.Security.Cryptography.CryptographicOperations.FixedTimeEquals(a, b);
+    }
 }
+
+/// <summary>What the inbound webhook accepts.</summary>
+public sealed record InboundMailPayload(
+    string? From,
+    string? To,
+    string? Subject,
+    string? Text,
+    string? MessageId,
+    string? InReplyTo,
+    DateTimeOffset? ReceivedAt);
 
 public static class Csv
 {
