@@ -1,6 +1,7 @@
 using Dapper;
 using ManyHands.Core;
 using ManyHands.Data;
+using ManyHands.Data.Discord;
 using ManyHands.Data.Email;
 using ManyHands.Data.Workers;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -66,7 +67,8 @@ internal static class TestData
         Options.Create(new EmailOptions()),
         NullLogger<EmailDispatcher>.Instance);
 
-    public static OutboxDispatcher Dispatcher(NpgsqlDataSource db, EmailDispatcher? email = null) => new(
+    public static OutboxDispatcher Dispatcher(
+        NpgsqlDataSource db, EmailDispatcher? email = null, IDiscordSender? discord = null) => new(
         new NotificationQueries(db),
         new VolunteerRepository(db),
         new ActivityRepository(db),
@@ -75,6 +77,9 @@ internal static class TestData
         new PingRepository(db),
         new InviteRepository(db),
         email ?? Email(db),
+        new DiscordQueries(db),
+        discord ?? new RecordingDiscordSender(),
+        Options.Create(new DiscordOptions { SendDelay = TimeSpan.Zero }),
         NullLogger<OutboxDispatcher>.Instance);
 
     public static OutboxMessage Message(string kind, object payload) =>

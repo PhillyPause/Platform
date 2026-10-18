@@ -16,6 +16,7 @@
   <ItemGroup>
     <PackageReference Include="Dapper" />
     <PackageReference Include="dbup-postgresql" />
+    <PackageReference Include="Discord.Net.WebSocket" />
     <PackageReference Include="Npgsql" />
   </ItemGroup>
 

@@ -1,3 +1,4 @@
+using ManyHands.Data.Discord;
 using ManyHands.Data.Email;
 using ManyHands.Data.Lookup;
 using ManyHands.Data.Workers;
@@ -73,8 +74,47 @@ public static class ManyHandsServiceCollectionExtensions
         services.AddHostedService<ReminderWorker>();
 
         services.AddFederalOfficials(configuration);
+        services.AddDiscord(configuration);
 
         return services;
+    }
+
+    /// <summary>
+    /// The bot. The token is the switch: with one, the gateway connects and is
+    /// the sender; without one, every Discord call is a log line, so development
+    /// and CI need no bot. The role sweep runs either way and simulates.
+    /// </summary>
+    private static void AddDiscord(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddOptions<DiscordOptions>()
+            .Bind(configuration.GetSection(DiscordOptions.SectionName))
+            .Validate(o => !o.Enabled || o.HasToken,
+                "Discord:Enabled is true but Discord:BotToken is not set.")
+            .Validate(o => !o.HasToken || o.GuildId is not null,
+                "Discord:BotToken is set but Discord:GuildId is not; the bot would not know which server is ours.")
+            .Validate(o => o.SendDelay >= TimeSpan.Zero && o.SendDelay <= TimeSpan.FromSeconds(10),
+                "Discord:SendDelay must be between zero and ten seconds.")
+            .Validate(o => o.RoleSyncInterval >= TimeSpan.FromMinutes(1) && o.RoleSyncInterval <= TimeSpan.FromDays(1),
+                "Discord:RoleSyncInterval must be between a minute and a day.")
+            .ValidateOnStart();
+
+        services.AddSingleton<DiscordQueries>();
+        services.AddSingleton<DiscordLinks>();
+        services.AddSingleton<DiscordCommands>();
+
+        var options = configuration.GetSection(DiscordOptions.SectionName).Get<DiscordOptions>() ?? new();
+        if (options.HasToken)
+        {
+            services.AddSingleton<DiscordGateway>();
+            services.AddSingleton<IDiscordSender>(sp => sp.GetRequiredService<DiscordGateway>());
+            services.AddHostedService(sp => sp.GetRequiredService<DiscordGateway>());
+        }
+        else
+        {
+            services.AddSingleton<IDiscordSender, LoggingDiscordSender>();
+        }
+
+        services.AddHostedService<DiscordRoleSyncWorker>();
     }
 
     /// <summary>
