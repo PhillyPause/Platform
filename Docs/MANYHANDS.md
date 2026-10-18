@@ -101,6 +101,23 @@ Postgres, one schema (`public`), defined by
 | `crm_*` | The CRM and outreach mail |
 | `federal_officials`, `sync_runs` | The officials directory and its refreshes |
 
+### The outbox
+
+A write that must cause a message queues an `outbox` row in the same
+transaction. `OutboxWorker` claims rows with one atomic `UPDATE`, never a lock
+held across a send, and `OutboxDispatcher` turns each into mail through
+`EmailDispatcher`, the only thing that sends. Every message is recorded in
+`email_messages` first, and no address gets more than ten an hour, however
+many activities a script signs it up for. `ReminderWorker` queues the
+day-before reminders every five minutes.
+
+| `kind` | Payload | Sends |
+|---|---|---|
+| `signup.confirmed` | `signupId` | The confirmation, or the waitlist notice |
+| `signup.promoted` | `signupId` | "You are in", off the waitlist |
+| `activity.reminder` | `signupId` | The reminder, a day before |
+| `member.welcome` | `volunteerId` | One welcome, the first time someone joins |
+
 Until the first real deploy, `0001_schema.sql` is edited in place; nothing is
 deployed, so there is nothing to migrate. **The first deploy freezes it**, and
 every change after that is a new numbered script.
@@ -125,6 +142,19 @@ against real Postgres. Test against the real thing.
 | `ManyHands:Enabled` | `false` | Everything. Off, nothing below is read |
 | `ManyHands:Seed` | `false` | Run the `_seed_` scripts. Local development only |
 | `ConnectionStrings:ManyHands` | — | Postgres. Required when enabled |
+| `Email:Provider` | `log` | `log` writes every message to the log and sends nothing; `resend` sends |
+| `Email:ApiKey` | — | Resend. Required when the provider is `resend` |
+| `Email:FromAddress` | `volunteer@localhost` | On a mail subdomain with its own SPF, DKIM and DMARC |
+| `Email:FromName` | `PhillyPause` | |
+| `Email:ReplyToAddress` | — | Where replies to a volunteer's mail go |
+| `Email:PublicBaseUrl` | `http://localhost:5203` | The origin every link in an email is built on |
+
+The organisation's name and its timezone, `America/New_York`, are constants
+in `ManyHands.Core/Organisation.cs`, not configuration: there is no second
+organisation to configure for. Every time in an email is Philadelphia's
+clock, labelled "Eastern time". Every route is in
+`ManyHands.Core/ManyHandsPaths.cs`: volunteers' pages under `/volunteer`,
+organizers' under `/team`.
 
 Locally, secrets go in `dotnet user-secrets` on `Website.Portal`; in
 production they are App Platform environment variables
@@ -153,7 +183,7 @@ Coming across in phases, one PR each.
 | Phase | State |
 |---|---|
 | 1. Projects, schema, migrations, tests | **built** |
-| 2. Volunteers, activities, signup and waitlist, sign-in tokens, outbox, mail, reminders | not started |
+| 2. Volunteers, activities, signup and waitlist, sign-in tokens, outbox, mail, reminders | **built** |
 | 3. Public pages: activities, signup, join, sign-in, my activities, unsubscribe, calendar | not started |
 | 4. Organizer console: editor, roster, check-in, invites, roles, export | not started |
 | 5. CRM, outreach email and the inbound webhook, the officials directory | not started |

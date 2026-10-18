@@ -1,3 +1,5 @@
+using ManyHands.Data.Email;
+using ManyHands.Data.Workers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -34,7 +36,61 @@ public static class ManyHandsServiceCollectionExtensions
 
         services.AddSingleton(_ => NpgsqlDataSource.Create(connectionString));
 
+        services.AddSingleton<ActivityTypeRepository>();
+        services.AddSingleton<ActivityRepository>();
+        services.AddSingleton<VolunteerRepository>();
+        services.AddSingleton<SignupRepository>();
+        services.AddSingleton<AuthTokenRepository>();
+        services.AddSingleton<OutboxRepository>();
+        services.AddSingleton<EmailMessageRepository>();
+        services.AddSingleton<NotificationQueries>();
+
+        services.AddManyHandsEmail(configuration);
+
+        // The background work, in this process: there is one instance, so
+        // there is nothing to coordinate.
+        services.AddSingleton<OutboxDispatcher>();
+        services.AddHostedService<OutboxWorker>();
+        services.AddHostedService<ReminderWorker>();
+
         return services;
+    }
+
+    private static void AddManyHandsEmail(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddOptions<EmailOptions>()
+            .Bind(configuration.GetSection(EmailOptions.SectionName))
+            // Fail at startup, not at the first volunteer signup.
+            .Validate(o => !o.UsesResend || !string.IsNullOrWhiteSpace(o.ApiKey),
+                "Email:Provider is 'resend' but Email:ApiKey is not set.")
+            .Validate(o => o.FromAddress.Contains('@'),
+                "Email:FromAddress must be an email address.")
+            .Validate(o => Uri.TryCreate(o.PublicBaseUrl, UriKind.Absolute, out _),
+                "Email:PublicBaseUrl must be an absolute URL; it builds the link in every email.")
+            .ValidateOnStart();
+
+        var options = configuration.GetSection(EmailOptions.SectionName).Get<EmailOptions>() ?? new();
+
+        if (options.UsesResend)
+        {
+            services.AddHttpClient<ResendEmailSender>((sp, http) =>
+            {
+                var opts = sp.GetRequiredService<IOptions<EmailOptions>>().Value;
+                http.BaseAddress = new Uri("https://api.resend.com/");
+                http.DefaultRequestHeaders.Authorization =
+                    new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", opts.ApiKey);
+                http.Timeout = TimeSpan.FromSeconds(15);
+            });
+            services.AddSingleton<IEmailSender>(sp => sp.GetRequiredService<ResendEmailSender>());
+        }
+        else
+        {
+            // The default. Development needs no mail account and no secrets to
+            // run the whole signup and sign-in flow; links appear in the log.
+            services.AddSingleton<IEmailSender, LoggingEmailSender>();
+        }
+
+        services.AddSingleton<EmailDispatcher>();
     }
 
     /// <summary>
