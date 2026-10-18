@@ -1,0 +1,15 @@
+@inherits LayoutComponentBase
+
+<div class="shell">
+    @* First in the tab order: a keyboard user should not walk the header on
+       every page to reach the content. Same reasoning as ManyHands. *@
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <SiteHeader />
+
+    <main id="main" tabindex="-1">
+        @Body
+    </main>
+
+    <SiteFooter />
+</div>

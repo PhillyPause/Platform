@@ -1,0 +1,10 @@
+﻿<Router AppAssembly="typeof(Program).Assembly" AdditionalAssemblies="new[] { typeof(Client._Imports).Assembly }" NotFoundPage="typeof(Pages.NotFound)">
+    <Found Context="routeData">
+        <RouteView RouteData="routeData" DefaultLayout="typeof(Layout.MainLayout)" />
+        @* The content region, not the h1. Focusing the headline puts a ring
+           round the masthead's lead story on arrival; focusing <main> moves a
+           screen reader to the same place without marking up the type. Both
+           layouts give it tabindex="-1" for exactly this. *@
+        <FocusOnNavigate RouteData="routeData" Selector="#main" />
+    </Found>
+</Router>

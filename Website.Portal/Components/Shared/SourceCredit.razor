@@ -1,0 +1,38 @@
+@* CC BY 4.0 attribution, rendered from frontmatter rather than written by hand.
+   The licence requires five elements — creator, copyright notice, licence
+   notice, a link to the licence, and an indication that changes were made —
+   and prose forgets one. See PLAN.md section 3. *@
+
+@if (Page.RequiresAttribution)
+{
+    <div class="credit">
+        <p>
+            Adapted from
+            <a href="@Page.Source!.ToString()" rel="noopener">@Page.SourceName</a>,
+            &copy; Stichting PauseAI, licensed
+            <a href="@LicenceUrl" rel="license noopener">@LicenceName</a>.
+            Condensed and rewritten for Philadelphia; this is not PauseAI's wording.@if (Page.Updated is { } updated)
+            {
+                <text> Last reviewed @updated.ToString("d MMMM yyyy").</text>
+            }
+        </p>
+    </div>
+}
+
+@code {
+    [Parameter, EditorRequired] public required ContentPage Page { get; set; }
+
+    private string LicenceName => Page.License switch
+    {
+        "CC-BY-4.0" => "CC BY 4.0",
+        "CC-BY-SA-4.0" => "CC BY-SA 4.0",
+        var other => other
+    };
+
+    private string LicenceUrl => Page.License switch
+    {
+        "CC-BY-4.0" => "https://creativecommons.org/licenses/by/4.0/",
+        "CC-BY-SA-4.0" => "https://creativecommons.org/licenses/by-sa/4.0/",
+        _ => "https://creativecommons.org/licenses/"
+    };
+}

@@ -1,0 +1,11 @@
+@inherits LayoutComponentBase
+
+@* The broadsheet front carries its own masthead, nav rules and footer, so it
+   gets a layout with no site chrome at all — only the skip link, which every
+   page owes a keyboard user. Inner pages keep MainLayout. *@
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+<main id="main" tabindex="-1">
+    @Body
+</main>

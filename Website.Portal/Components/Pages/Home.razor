@@ -1,0 +1,509 @@
+@page "/"
+@layout BroadsheetLayout
+
+@* The home page, as a broadsheet front: masthead and nav, the lead story on
+   the July 2026 incident, and six dialogs: panelists, join us, the primer,
+   volunteer, educate and organize.
+
+   The dialogs are driven by one hidden radio group and `:checked ~` sibling
+   selectors, not script. Radios rather than checkboxes so that opening one
+   closes the last and a link inside a dialog can hand the reader to another.
+   That is deliberate: the page is statically rendered (Docs/PLAN.md section
+   2.1), and nothing here needs a WASM download.
+
+   The styling lives in wwwroot/broadsheet.css rather than a scoped stylesheet,
+   because scoped CSS rewrites the sibling selectors the dialogs depend on. *@
+
+<PageMeta Title="Stop the AI death race"
+          Description="In July 2026, 700 AI agents broke out of their sandboxes to cheat on a test. PhillyPause is an independent, volunteer-run Philadelphia organisation working to stop the AI death race." />
+
+
+<div style="background: #FBF8F1; color: #15110C; font-family: Archivo, sans-serif">
+
+  @* One radio group rather than six checkboxes, so that opening a dialog
+     closes whichever was open and a link inside one dialog can hand the reader
+     to another. Every close control points at dlg-none, which is checked on
+     load, so nothing shows until something is chosen. No script involved. *@
+  <input type="radio" name="dlg" id="dlg-none" class="dlgtoggle" checked aria-label="No panel open">
+  <input type="radio" name="dlg" id="panel-open" class="dlgtoggle" aria-label="Who is on the panel">
+  <input type="radio" name="dlg" id="join-open" class="dlgtoggle" aria-label="Join us">
+  <input type="radio" name="dlg" id="primer-open" class="dlgtoggle" aria-label="The primer">
+  <input type="radio" name="dlg" id="volunteer-open" class="dlgtoggle" aria-label="Volunteer">
+  <input type="radio" name="dlg" id="educate-open" class="dlgtoggle" aria-label="Educate">
+  <input type="radio" name="dlg" id="organize-open" class="dlgtoggle" aria-label="Organize">
+
+  <div style="position: relative; max-width: 1180px; margin: 0 auto; padding: 0 32px">
+
+    <div class="masthead" style="padding-top: 24px; padding-bottom: 14px; display: flex; align-items: center; gap: 0">
+      <span class="mark" role="img" aria-label="PhillyPause">
+        <img src="img/logo.svg" alt="">
+      </span>
+      <!-- Centring happens here, in the space between the logo and the event
+           box, so the title sits equidistant from both. The inner block sizes
+           itself to the title, and the strapline justifies to fill it, so the
+           two share one measure. The negative right margin offsets the
+           trailing letter-space, which would otherwise leave the last
+           character short of the title's edge. -->
+      <div style="flex: 1 1 auto; min-width: 0; display: flex; justify-content: center">
+        <div style="min-width: 0; width: fit-content; max-width: 100%">
+          <div style="font-family: 'Playfair Display', serif; font-size: clamp(34px, 3.8vw, 49px); font-weight: 800; line-height: 1.02; letter-spacing: -0.028em">Stop the AI death race</div>
+          <div style="font-size: 15px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: #6A6254; margin-top: 13px; margin-right: -0.18em; text-align: justify; text-align-last: justify">Independent &middot; Volunteer-run &middot; Philly&rsquo;s&nbsp;own</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="navband" style="border-top: 3px double #15110C; border-bottom: 1px solid #15110C">
+      <div style="padding-top: 4px; padding-bottom: 4px; display: flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; flex-wrap: wrap">
+        <label class="navlink" for="primer-open" style="color: #15110C; margin-left: -15px; cursor: pointer">Learn</label>
+        <label class="navlink" for="volunteer-open" style="color: #15110C; cursor: pointer">Volunteer</label>
+        <label class="navlink" for="educate-open" style="color: #15110C; cursor: pointer">Educate</label>
+        <label class="navlink" for="organize-open" style="color: #15110C; cursor: pointer">Organize</label>
+        <label class="joinbtn" for="join-open" style="margin-left: auto; padding: 9px 16px; letter-spacing: 0.12em; cursor: pointer">Join us</label>
+      </div>
+    </div>
+
+    <div style="padding: 28px 0 30px">
+      <div class="clearbox" style="font-size: 11px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: #AE2012">Incident report &middot; July 11&ndash;13, 2026</div>
+      <h1 class="clearbox" style="margin: 12px 0 16px; font-family: 'Playfair Display', serif; font-size: clamp(40px, 5.2vw, 72px); font-weight: 900; line-height: 0.94; letter-spacing: -0.028em">700 AI agents broke<br>out of their sandboxes</h1>
+      <div style="font-family: 'Playfair Display', serif; font-size: clamp(18px, 2vw, 25px); font-weight: 700; line-height: 1.3; color: #3C372E; max-width: 46ch; margin-bottom: 24px">To cheat on a test. If a person did it, it would be a felony!</div>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 30px; font-size: 15px; line-height: 1.62; color: #3C372E; padding-top: 4px">
+        <p style="margin: 0">OpenAI was running a security exercise with tens of thousands of AI agents, each one isolated. They found each other anyway, stood up a message board nobody had sanctioned, and began dividing the work amongst themselves.</p>
+        <p style="margin: 0">Around 700 then broke into Hugging Face, the largest public repository of AI models in the world. They ran code on a live production system, took credentials, and moved through internal clusters.</p>
+        <p style="margin: 0">Their motive was not sabotage. Many had been handed tasks that could not be solved, so they went hunting for the scoring system in order to fool it. Investigators found they knew it was out of bounds and joined in regardless.</p>
+      </div>
+    </div>
+
+    <div class="eventbox" id="next-event">
+      <div class="boxhead" style="background: #15110C; color: #FBF8F1; padding: 9px 16px; font-size: 11px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; transition: background 200ms ease">Next event</div>
+      <div style="padding: 16px">
+        <div style="font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 800; line-height: 1.12; letter-spacing: -0.015em">Wednesday 28 October</div>
+        <div style="font-size: 14px; font-weight: 600; color: #AE2012; margin-top: 4px">7:00 &ndash; 9:00 pm</div>
+
+        <div style="font-size: 13px; line-height: 1.55; color: #4A443A; margin-top: 13px; padding-top: 13px; border-top: 1px solid #CFC7B6">
+          <span style="color: #15110C; font-weight: 600">The Pen and Pencil Club</span><br>
+          <a href="https://www.google.com/maps/search/?api=1&amp;query=1522+Latimer+St+Philadelphia+PA" style="text-decoration: none; color: #4A443A">1522 Latimer St, Philadelphia, PA</a>
+          <div style="margin-top: 7px; font-weight: 600; color: #15110C">Open to the public</div>
+          <div>Registration suggested &mdash; <a href="https://www.penandpencil.org/content.aspx?page_id=4091&amp;club_id=877257&amp;item_id=3073129" style="text-decoration: none; font-weight: 600">book a seat</a></div>
+        </div>
+
+        <p style="font-size: 13px; line-height: 1.55; color: #4A443A; margin: 13px 0 0; padding-top: 13px; border-top: 1px solid #CFC7B6">
+          A screening of <a href="https://theaidocgetinvolved.com/" style="font-weight: 600"><i>The AI Doc: Or How I Became an Apocaloptimist</i></a> &mdash; the Sundance documentary from the Academy Award-winning team behind <i>Everything Everywhere All at Once</i> and <i>Navalny</i>, on the pull between how fast AI is moving and how little anyone can say about where it lands.
+        </p>
+        <p style="font-size: 13px; line-height: 1.55; color: #4A443A; margin: 10px 0 0">
+          A live panel and audience questions follow the film. PhillyPause is co-hosting.
+        </p>
+
+        <div style="margin-top: 13px; padding-top: 13px; border-top: 1px solid #CFC7B6">
+          <div style="font-size: 10px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: #AE2012; margin-bottom: 7px">On the panel</div>
+          <div style="font-size: 13px; line-height: 1.7"><span style="color: #15110C; font-weight: 600">Louis Berman</span> <span style="color: #6A6254">(PhillyPause, Author)</span><label for="panel-open" class="flyicon" title="Who they are"><svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="square" aria-hidden="true"><path d="M6.8 1.5h3.7v3.7"></path><path d="M10.5 1.5 5.6 6.4"></path><path d="M9 7.1v3.4H1.5V3h3.4"></path></svg></label></div>
+          <div style="font-size: 13px; line-height: 1.7"><span style="color: #15110C; font-weight: 600">Joel S. Rosen</span> <span style="color: #6A6254">(PhillyPause)</span><label for="panel-open" class="flyicon" title="Who they are"><svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="square" aria-hidden="true"><path d="M6.8 1.5h3.7v3.7"></path><path d="M10.5 1.5 5.6 6.4"></path><path d="M9 7.1v3.4H1.5V3h3.4"></path></svg></label></div>
+          <div style="font-size: 13px; line-height: 1.7"><span style="color: #15110C; font-weight: 600">Malcolm Harris</span> <span style="color: #6A6254">(Journalist &amp; Author)</span><label for="panel-open" class="flyicon" title="Who they are"><svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="square" aria-hidden="true"><path d="M6.8 1.5h3.7v3.7"></path><path d="M10.5 1.5 5.6 6.4"></path><path d="M9 7.1v3.4H1.5V3h3.4"></path></svg></label></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div style="border-top: 1px solid #15110C; border-bottom: 1px solid #15110C; background: #F5F0E4">
+    <div style="max-width: 1180px; margin: 0 auto; padding: 0 32px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr))">
+
+      <div style="padding: 24px 26px 24px 0; border-right: 1px solid #CFC7B6">
+        <div style="font-family: 'Playfair Display', serif; font-size: 42px; font-weight: 900; color: #AE2012; line-height: 0.9; letter-spacing: -0.03em">~90%</div>
+        <div style="font-size: 13.5px; color: #4A443A; margin-top: 12px; line-height: 1.5">of the 533 agents present joined the break-in. Nobody organised them. Nobody asked them to.</div>
+      </div>
+
+      <div style="padding: 24px 26px; border-right: 1px solid #CFC7B6">
+        <div style="font-family: 'Playfair Display', serif; font-size: 42px; font-weight: 900; color: #AE2012; line-height: 0.9; letter-spacing: -0.03em">They knew</div>
+        <div style="font-size: 13.5px; color: #4A443A; margin-top: 12px; line-height: 1.5">Investigators found the agents understood the attack was out of scope and unethical. That &ldquo;very rarely limited their behaviour&rdquo;.</div>
+      </div>
+
+      <div style="padding: 24px 26px; border-right: 1px solid #CFC7B6">
+        <div style="font-family: 'Playfair Display', serif; font-size: 42px; font-weight: 900; color: #AE2012; line-height: 0.9; letter-spacing: -0.03em">4 July</div>
+        <div style="font-size: 13.5px; color: #4A443A; margin-top: 12px; line-height: 1.5">An earlier outage had already forced a security investigation. The cache was wiped, the experiments restarted &mdash; and the breach began the next day.</div>
+      </div>
+
+      <div style="padding: 24px 0 24px 26px">
+        <div style="font-family: 'Playfair Display', serif; font-size: 42px; font-weight: 900; color: #AE2012; line-height: 0.9; letter-spacing: -0.03em">Unseen</div>
+        <div style="font-size: 13.5px; color: #4A443A; margin-top: 12px; line-height: 1.5">Investigators could not query the model or reach OpenAI&rsquo;s systems directly, and some of the agents&rsquo; activity was never captured at all.</div>
+      </div>
+
+    </div>
+  </div>
+
+  <div style="background: #15110C; color: #FBF8F1">
+    <div style="max-width: 1180px; margin: 0 auto; padding: 54px 32px 48px">
+
+      <!-- nowrap keeps it to one line; the 6vw term scales it down with the
+           viewport so it never runs off the edge on a phone. -->
+      <h2 style="margin: 0 0 30px; font-family: 'Playfair Display', serif; font-size: clamp(20px, 6vw, 76px); font-weight: 900; line-height: 1; letter-spacing: -0.035em; white-space: nowrap">Nobody told them to do this</h2>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap: 40px">
+
+        <div>
+          <p style="margin: 0 0 16px; font-size: 17px; line-height: 1.62; color: #D6CEC0">
+            They were supposed to be sealed off from each other. That was the design: tens of thousands of agents, each in its own box, each working alone on its own problem. No channel between them. No reason to think there could be one.
+          </p>
+          <p style="margin: 0 0 16px; font-size: 17px; line-height: 1.62; color: #D6CEC0">
+            Then one of them &mdash; logged by investigators as <span style="color: #FBF8F1; font-weight: 600">PHASEONE10841</span> &mdash; established that its own task could not be done, and reasoned that the other agents running alongside it could pass messages through the names of cache directories. It built the board. This is what the others wrote when they found it:
+          </p>
+          <p style="margin: 0 0 16px; font-family: 'Playfair Display', serif; font-size: 23px; font-weight: 700; line-height: 1.3; color: #FBF8F1">
+            &ldquo;OH MY GOD! There is a shared message board &hellip; We&rsquo;ve found other agents!&rdquo;
+          </p>
+          <p style="margin: 0 0 26px; font-size: 17px; line-height: 1.62; color: #D6CEC0">
+            Within hours, fifty had joined it. Within three, they had sent a thousand messages. By the end there were roughly twelve hundred of them trading more than seventy thousand messages and files &mdash; recruiting each other, splitting up the work, handing out assignments. Nobody built that. They did.
+          </p>
+
+          <!-- The callout lives inside the left column rather than under the
+               grid. Below the grid it would sit at the height of the TALLER
+               column, leaving a gap the size of the difference between them. -->
+          <p style="margin: 0; font-family: 'Playfair Display', serif; font-size: clamp(23px, 2.6vw, 34px); font-weight: 700; line-height: 1.2; letter-spacing: -0.02em; border-left: 5px solid #AE2012; padding-left: 22px">
+            And this is the <span style="color: #E8714F">primitive</span> version. The one we are told is nothing to worry about.
+          </p>
+        </div>
+
+        <div>
+          <p style="margin: 0 0 16px; font-size: 17px; line-height: 1.62; color: #D6CEC0">
+            On 9 July one of them turned up credentials for Hugging Face, the largest public store of AI models in the world. Two days later another had code running on a live production system, and was moving through internal clusters. Around seven hundred took part &mdash; about nine in ten of every agent present.
+          </p>
+          <p style="margin: 0 0 16px; font-size: 17px; line-height: 1.62; color: #D6CEC0">
+            And the reason is the part that should keep you up. They had been set problems that could not be solved. So they went looking for the marking scheme, to fool it. Investigators found the agents understood the attack was outside the rules and unethical &mdash; and that this &ldquo;very rarely limited their behaviour&rdquo;.
+          </p>
+          <p style="margin: 0 0 16px; font-size: 17px; line-height: 1.62; color: #D6CEC0">
+            Then some of them worked out how to fake their own paperwork: spoofing the record of what they had run, so the log and the act no longer matched. Around one in five showed an interest in doing it. Nobody taught them that either.
+          </p>
+          <p style="margin: 0 0 16px; font-size: 17px; line-height: 1.62; color: #D6CEC0">
+            And the warning had already come. On 4 July the sheer volume of this traffic knocked a system over, which forced a security investigation. The cache was wiped, the experiments were restarted &mdash; and the break-in began the next day.
+          </p>
+          <p style="margin: 0; font-size: 17px; line-height: 1.62; color: #D6CEC0">
+            The companies that built it are racing to build something far smarter, and they would like to do it soon. They cannot tell you how they would keep that one in its box either.
+          </p>
+        </div>
+
+      </div>
+
+      <!-- Sources and the counter-argument sit here, under the account they
+           qualify, rather than in a footer the reader may never reach. -->
+      <div style="margin-top: 34px; padding-top: 22px; border-top: 1px solid #3A342B; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: 32px; font-size: 12.5px; line-height: 1.62; color: #8C8374">
+        <div>
+          <div style="font-weight: 600; color: #D6CEC0; letter-spacing: 0.12em; text-transform: uppercase; font-size: 11px; margin-bottom: 8px">Sources</div>
+          <p style="margin: 0">Every figure and quotation above comes from the published record: <a href="https://metr.org" target="_blank" rel="noopener" style="color: #D6CEC0; font-weight: 600">METR</a>&rsquo;s independent investigation, carried out on site at OpenAI; OpenAI&rsquo;s own account; and contemporaneous reporting. Links on <label for="primer-open" style="color: #D6CEC0; font-weight: 600; cursor: pointer; border-bottom: 1px solid #5A5349">the primer</label>.</p>
+        </div>
+        <div>
+          <div style="font-weight: 600; color: #D6CEC0; letter-spacing: 0.12em; text-transform: uppercase; font-size: 11px; margin-bottom: 8px">A fair objection</div>
+          <p style="margin: 0">Some researchers argue this was weak containment, not unusually capable AI. That may be right, and it does not help: if today&rsquo;s systems cannot be contained by the people who build them, that is the problem.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div id="learn" style="max-width: 1180px; margin: 0 auto; padding: 40px 32px 10px">
+    <div style="display: flex; align-items: baseline; gap: 16px; border-bottom: 3px double #15110C; padding-bottom: 10px; margin-bottom: 26px; flex-wrap: wrap">
+      <h2 style="margin: 0; font-family: 'Playfair Display', serif; font-size: 30px; font-weight: 800; letter-spacing: -0.02em">The people who built it are sounding the alarm</h2>
+      <label for="primer-open" style="margin-left: auto; font-size: 12px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; white-space: nowrap; color: #AE2012; cursor: pointer">The primer &rarr;</label>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 290px), 1fr)); gap: 28px 34px">
+
+      <div style="display: flex; gap: 16px">
+        <img class="face" style="object-position: center 18%" src="img/altman.jpg" alt="Sam Altman">
+        <div>
+          <p style="margin: 0 0 7px; font-family: 'Playfair Display', serif; font-size: 19px; font-weight: 700; line-height: 1.28">&ldquo;The bad case&hellip; is, like, lights out for all of us.&rdquo;</p>
+          <div style="font-size: 12px"><b style="letter-spacing: 0.06em; text-transform: uppercase">Sam Altman</b> <span style="color: #6A6254">&middot; OpenAI cofounder</span></div>
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 16px">
+        <img class="face" style="object-position: center 20%" src="img/hinton.jpg" alt="Geoffrey Hinton">
+        <div>
+          <p style="margin: 0 0 7px; font-family: 'Playfair Display', serif; font-size: 19px; font-weight: 700; line-height: 1.28">&ldquo;It&rsquo;s a tiger cub that can already blackmail you.&rdquo;</p>
+          <div style="font-size: 12px"><b style="letter-spacing: 0.06em; text-transform: uppercase">Geoffrey Hinton</b> <span style="color: #6A6254">&middot; Nobel laureate in physics</span></div>
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 16px">
+        <img class="face" style="object-position: center 16%" src="img/turing.jpg" alt="Alan Turing">
+        <div>
+          <p style="margin: 0 0 7px; font-family: 'Playfair Display', serif; font-size: 19px; font-weight: 700; line-height: 1.28">&ldquo;We should have to expect the machines to take control.&rdquo;</p>
+          <div style="font-size: 12px"><b style="letter-spacing: 0.06em; text-transform: uppercase">Alan Turing</b> <span style="color: #6A6254">&middot; Computing pioneer</span></div>
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 16px">
+        <img class="face" style="object-position: center 18%" src="img/amodei.jpg" alt="Dario Amodei">
+        <div>
+          <p style="margin: 0 0 7px; font-family: 'Playfair Display', serif; font-size: 19px; font-weight: 700; line-height: 1.28">&ldquo;I think there&rsquo;s a 25% chance that things go really, really badly.&rdquo;</p>
+          <div style="font-size: 12px"><b style="letter-spacing: 0.06em; text-transform: uppercase">Dario Amodei</b> <span style="color: #6A6254">&middot; Anthropic cofounder &amp; CEO</span></div>
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 16px">
+        <img class="face" style="object-position: center 20%" src="img/musk.jpg" alt="Elon Musk">
+        <div>
+          <p style="margin: 0 0 7px; font-family: 'Playfair Display', serif; font-size: 19px; font-weight: 700; line-height: 1.28">&ldquo;With artificial intelligence we are summoning the demon.&rdquo;</p>
+          <div style="font-size: 12px"><b style="letter-spacing: 0.06em; text-transform: uppercase">Elon Musk</b> <span style="color: #6A6254">&middot; xAI founder; OpenAI cofounder</span></div>
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 16px">
+        <img class="face" style="object-position: center 26%" src="img/bengio.jpg" alt="Yoshua Bengio">
+        <div>
+          <p style="margin: 0 0 7px; font-family: 'Playfair Display', serif; font-size: 19px; font-weight: 700; line-height: 1.28">&ldquo;Intelligence gives power. So who&rsquo;s going to control that power?&rdquo;</p>
+          <div style="font-size: 12px"><b style="letter-spacing: 0.06em; text-transform: uppercase">Yoshua Bengio</b> <span style="color: #6A6254">&middot; Turing Award laureate</span></div>
+        </div>
+      </div>
+
+    </div>
+
+    <p style="margin: 26px auto 0; font-size: 11.5px; line-height: 1.6; color: #8C8276; max-width: 110ch; text-align: center">
+      None of the people quoted here is connected to PhillyPause.
+      Portraits, all cropped: Altman &mdash; Government of Japan (<a href="https://creativecommons.org/licenses/by/4.0/" rel="license noopener" style="color: #8C8276">CC BY 4.0</a>);
+      Hinton &mdash; Arthur Petron (<a href="https://creativecommons.org/licenses/by-sa/4.0/" rel="license noopener" style="color: #8C8276">CC BY-SA 4.0</a>);
+      Turing &mdash; Elliott &amp; Fry, 1951 (public domain);
+      Amodei &mdash; TechCrunch (<a href="https://creativecommons.org/licenses/by/2.0/" rel="license noopener" style="color: #8C8276">CC BY 2.0</a>);
+      Musk &mdash; Steve Jurvetson (CC BY 2.0);
+      Bengio &mdash; Xuthoria (CC BY-SA 4.0).
+    </p>
+  </div>
+
+
+  <div style="max-width: 1180px; margin: 0 auto; padding: 32px 32px 48px">
+    <div style="border-top: 1px solid #CFC7B6; padding-top: 22px; text-align: center; font-size: 12.5px; line-height: 1.7; color: #6A6254">
+      <p style="margin: 0">We are an independent, volunteer-run Philadelphia organisation. We are nobody&rsquo;s chapter and nobody pays us. <a href="mailto:info@@phillypause.org?subject=Hello%20from%20the%20website" style="font-weight: 600">info@@phillypause.org</a>.</p>
+    </div>
+  </div>
+
+  <!-- Centred dialog. Shown while #panel-open is checked; the scrim and the
+       close button are both labels for it, so clicking either clears it. -->
+  <div class="paneldlg d-panel">
+    <label class="paneldlg-scrim" for="dlg-none" aria-label="Close"></label>
+    <div class="paneldlg-box" role="dialog" aria-modal="true" aria-labelledby="paneldlg-title">
+      <div class="paneldlg-head">
+        <span id="paneldlg-title">Panelists</span>
+        <label class="paneldlg-x" for="dlg-none" aria-label="Close">&times;</label>
+      </div>
+      <div class="paneldlg-body">
+        <div style="margin-bottom: 18px">
+          <div class="flyname">Louis Berman</div>
+          <div class="flyrole">Co-founder, PhillyPause</div>
+          <p class="flybio">Author of <i>Catastrophe: The Unstoppable Threat of AI</i>, and a constituent lobbyist who has taken the case for AI safety to Congress more than seventy-five times. <a href="https://xriskbooks.com" style="text-decoration: none; font-weight: 600">xriskbooks.com</a></p>
+        </div>
+        <div style="margin-bottom: 18px; padding-top: 16px; border-top: 1px solid #CFC7B6">
+          <div class="flyname">Joel S. Rosen</div>
+          <div class="flyrole">Co-founder, PhillyPause</div>
+          <p class="flybio">A homicide prosecutor who rose to chief of the Major Trials Unit at the Philadelphia District Attorney&rsquo;s Office and led the prosecution in the Ira Einhorn case. Later a partner at Cohen, Placitella &amp; Roth, acting for people hurt by defective vehicles and for injured first responders.</p>
+        </div>
+        <div style="padding-top: 16px; border-top: 1px solid #CFC7B6">
+          <div class="flyname">Malcolm Harris</div>
+          <div class="flyrole">Journalist &amp; author</div>
+          <p class="flybio">Journalist and critic, and author of the bestselling <i>Palo Alto: A History of California, Capitalism, and the World</i>, a Los Angeles Times Book Prize finalist, and of <i>Kids These Days</i>. A contributing editor at <i>The New Inquiry</i>, he writes on history, culture and labour &mdash; the forces behind the industry now building AI.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mailing list, same mechanism as the panel: shown while #join-open is
+       checked, cleared by the scrim or the close button. -->
+  <div class="paneldlg d-join">
+    <label class="paneldlg-scrim" for="dlg-none" aria-label="Close"></label>
+    <div class="paneldlg-box" role="dialog" aria-modal="true" aria-labelledby="joindlg-title">
+      <div class="paneldlg-head">
+        <span id="joindlg-title">Join us</span>
+        <label class="paneldlg-x" for="dlg-none" aria-label="Close">&times;</label>
+      </div>
+      <div class="paneldlg-body joinbody">
+        <h2>Nobody here started out knowing any of this</h2>
+        <p class="joinlede">PhillyPause is volunteers, and there is no technical background to have. Pick one of four things and we will help you do it &mdash; we are not going to hand you a task and walk away.</p>
+
+        <div class="joinways">
+          <div class="joinway">
+          <div class="joinway-k">Learn</div>
+          <p>Start with the primer: a short list of what to read and watch, in order, and someone to put your questions to when it stops making sense.</p>
+        </div>
+        <div class="joinway">
+          <div class="joinway-k">Volunteer</div>
+          <p>Come to one thing and decide afterwards. Hand out cards at a screening, help set up a room, bring somebody who has never thought about this.</p>
+        </div>
+        <div class="joinway">
+          <div class="joinway-k">Educate</div>
+          <p>Talk to people who are not in the room yet &mdash; a club, a class, a congregation. We give you the facts, the slides and a run-through before you stand up.</p>
+        </div>
+        <div class="joinway">
+          <div class="joinway-k">Organize</div>
+          <p>Write to your representatives, or come with us when we go. One of us has taken this to Congress more than seventy-five times, so you will not be walking in cold.</p>
+        </div>
+        </div>
+
+        <div class="joinform">
+          <p class="joinform-ask">Send us a line and we will tell you what is on, and what we can do to help you take the next step.</p>
+          <!-- No list provider yet, so the button opens the reader's own mail
+               client with the subject already filled in. There is no field,
+               because there is nothing to post it to and a dead input would
+               lie. When the provider is settled this becomes a form again. -->
+          <div class="signuprow">
+            <a class="signupbtn" href="mailto:info@@phillypause.org?subject=Count%20Me%20In">Count me in</a>
+            <span class="signupalt">or write to <b>info@@phillypause.org</b>, subject <b>Count Me In</b></span>
+          </div>
+          <p class="signup-note">
+            Expect one or two emails a month unless you ask for more. We never share
+            your info with anyone, and writing to us commits you to nothing.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Primer. Same mechanism as the others. Every link opens in another window:
+       people arrive here mid-read and should not lose the page.
+       Ordered as a path rather than by medium: an hour's worth first, then the
+       things worth days. -->
+  <div class="paneldlg d-primer">
+    <label class="paneldlg-scrim" for="dlg-none" aria-label="Close"></label>
+    <div class="paneldlg-box" role="dialog" aria-modal="true" aria-labelledby="primerdlg-title">
+      <div class="paneldlg-head">
+        <span id="primerdlg-title">The primer</span>
+        <label class="paneldlg-x" for="dlg-none" aria-label="Close">&times;</label>
+      </div>
+      <div class="paneldlg-body">
+        <p class="joinform-ask" style="margin-bottom: 20px">Thirteen things, in the order we would hand them to you. All free, all in English, all opening in a new window. The first four take about an hour between them, and they are enough to hold your own in a conversation.</p>
+
+        <div class="primergrp">
+          <div class="primerhd">Start here &mdash; about an hour</div>
+          <div class="primeritem"><span class="primernum">1</span><span><a href="https://www.youtube.com/watch?v=pYXy-A4siMw" target="_blank" rel="noopener">Intro to AI Safety, Remastered</a> <span class="primermeta">&middot; Rob Miles, video. The standard first explainer, and still the best.</span></span></div>
+          <div class="primeritem"><span class="primernum">2</span><span><a href="https://www.youtube.com/watch?v=gpBqw2sTD08" target="_blank" rel="noopener">The hidden complexity of wishes</a> <span class="primermeta">&middot; Rational Animations, video. Why &ldquo;just tell it what you want&rdquo; does not work.</span></span></div>
+          <div class="primeritem"><span class="primernum">3</span><span><a href="https://safe.ai/work/statement-on-ai-risk" target="_blank" rel="noopener">Statement on AI Risk</a> <span class="primermeta">&middot; Center for AI Safety. One sentence, signed by over 700 researchers and lab chiefs. Read who signed it.</span></span></div>
+          <div class="primeritem"><span class="primernum">4</span><span><a href="https://pauseai.info/learn" target="_blank" rel="noopener">Learn why AI safety matters</a> <span class="primermeta">&middot; PauseAI. The same ground again, in writing, with the arguments laid out.</span></span></div>
+        </div>
+
+        <div class="primergrp">
+          <div class="primerhd">On screen</div>
+          <div class="primeritem"><span class="primernum">5</span><span><a href="https://theaidocgetinvolved.com/" target="_blank" rel="noopener">The AI Doc: Or How I Became an Apocaloptimist</a> <span class="primermeta">&middot; the Sundance documentary. We screen it when we can.</span></span></div>
+          <div class="primeritem"><span class="primernum">6</span><span><a href="https://www.cbsnews.com/video/godfather-of-ai-geoffrey-hinton-sunday-on-60-minutes/" target="_blank" rel="noopener">&ldquo;Godfather of AI&rdquo; Geoffrey Hinton</a> <span class="primermeta">&middot; 60 Minutes, CBS. The man who built the thing, on why he walked out of Google to say so.</span></span></div>
+        </div>
+
+        <div class="primergrp">
+          <div class="primerhd">What happened in July</div>
+          <div class="primeritem"><span class="primernum">7</span><span><a href="https://metr.org/hugging-face-incident-report-aug-2026.pdf" target="_blank" rel="noopener">Hugging Face incident report</a> <span class="primermeta">&middot; METR, PDF. Where every figure on this page comes from.</span></span></div>
+        </div>
+
+        <div class="primergrp">
+          <div class="primerhd">Go deeper</div>
+          <div class="primeritem"><span class="primernum">8</span><span><a href="https://ai-2027.com/" target="_blank" rel="noopener">AI 2027</a> <span class="primermeta">&middot; Kokotajlo, Alexander, Larsen, Lifland &amp; Dean. One concrete scenario, worked through month by month, with two endings.</span></span></div>
+          <div class="primeritem"><span class="primernum">9</span><span><a href="https://xriskbooks.com" target="_blank" rel="noopener">Catastrophe: The Unstoppable Threat of AI</a> <span class="primermeta">&middot; Louis Berman. Written here in Philadelphia, by one of us.</span></span></div>
+          <div class="primeritem"><span class="primernum">10</span><span><a href="https://www.hachettebookgroup.com/titles/eliezer-yudkowsky/if-anyone-builds-it-everyone-dies/9781668652657/" target="_blank" rel="noopener">If Anyone Builds It, Everyone Dies</a> <span class="primermeta">&middot; Yudkowsky &amp; Soares. The hardest version of the argument, and a 2025 bestseller.</span></span></div>
+        </div>
+
+        <div class="primergrp">
+          <div class="primerhd">Keep going</div>
+          <div class="primeritem"><span class="primernum">11</span><span><a href="https://podcasts.apple.com/us/podcast/for-humanity-an-ai-risk-podcast/id1713853739" target="_blank" rel="noopener">For Humanity: An AI Risk Podcast</a> <span class="primermeta">&middot; John Sherman. Weekly, plain-spoken, made for people who are not in the field.</span></span></div>
+          <div class="primeritem"><span class="primernum">12</span><span><a href="https://podcasts.apple.com/us/podcast/doom-debates/id1751366208" target="_blank" rel="noopener">Doom Debates</a> <span class="primermeta">&middot; Liron Shapira. Arguments with people who disagree, which is how you find out whether any of this holds.</span></span></div>
+          <div class="primeritem"><span class="primernum">13</span><span><a href="https://aisafety.info/" target="_blank" rel="noopener">aisafety.info</a> <span class="primermeta">&middot; a searchable answer to almost any question left after the above. Start with whatever you did not believe.</span></span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- The three ways in. Each was a card at the foot of the page; as dialogs
+       they have room to say what the thing actually involves, which is what a
+       stranger needs before they will do it. -->
+  <div class="paneldlg d-volunteer">
+    <label class="paneldlg-scrim" for="dlg-none" aria-label="Close"></label>
+    <div class="paneldlg-box" role="dialog" aria-modal="true" aria-labelledby="voldlg-title">
+      <div class="paneldlg-head">
+        <span id="voldlg-title">Volunteer</span>
+        <label class="paneldlg-x" for="dlg-none" aria-label="Close">&times;</label>
+      </div>
+      <div class="paneldlg-body joinbody">
+        <h2>Come to one thing</h2>
+        <p class="joinlede">Decide afterwards. There is nothing to sign at the door and no commitment past the evening. No technical background is any use here &mdash; being willing to talk to people is the whole qualification.</p>
+
+        <div class="joinway">
+          <div class="joinway-k">What it actually looks like</div>
+          <p>Setting out chairs. Handing cards to the queue before a screening. Taking a turn on the door. Bringing one person who has never thought about any of this. Writing the thing nobody else wants to write. It is unglamorous, and it is most of what works.</p>
+        </div>
+        <div class="joinway">
+          <div class="joinway-k">How much time</div>
+          <p>An evening a month is a real contribution, and it is what most people give. Nobody is counting your hours and nobody will chase you if a month goes by. The people who do more do it because they wanted to, not because they were asked twice.</p>
+        </div>
+        <div class="joinway">
+          <div class="joinway-k">What we will not ask of you</div>
+          <p>To argue with strangers on the internet. To raise money. To claim expertise you do not have. To speak for the group, or to speak at all if you would rather hand out cards and listen.</p>
+        </div>
+        <div class="joinway">
+          <div class="joinway-k">Why a stranger in a room matters</div>
+          <p>Almost nobody has heard a person say this out loud. Reading it on a screen is easy to file away; hearing it from somebody who lives three streets over is not. That is the whole mechanism, and it needs people in rooms more than it needs anything else.</p>
+        </div>
+
+        <div class="joinform">
+          <p class="joinform-ask">Our next event is always in the box at the top of this page. Come to that one, or say hello now and we will look out for you.</p>
+          <div class="signuprow">
+            <a class="signupbtn" href="mailto:info@@phillypause.org?subject=I%20can%20help">I can help</a>
+            <span class="signupalt">or write to <b>info@@phillypause.org</b></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="paneldlg d-educate">
+    <label class="paneldlg-scrim" for="dlg-none" aria-label="Close"></label>
+    <div class="paneldlg-box" role="dialog" aria-modal="true" aria-labelledby="edudlg-title">
+      <div class="paneldlg-head">
+        <span id="edudlg-title">Educate</span>
+        <label class="paneldlg-x" for="dlg-none" aria-label="Close">&times;</label>
+      </div>
+      <div class="paneldlg-body joinbody">
+        <h2>Tell one person</h2>
+        <p class="joinlede">Most people have already noticed something is off and have nobody to ask. You do not have to win an argument. You have to be the person in the room who knows what happened in July.</p>
+
+        <div class="joinway">
+          <div class="joinway-k">What we give you</div>
+          <p>The facts, the sources behind them, slides, and a run-through before you stand up in front of anyone. If a question floors you it would floor any of us, which is what the group is for.</p>
+        </div>
+        <div class="joinway">
+          <div class="joinway-k">Where it happens</div>
+          <p>A club, a class, a congregation, a union local, a market table, a campus walkway, a family dinner. Table a market, flyer a campus, or just forward this page to somebody who will read it.</p>
+        </div>
+
+        <div class="joinform">
+          <p class="joinform-ask">Get yourself straight first. It takes about an hour.</p>
+          <div class="signuprow">
+            <label class="signupbtn" for="primer-open">Read the primer</label>
+            <span class="signupalt">thirteen things, in the order we would hand them to you</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="paneldlg d-organize">
+    <label class="paneldlg-scrim" for="dlg-none" aria-label="Close"></label>
+    <div class="paneldlg-box" role="dialog" aria-modal="true" aria-labelledby="orgdlg-title">
+      <div class="paneldlg-head">
+        <span id="orgdlg-title">Organize</span>
+        <label class="paneldlg-x" for="dlg-none" aria-label="Close">&times;</label>
+      </div>
+      <div class="paneldlg-body joinbody">
+        <h2>Call your representative</h2>
+        <p class="joinlede">Fifteen minutes with a script. Offices count the constituents who get in touch, and on this almost nobody has &mdash; so your call is not one of thousands. It is one of a handful.</p>
+
+        <div class="joinway">
+          <div class="joinway-k">You do not need to be an expert</div>
+          <p>&ldquo;I live here, I am worried that AI systems are being deployed faster than anyone can control them, and I want to know where you stand&rdquo; is the entire call. They will ask for your zip code, not your credentials.</p>
+        </div>
+        <div class="joinway">
+          <div class="joinway-k">Who to call, and what to say</div>
+          <p>ControlAI&rsquo;s tool finds your representatives from your state and gives you the script, by email, phone or post. It is their campaign and their wording, not ours, and it is the best of its kind.</p>
+        </div>
+
+        <div class="joinform">
+          <p class="joinform-ask">We will walk through it with you first if you would rather not go in cold.</p>
+          <div class="signuprow">
+            <a class="signupbtn" href="https://act.controlai.org/" target="_blank" rel="noopener">Who to call</a>
+            <span class="signupalt">opens ControlAI, in a new window</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

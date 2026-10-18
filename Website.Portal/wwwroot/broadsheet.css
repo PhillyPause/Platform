@@ -1,0 +1,358 @@
+/* Without this, every width here is content-box: the flyout's 430px became
+   470px with padding, and the signup field's width:100% overflowed its
+   column. */
+*, *::before, *::after { box-sizing: border-box; }
+
+body { margin: 0; }
+a { color: #AE2012; }
+a:hover { color: #15110C; }
+
+.navlink {
+  padding: 9px 15px;
+  transition: background 140ms ease, color 140ms ease;
+}
+.navlink:hover,
+.navlink:focus-visible {
+  background: #EBE3D2;
+  color: #AE2012;
+}
+
+.joinbtn {
+  background: #AE2012;
+  color: #FBF8F1;
+  transition: background 140ms ease;
+}
+.joinbtn:hover,
+.joinbtn:focus-visible {
+  background: #15110C;
+  color: #FBF8F1;
+}
+
+/* The event box is lifted out of the flow and pinned to the top-right of the
+   whole masthead region, so it starts level with the logo and runs DOWN
+   THROUGH the nav rules into the lead story. It sits above them, so the double
+   rule and the hairline both stop dead at its edge — the box breaks the
+   horizontal structure instead of obeying it.
+   min-height guarantees the pierce: without it the depth would drift with the
+   copy inside the box. */
+.eventbox {
+  position: absolute;
+  top: 26px;
+  right: 32px;
+  width: 320px;
+  min-height: 432px;
+  z-index: 3;
+  border: 1px solid #15110C;
+  background: #F5F0E4;
+  scroll-margin-top: 20px;
+}
+
+/* Everything the box would otherwise sit on top of keeps clear of it. */
+.clearbox { padding-right: 356px; }
+
+/* The masthead reserves exactly the box's width rather than clearbox's wider
+   margin, so its right edge lands on the box's left edge. The title then
+   centres in what is left with equal air to the logo and to the box. */
+.masthead { padding-right: 320px; }
+
+/* The nav rules stop short of the box rather than running under it, so there
+   is clean air between the end of each rule and the box's edge. */
+.navband { width: calc(100% - 356px); }
+
+/* Panellist names in the callout jump to their own entry below. They stay
+   set as names, with a hairline rule to say they are clickable. */
+.panelname {
+  color: #15110C;
+  font-weight: 600;
+  text-decoration: none;
+  border-bottom: 1px solid #C9BFA8;
+}
+.panelname:hover,
+.panelname:focus-visible { color: #AE2012; border-bottom-color: #AE2012; }
+
+/* Quote portraits: circular, cropped to the face via per-image
+   object-position. All freely licensed; credits run under the block. */
+.face {
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex: none;
+  border: 1px solid #CFC7B6;
+  background: #E6DFCE;
+}
+
+/* So an anchored name does not land hard against the top of the window. */
+.panelcard { scroll-margin-top: 24px; }
+
+/* The panel opens as a dialog centred in the viewport, driven by a hidden
+   checkbox at the top of the page. Not :target and not component state: this
+   runtime handles in-artboard '#' links itself without setting the URL hash,
+   so :target never matches, and a checkbox is the one mechanism that needs
+   nothing from the script at all. Every small flyout icon beside a panellist's
+   name is a <label> for it, as are the scrim and the close button. */
+/* The radios sit at the top of the document, but clicking a label focuses
+   its radio, and the browser scrolls a focused control into view — which
+   threw the page back to the masthead whenever the primer was opened from
+   further down. position: fixed keeps them inside the viewport at all times,
+   so there is nothing to scroll to. Sibling selectors go by DOM order, not
+   layout, so the dialogs still match. */
+.dlgtoggle {
+  position: fixed;
+  top: 0; left: 0;
+  width: 1px; height: 1px;
+  margin: 0; padding: 0; border: 0;
+  clip-path: inset(50%);
+  overflow: hidden;
+}
+
+/* The small flyout icon that sits to the right of each name. */
+.flyicon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px; height: 18px;
+  margin-left: 3px;
+  vertical-align: -3px;
+  color: #AE2012;
+  cursor: pointer;
+  border: 1px solid #CFC7B6;
+  background: #FBF8F1;
+  transition: background 140ms ease, color 140ms ease, border-color 140ms ease;
+}
+.flyicon:hover { background: #AE2012; color: #FBF8F1; border-color: #AE2012; }
+.flyicon svg { display: block; }
+
+.paneldlg {
+  display: none;
+  place-items: center;
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  padding: 24px;
+}
+/* One rule per dialog. The radios are siblings of every .paneldlg, so the
+   checked one shows its own and nothing else can be checked at the same time. */
+#panel-open:checked ~ .paneldlg.d-panel { display: grid; }
+#join-open:checked ~ .paneldlg.d-join { display: grid; }
+#primer-open:checked ~ .paneldlg.d-primer { display: grid; }
+#volunteer-open:checked ~ .paneldlg.d-volunteer { display: grid; }
+#educate-open:checked ~ .paneldlg.d-educate { display: grid; }
+#organize-open:checked ~ .paneldlg.d-organize { display: grid; }
+
+/* Join us dialog. Plain ivory, like the panel — nothing here needs a colour
+   field of its own. Its job is to make the case for joining: the four things
+   we do, then the one field that starts it. */
+.joinbody h2 {
+  margin: 0 0 8px;
+  font-family: 'Playfair Display', serif;
+  font-size: 25px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.12;
+}
+/* Primer dialog: a numbered reading, watching and listening list. Wider than
+   the others because every row is a title plus a source. */
+.d-primer .paneldlg-box { width: min(880px, 100%); }
+.primergrp { margin-top: 20px; }
+.primergrp:first-of-type { margin-top: 0; }
+.primerhd {
+  font-size: 10px; font-weight: 700; letter-spacing: 0.18em;
+  text-transform: uppercase; color: #AE2012;
+  padding-bottom: 6px; margin-bottom: 6px;
+  border-bottom: 1px solid #15110C;
+}
+/* No rule and no gap between items — they read as one block of lines, with
+   the only rule under each group heading. The flex row keeps the number
+   hanging outside the text, which a plain <br> list would not. */
+.primeritem {
+  display: flex; gap: 12px;
+  font-size: 13.5px; line-height: 1.5;
+}
+.primernum {
+  flex: none; width: 22px;
+  font-weight: 700; color: #6A6254;
+  font-variant-numeric: tabular-nums;
+}
+.primeritem a { font-weight: 600; text-decoration: none; }
+.primeritem a:hover, .primeritem a:focus-visible { text-decoration: underline; }
+.primermeta { color: #6A6254; }
+/* Anything that opens the primer. Set as a link, clickable as a label. */
+.primerlink {
+  color: #AE2012; cursor: pointer;
+  font: inherit; font-weight: 600;
+  border-bottom: 1px solid #DCC7C2;
+}
+.primerlink:hover { color: #15110C; border-bottom-color: #15110C; }
+
+/* Wider than the panel dialog: it carries the four ways in plus a form, and
+   should not need a scrollbar to show them. */
+.d-join .paneldlg-box { width: min(840px, 100%); }
+.joinbody .joinlede { margin: 0 0 18px; font-size: 14.5px; line-height: 1.6; color: #4A443A; }
+/* Two columns, so the four ways fit the dialog without it scrolling. Each
+   one carries its own rule, so the pairs read as a block. */
+.joinways {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 30px;
+  row-gap: 15px;
+}
+.joinway { padding-top: 12px; border-top: 1px solid #CFC7B6; }
+@media (max-width: 620px) { .joinways { grid-template-columns: 1fr; } }
+.joinway-k {
+  font-size: 10px; font-weight: 700; letter-spacing: 0.18em;
+  text-transform: uppercase; color: #AE2012; margin-bottom: 4px;
+}
+.joinway p { margin: 0; font-size: 13.5px; line-height: 1.55; color: #4A443A; }
+.joinform { margin-top: 22px; padding-top: 18px; border-top: 1px solid #15110C; }
+.joinform-ask { margin: 0 0 14px; font-size: 14px; font-weight: 600; line-height: 1.55; color: #15110C; }
+.paneldlg-scrim {
+  position: absolute;
+  inset: 0;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  background: rgba(21, 17, 12, 0.55);
+}
+.paneldlg-box {
+  position: relative;
+  width: min(560px, 100%);
+  max-height: 88%;
+  display: flex;
+  flex-direction: column;
+  background: #FBF8F1;
+  border: 1px solid #15110C;
+  box-shadow: 0 18px 50px rgba(21, 17, 12, 0.4);
+  animation: dlg-in 200ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+@keyframes dlg-in {
+  from { opacity: 0; transform: translateY(10px) scale(0.985); }
+  to { opacity: 1; transform: none; }
+}
+.paneldlg-head {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  background: #15110C;
+  color: #FBF8F1;
+  /* padding-left matches .paneldlg-body, so the title starts on the same
+     vertical as the text under it. */
+  padding: 11px 11px 11px 24px;
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.paneldlg-x {
+  flex: none;
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  background: none;
+  color: #FBF8F1;
+  font: inherit;
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+  border: 1px solid transparent;
+}
+.paneldlg-x:hover, .paneldlg-x:focus-visible { background: #AE2012; color: #FBF8F1; border-color: #AE2012; }
+.paneldlg-body { overflow: auto; padding: 22px 24px 24px; }
+
+.flyname { font-family: 'Playfair Display', serif; font-size: 19px; font-weight: 800; letter-spacing: -0.01em; }
+.flyrole { font-size: 10px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: #AE2012; margin: 3px 0 6px; }
+.flybio { margin: 0; font-size: 13.5px; line-height: 1.55; color: #4A443A; }
+
+@media (prefers-reduced-motion: reduce) {
+  .paneldlg-box { animation: none; }
+}
+
+/* Mailing list. Lives in the Join us dialog, on ivory. 46px minimum target
+   height on the field and the button. */
+.signup { display: flex; gap: 10px; flex-wrap: wrap; align-items: flex-end; }
+.signup label {
+  display: block;
+  font-size: 10.5px; font-weight: 700; letter-spacing: 0.16em;
+  text-transform: uppercase; color: #AE2012; margin-bottom: 6px;
+}
+.signup input {
+  width: 100%;
+  min-height: 46px;
+  padding: 10px 14px;
+  border: 1px solid #15110C;
+  background: #FBF8F1;
+  color: #15110C;
+  font: inherit;
+  font-size: 15px;
+}
+.signup input::placeholder { color: #8C8276; }
+.signup input:focus-visible { outline: 3px solid #AE2012; outline-offset: 2px; }
+.signup button, .signupbtn {
+  display: inline-block;
+  text-decoration: none;
+  min-height: 46px;
+  padding: 10px 24px;
+  border: 1px solid #15110C;
+  background: #15110C;
+  color: #FBF8F1;
+  font: inherit;
+  font-size: 14px; font-weight: 700;
+  letter-spacing: 0.06em; text-transform: uppercase;
+  cursor: pointer;
+  transition: background 140ms ease, color 140ms ease, border-color 140ms ease;
+}
+/* The button is a mailto, which does nothing at all for a reader with no mail
+   client set up, or inside a sandboxed preview. The address is therefore also
+   printed in plain, selectable text beside it — there is always a way through. */
+.signuprow { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; }
+.signupalt { font-size: 13px; line-height: 1.5; color: #4A443A; }
+.signupalt b { color: #15110C; font-weight: 600; }
+
+/* 10 + 26 + 10 = the 46px minimum target height, since an anchor does not
+   centre its text the way a button does. */
+.signupbtn { line-height: 26px; }
+.signup button:hover, .signup button:focus-visible,
+.signupbtn:hover, .signupbtn:focus-visible { background: #AE2012; border-color: #AE2012; color: #FBF8F1; }
+.signup-note { margin: 16px 0 0; font-size: 12.5px; line-height: 1.55; color: #6A6254; }
+
+/* Resource box, a sibling of the event box in treatment. */
+.speed { border: 1px solid #15110C; background: #F5F0E4; scroll-margin-top: 20px; }
+.speedhead { background: #15110C; color: #FBF8F1; padding: 9px 18px; font-size: 11px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; }
+.speedcol + .speedcol { border-left: 1px solid #CFC7B6; }
+.speeditem { margin: 0 0 14px; font-size: 13px; line-height: 1.5; color: #4A443A; }
+.speeditem:last-child { margin-bottom: 0; }
+.speeditem b { display: block; font-size: 14px; color: #15110C; font-weight: 700; }
+
+/* The logo file carries about 17% dead margin on each side and 13-15% top and
+   bottom inside its own viewBox. Scaling it just scales the emptiness, so the
+   mark is cropped to its true bounding box (x 211-1049, y 183-1104 of 1254):
+   the window is the artwork's real size, and the image is enlarged and offset
+   behind it. */
+.mark {
+  position: relative;
+  flex: none;
+  width: 219px;
+  height: 240px;
+  overflow: hidden;
+}
+.mark img {
+  position: absolute;
+  top: -48px;
+  left: -55px;
+  width: 327px;
+  height: 327px;
+  filter: brightness(0);
+}
+
+@media (max-width: 900px) {
+  .eventbox {
+    position: static;
+    width: auto;
+    min-height: 0;
+    margin: 0 0 24px;
+  }
+  .clearbox { padding-right: 0; }
+  .masthead { padding-right: 0; }
+  .navband { width: auto; }
+
+}

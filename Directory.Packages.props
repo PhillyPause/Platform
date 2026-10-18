@@ -1,0 +1,32 @@
+<Project>
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+    <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
+  </PropertyGroup>
+
+  <!-- Single source of truth for package versions. Bump here, not in .csproj. -->
+  <ItemGroup Label="Web + client">
+    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.13" />
+    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="10.0.13" />
+  </ItemGroup>
+
+  <ItemGroup Label="Content pipeline">
+    <!-- Markdown is compiled at BUILD time into a typed page index, never
+         parsed at runtime (PLAN.md 2.3). Markdig ships the YAML frontmatter
+         extension; YamlDotNet reads the block it hands back. -->
+    <PackageVersion Include="Markdig" Version="1.4.1" />
+    <PackageVersion Include="YamlDotNet" Version="18.1.0" />
+  </ItemGroup>
+
+  <ItemGroup Label="Testing">
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.9.0" />
+    <PackageVersion Include="xunit" Version="2.9.3" />
+    <PackageVersion Include="xunit.runner.visualstudio" Version="3.1.4" />
+    <!-- Pinned to the 7.x line deliberately, as in ManyHands: FluentAssertions
+         8+ moved to a paid Xceed licence, which an MIT project that invites
+         forks cannot hand its contributors. 7.2.2 is the last Apache-2.0
+         release. If this line ever needs to move, AwesomeAssertions is the
+         MIT-licensed fork with the same API. -->
+    <PackageVersion Include="FluentAssertions" Version="7.2.2" />
+  </ItemGroup>
+</Project>

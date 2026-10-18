@@ -1,0 +1,66 @@
+/* PhillyPause design tokens — taken from the printed postcard, so the card and
+   the site that its QR code points at are obviously the same thing.
+
+   Three colours:
+     navy    #043464  the logo, headings, the footer band
+     alarm   #FF5A1F  one warning accent, per the explainer script's spec
+     cream   #F7F5EF  the paper
+
+   Contrast, checked against the grounds they are used on:
+     navy  on cream   12.0:1
+     cream on navy    12.0:1
+     alarm on cream    3.1:1  display only — never body text
+     alarm-ink on cream 5.0:1 the small-text shade of the same hue
+     alarm on navy      5.4:1  safe on the footer band */
+
+:root {
+  --navy: #043464;
+  --navy-deep: #022647;
+  --cream: #F7F5EF;
+  --alarm: #FF5A1F;
+  --alarm-ink: #C9400F;
+
+  --bg: var(--cream);
+  --surface: #FFFFFF;
+  --ink: #1B1B1B;
+  --heading: var(--navy);
+  --muted: #5B6470;
+  --line: #DDD8CC;
+  --rule: #C9C2B2;
+
+  --ground: var(--navy);
+  --ground-ink: var(--cream);
+  --ground-muted: #A9BFD8;
+
+  /* The card sets headlines in a heavy grotesque and the quotes in a serif.
+     Archivo and Source Serif 4 are the closest pair on Google Fonts. */
+  --sans: Archivo, "Segoe UI", -apple-system, BlinkMacSystemFont, Arial, sans-serif;
+  --serif: "Source Serif 4", Georgia, "Times New Roman", serif;
+
+  --step-hero: clamp(2.9rem, 1.1rem + 7.4vw, 6rem);
+  --step-h2: clamp(1.6rem, 1.2rem + 1.8vw, 2.4rem);
+  --step-h3: clamp(1.15rem, 1.05rem + 0.5vw, 1.4rem);
+  --step-lead: clamp(1.1rem, 1.02rem + 0.5vw, 1.3rem);
+  --step-quote: clamp(1.25rem, 1.05rem + 1vw, 1.75rem);
+
+  --measure: 36rem;
+  --page: 62rem;
+  --radius: 10px;
+}
+
+/* The postcard is ink on paper and has no dark mode. The site keeps the same
+   relationship rather than inventing one: navy stays navy, the paper darkens
+   just enough to stop glowing in a dark room. */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #11161D;
+    --surface: #182029;
+    --ink: #E9E6DF;
+    --heading: #CFE0F2;
+    --muted: #9AA6B4;
+    --line: #273340;
+    --rule: #2F3C4A;
+    --alarm-ink: #FF7A47;
+    --ground: var(--navy-deep);
+  }
+}

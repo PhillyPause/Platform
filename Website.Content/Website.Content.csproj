@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <PackageReference Include="Markdig" />
+    <PackageReference Include="YamlDotNet" />
+  </ItemGroup>
+
+  <!-- Content travels with the assembly: ContentStore reads it from the output
+       directory at startup, so the host needs no path back into this project. -->
+  <ItemGroup>
+    <Content Include="Content\**\*.md" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+</Project>

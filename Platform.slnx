@@ -1,0 +1,11 @@
+<Solution>
+  <Configurations>
+    <Platform Name="Any CPU" />
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="Website.Client/Website.Client.csproj" />
+  <Project Path="Website.Content/Website.Content.csproj" />
+  <Project Path="Website.Tests/Website.Tests.csproj" />
+  <Project Path="Website.Portal/Website.Portal.csproj" />
+</Solution>

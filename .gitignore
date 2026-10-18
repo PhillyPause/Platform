@@ -1,0 +1,10 @@
+bin/
+obj/
+.vs/
+.idea/
+*.user
+artifacts/
+TestResults/
+*.received.*
+appsettings.local.json
+*.stackdump

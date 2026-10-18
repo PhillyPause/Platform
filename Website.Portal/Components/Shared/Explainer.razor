@@ -1,0 +1,171 @@
+@* The home page centrepiece. Eight scenes, 92 seconds, narrated.
+
+   Static server-rendered markup plus a JavaScript module — no interactive
+   render mode, so this page still ships zero WebAssembly. The script is real
+   text in the transcript below, so it is crawlable and readable without CSS,
+   JavaScript or audio. See Docs/EXPLAINER.md. *@
+
+<figure class="ex" data-explainer>
+
+    <div class="ex-stage" data-stage data-scene="1">
+
+        <div class="ex-scene" data-index="1" aria-hidden="true">
+            <div class="s1-year">2023</div>
+            <div class="s1-sigs">
+                <i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+                <i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+            </div>
+            <p class="ex-label">hundreds of them signed</p>
+        </div>
+
+        <div class="ex-scene ex-scene-text" data-index="2" aria-hidden="true">
+            <p class="s2-quote">
+                The risk of <em>human extinction</em> from AI<br />
+                should be a <span class="u">global priority</span>
+            </p>
+            <p class="ex-label">alongside pandemics and nuclear war</p>
+        </div>
+
+        <div class="ex-scene" data-index="3" aria-hidden="true">
+            <div class="s3-chart">
+                <div class="s3-bar" style="--h: 58%"><span>investment</span></div>
+                <div class="s3-bar" style="--h: 78%"><span>capability</span></div>
+                <div class="s3-bar" style="--h: 94%"><span>compute</span></div>
+                <div class="s3-bar s3-flat" style="--h: 9%"><span>safety</span></div>
+            </div>
+            <p class="ex-label">everything climbed except the part that mattered</p>
+        </div>
+
+        <div class="ex-scene" data-index="4" aria-hidden="true">
+            <div class="s4-box">
+                <svg viewBox="0 0 200 120" aria-hidden="true" focusable="false">
+                    <path class="s4-tangle"
+                          d="M14 92c18-34 26 24 44-10s22 30 40-6 24 26 42-8 22 22 38-10"
+                          fill="none" stroke-width="4" stroke-linecap="round" />
+                    <path class="s4-tangle s4-tangle-b"
+                          d="M18 44c20 30 28-22 46 12s20-28 38 8 26-24 44 10"
+                          fill="none" stroke-width="4" stroke-linecap="round" />
+                </svg>
+                <span class="s4-mark">?</span>
+            </div>
+            <p class="ex-label">grown, not built &mdash; and no one can read it</p>
+        </div>
+
+        <div class="ex-scene" data-index="5" aria-hidden="true">
+            <div class="s5-track"><i class="s5-dot"></i></div>
+            <div class="s5-track"><i class="s5-dot s5-dot-b"></i></div>
+            <div class="s5-brake">brake</div>
+            <p class="ex-label">whoever hesitates, loses</p>
+        </div>
+
+        <div class="ex-scene" data-index="6" aria-hidden="true">
+            <div class="s6-grid">
+                @for (var i = 0; i < 48; i++)
+                {
+                    <i class="@(KeptChips.Contains(i) ? "keep" : null)" style="--d: @(i * 18)ms"></i>
+                }
+            </div>
+            <p class="ex-label">a handful of suppliers, worldwide</p>
+        </div>
+
+        <div class="ex-scene" data-index="7" aria-hidden="true">
+            <div class="s6-grid s7-grid">
+                @for (var i = 0; i < 48; i++)
+                {
+                    <i class="@(KeptChips.Contains(i) ? "keep" : null)"></i>
+                }
+            </div>
+            <div class="s7-bars" aria-hidden="true"><i></i><i></i></div>
+            <p class="ex-label">pause the largest training runs</p>
+        </div>
+
+        <div class="ex-scene" data-index="8" aria-hidden="true">
+            <div class="s8-seats">
+                @for (var i = 0; i < 19; i++)
+                {
+                    <i class="@(i == 11 ? "you" : null)" style="--d: @(i * 55)ms"></i>
+                }
+            </div>
+            <p class="s8-line">Pennsylvania has <strong>19 votes</strong> in Washington</p>
+            <p class="ex-label">you could be the first to call</p>
+        </div>
+
+        <button class="ex-poster" data-poster type="button">
+            <span class="ex-poster-icon" aria-hidden="true"></span>
+            <span class="ex-poster-text">
+                <strong>Why we are asking for a pause</strong>
+                <small>92 seconds</small>
+            </span>
+        </button>
+    </div>
+
+    <p class="ex-caption" data-caption></p>
+
+    <div class="ex-bar" data-controls hidden>
+        <button class="ex-btn" data-play type="button" aria-label="Play">
+            <span class="ex-icon" aria-hidden="true"></span>
+        </button>
+
+        <ol class="ex-dots">
+            @for (var i = 1; i <= 8; i++)
+            {
+                <li><button type="button" data-seek="@i" aria-label="@($"Scene {i}")"></button></li>
+            }
+        </ol>
+
+        <button class="ex-btn ex-btn-quiet" data-sound type="button" aria-label="Sound on">
+            <span class="ex-sound-label">sound</span>
+        </button>
+    </div>
+
+    @* Narration is an enhancement: with no file here the piece runs on a timer
+       with captions. preload="none" so nothing downloads until Play. *@
+    <audio data-audio preload="none" src="media/explainer.mp3"></audio>
+
+    <figcaption class="ex-transcript">
+        <details>
+            <summary>Read it instead <span>&mdash; 92 seconds of narration, as text</span></summary>
+            <div class="ex-transcript-body">
+                <ol>
+                    <li>In 2023, hundreds of the people building artificial intelligence signed a single sentence.</li>
+                    <li>
+                        It said that the risk of human extinction from AI should be a global
+                        priority &mdash; alongside pandemics and nuclear war.
+                        <small>
+                            This paraphrases the Center for AI Safety's
+                            <a href="https://www.safe.ai/work/statement-on-ai-risk" rel="noopener">Statement on AI Risk</a>;
+                            the original wording and the signatories are there.
+                        </small>
+                    </li>
+                    <li>Then they went back to work. Investment climbed. Capability climbed. The part nobody had solved stayed unsolved.</li>
+                    <li>
+                        Because here is what most people do not know. Nobody can explain how
+                        these systems work. They are not built. They are grown &mdash; adjusted,
+                        billions of times, until the output looks right.
+                    </li>
+                    <li>So why not slow down? Because nobody can slow down alone. Safety costs time. Time costs the lead. Whoever hesitates, loses.</li>
+                    <li>
+                        That is not a problem engineers can fix from the inside. It is a problem
+                        rules fix. And there is a lever: these systems need enormous numbers of
+                        specialised chips, from a handful of suppliers.
+                    </li>
+                    <li>Countable. Traceable. Already controlled. Pause the largest training runs until safety can be shown.</li>
+                    <li>
+                        That decision gets made in Washington. Pennsylvania has nineteen votes
+                        there. Most of those offices have never heard from a constituent about
+                        this. You could be the first.
+                    </li>
+                </ol>
+            </div>
+        </details>
+    </figcaption>
+</figure>
+
+@code {
+    /// <summary>
+    /// Which cells survive the cull in scenes 6 and 7 — the few suppliers that
+    /// actually make frontier accelerators. Scattered rather than adjacent so
+    /// the grid does not read as a shape.
+    /// </summary>
+    private static readonly HashSet<int> KeptChips = [9, 14, 26, 33, 41];
+}

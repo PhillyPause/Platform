@@ -1,0 +1,24 @@
+@* Title plus the tags that decide what a link looks like when someone drops it
+   in Discord, Bluesky or a press email. An advocacy page that unfurls as a bare
+   URL has wasted the share. *@
+
+<PageTitle>@Title — PhillyPause</PageTitle>
+
+<HeadContent>
+    <meta name="description" content="@Description" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="PhillyPause" />
+    <meta property="og:title" content="@Title" />
+    <meta property="og:description" content="@Description" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="@Title" />
+    <meta name="twitter:description" content="@Description" />
+</HeadContent>
+
+@code {
+    [Parameter, EditorRequired] public required string Title { get; set; }
+
+    [Parameter, EditorRequired] public required string Description { get; set; }
+}
