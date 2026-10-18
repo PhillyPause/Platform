@@ -42,6 +42,23 @@ public static class ManyHandsPaths
     /// <summary>One volunteer's own signups. Unguessable rather than signed in.</summary>
     public static string PersonalCalendar(Guid calendarKey) => $"/volunteer/calendar/{calendarKey}.ics";
 
-    /// <summary>The organizers' console.</summary>
+    /// <summary>A volunteer checking themselves in at the door, from the code an organizer shows.</summary>
+    public static string SelfCheckIn(string token) => $"/volunteer/check-in/{token}";
+
+    /// <summary>The organizers' console: every activity, drafts included.</summary>
     public const string Team = "/team";
+
+    public const string TeamNewActivity = "/team/activity/new";
+
+    /// <summary>One activity's roster, door list and publish switch.</summary>
+    public static string TeamActivity(Guid activityId) => $"/team/activity/{activityId}";
+
+    public static string TeamEditActivity(Guid activityId) => $"/team/activity/{activityId}/edit";
+
+    /// <summary>The page to put on a screen at the door.</summary>
+    public static string TeamCheckInCode(Guid activityId) => $"/team/activity/{activityId}/check-in";
+
+    public const string TeamMembers = "/team/members";
+
+    public const string TeamInvites = "/team/invites";
 }

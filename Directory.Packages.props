@@ -25,6 +25,8 @@
     <PackageVersion Include="Dapper" Version="2.1.79" />
     <PackageVersion Include="Npgsql" Version="10.0.3" />
     <PackageVersion Include="dbup-postgresql" Version="7.0.1" />
+    <!-- The check-in code at the door, drawn as SVG on the server. MIT. -->
+    <PackageVersion Include="QRCoder" Version="1.6.0" />
   </ItemGroup>
 
   <ItemGroup Label="Testing">

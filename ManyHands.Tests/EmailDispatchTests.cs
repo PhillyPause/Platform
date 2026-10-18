@@ -26,11 +26,7 @@ public sealed class EmailDispatchTests(DatabaseFixture db)
         Options.Create(new EmailOptions()),
         NullLogger<EmailDispatcher>.Instance);
 
-    private OutboxDispatcher Dispatcher() => new(
-        new NotificationQueries(db.DataSource),
-        new VolunteerRepository(db.DataSource),
-        Email(),
-        NullLogger<OutboxDispatcher>.Instance);
+    private OutboxDispatcher Dispatcher() => TestData.Dispatcher(db.DataSource, Email());
 
     private async Task<IReadOnlyList<SentRow>> SentToAsync(string address)
     {
@@ -41,8 +37,6 @@ public sealed class EmailDispatchTests(DatabaseFixture db)
         return rows.AsList();
     }
 
-    private static OutboxMessage Message(string kind, object payload) =>
-        new(0, kind, System.Text.Json.JsonSerializer.Serialize(payload), Attempts: 1);
 
     [Fact]
     public async Task A_signup_confirmation_reaches_the_volunteer()
@@ -53,7 +47,7 @@ public sealed class EmailDispatchTests(DatabaseFixture db)
             await new SignupRepository(db.DataSource).SignUpAsync(activity, "Maya", email, []));
 
         await Dispatcher().DispatchAsync(
-            Message(OutboxKinds.SignupConfirmed, new { signupId = ok.SignupId }), CancellationToken.None);
+            TestData.Message(OutboxKinds.SignupConfirmed, new { signupId = ok.SignupId }), CancellationToken.None);
 
         var sent = Assert.Single(await SentToAsync(email));
         Assert.Equal("Signed up: Saturday flyering", sent.Subject);
@@ -71,7 +65,7 @@ public sealed class EmailDispatchTests(DatabaseFixture db)
         await signups.CancelAsync(ok.SignupId, ok.VolunteerId);
 
         await Dispatcher().DispatchAsync(
-            Message(OutboxKinds.ActivityReminder, new { signupId = ok.SignupId }), CancellationToken.None);
+            TestData.Message(OutboxKinds.ActivityReminder, new { signupId = ok.SignupId }), CancellationToken.None);
 
         Assert.Empty(await SentToAsync(email));
     }
@@ -87,7 +81,7 @@ public sealed class EmailDispatchTests(DatabaseFixture db)
         await volunteers.UnsubscribeByCommsKeyAsync((await volunteers.GetByIdAsync(ok.VolunteerId))!.CommsKey);
 
         await Dispatcher().DispatchAsync(
-            Message(OutboxKinds.SignupConfirmed, new { signupId = ok.SignupId }), CancellationToken.None);
+            TestData.Message(OutboxKinds.SignupConfirmed, new { signupId = ok.SignupId }), CancellationToken.None);
 
         Assert.Empty(await SentToAsync(email));
     }

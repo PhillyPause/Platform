@@ -81,3 +81,70 @@
 }
 .vol-error, .validation-message { margin: 0; color: var(--alarm-ink); font-weight: 700; font-size: 0.95rem; }
 .vol-danger { margin-top: 1.25rem; padding-top: 1.25rem; border-top: 1px solid var(--line); max-width: var(--measure); }
+
+/* --- the team pages ------------------------------------------------------- */
+
+.vol-nav-aside { margin-left: auto; color: var(--muted) !important; }
+.vol-actions { display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: center; margin: 0 0 1.5rem; }
+.vol-actions form { display: contents; }
+
+.vol-table { width: 100%; max-width: 60rem; border-collapse: collapse; font-size: 0.97rem; }
+.vol-table th, .vol-table td { text-align: left; vertical-align: top; padding: 0.7rem 0.75rem 0.7rem 0; border-bottom: 1px solid var(--line); }
+.vol-table th { font-size: 0.82rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); border-bottom-color: var(--rule); }
+.vol-table td a { font-weight: 700; color: var(--heading); text-decoration: none; }
+.vol-table td a:hover { color: var(--alarm-ink); text-decoration: underline; }
+.vol-table .num { text-align: right; white-space: nowrap; }
+@media (max-width: 40rem) {
+  .vol-table thead { display: none; }
+  .vol-table tr { display: grid; padding: 0.6rem 0; border-bottom: 1px solid var(--line); }
+  .vol-table td { border: 0; padding: 0.1rem 0; }
+  .vol-table .num { text-align: left; }
+}
+
+.vol-link-button {
+  background: none; border: 0; padding: 0; margin: 0 0.9rem 0 0; font: inherit; font-size: 0.9rem;
+  color: var(--alarm-ink); text-decoration: underline; text-underline-offset: 2px; cursor: pointer;
+}
+.vol-link-button:hover { color: var(--heading); }
+.vol-role-buttons { margin-top: 0.2rem; }
+
+/* The door list: each name is one big button, so check-in works on a phone. */
+.vol-roster { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.5rem; max-width: 36rem; }
+.vol-roster button {
+  width: 100%; display: flex; gap: 0.8rem; align-items: center; text-align: left;
+  min-height: 56px; padding: 0.6rem 0.9rem; font: inherit; color: var(--ink); cursor: pointer;
+  background: var(--surface); border: 1px solid var(--line); border-radius: 6px;
+}
+.vol-roster button:hover { border-color: var(--heading); }
+.vol-roster strong { display: block; }
+.vol-tick {
+  flex: none; display: grid; place-items: center; width: 1.8rem; height: 1.8rem;
+  border: 2px solid var(--rule); border-radius: 50%; font-weight: 700; color: #fff;
+}
+.vol-roster .is-in button { border-color: var(--navy); }
+.vol-roster .is-in .vol-tick { background: var(--navy); border-color: var(--navy); }
+
+.vol-editor { max-width: 40rem; }
+.vol-editor textarea, .vol-form textarea, .vol-form input[type="number"], .vol-form input[type="datetime-local"], .vol-form input[type="url"] {
+  width: 100%; min-height: 48px; padding: 0.6rem 0.8rem;
+  font: inherit; color: var(--ink); background: var(--bg);
+  border: 1px solid var(--rule); border-radius: 4px;
+}
+.vol-pair { display: grid; gap: 1rem; }
+@media (min-width: 36rem) { .vol-pair { grid-template-columns: 1fr 1fr; } }
+.vol-choice { border: 0; margin: 0; padding: 0; display: grid; gap: 0.35rem; }
+.vol-choice legend { font-weight: 700; font-size: 0.95rem; margin-bottom: 0.4rem; padding: 0; }
+.vol-choice label { display: flex; gap: 0.55rem; align-items: center; }
+.vol-choice input { accent-color: var(--navy); width: 1.1rem; height: 1.1rem; }
+
+.vol-code {
+  display: inline-block; padding: 0.4rem 0.6rem; font-size: 0.95rem; word-break: break-all;
+  background: var(--surface); border: 1px solid var(--line); border-radius: 4px;
+}
+.vol-note { margin: 0 0 1rem; padding-left: 1rem; border-left: 3px solid var(--alarm); font-style: italic; }
+.vol-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+
+/* The check-in code: as big as the screen allows, for a phone across a table. */
+.vol-qr-code { width: min(26rem, 100%); background: #fff; padding: 1rem; border-radius: var(--radius); }
+.vol-qr-code svg { display: block; width: 100%; height: auto; }
+.vol-form label > span.vol-small, .vol-choice label > span { font-weight: 400; }

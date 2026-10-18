@@ -136,6 +136,73 @@ public static class EmailTemplates
         return ($"Reminder: {activityTitle}", body);
     }
 
+    /// <summary>
+    /// Something new that matches what the volunteer said they like doing. One
+    /// per activity per person, enforced by the ping claim.
+    /// </summary>
+    public static (string Subject, string Body) InterestPing(
+        string displayName,
+        string activityTitle,
+        DateTimeOffset? startsAt,
+        string? location,
+        string activityUrl,
+        string unsubscribeUrl)
+    {
+        var when = startsAt is DateTimeOffset s ? LocalTime.Format(s) : "Ongoing — help whenever you can";
+
+        var body =
+            $"""
+             Hi {displayName},
+
+             Something new matches what you said you like doing:
+
+             What:  {activityTitle}
+             When:  {when}
+             Where: {location ?? "To be confirmed"}
+
+             Have a look, and sign up if you can:
+             {activityUrl}
+
+             ---
+             You get these because of the interests you picked. Change them from
+             your page, or stop all email here: {unsubscribeUrl}
+             """;
+
+        return ($"New: {activityTitle}", body);
+    }
+
+    /// <summary>
+    /// An organizer asking somebody to join. It reads like a person wrote it,
+    /// because one did: the note is theirs.
+    /// </summary>
+    public static (string Subject, string Body) Invite(
+        string? invitedByName, string? note, string joinUrl, TimeSpan validFor)
+    {
+        var from = string.IsNullOrWhiteSpace(invitedByName) ? $"The organizers of {Org}" : $"{invitedByName}, from {Org},";
+        var personal = string.IsNullOrWhiteSpace(note) ? string.Empty : $"\n{note.Trim()}\n";
+
+        var body =
+            $"""
+             Hello,
+
+             {from} would like you to join us.
+             {personal}
+             {Org} is volunteers in Philadelphia working to stop the race to
+             build AI nobody can control. You tell us what you are up for —
+             tabling, calling Congress, events, writing — and we only tell you
+             about those.
+
+             Join here:
+
+             {joinUrl}
+
+             The link works once and expires in {(int)validFor.TotalDays} days. If this is not
+             for you, ignore this email; we will not send another.
+             """;
+
+        return ($"Join {Org}", body);
+    }
+
     /// <summary>The first thing someone receives when they join: what is on, and where their page is.</summary>
     public static (string Subject, string Body) Welcome(
         string displayName,

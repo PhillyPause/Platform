@@ -57,10 +57,17 @@ public static class VolunteerSession
                 options.ExpireTimeSpan = TimeSpan.FromDays(30);
                 options.SlidingExpiration = true;
                 options.LoginPath = ManyHands.Core.ManyHandsPaths.SignIn;
-                options.AccessDeniedPath = "/not-found";
+
+                // A member who wanders onto a team page is told it does not
+                // exist, not that it is forbidden: there is nothing to see.
+                options.Events.OnRedirectToAccessDenied = context =>
+                {
+                    context.Response.StatusCode = StatusCodes.Status404NotFound;
+                    return Task.CompletedTask;
+                };
             });
 
-        services.AddAuthorization();
+        services.AddAuthorization(TeamPolicies.Add);
         return services;
     }
 }

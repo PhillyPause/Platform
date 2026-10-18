@@ -1,0 +1,53 @@
+@page "/team/activity/{Id:guid}/check-in"
+@inject ActivityAdminRepository Admin
+@inject CheckInLinks CheckIn
+@inject ManyHands.Data.Email.EmailDispatcher Links
+
+@* The page an organizer puts on a phone or a laptop at the door, or prints.
+   Volunteers scan it and check themselves in with the email they signed up
+   with. No account: asking people to sign in at a folding table is how
+   check-in stops happening. *@
+
+<PageMeta Title="Check-in code" Description="The check-in code for an activity." NoIndex="true" />
+
+@if (_activity is null)
+{
+    return;
+}
+
+<div class="wrap page-head">
+    <h1>Check in: @_activity.Title</h1>
+    <p class="lead">Scan with your phone&rsquo;s camera, then give the email you signed up with.</p>
+</div>
+
+<div class="wrap vol-body vol-qr">
+    <div class="vol-qr-code">@((MarkupString)_svg)</div>
+    <p class="vol-small">
+        Or open <a href="@_url">this link</a>. The code works for @((int)CheckInLinks.Lifetime.TotalHours) hours;
+        make a fresh one by reloading this page.
+    </p>
+    <p><a href="@ManyHandsPaths.TeamActivity(Id)">Back to the roster</a></p>
+</div>
+
+@code {
+    [Parameter] public Guid Id { get; set; }
+
+    [CascadingParameter] private HttpContext HttpContext { get; set; } = default!;
+
+    private ActivityDraft? _activity;
+    private string _url = string.Empty;
+    private string _svg = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _activity = await Admin.GetAsync(Id);
+        if (_activity is null)
+        {
+            HttpContext.Response.StatusCode = StatusCodes.Status404NotFound;
+            return;
+        }
+
+        _url = Links.Link(ManyHandsPaths.SelfCheckIn(CheckIn.Issue(Id)));
+        _svg = CheckInLinks.QrSvg(_url);
+    }
+}

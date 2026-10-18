@@ -1,0 +1,179 @@
+@page "/team/activity/{Id:guid}"
+@inject ActivityAdminRepository Admin
+
+<PageMeta Title="@(_activity?.Title ?? "Activity")" Description="An activity's roster." NoIndex="true" />
+
+@if (_activity is null)
+{
+    return;
+}
+
+<div class="wrap page-head">
+    <h1>@_activity.Title</h1>
+    <p class="vol-meta vol-meta-lead">
+        <span>@Show.When(_activity.StartsAt)</span>
+        <span>@Show.Where(_activity.Location)</span>
+        <span class="vol-status">@(_activity.IsPublished ? "Published" : "Draft")</span>
+    </p>
+</div>
+
+<div class="wrap vol-body vol-stack">
+    @if (_notice is not null)
+    {
+        <p class="vol-notice" role="status">@_notice</p>
+    }
+
+    <div class="vol-actions">
+        <EditForm Model="Publish" FormName="publish" OnSubmit="TogglePublishedAsync">
+            @if (_activity.IsPublished)
+            {
+                <button class="btn btn-ghost" type="submit">Unpublish</button>
+            }
+            else
+            {
+                <button class="btn" type="submit">Publish, and tell people who like this</button>
+            }
+        </EditForm>
+        <a class="btn btn-ghost" href="@ManyHandsPaths.TeamEditActivity(Id)">Edit</a>
+        @if (_activity.IsPublished)
+        {
+            <a class="btn btn-ghost" href="@ManyHandsPaths.Activity(Id)">See the public page</a>
+            <a class="btn btn-ghost" href="@ManyHandsPaths.TeamCheckInCode(Id)">Check-in code for the door</a>
+        }
+    </div>
+
+    <section aria-labelledby="roster-head">
+        <h2 id="roster-head">Who is coming</h2>
+        <p>
+            @_roster.Count(r => r.Status == SignupStatus.Confirmed) signed up
+            @(_activity.Capacity is { } cap ? $"of {cap}" : "")
+            &middot; @_roster.Count(r => r.CheckedInAt is not null) checked in
+            @if (_roster.Any(r => r.Status == SignupStatus.Waitlisted))
+            {
+                <text>&middot; @_roster.Count(r => r.Status == SignupStatus.Waitlisted) on the waitlist</text>
+            }
+        </p>
+
+        @if (_roster.Count == 0)
+        {
+            <p class="vol-empty">Nobody yet.</p>
+        }
+        else
+        {
+            <EditForm Model="Toggle" FormName="check-in" OnSubmit="ToggleCheckInAsync">
+                <ul class="vol-roster">
+                    @foreach (var entry in _roster)
+                    {
+                        <li class="@(entry.CheckedInAt is not null ? "is-in" : null)">
+                            @* The pressed button posts its own value: the signup, and which way to flip it. *@
+                            <button type="submit" name="Toggle.Value" value="@($"{entry.SignupId}:{entry.CheckedInAt is null}")"
+                                    aria-pressed="@(entry.CheckedInAt is not null ? "true" : "false")">
+                                <span class="vol-tick" aria-hidden="true">@(entry.CheckedInAt is not null ? "✓" : "")</span>
+                                <span>
+                                    <strong>@entry.DisplayName</strong>
+                                    <span class="vol-small">
+                                        @entry.Email
+                                        @if (entry.Status == SignupStatus.Waitlisted) { <text> &middot; waitlist</text> }
+                                        @if (entry.Source == SignupSource.Organizer) { <text> &middot; walk-in</text> }
+                                    </span>
+                                </span>
+                            </button>
+                        </li>
+                    }
+                </ul>
+            </EditForm>
+            <p class="vol-small">Press a name to check them in, or press it again to undo.</p>
+        }
+    </section>
+
+    <section aria-labelledby="walk-in-head">
+        <h2 id="walk-in-head">Somebody turned up without signing up</h2>
+        <EditForm Model="WalkIn" FormName="walk-in" OnValidSubmit="AddWalkInAsync" class="vol-form vol-narrow">
+            <DataAnnotationsValidator />
+            <label>
+                <span>Name</span>
+                <InputText @bind-Value="WalkIn!.DisplayName" />
+                <ValidationMessage For="() => WalkIn!.DisplayName" />
+            </label>
+            <label>
+                <span>Email, if they want to hear about the next one</span>
+                <InputText @bind-Value="WalkIn!.Email" type="email" />
+            </label>
+            <button class="btn btn-ghost" type="submit">Add and check in</button>
+        </EditForm>
+    </section>
+</div>
+
+@code {
+    [Parameter] public Guid Id { get; set; }
+
+    [CascadingParameter] private HttpContext HttpContext { get; set; } = default!;
+
+    [SupplyParameterFromForm(FormName = "publish")] private PublishInput? Publish { get; set; }
+    [SupplyParameterFromForm(FormName = "check-in")] private ToggleInput? Toggle { get; set; }
+    [SupplyParameterFromForm(FormName = "walk-in")] private WalkInInput? WalkIn { get; set; }
+
+    private ActivityDraft? _activity;
+    private IReadOnlyList<RosterEntry> _roster = [];
+    private string? _notice;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Publish ??= new();
+        Toggle ??= new();
+        WalkIn ??= new();
+        await LoadAsync();
+
+        if (_activity is null) HttpContext.Response.StatusCode = StatusCodes.Status404NotFound;
+    }
+
+    private async Task LoadAsync()
+    {
+        _activity = await Admin.GetAsync(Id);
+        if (_activity is not null) _roster = await Admin.GetRosterAsync(Id);
+    }
+
+    private async Task TogglePublishedAsync()
+    {
+        var publish = !_activity!.IsPublished;
+        if (await Admin.SetPublishedAsync(Id, publish))
+            _notice = publish
+                ? "Published. People whose interests match are being told now."
+                : "Unpublished. It is off the public list; signups stay as they were.";
+        await LoadAsync();
+    }
+
+    private async Task ToggleCheckInAsync()
+    {
+        var parts = Toggle!.Value?.Split(':') ?? [];
+        if (parts.Length == 2 && Guid.TryParse(parts[0], out var signupId) && bool.TryParse(parts[1], out var checkIn))
+            await Admin.SetCheckedInAsync(signupId, checkIn);
+        await LoadAsync();
+    }
+
+    private async Task AddWalkInAsync()
+    {
+        _notice = await Admin.AddWalkInAsync(Id, WalkIn!.DisplayName, WalkIn.Email)
+            ? $"{WalkIn.DisplayName.Trim()} is in, and checked in."
+            : "That email does not look right. Leave it blank if they would rather not give one.";
+        WalkIn = new();
+        await LoadAsync();
+    }
+
+    private sealed class PublishInput;
+
+    private sealed class ToggleInput
+    {
+        public string? Value { get; set; }
+    }
+
+    private sealed class WalkInInput
+    {
+        [Required(ErrorMessage = "A name, so the count means something.")]
+        [StringLength(100)]
+        public string DisplayName { get; set; } = string.Empty;
+
+        [StringLength(254)]
+        public string? Email { get; set; }
+    }
+}

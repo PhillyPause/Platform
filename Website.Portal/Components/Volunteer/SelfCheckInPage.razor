@@ -1,0 +1,84 @@
+@page "/volunteer/check-in/{Token}"
+@inject CheckInLinks CheckIn
+@inject ActivityRepository Activities
+@inject SelfCheckInRepository SelfCheckIn
+@inject FormThrottle Throttle
+
+<PageMeta Title="Check in" Description="Check in to a PhillyPause activity." NoIndex="true" />
+
+@if (_activity is null)
+{
+    <div class="wrap page-head">
+        <h1>That code has run out</h1>
+        <p class="lead">Ask one of the organizers for a fresh one, or to tick you off by hand.</p>
+    </div>
+    return;
+}
+
+<div class="wrap page-head">
+    <h1>Check in</h1>
+    <p class="lead">@_activity.Title</p>
+</div>
+
+<div class="wrap vol-body">
+    <section class="vol-card vol-narrow" aria-live="polite">
+        @if (_result is SelfCheckInResult.Ok ok)
+        {
+            <h2>@(ok.AlreadyCheckedIn ? "Already in" : "You are in")</h2>
+            <p>Thanks for coming, @ok.DisplayName.</p>
+        }
+        else
+        {
+            @if (_result is SelfCheckInResult.NotSignedUp)
+            {
+                <p class="vol-error" role="alert">We could not find a signup for that address. An organizer can add you; you are just as welcome.</p>
+            }
+            <EditForm Model="Input" FormName="check-in" OnValidSubmit="CheckInAsync" class="vol-form">
+                <DataAnnotationsValidator />
+                <label>
+                    <span>The email you signed up with</span>
+                    <InputText @bind-Value="Input!.Email" type="email" autocomplete="email" />
+                    <ValidationMessage For="() => Input!.Email" />
+                </label>
+                <button class="btn" type="submit">Check me in</button>
+            </EditForm>
+        }
+    </section>
+</div>
+
+@code {
+    [Parameter] public string Token { get; set; } = string.Empty;
+
+    [CascadingParameter] private HttpContext HttpContext { get; set; } = default!;
+
+    [SupplyParameterFromForm(FormName = "check-in")] private CheckInInput? Input { get; set; }
+
+    private ActivityListItem? _activity;
+    private SelfCheckInResult? _result;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Input ??= new();
+
+        _activity = CheckIn.Read(Token) is Guid activityId
+            ? await Activities.GetPublishedByIdAsync(activityId)
+            : null;
+
+        if (_activity is null) HttpContext.Response.StatusCode = StatusCodes.Status404NotFound;
+    }
+
+    private async Task CheckInAsync()
+    {
+        // A whole room shares the venue's address, so this is the looser limit.
+        if (!Throttle.AllowPublicWrite(HttpContext)) return;
+
+        _result = await SelfCheckIn.CheckInAsync(_activity!.Id, Input!.Email);
+    }
+
+    private sealed class CheckInInput
+    {
+        [Required(ErrorMessage = "We need the email you signed up with.")]
+        [StringLength(254)]
+        public string Email { get; set; } = string.Empty;
+    }
+}

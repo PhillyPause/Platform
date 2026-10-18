@@ -57,6 +57,16 @@ public sealed record ActivityListItem(
     public int? SpotsRemaining => Capacity is int cap ? Math.Max(0, cap - SignupCount) : null;
 }
 
+/// <summary>One row on the members page.</summary>
+public sealed record Member(
+    Guid Id,
+    string DisplayName,
+    string? Email,
+    VolunteerRole Role,
+    DateTimeOffset CreatedAt,
+    bool CanEmail,
+    string[] Interests);
+
 /// <summary>What a volunteer sees on their own page.</summary>
 public sealed record MyActivity(
     Guid SignupId,

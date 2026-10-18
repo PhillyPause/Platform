@@ -1,4 +1,10 @@
 using Dapper;
+using ManyHands.Core;
+using ManyHands.Data;
+using ManyHands.Data.Email;
+using ManyHands.Data.Workers;
+using Microsoft.Extensions.Logging.Abstractions;
+using Microsoft.Extensions.Options;
 using Npgsql;
 
 namespace ManyHands.Tests;
@@ -51,6 +57,56 @@ internal static class TestData
         }
 
         return id;
+    }
+
+    /// <summary>The logging sender: records every message in email_messages and sends nothing.</summary>
+    public static EmailDispatcher Email(NpgsqlDataSource db) => new(
+        new LoggingEmailSender(NullLogger<LoggingEmailSender>.Instance),
+        new EmailMessageRepository(db),
+        Options.Create(new EmailOptions()),
+        NullLogger<EmailDispatcher>.Instance);
+
+    public static OutboxDispatcher Dispatcher(NpgsqlDataSource db, EmailDispatcher? email = null) => new(
+        new NotificationQueries(db),
+        new VolunteerRepository(db),
+        new ActivityRepository(db),
+        new ActivityAdminRepository(db),
+        new ReportingRepository(db),
+        new PingRepository(db),
+        new InviteRepository(db),
+        email ?? Email(db),
+        NullLogger<OutboxDispatcher>.Instance);
+
+    public static OutboxMessage Message(string kind, object payload) =>
+        new(0, kind, System.Text.Json.JsonSerializer.Serialize(payload), Attempts: 1);
+
+    /// <summary>Subjects of the mail recorded for an address, oldest first.</summary>
+    public static async Task<IReadOnlyList<string>> SubjectsSentToAsync(NpgsqlDataSource db, string address)
+    {
+        await using var conn = await db.OpenConnectionAsync();
+        var rows = await conn.QueryAsync<string>(
+            "SELECT subject FROM email_messages WHERE lower(to_address) = lower(@address) ORDER BY created_at",
+            new { address });
+        return rows.AsList();
+    }
+
+    /// <summary>A volunteer with an address and these interests.</summary>
+    public static async Task<Volunteer> VolunteerAsync(
+        NpgsqlDataSource db, string name = "Test Person", VolunteerRole role = VolunteerRole.Member, params short[] interests)
+    {
+        var volunteers = new VolunteerRepository(db);
+        var id = await volunteers.UpsertByEmailAsync(NewEmail(), name);
+        if (interests.Length > 0) await volunteers.SetInterestsAsync(id, interests);
+        if (role != VolunteerRole.Member) await volunteers.SetRoleAsync(id, role);
+        return (await volunteers.GetByIdAsync(id))!;
+    }
+
+    public static async Task<int> CountOutboxWelcomesAsync(NpgsqlDataSource db, Guid volunteerId)
+    {
+        await using var conn = await db.OpenConnectionAsync();
+        return await conn.ExecuteScalarAsync<int>(
+            "SELECT count(*)::int FROM outbox WHERE kind = @kind AND payload->>'volunteerId' = @id",
+            new { kind = OutboxKinds.MemberWelcome, id = volunteerId.ToString() });
     }
 
     public static async Task<int> CountOutboxAsync(NpgsqlDataSource db, string kind, Guid signupId)

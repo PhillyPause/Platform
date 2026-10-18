@@ -22,6 +22,9 @@ if (manyHandsEnabled)
 {
     builder.Services.AddManyHands(builder.Configuration);
     builder.Services.AddSingleton<FormThrottle>();
+    builder.Services.AddSingleton<CheckInLinks>();
+    builder.Services.AddSingleton<AdminBootstrap>();
+    builder.Services.AddSingleton<Microsoft.AspNetCore.Authorization.IAuthorizationHandler, TeamRoleHandler>();
 }
 
 // Registered either way, so the volunteer pages' [Authorize] has something to
@@ -83,6 +86,7 @@ app.MapStaticAssets();
 if (manyHandsEnabled)
 {
     app.MapVolunteerEndpoints();
+    app.MapTeamEndpoints();
 }
 app.MapRazorComponents<App>()
     .AddInteractiveWebAssemblyRenderMode()

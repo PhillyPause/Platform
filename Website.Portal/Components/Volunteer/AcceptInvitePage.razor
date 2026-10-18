@@ -1,0 +1,95 @@
+@page "/volunteer/join/{Token}"
+@inject InviteRepository Invites
+@inject ActivityTypeRepository Types
+@inject VolunteerRepository Volunteers
+@inject NavigationManager Navigation
+
+@* Where an invitation email lands. Nothing is spent by opening it; joining
+   is the button. Accepting proves the person reads mail at the invited
+   address, so they are signed in as they join. *@
+
+<PageMeta Title="Join PhillyPause" Description="You have been invited to join PhillyPause." NoIndex="true" />
+
+@if (_landing is null)
+{
+    <div class="wrap page-head">
+        <h1>That invitation has run out</h1>
+        <p class="lead">
+            It may have expired, been used, or been cancelled. You can still
+            <a href="@ManyHandsPaths.Join">join the ordinary way</a>.
+        </p>
+    </div>
+    return;
+}
+
+<div class="wrap page-head">
+    <h1>Join us</h1>
+    <p class="lead">
+        @(_landing.InvitedByName is { } by ? $"{by} invited you" : "You have been invited") to join PhillyPause,
+        as @_landing.Email.
+    </p>
+</div>
+
+<div class="wrap vol-body">
+    <section class="vol-card vol-narrow">
+        @if (!string.IsNullOrWhiteSpace(_landing.Note))
+        {
+            <blockquote class="vol-note">@_landing.Note</blockquote>
+        }
+        <EditForm Model="Input" FormName="accept" OnValidSubmit="AcceptAsync" class="vol-form">
+            <DataAnnotationsValidator />
+            <label>
+                <span>Your name</span>
+                <InputText @bind-Value="Input!.DisplayName" autocomplete="name" />
+            </label>
+            <InterestChoices Types="_types" />
+            <button class="btn" type="submit">Join</button>
+        </EditForm>
+    </section>
+</div>
+
+@code {
+    [Parameter] public string Token { get; set; } = string.Empty;
+
+    [CascadingParameter] private HttpContext HttpContext { get; set; } = default!;
+
+    [SupplyParameterFromForm(FormName = "accept")] private AcceptInput? Input { get; set; }
+
+    private InviteLanding? _landing;
+    private IReadOnlyList<ActivityType> _types = [];
+
+    protected override async Task OnInitializedAsync()
+    {
+        Input ??= new();
+        HttpContext.Response.Headers["Referrer-Policy"] = "no-referrer";
+
+        _landing = await Invites.ResolveAsync(Token);
+        if (_landing is null)
+        {
+            HttpContext.Response.StatusCode = StatusCodes.Status404NotFound;
+            return;
+        }
+
+        _types = await Types.GetActiveAsync();
+    }
+
+    private async Task AcceptAsync()
+    {
+        if (await Invites.AcceptAsync(Token, Input!.DisplayName ?? string.Empty, InterestChoices.Read(HttpContext))
+                is not { } joined
+            || await Volunteers.GetByIdAsync(joined.VolunteerId) is not { } volunteer)
+        {
+            _landing = null;
+            return;
+        }
+
+        await VolunteerSession.SignInAsync(HttpContext, volunteer.Id, volunteer.DisplayName);
+        Navigation.NavigateTo(ManyHandsPaths.Me);
+    }
+
+    private sealed class AcceptInput
+    {
+        [StringLength(100)]
+        public string? DisplayName { get; set; }
+    }
+}

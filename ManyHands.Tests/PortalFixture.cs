@@ -13,12 +13,15 @@ namespace ManyHands.Tests;
 /// database. The background workers are left out: they would dispatch rows
 /// other tests queued and send mail those tests count.
 /// </summary>
-public sealed class PortalFactory(string connectionString) : WebApplicationFactory<Program>
+public sealed class PortalFactory(string connectionString, params string[] admins) : WebApplicationFactory<Program>
 {
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         builder.UseSetting("ManyHands:Enabled", "true");
         builder.UseSetting("ConnectionStrings:ManyHands", connectionString);
+
+        for (var i = 0; i < admins.Length; i++)
+            builder.UseSetting($"ManyHands:Admins:{i}", admins[i]);
 
         builder.ConfigureTestServices(services =>
         {
@@ -58,6 +61,13 @@ internal static partial class Forms
         body.AddRange(fields.Select(f => new KeyValuePair<string, string>(f.Name, f.Value)));
 
         return await client.PostAsync(path, new FormUrlEncodedContent(body));
+    }
+
+    /// <summary>Signs a browser in as this volunteer, the way a person does: a link, then the button.</summary>
+    public static async Task SignInAsync(HttpClient client, Npgsql.NpgsqlDataSource db, Guid volunteerId)
+    {
+        var token = await new ManyHands.Data.AuthTokenRepository(db).IssueAsync(volunteerId);
+        await SubmitAsync(client, ManyHands.Core.ManyHandsPaths.RedeemSignIn(token), "redeem");
     }
 
     [GeneratedRegex("name=\"__RequestVerificationToken\" value=\"([^\"]+)\"")]
