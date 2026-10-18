@@ -40,6 +40,19 @@ Docs filenames: UPPERCASE, underscores not dashes, short. Same as ManyHands.
   identity, points pushes at the `gh` CLI, checks the account, scope and SDK,
   then runs the site. Idempotent. README has the detail.
 
+## Deploying
+
+**The site is live at `phillypause.org`**, on DigitalOcean App Platform behind
+Cloudflare. Shipping is merging to `main` — the spec sets `deploy_on_push`, and
+`main` requires `build-and-test`, so nothing ships that has not passed CI.
+
+`Deploy/digitalocean/app.yaml` **is** the deployed configuration. Change it
+there and `doctl apps update`; never touch the control panel, or the two drift
+and the panel wins silently. This has already cost one failed deploy.
+
+Full detail, including the two constraints the .NET buildpack imposes and why
+`Website.Client` is `IsPublishable=false`: [`Docs/HOSTING.md`](Docs/HOSTING.md).
+
 ## Who PhillyPause is (get this right — it has been got wrong)
 
 **An independent Philadelphia organisation, loosely affiliated with PauseAI
@@ -130,6 +143,12 @@ mail arrives pre-sorted — a bare `mailto:` is a bug.
   never in a `.csproj`. A version attribute on a `PackageReference` is NU1008.
 - FluentAssertions is pinned to 7.2.2 — the last Apache-2.0 release before the
   paid Xceed licence. Do not "update" it.
+- **`Website.Client` and `Website.Tests` are `IsPublishable=false`.** Leave
+  them that way. The deploy buildpack publishes the whole solution, and a WASM
+  project published both standalone and as a dependency collides with itself
+  over `obj/` — compression, then the IL-trimmer, then webcil
+  (dotnet/aspnetcore#38429). The client is still published as the portal's
+  dependency, which is the only way its assets are served.
 - **Nothing here calls ManyHands, and no such integration exists yet.** When
   one lands it goes behind a config flag with a static fallback, because a
   prerender must never fail for want of a downstream service (PLAN.md §5.1).
