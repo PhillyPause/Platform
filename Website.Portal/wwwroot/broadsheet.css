@@ -7,6 +7,15 @@ body { margin: 0; }
 a { color: #AE2012; }
 a:hover { color: #15110C; }
 
+/* app.css sets `h1, h2, h3 { color: var(--heading) }` for the inner pages,
+   which is navy — and navy on the near-black band made "Nobody told them to
+   do this" all but invisible. Every heading on this page should take the
+   colour of whatever it sits on instead: ivory inside the dark band, ink
+   everywhere else, including in the dialogs. One rule, eight headings. */
+.broadsheet h1,
+.broadsheet h2,
+.broadsheet h3 { color: inherit; }
+
 .navlink {
   padding: 9px 15px;
   transition: background 140ms ease, color 140ms ease;
@@ -34,12 +43,16 @@ a:hover { color: #15110C; }
    rule and the hairline both stop dead at its edge — the box breaks the
    horizontal structure instead of obeying it.
    min-height guarantees the pierce: without it the depth would drift with the
-   copy inside the box. */
+   copy inside the box.
+   352px is one column of the three-column lead story below: 1180px container
+   less 64px of gutters is 1116px of content, less two 30px gaps, divided by
+   three. The box is flush right, so its edges land on that column's. Change
+   this and the two clearance values below must move with it. */
 .eventbox {
   position: absolute;
   top: 26px;
   right: 32px;
-  width: 320px;
+  width: 352px;
   min-height: 432px;
   z-index: 3;
   border: 1px solid #15110C;
@@ -47,17 +60,17 @@ a:hover { color: #15110C; }
   scroll-margin-top: 20px;
 }
 
-/* Everything the box would otherwise sit on top of keeps clear of it. */
-.clearbox { padding-right: 356px; }
+/* Everything the box would otherwise sit on top of keeps clear of it: the
+   box's 352px plus 36px of air. */
+.clearbox { padding-right: 388px; }
 
-/* The masthead reserves exactly the box's width rather than clearbox's wider
-   margin, so its right edge lands on the box's left edge. The title then
-   centres in what is left with equal air to the logo and to the box. */
-.masthead { padding-right: 320px; }
+/* The masthead reserves the same width as the nav band below it, so the title
+   block and the JOIN US button share a right edge. */
+.masthead { padding-right: 388px; }
 
 /* The nav rules stop short of the box rather than running under it, so there
    is clean air between the end of each rule and the box's edge. */
-.navband { width: calc(100% - 356px); }
+.navband { width: calc(100% - 388px); }
 
 /* Panellist names in the callout jump to their own entry below. They stay
    set as names, with a hairline rule to say they are clickable. */
@@ -154,9 +167,11 @@ a:hover { color: #15110C; }
 .d-primer .paneldlg-box { width: min(880px, 100%); }
 .primergrp { margin-top: 20px; }
 .primergrp:first-of-type { margin-top: 0; }
+/* Black rather than the red used for kickers elsewhere: these sit directly on
+   their own rule, and red on black read as two competing signals. */
 .primerhd {
   font-size: 10px; font-weight: 700; letter-spacing: 0.18em;
-  text-transform: uppercase; color: #AE2012;
+  text-transform: uppercase; color: #15110C;
   padding-bottom: 6px; margin-bottom: 6px;
   border-bottom: 1px solid #15110C;
 }

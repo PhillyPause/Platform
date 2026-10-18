@@ -18,7 +18,7 @@
           Description="In July 2026, 700 AI agents broke out of their sandboxes to cheat on a test. PhillyPause is an independent, volunteer-run Philadelphia organisation working to stop the AI death race." />
 
 
-<div style="background: #FBF8F1; color: #15110C; font-family: Archivo, sans-serif">
+<div class="broadsheet" style="background: #FBF8F1; color: #15110C; font-family: Archivo, sans-serif">
 
   @* One radio group rather than six checkboxes, so that opening a dialog
      closes whichever was open and a link inside one dialog can hand the reader
@@ -39,15 +39,19 @@
       <span class="mark" role="img" aria-label="PhillyPause">
         <img src="img/logo.svg" alt="">
       </span>
-      <!-- Centring happens here, in the space between the logo and the event
-           box, so the title sits equidistant from both. The inner block sizes
-           itself to the title, and the strapline justifies to fill it, so the
-           two share one measure. The negative right margin offsets the
+      <!-- Pushed right, so the title and the strapline end on the same
+           vertical as the JOIN US button in the nav band below. The block
+           sizes itself to the title and the strapline justifies to fill it, so
+           the two share one measure.
+           The 50px ceiling is the largest that holds one line in the 509px
+           left after the logo and the reserved column: the title measures
+           about 9.8em, so 50px needs roughly 490px. Raising it past 52px wraps
+           the headline. The strapline's negative right margin offsets its
            trailing letter-space, which would otherwise leave the last
-           character short of the title's edge. -->
-      <div style="flex: 1 1 auto; min-width: 0; display: flex; justify-content: center">
+           character short of the edge. -->
+      <div style="flex: 1 1 auto; min-width: 0; display: flex; justify-content: flex-end">
         <div style="min-width: 0; width: fit-content; max-width: 100%">
-          <div style="font-family: 'Playfair Display', serif; font-size: clamp(34px, 3.8vw, 49px); font-weight: 800; line-height: 1.02; letter-spacing: -0.028em">Stop the AI death race</div>
+          <div style="font-family: 'Playfair Display', serif; font-size: clamp(32px, 3.9vw, 50px); font-weight: 800; line-height: 1.02; letter-spacing: -0.028em; text-align: right">Stop the AI death race!</div>
           <div style="font-size: 15px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: #6A6254; margin-top: 13px; margin-right: -0.18em; text-align: justify; text-align-last: justify">Independent &middot; Volunteer-run &middot; Philly&rsquo;s&nbsp;own</div>
         </div>
       </div>
@@ -83,13 +87,13 @@
 
         <div style="font-size: 13px; line-height: 1.55; color: #4A443A; margin-top: 13px; padding-top: 13px; border-top: 1px solid #CFC7B6">
           <span style="color: #15110C; font-weight: 600">The Pen and Pencil Club</span><br>
-          <a href="https://www.google.com/maps/search/?api=1&amp;query=1522+Latimer+St+Philadelphia+PA" style="text-decoration: none; color: #4A443A">1522 Latimer St, Philadelphia, PA</a>
+          <a href="https://www.google.com/maps/search/?api=1&amp;query=1522+Latimer+St+Philadelphia+PA" target="_blank" rel="noopener" style="text-decoration: none; color: #4A443A">1522 Latimer St, Philadelphia, PA</a>
           <div style="margin-top: 7px; font-weight: 600; color: #15110C">Open to the public</div>
-          <div>Registration suggested &mdash; <a href="https://www.penandpencil.org/content.aspx?page_id=4091&amp;club_id=877257&amp;item_id=3073129" style="text-decoration: none; font-weight: 600">book a seat</a></div>
+          <div>Registration suggested &mdash; <a href="https://www.penandpencil.org/content.aspx?page_id=4091&amp;club_id=877257&amp;item_id=3073129" target="_blank" rel="noopener" style="text-decoration: none; font-weight: 600">book a seat</a></div>
         </div>
 
         <p style="font-size: 13px; line-height: 1.55; color: #4A443A; margin: 13px 0 0; padding-top: 13px; border-top: 1px solid #CFC7B6">
-          A screening of <a href="https://theaidocgetinvolved.com/" style="font-weight: 600"><i>The AI Doc: Or How I Became an Apocaloptimist</i></a> &mdash; the Sundance documentary from the Academy Award-winning team behind <i>Everything Everywhere All at Once</i> and <i>Navalny</i>, on the pull between how fast AI is moving and how little anyone can say about where it lands.
+          A screening of <a href="https://theaidocgetinvolved.com/" target="_blank" rel="noopener" style="font-weight: 600"><i>The AI Doc: Or How I Became an Apocaloptimist</i></a> &mdash; the Sundance documentary from the Academy Award-winning team behind <i>Everything Everywhere All at Once</i> and <i>Navalny</i>, on the pull between how fast AI is moving and how little anyone can say about where it lands.
         </p>
         <p style="font-size: 13px; line-height: 1.55; color: #4A443A; margin: 10px 0 0">
           A live panel and audience questions follow the film. PhillyPause is co-hosting.
@@ -99,7 +103,7 @@
           <div style="font-size: 10px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: #AE2012; margin-bottom: 7px">On the panel</div>
           <div style="font-size: 13px; line-height: 1.7"><span style="color: #15110C; font-weight: 600">Louis Berman</span> <span style="color: #6A6254">(PhillyPause, Author)</span><label for="panel-open" class="flyicon" title="Who they are"><svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="square" aria-hidden="true"><path d="M6.8 1.5h3.7v3.7"></path><path d="M10.5 1.5 5.6 6.4"></path><path d="M9 7.1v3.4H1.5V3h3.4"></path></svg></label></div>
           <div style="font-size: 13px; line-height: 1.7"><span style="color: #15110C; font-weight: 600">Joel S. Rosen</span> <span style="color: #6A6254">(PhillyPause)</span><label for="panel-open" class="flyicon" title="Who they are"><svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="square" aria-hidden="true"><path d="M6.8 1.5h3.7v3.7"></path><path d="M10.5 1.5 5.6 6.4"></path><path d="M9 7.1v3.4H1.5V3h3.4"></path></svg></label></div>
-          <div style="font-size: 13px; line-height: 1.7"><span style="color: #15110C; font-weight: 600">Malcolm Harris</span> <span style="color: #6A6254">(Journalist &amp; Author)</span><label for="panel-open" class="flyicon" title="Who they are"><svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="square" aria-hidden="true"><path d="M6.8 1.5h3.7v3.7"></path><path d="M10.5 1.5 5.6 6.4"></path><path d="M9 7.1v3.4H1.5V3h3.4"></path></svg></label></div>
+          <div style="font-size: 13px; line-height: 1.7"><span style="color: #15110C; font-weight: 600">Malcolm Harris</span> <span style="color: #6A6254">(Journalist; Author)</span><label for="panel-open" class="flyicon" title="Who they are"><svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="square" aria-hidden="true"><path d="M6.8 1.5h3.7v3.7"></path><path d="M10.5 1.5 5.6 6.4"></path><path d="M9 7.1v3.4H1.5V3h3.4"></path></svg></label></div>
         </div>
       </div>
     </div>
@@ -278,7 +282,7 @@
         <div style="margin-bottom: 18px">
           <div class="flyname">Louis Berman</div>
           <div class="flyrole">Co-founder, PhillyPause</div>
-          <p class="flybio">Author of <i>Catastrophe: The Unstoppable Threat of AI</i>, and a constituent lobbyist who has taken the case for AI safety to Congress more than seventy-five times. <a href="https://xriskbooks.com" style="text-decoration: none; font-weight: 600">xriskbooks.com</a></p>
+          <p class="flybio">Author of <i>Catastrophe: The Unstoppable Threat of AI</i>, and a constituent lobbyist who has taken the case for AI safety to Congress more than seventy-five times. <a href="https://xriskbooks.com" target="_blank" rel="noopener" style="text-decoration: none; font-weight: 600">xriskbooks.com</a></p>
         </div>
         <div style="margin-bottom: 18px; padding-top: 16px; border-top: 1px solid #CFC7B6">
           <div class="flyname">Joel S. Rosen</div>
@@ -287,7 +291,7 @@
         </div>
         <div style="padding-top: 16px; border-top: 1px solid #CFC7B6">
           <div class="flyname">Malcolm Harris</div>
-          <div class="flyrole">Journalist &amp; author</div>
+          <div class="flyrole">Journalist; Author</div>
           <p class="flybio">Journalist and critic, and author of the bestselling <i>Palo Alto: A History of California, Capitalism, and the World</i>, a Los Angeles Times Book Prize finalist, and of <i>Kids These Days</i>. A contributing editor at <i>The New Inquiry</i>, he writes on history, culture and labour &mdash; the forces behind the industry now building AI.</p>
         </div>
       </div>
