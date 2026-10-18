@@ -30,13 +30,50 @@ in [`Docs/PLAN.md`](Docs/PLAN.md) §2.1.
 
 Prereqs: .NET 10 SDK. That is all — no Docker, no database, no API keys.
 
-```bash
-git clone https://github.com/PhillyPause/Platform.git && cd Platform
-dotnet run --project Website.Portal
+```powershell
+git clone https://github.com/PhillyPause/Platform.git
+cd Platform
+.\go.ps1
 ```
+
+**Two commands to remember: pull, then `.\go.ps1`.**
+
+`go.ps1` sets up whatever a clone cannot carry and then runs the site. It is
+safe to run every time — each step checks before it changes anything.
+
+```powershell
+git pull
+.\go.ps1
+```
+
+It takes care of:
+
+| | |
+|---|---|
+| Commit identity | `Louis S. Berman <louis@phillypause.org>`, set **repo-local** so it never leaks into other work on that machine |
+| Push credentials | points this repo at the `gh` CLI, because Git Credential Manager may hold a different GitHub account |
+| `gh` account | checks you are `louis-phillypause`, and that the token carries the `workflow` scope — without it, any push touching `.github/workflows/` is rejected |
+| SDK | checks .NET 10 is on `PATH` |
+
+If `gh` is not logged in it tells you the two commands to run, which need a
+browser and so cannot be scripted:
+
+```powershell
+gh auth login                                  # choose louis-phillypause
+gh auth refresh -h github.com -s workflow
+```
+
+`.\go.ps1 -NoRun` does the setup without starting the site.
 
 The URL prints to the console. Nothing external is contacted — no database, no
 API, no service to stand up first.
+
+### What does not travel with a clone
+
+Only two things, neither a loss. `.claude/` holds local tool permissions and
+regenerates itself. The unused Wikimedia portrait candidates were never
+committed — `Docs/PHOTO_SOURCES.md` records every filename and licence, so any
+of them is one download away.
 
 ## Tests
 
