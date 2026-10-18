@@ -61,4 +61,24 @@ public static class ManyHandsPaths
     public const string TeamMembers = "/team/members";
 
     public const string TeamInvites = "/team/invites";
+
+    /// <summary>The CRM: organizations, and the open tasks.</summary>
+    public const string Crm = "/team/crm";
+
+    public static string CrmOrganization(Guid organizationId) => $"/team/crm/organization/{organizationId}";
+
+    public const string CrmPipeline = "/team/crm/pipeline";
+
+    public static string CrmEngagement(Guid engagementId) => $"/team/crm/engagement/{engagementId}";
+
+    public const string CrmOfficials = "/team/crm/officials";
+
+    /// <summary>Outreach mail, every thread.</summary>
+    public const string Inbox = "/team/inbox";
+
+    public static string InboxThread(Guid conversationId) => $"/team/inbox/{conversationId}";
+
+    public const string InboxCompose = "/team/inbox/new";
+
+    public const string InboxTemplates = "/team/inbox/templates";
 }

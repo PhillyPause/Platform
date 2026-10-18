@@ -1,0 +1,112 @@
+@page "/team/inbox/new"
+@inject CrmRepository Crm
+@inject CrmEmailRepository Emails
+@inject ManyHands.Data.Email.OutreachEmail Outreach
+@inject NavigationManager Navigation
+
+<PageMeta Title="Write" Description="Write an outreach email." NoIndex="true" />
+
+<div class="wrap page-head">
+    <h1>Write</h1>
+    <p class="lead">
+        @(_contact is not null ? $"To {_contact.FullName}." : "To anyone.")
+        It goes from @Outreach.Mailbox, and the reply comes back to the team&rsquo;s inbox.
+    </p>
+</div>
+
+<div class="wrap vol-body vol-stack">
+    @if (_templates.Count > 0)
+    {
+        <p class="vol-filter">
+            Start from:
+            @foreach (var template in _templates)
+            {
+                <a href="@($"{ManyHandsPaths.InboxCompose}?contact={Contact}&template={template.Id}")">@template.Name</a>
+            }
+        </p>
+    }
+
+    <EditForm Model="Input" FormName="compose" OnValidSubmit="SendAsync" class="vol-form vol-editor">
+        <DataAnnotationsValidator />
+        <label>
+            <span>To</span>
+            <InputText @bind-Value="Input!.To" type="email" />
+            <ValidationMessage For="() => Input!.To" />
+        </label>
+        <label>
+            <span>Subject</span>
+            <InputText @bind-Value="Input!.Subject" />
+            <ValidationMessage For="() => Input!.Subject" />
+        </label>
+        <label>
+            <span>Message</span>
+            <InputTextArea @bind-Value="Input!.Body" rows="12" />
+            <ValidationMessage For="() => Input!.Body" />
+        </label>
+        <button class="btn" type="submit">Send</button>
+    </EditForm>
+</div>
+
+@code {
+    [CascadingParameter] private HttpContext HttpContext { get; set; } = default!;
+
+    [SupplyParameterFromQuery(Name = "contact")] private Guid? Contact { get; set; }
+    [SupplyParameterFromQuery(Name = "template")] private Guid? Template { get; set; }
+
+    [SupplyParameterFromForm(FormName = "compose")] private ComposeInput? Input { get; set; }
+
+    private CrmContact? _contact;
+    private IReadOnlyList<CrmEmailTemplate> _templates = [];
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Set before the first await: the page renders there, and the form
+        // needs a model to render at all.
+        Input ??= new();
+
+        _contact = Contact is Guid id ? await Crm.GetContactAsync(id) : null;
+        _templates = await Emails.GetTemplatesAsync();
+
+        if (HttpMethods.IsGet(HttpContext.Request.Method))
+        {
+            var template = _templates.FirstOrDefault(t => t.Id == Template);
+            Input.To = _contact?.Email ?? string.Empty;
+            Input.Subject = template?.Subject ?? string.Empty;
+            Input.Body = template?.BodyText ?? string.Empty;
+        }
+    }
+
+    private async Task SendAsync()
+    {
+        // Attributed to the contact only when it is still their address.
+        var contact = _contact is not null && string.Equals(_contact.Email, Input!.To.Trim(), StringComparison.OrdinalIgnoreCase)
+            ? _contact
+            : null;
+
+        var sent = await Outreach.SendAsync(Input!.To, Input.Subject.Trim(), Input.Body.Trim(),
+            contact?.OrganizationId, contact?.Id, null, null, HttpContext.User.VolunteerId());
+
+        Navigation.NavigateTo(ManyHandsPaths.InboxThread(sent.ConversationId));
+    }
+
+    private sealed class ComposeInput : IValidatableObject
+    {
+        [Required(ErrorMessage = "Who is it to?")]
+        [StringLength(254)]
+        public string To { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Give it a subject.")]
+        [StringLength(300)]
+        public string Subject { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Write something first.")]
+        [StringLength(20_000)]
+        public string Body { get; set; } = string.Empty;
+
+        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+        {
+            if (!string.IsNullOrWhiteSpace(To) && !EmailAddress.LooksValid(To.Trim()))
+                yield return new("That does not look like an email address.", [nameof(To)]);
+        }
+    }
+}

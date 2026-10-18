@@ -1,0 +1,170 @@
+@page "/team/inbox/{ConversationId:guid}"
+@inject CrmEmailRepository Emails
+@inject CrmRepository Crm
+@inject ManyHands.Data.Email.OutreachEmail Outreach
+
+<PageMeta Title="@(_messages.FirstOrDefault()?.Subject ?? "Conversation")" Description="An outreach conversation." NoIndex="true" />
+
+@if (_messages.Count == 0)
+{
+    return;
+}
+
+<div class="wrap page-head">
+    <h1>@_messages[0].Subject</h1>
+    <p class="vol-meta vol-meta-lead">
+        <span>with @Correspondent</span>
+        @if (_organization is not null) { <span><a href="@ManyHandsPaths.CrmOrganization(_organization.Id)">@_organization.Name</a></span> }
+    </p>
+</div>
+
+<div class="wrap vol-body vol-stack">
+    @if (_notice is not null)
+    {
+        <p class="vol-notice" role="status">@_notice</p>
+    }
+
+    @if (_messages.Any(m => m.NeedsTriage))
+    {
+        <section class="vol-card" aria-labelledby="triage-head">
+            <h2 id="triage-head">Who is this?</h2>
+            <p>We do not know @Correspondent yet. Say who they are and the whole conversation files under them.</p>
+            <EditForm Model="Triage" FormName="triage" OnValidSubmit="TriageAsync" class="vol-form">
+                <label>
+                    <span>Someone we already know</span>
+                    <InputSelect @bind-Value="Triage!.ContactId">
+                        <option value="">Somebody new</option>
+                        @foreach (var contact in _contacts) { <option value="@contact.Id">@contact.FullName@(contact.Email is { } e ? $" ({e})" : "")</option> }
+                    </InputSelect>
+                </label>
+                <label>
+                    <span>Or their name, as a new contact</span>
+                    <InputText @bind-Value="Triage!.NewName" />
+                </label>
+                <label>
+                    <span>At</span>
+                    <InputSelect @bind-Value="Triage!.OrganizationId">
+                        <option value="">No organization</option>
+                        @foreach (var org in _organizations) { <option value="@org.Id">@org.Name</option> }
+                    </InputSelect>
+                </label>
+                <button class="btn" type="submit">File it</button>
+            </EditForm>
+        </section>
+    }
+
+    <ol class="vol-thread">
+        @foreach (var message in _messages)
+        {
+            <li class="@(message.Direction == EmailDirection.Inbound ? "is-in" : "is-out")">
+                <p class="vol-small">
+                    @(message.Direction == EmailDirection.Inbound ? $"From {message.FromAddress}" : $"To {message.ToAddress}")
+                    · @Show.Stamp(message.OccurredAt)
+                    @if (message.Status == EmailStatus.Failed) { <strong class="vol-error"> · not delivered</strong> }
+                    @if (message.Status == EmailStatus.Simulated) { <text> · logged, not sent</text> }
+                </p>
+                @foreach (var paragraph in Show.Paragraphs(message.BodyText))
+                {
+                    <p>@paragraph</p>
+                }
+            </li>
+        }
+    </ol>
+
+    <section aria-labelledby="reply-head">
+        <h2 id="reply-head">Reply</h2>
+        <EditForm Model="Reply" FormName="reply" OnValidSubmit="ReplyAsync" class="vol-form vol-editor">
+            <DataAnnotationsValidator />
+            <InputTextArea @bind-Value="Reply!.Body" rows="8" aria-label="Your reply" />
+            <ValidationMessage For="() => Reply!.Body" />
+            <button class="btn" type="submit">Send to @Correspondent</button>
+            <p class="vol-small">From @Outreach.Mailbox. Replies come back here.</p>
+        </EditForm>
+    </section>
+</div>
+
+@code {
+    [Parameter] public Guid ConversationId { get; set; }
+
+    [CascadingParameter] private HttpContext HttpContext { get; set; } = default!;
+
+    [SupplyParameterFromForm(FormName = "reply")] private ReplyInput? Reply { get; set; }
+    [SupplyParameterFromForm(FormName = "triage")] private TriageInput? Triage { get; set; }
+
+    private IReadOnlyList<CrmEmail> _messages = [];
+    private CrmOrganization? _organization;
+    private IReadOnlyList<CrmContact> _contacts = [];
+    private IReadOnlyList<OrganizationSummary> _organizations = [];
+    private string? _notice;
+
+    /// <summary>The other side of the conversation: whoever is not us.</summary>
+    private string Correspondent => _messages
+        .Select(m => m.Direction == EmailDirection.Inbound ? OutreachEmail.SenderAddress(m.FromAddress) : m.ToAddress)
+        .First();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Reply ??= new();
+        Triage ??= new();
+        await LoadAsync();
+
+        if (_messages.Count == 0) HttpContext.Response.StatusCode = StatusCodes.Status404NotFound;
+    }
+
+    private async Task LoadAsync()
+    {
+        _messages = await Emails.GetThreadAsync(ConversationId);
+        var orgId = _messages.Select(m => m.OrganizationId).FirstOrDefault(id => id is not null);
+        _organization = orgId is Guid id ? await Crm.GetOrganizationAsync(id) : null;
+
+        if (_messages.Any(m => m.NeedsTriage))
+        {
+            _contacts = await Crm.GetContactsAsync();
+            _organizations = await Crm.GetOrganizationsAsync();
+        }
+    }
+
+    private async Task ReplyAsync()
+    {
+        var latest = _messages[^1];
+        var subject = latest.Subject.StartsWith("Re:", StringComparison.OrdinalIgnoreCase) ? latest.Subject : $"Re: {latest.Subject}";
+
+        var sent = await Outreach.SendAsync(Correspondent, subject, Reply!.Body.Trim(),
+            latest.OrganizationId, latest.ContactId, latest.EngagementId, ConversationId, HttpContext.User.VolunteerId());
+
+        _notice = sent.Status == EmailStatus.Failed ? "That did not send. Try again in a minute." : "Sent.";
+        Reply = new();
+        await LoadAsync();
+    }
+
+    private async Task TriageAsync()
+    {
+        var contactId = Triage!.ContactId;
+        if (contactId is null && !string.IsNullOrWhiteSpace(Triage.NewName))
+        {
+            contactId = await Crm.SaveContactAsync(null, Triage.OrganizationId, Triage.NewName.Trim(), null,
+                Correspondent, null, null);
+        }
+
+        var organizationId = Triage.OrganizationId
+                             ?? (contactId is Guid c ? (await Crm.GetContactAsync(c))?.OrganizationId : null);
+
+        await Emails.TriageAsync(ConversationId, contactId, organizationId);
+        _notice = "Filed.";
+        await LoadAsync();
+    }
+
+    private sealed class ReplyInput
+    {
+        [Required(ErrorMessage = "Write something first.")]
+        [StringLength(20_000)]
+        public string Body { get; set; } = string.Empty;
+    }
+
+    private sealed class TriageInput
+    {
+        public Guid? ContactId { get; set; }
+        [StringLength(200)] public string? NewName { get; set; }
+        public Guid? OrganizationId { get; set; }
+    }
+}

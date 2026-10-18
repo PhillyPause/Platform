@@ -1,0 +1,105 @@
+@page "/team/crm/officials"
+@inject FederalOfficialsRepository Officials
+@inject CrmRepository Crm
+@inject NavigationManager Navigation
+
+<PageMeta Title="Members of Congress" Description="The federal directory, for importing offices into the CRM." NoIndex="true" />
+
+<div class="wrap page-head">
+    <h1>Members of Congress</h1>
+    <p class="lead">
+        From the public congress-legislators dataset, refreshed weekly. Import an office and it
+        becomes an organization in the CRM; importing it again finds the same one.
+    </p>
+</div>
+
+<div class="wrap vol-body">
+    <nav class="vol-filter" aria-label="State">
+        @foreach (var state in States)
+        {
+            <a href="@($"{ManyHandsPaths.CrmOfficials}?state={state}")" aria-current="@(State == state ? "page" : null)">@state</a>
+        }
+    </nav>
+
+    @if (_officials.Count == 0)
+    {
+        <p class="vol-empty">
+            Nobody here. The directory fills itself once a week when <code>FederalOfficials:Enabled</code>
+            is on; until the first refresh it is empty.
+        </p>
+    }
+    else
+    {
+        <EditForm Model="Import" FormName="import" OnSubmit="ImportAsync">
+            <table class="vol-table">
+                <thead><tr><th scope="col">Member</th><th scope="col">Seat</th><th scope="col">Office</th><th scope="col"><span class="vol-sr">Import</span></th></tr></thead>
+                <tbody>
+                    @foreach (var official in _officials)
+                    {
+                        <tr>
+                            <td>
+                                <strong>@official.FullName</strong>
+                                <div class="vol-small">@official.Party</div>
+                            </td>
+                            <td>@Seat(official)</td>
+                            <td class="vol-small">
+                                @official.Office
+                                @if (official.Phone is { } phone) { <div>@phone</div> }
+                            </td>
+                            <td><button class="vol-link-button" type="submit" name="Import.BioguideId" value="@official.BioguideId">Import</button></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </EditForm>
+    }
+</div>
+
+@code {
+    // Philadelphia first, and its neighbours: whose offices PhillyPause calls.
+    private static readonly string[] States = ["PA", "NJ", "DE", "MD", "NY"];
+
+    [CascadingParameter] private HttpContext HttpContext { get; set; } = default!;
+
+    [SupplyParameterFromQuery(Name = "state")] private string? State { get; set; }
+
+    [SupplyParameterFromForm(FormName = "import")] private ImportInput? Import { get; set; }
+
+    private IReadOnlyList<FederalOfficial> _officials = [];
+
+    protected override async Task OnInitializedAsync()
+    {
+        Import ??= new();
+        State = States.Contains(State?.ToUpperInvariant()) ? State!.ToUpperInvariant() : States[0];
+        _officials = await Officials.SearchAsync(State);
+    }
+
+    private async Task ImportAsync()
+    {
+        if (Import!.BioguideId is not { } bioguideId || await Officials.GetAsync(bioguideId) is not { } official) return;
+
+        var id = await Crm.CreateOrganizationAsync(
+            new OrganizationFields(
+                OrganizationKind.CongressionalOffice,
+                $"Office of {official.FullName}",
+                $"{official.Party} · {Seat(official)}",
+                official.Website,
+                official.Office,
+                official.State,
+                official.District),
+            externalRef: official.BioguideId,
+            createdBy: HttpContext.User.VolunteerId());
+
+        Navigation.NavigateTo(ManyHandsPaths.CrmOrganization(id));
+    }
+
+    private static string Seat(FederalOfficial o) =>
+        o.Chamber == "senate" ? $"Senator, {o.State}"
+        : o.District is "00" ? $"Representative, {o.State} at large"
+        : $"Representative, {o.State}-{o.District?.TrimStart('0')}";
+
+    private sealed class ImportInput
+    {
+        public string? BioguideId { get; set; }
+    }
+}

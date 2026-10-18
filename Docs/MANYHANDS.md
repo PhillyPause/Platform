@@ -153,6 +153,52 @@ leads.
   public forms, so a cell starting with `=`, `+`, `-` or `@` gets a leading
   apostrophe before a spreadsheet can run it.
 
+### The CRM and the inbox
+
+Also under `/team`, also for organizers: `Components/Team/Crm` and
+`Components/Team/Inbox`.
+
+| Route | Page |
+|---|---|
+| `/team/crm` | Organizations, filterable by kind; every open task |
+| `/team/crm/organization/{id}` | People, engagements, tasks, the timeline and its mail; details |
+| `/team/crm/pipeline` | Every engagement as a card in its column, moved with arrows |
+| `/team/crm/engagement/{id}` | Tasks, the timeline, and details: status, category, owner, when |
+| `/team/crm/officials` | Members of Congress for PA and its neighbours; import one as an organization |
+| `/team/inbox` | Every outreach thread, and the ones from senders nobody has identified |
+| `/team/inbox/{conversation}` | A thread, a reply, and "who is this?" for a stranger |
+| `/team/inbox/new`, `/team/inbox/templates` | Writing, from a template if one fits |
+
+- **Removing is hiding.** Organizations, contacts, engagements and tasks are
+  soft-deleted; interactions never are. A staffer who left still explains a
+  conversation from last March.
+- **What was said to a contact shows on their organization**, and every email
+  sent or received with a known contact is logged on the timeline too, so
+  "what have we said to this office" is one page.
+- **Importing an official is idempotent**: the office's bioguide id is its
+  `external_ref`, so importing it twice finds the same organization.
+- **Outreach goes from `Email:OutreachAddress`** with our own Message-ID, and
+  a reply carries In-Reply-To and References, so threads hold in both
+  directions.
+
+#### The inbound webhook
+
+Whatever receives mail for the outreach address — a Cloudflare Email Worker,
+or a provider's inbound hook — POSTs each message to `/team/mail/inbound` as
+JSON, with `Email:InboundSecret` in an `X-Inbound-Token` header:
+
+```json
+{ "from": "Jamie <jamie@example.test>", "to": "outreach@phillypause.org",
+  "subject": "Re: Meeting request", "text": "Happy to.",
+  "messageId": "<…>", "inReplyTo": "<…>", "receivedAt": "2026-10-18T14:00:00Z" }
+```
+
+No secret configured means the webhook answers 404; a wrong one, 401. A
+message joins the thread its In-Reply-To names, or failing that the latest
+thread we wrote to that sender in the last 90 days, or starts a new one. Mail
+from an address no contact has is kept and marked for triage, never dropped;
+the same Message-ID delivered twice is stored once.
+
 The anonymous forms that send mail are throttled per address, on the submit
 rather than the page view: five sign-in links in fifteen minutes, twenty
 signups or joins in five. The address is Cloudflare's `CF-Connecting-IP`;
@@ -229,6 +275,11 @@ against real Postgres. Test against the real thing.
 | `Email:FromName` | `PhillyPause` | |
 | `Email:ReplyToAddress` | — | Where replies to a volunteer's mail go |
 | `Email:PublicBaseUrl` | `http://localhost:5203` | The origin every link in an email is built on |
+| `Email:OutreachAddress` | `Email:FromAddress` | Where outreach mail goes from and replies come back to |
+| `Email:InboundSecret` | — | The inbound webhook's shared secret. Unset, the webhook is off |
+| `FederalOfficials:Enabled` | `false` | The weekly refresh of the Congress directory. Off, nothing calls out |
+| `FederalOfficials:SourceUrl` | the `congress-legislators` JSON | Where the directory comes from |
+| `FederalOfficials:RefreshInterval` | 7 days | How often, at most 30 days |
 
 The organisation's name and its timezone, `America/New_York`, are constants
 in `ManyHands.Core/Organisation.cs`, not configuration: there is no second
@@ -272,6 +323,6 @@ Coming across in phases, one PR each.
 | 2. Volunteers, activities, signup and waitlist, sign-in tokens, outbox, mail, reminders | **built** |
 | 3. Public pages: activities, signup, join, sign-in, my activities, unsubscribe, calendar | **built** |
 | 4. Organizer console: editor, roster, check-in, invites, roles, export | **built** |
-| 5. CRM, outreach email and the inbound webhook, the officials directory | not started |
+| 5. CRM, outreach email and the inbound webhook, the officials directory | **built** |
 | 6. Discord | not started |
 | 7. The site links to it; Small Print, privacy and hosting updated | not started |

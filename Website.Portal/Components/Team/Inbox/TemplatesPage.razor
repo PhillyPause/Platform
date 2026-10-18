@@ -1,0 +1,77 @@
+@page "/team/inbox/templates"
+@inject CrmEmailRepository Emails
+
+<PageMeta Title="Templates" Description="Outreach email templates." NoIndex="true" />
+
+<div class="wrap page-head">
+    <h1>Templates</h1>
+    <p class="lead">Letters the team sends often. Start a new email from one and change what needs changing.</p>
+</div>
+
+<div class="wrap vol-body vol-stack">
+    @if (_templates.Count > 0)
+    {
+        <EditForm Model="Remove" FormName="remove" OnSubmit="RemoveAsync">
+            <ul class="vol-people">
+                @foreach (var template in _templates)
+                {
+                    <li>
+                        <a href="@($"{ManyHandsPaths.InboxCompose}?template={template.Id}")">@template.Name</a>
+                        <span class="vol-small">@template.Subject</span>
+                        <button class="vol-link-button" type="submit" name="Remove.Id" value="@template.Id">Remove</button>
+                    </li>
+                }
+            </ul>
+        </EditForm>
+    }
+
+    <section aria-labelledby="new-head">
+        <h2 id="new-head">A new template</h2>
+        <EditForm Model="Input" FormName="template" OnValidSubmit="AddAsync" class="vol-form vol-editor">
+            <DataAnnotationsValidator />
+            <label><span>Name, for the team</span><InputText @bind-Value="Input!.Name" placeholder="Meeting request" /><ValidationMessage For="() => Input!.Name" /></label>
+            <label><span>Subject</span><InputText @bind-Value="Input!.Subject" /><ValidationMessage For="() => Input!.Subject" /></label>
+            <label><span>Message</span><InputTextArea @bind-Value="Input!.Body" rows="10" /><ValidationMessage For="() => Input!.Body" /></label>
+            <button class="btn" type="submit">Save</button>
+        </EditForm>
+    </section>
+</div>
+
+@code {
+    [SupplyParameterFromForm(FormName = "template")] private TemplateInput? Input { get; set; }
+    [SupplyParameterFromForm(FormName = "remove")] private RemoveInput? Remove { get; set; }
+
+    private IReadOnlyList<CrmEmailTemplate> _templates = [];
+
+    protected override async Task OnInitializedAsync()
+    {
+        Input ??= new();
+        Remove ??= new();
+        _templates = await Emails.GetTemplatesAsync();
+    }
+
+    private async Task AddAsync()
+    {
+        await Emails.AddTemplateAsync(Input!.Name.Trim(), Input.Subject.Trim(), Input.Body.Trim());
+        Input = new();
+        _templates = await Emails.GetTemplatesAsync();
+    }
+
+    private async Task RemoveAsync()
+    {
+        if (Remove!.Id is Guid id) await Emails.DeleteTemplateAsync(id);
+        _templates = await Emails.GetTemplatesAsync();
+    }
+
+    private sealed class TemplateInput
+    {
+        [Required(ErrorMessage = "Give it a name.")] [StringLength(100)] public string Name { get; set; } = string.Empty;
+        [Required(ErrorMessage = "Give it a subject.")] [StringLength(300)] public string Subject { get; set; } = string.Empty;
+        [Required(ErrorMessage = "Write the letter.")] [StringLength(20_000)] public string Body { get; set; } = string.Empty;
+    }
+
+    private sealed class RemoveInput
+    {
+        public Guid? Id { get; set; }
+    }
+}

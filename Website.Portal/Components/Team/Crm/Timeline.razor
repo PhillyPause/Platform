@@ -1,0 +1,30 @@
+@* What has happened with an organization, contact or engagement, newest first. *@
+
+@if (Entries.Count == 0)
+{
+    <p class="vol-empty">Nothing logged yet.</p>
+}
+else
+{
+    <ol class="vol-timeline">
+        @foreach (var entry in Entries)
+        {
+            <li>
+                <span class="vol-small">
+                    @Show.Stamp(entry.OccurredAt) · @Show.Words(entry.Kind)
+                    @if (entry.ContactName is { } who) { <text> · @who</text> }
+                    @if (entry.EngagementTitle is { } what) { <text> · @what</text> }
+                    @if (entry.LoggedByName is { } by) { <text> · by @by</text> }
+                </span>
+                @foreach (var paragraph in Show.Paragraphs(entry.Body))
+                {
+                    <p>@paragraph</p>
+                }
+            </li>
+        }
+    </ol>
+}
+
+@code {
+    [Parameter, EditorRequired] public required IReadOnlyList<TimelineEntry> Entries { get; set; }
+}

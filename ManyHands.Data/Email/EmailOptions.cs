@@ -21,6 +21,19 @@ public sealed class EmailOptions
     /// <summary>Resend API key. Never committed: user secrets locally, an env var in production.</summary>
     public string? ApiKey { get; set; }
 
+    /// <summary>
+    /// Where outreach mail — to offices, venues, the press — goes out from and
+    /// replies come back to. Falls back to <see cref="FromAddress"/>.
+    /// </summary>
+    public string? OutreachAddress { get; set; }
+
+    /// <summary>
+    /// The shared secret the inbound mail webhook expects in its
+    /// <c>X-Inbound-Token</c> header. Unset means the webhook is off: it
+    /// answers 404 rather than taking anonymous mail.
+    /// </summary>
+    public string? InboundSecret { get; set; }
+
     /// <summary>The public origin every link in an email is built on.</summary>
     public string PublicBaseUrl { get; set; } = "http://localhost:5203";
 

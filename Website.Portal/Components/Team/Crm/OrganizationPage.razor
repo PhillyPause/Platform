@@ -1,0 +1,289 @@
+@page "/team/crm/organization/{Id:guid}"
+@inject CrmRepository Crm
+@inject CrmEmailRepository Emails
+@inject NavigationManager Navigation
+
+<PageMeta Title="@(_org?.Name ?? "Organization")" Description="An organization in the CRM." NoIndex="true" />
+
+@if (_org is null)
+{
+    return;
+}
+
+<div class="wrap page-head">
+    <h1>@_org.Name</h1>
+    <p class="vol-meta vol-meta-lead">
+        <span>@Show.Words(_org.Kind)</span>
+        @if (_org.State is { } state) { <span>@state@(_org.District is { } d ? $"-{d}" : "")</span> }
+        @if (Show.SafeLink(_org.Website) is { } site) { <span><a href="@site" target="_blank" rel="noopener">Website</a></span> }
+    </p>
+</div>
+
+<div class="wrap vol-body vol-stack">
+    @if (_notice is not null)
+    {
+        <p class="vol-notice" role="status">@_notice</p>
+    }
+
+    <section aria-labelledby="people-head">
+        <h2 id="people-head">People</h2>
+        @if (_contacts.Count > 0)
+        {
+            <EditForm Model="RemoveContact" FormName="contact-remove" OnSubmit="RemoveContactAsync">
+                <ul class="vol-people">
+                    @foreach (var contact in _contacts)
+                    {
+                        <li>
+                            <span><strong>@contact.FullName</strong>@(contact.RoleTitle is { } role ? $", {role}" : "")</span>
+                            <span class="vol-small">
+                                @if (contact.Email is { } email) { <a href="@($"{ManyHandsPaths.InboxCompose}?contact={contact.Id}")">@email</a> }
+                                @if (contact.Phone is { } phone) { <text> · @phone</text> }
+                            </span>
+                            <button class="vol-link-button" type="submit" name="RemoveContact.Id" value="@contact.Id">Remove</button>
+                        </li>
+                    }
+                </ul>
+            </EditForm>
+        }
+        <EditForm Model="NewContact" FormName="contact" OnValidSubmit="AddContactAsync" class="vol-form vol-inline-form">
+            <DataAnnotationsValidator />
+            <label><span>Name</span><InputText @bind-Value="NewContact!.FullName" /></label>
+            <label><span>Role</span><InputText @bind-Value="NewContact!.RoleTitle" placeholder="Chief of staff" /></label>
+            <label><span>Email</span><InputText @bind-Value="NewContact!.Email" type="email" /></label>
+            <label><span>Phone</span><InputText @bind-Value="NewContact!.Phone" /></label>
+            <ValidationMessage For="() => NewContact!.FullName" />
+            <button class="btn btn-ghost" type="submit">Add a person</button>
+        </EditForm>
+    </section>
+
+    <section aria-labelledby="work-head">
+        <h2 id="work-head">Engagements</h2>
+        @if (_engagements.Count > 0)
+        {
+            <ul class="vol-people">
+                @foreach (var engagement in _engagements)
+                {
+                    <li>
+                        <a href="@ManyHandsPaths.CrmEngagement(engagement.Id)">@engagement.Title</a>
+                        <span class="vol-small">@Show.Words(engagement.Status)@(engagement.ScheduledAt is { } at ? $" · {Show.Stamp(at)}" : "")</span>
+                    </li>
+                }
+            </ul>
+        }
+        <EditForm Model="NewEngagement" FormName="engagement" OnValidSubmit="AddEngagementAsync" class="vol-form vol-inline-form">
+            <DataAnnotationsValidator />
+            <label><span>A new effort with them</span><InputText @bind-Value="NewEngagement!.Title" placeholder="Meeting about the AI bill" /></label>
+            <ValidationMessage For="() => NewEngagement!.Title" />
+            <button class="btn btn-ghost" type="submit">Start it</button>
+        </EditForm>
+    </section>
+
+    <section aria-labelledby="todo-head">
+        <h2 id="todo-head">Still to do</h2>
+        <TaskList Tasks="_tasks" />
+        <EditForm Model="NewTask" FormName="task" OnValidSubmit="AddTaskAsync" class="vol-form vol-inline-form">
+            <DataAnnotationsValidator />
+            <label><span>Task</span><InputText @bind-Value="NewTask!.Title" placeholder="Send the follow-up letter" /></label>
+            <label><span>By</span><InputDate @bind-Value="NewTask!.DueOn" /></label>
+            <ValidationMessage For="() => NewTask!.Title" />
+            <button class="btn btn-ghost" type="submit">Add</button>
+        </EditForm>
+    </section>
+
+    <section aria-labelledby="timeline-head">
+        <h2 id="timeline-head">What has happened</h2>
+        <LogInteraction OrganizationId="Id" OnLogged="ReloadAsync" />
+        <Timeline Entries="_timeline" />
+        @if (_emails.Count > 0)
+        {
+            <h3>Mail</h3>
+            <ul class="vol-people">
+                @foreach (var email in _emails)
+                {
+                    <li>
+                        <a href="@ManyHandsPaths.InboxThread(email.ConversationId)">@email.Subject</a>
+                        <span class="vol-small">@(email.Direction == EmailDirection.Inbound ? "from" : "to") @(email.Direction == EmailDirection.Inbound ? email.FromAddress : email.ToAddress) · @Show.Stamp(email.OccurredAt)</span>
+                    </li>
+                }
+            </ul>
+        }
+    </section>
+
+    <section aria-labelledby="details-head">
+        <h2 id="details-head">Details</h2>
+        <EditForm Model="Details" FormName="details" OnValidSubmit="SaveDetailsAsync" class="vol-form vol-editor">
+            <DataAnnotationsValidator />
+            <label><span>Name</span><InputText @bind-Value="Details!.Name" /><ValidationMessage For="() => Details!.Name" /></label>
+            <label>
+                <span>Kind</span>
+                <InputSelect @bind-Value="Details!.Kind">
+                    @foreach (var kind in Enum.GetValues<OrganizationKind>()) { <option value="@kind">@Show.Words(kind)</option> }
+                </InputSelect>
+            </label>
+            <label><span>About them</span><InputTextArea @bind-Value="Details!.Description" rows="3" /></label>
+            <label><span>Website</span><InputText @bind-Value="Details!.Website" type="url" /></label>
+            <label><span>Address</span><InputText @bind-Value="Details!.Address" /></label>
+            <div class="vol-pair">
+                <label><span>State</span><InputText @bind-Value="Details!.State" maxlength="2" /><ValidationMessage For="() => Details!.State" /></label>
+                <label><span>District</span><InputText @bind-Value="Details!.District" /></label>
+            </div>
+            <button class="btn" type="submit">Save</button>
+        </EditForm>
+        <EditForm Model="Remove" FormName="remove" OnSubmit="RemoveAsync" class="vol-danger">
+            <button class="btn btn-ghost" type="submit">Remove this organization</button>
+            <span class="vol-small">It is hidden, not destroyed: its history stays.</span>
+        </EditForm>
+    </section>
+</div>
+
+@code {
+    [Parameter] public Guid Id { get; set; }
+
+    [CascadingParameter] private HttpContext HttpContext { get; set; } = default!;
+
+    [SupplyParameterFromForm(FormName = "contact")] private ContactInput? NewContact { get; set; }
+    [SupplyParameterFromForm(FormName = "contact-remove")] private IdInput? RemoveContact { get; set; }
+    [SupplyParameterFromForm(FormName = "engagement")] private TitleInput? NewEngagement { get; set; }
+    [SupplyParameterFromForm(FormName = "task")] private TaskInput? NewTask { get; set; }
+    [SupplyParameterFromForm(FormName = "details")] private DetailsInput? Details { get; set; }
+    [SupplyParameterFromForm(FormName = "remove")] private IdInput? Remove { get; set; }
+
+    private CrmOrganization? _org;
+    private IReadOnlyList<CrmContact> _contacts = [];
+    private IReadOnlyList<EngagementSummary> _engagements = [];
+    private IReadOnlyList<CrmTaskSummary> _tasks = [];
+    private IReadOnlyList<TimelineEntry> _timeline = [];
+    private IReadOnlyList<CrmEmail> _emails = [];
+    private string? _notice;
+
+    protected override async Task OnInitializedAsync()
+    {
+        NewContact ??= new();
+        RemoveContact ??= new();
+        NewEngagement ??= new();
+        NewTask ??= new();
+        Remove ??= new();
+
+        _org = await Crm.GetOrganizationAsync(Id);
+        if (_org is null)
+        {
+            HttpContext.Response.StatusCode = StatusCodes.Status404NotFound;
+            return;
+        }
+
+        Details ??= DetailsInput.From(_org);
+        await ReloadAsync();
+    }
+
+    private async Task ReloadAsync()
+    {
+        _org = await Crm.GetOrganizationAsync(Id);
+        _contacts = await Crm.GetContactsAsync(Id);
+        _engagements = await Crm.GetEngagementsAsync(Id);
+        _tasks = await Crm.GetTasksAsync(CrmTaskStatus.Open, organizationId: Id);
+        _timeline = await Crm.GetTimelineAsync(organizationId: Id);
+        _emails = await Emails.GetForOrganizationAsync(Id);
+    }
+
+    private async Task AddContactAsync()
+    {
+        await Crm.SaveContactAsync(null, Id, NewContact!.FullName.Trim(), Blank(NewContact.RoleTitle),
+            Blank(NewContact.Email), Blank(NewContact.Phone), null);
+        _notice = $"{NewContact.FullName.Trim()} added.";
+        NewContact = new();
+        await ReloadAsync();
+    }
+
+    private async Task RemoveContactAsync()
+    {
+        if (RemoveContact!.Id is Guid id) await Crm.DeleteContactAsync(id);
+        await ReloadAsync();
+    }
+
+    private async Task AddEngagementAsync()
+    {
+        var id = await Crm.SaveEngagementAsync(null, new EngagementFields(
+            Id, NewEngagement!.Title.Trim(), EngagementStatus.Draft, null,
+            HttpContext.User.VolunteerId(), null, null, null, null));
+        Navigation.NavigateTo(ManyHandsPaths.CrmEngagement(id));
+    }
+
+    private async Task AddTaskAsync()
+    {
+        await Crm.AddTaskAsync(NewTask!.Title.Trim(), null, Id, NewTask.DueOn, HttpContext.User.VolunteerId());
+        NewTask = new();
+        await ReloadAsync();
+    }
+
+    private async Task SaveDetailsAsync()
+    {
+        await Crm.UpdateOrganizationAsync(Id, new OrganizationFields(
+            Details!.Kind, Details.Name.Trim(), Blank(Details.Description), Blank(Details.Website),
+            Blank(Details.Address), Blank(Details.State)?.ToUpperInvariant(), Blank(Details.District)));
+        _notice = "Saved.";
+        await ReloadAsync();
+    }
+
+    private async Task RemoveAsync()
+    {
+        await Crm.DeleteOrganizationAsync(Id);
+        Navigation.NavigateTo(ManyHandsPaths.Crm);
+    }
+
+    private static string? Blank(string? value) => string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+
+    private sealed class IdInput
+    {
+        public Guid? Id { get; set; }
+    }
+
+    private sealed class TitleInput
+    {
+        [Required(ErrorMessage = "Give it a name.")]
+        [StringLength(200)]
+        public string Title { get; set; } = string.Empty;
+    }
+
+    private sealed class TaskInput
+    {
+        [Required(ErrorMessage = "Say what needs doing.")]
+        [StringLength(300)]
+        public string Title { get; set; } = string.Empty;
+
+        public DateOnly? DueOn { get; set; }
+    }
+
+    private sealed class ContactInput
+    {
+        [Required(ErrorMessage = "A name, at least.")]
+        [StringLength(200)]
+        public string FullName { get; set; } = string.Empty;
+
+        [StringLength(200)] public string? RoleTitle { get; set; }
+        [StringLength(254)] public string? Email { get; set; }
+        [StringLength(50)] public string? Phone { get; set; }
+    }
+
+    private sealed class DetailsInput
+    {
+        [Required(ErrorMessage = "It needs a name.")]
+        [StringLength(200)]
+        public string Name { get; set; } = string.Empty;
+
+        public OrganizationKind Kind { get; set; }
+        [StringLength(2000)] public string? Description { get; set; }
+        [StringLength(500)] public string? Website { get; set; }
+        [StringLength(500)] public string? Address { get; set; }
+
+        [RegularExpression("^[A-Za-z]{2}$", ErrorMessage = "Two letters, like PA.")]
+        public string? State { get; set; }
+
+        [StringLength(10)] public string? District { get; set; }
+
+        public static DetailsInput From(CrmOrganization org) => new()
+        {
+            Name = org.Name, Kind = org.Kind, Description = org.Description, Website = org.Website,
+            Address = org.Address, State = org.State, District = org.District
+        };
+    }
+}
