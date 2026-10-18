@@ -167,6 +167,17 @@ CREATE TABLE invite_tokens (
 );
 
 
+-- The keys that sign the sign-in cookie and the forms' antiforgery tokens.
+-- Kept here so a deploy, which replaces the container, does not sign every
+-- volunteer out. ASP.NET Data Protection reads and writes it; nothing else.
+CREATE TABLE data_protection_keys (
+    friendly_name text NOT NULL,
+    xml text NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    CONSTRAINT data_protection_keys_pkey PRIMARY KEY (friendly_name)
+);
+
+
 -- ==========================================================================
 -- Telling people things
 -- ==========================================================================

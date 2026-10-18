@@ -79,7 +79,50 @@ What is built so far is in [section 7](#7-status).
 
 `Website.Portal/Program.cs` calls `AddManyHands()` and `MigrateManyHands()`
 only when the flag is on. The background workers are hosted services in the
-same process: there is one instance, so there is nothing to coordinate.
+same process: there is one instance, so there is nothing to coordinate. With
+the flag off, `UseManyHandsGate` answers every `/volunteer` and `/team` path
+with the ordinary 404, so no page reaches for a service that was never
+registered.
+
+### The volunteer pages
+
+Static SSR Razor components in `Website.Portal/Components/Volunteer`, on
+`VolunteerLayout` (the site's own header and footer, plus the area's nav and
+`volunteer.css`). Helpers that are not components live in
+`Website.Portal/Volunteer`.
+
+| Route | Page |
+|---|---|
+| `/volunteer` | What's on, filterable by type, with the public calendar feed |
+| `/volunteer/activity/{id}` | One activity and its signup form |
+| `/volunteer/join` | Joining: name, email, interests; a welcome the first time |
+| `/volunteer/sign-in` | Ask for a sign-in link |
+| `/volunteer/sign-in/{token}` | Opening the link shows a button; **pressing it** spends the token |
+| `/volunteer/me` | Signups and cancelling, interests and email, the personal calendar feed, export, delete, sign out |
+| `/volunteer/unsubscribe/{key}` | Asks, then unsubscribes |
+
+Endpoints that are not pages: `/volunteer/calendar.ics`,
+`/volunteer/calendar/{key}.ics`, `/volunteer/me/export.json`, and
+`/volunteer/unsubscribe/{key}/one-click`, which a mail client's own
+unsubscribe button posts to with no token (RFC 8058).
+
+Three things about signing in:
+
+- **A link is spent by a press, not a visit.** Mail scanners open every link
+  in a message to check it; a link spent on arrival would be spent by the
+  scanner. The unsubscribe link in an email body asks first for the same
+  reason.
+- **The cookie names the person; the database says what they may do.** It
+  carries the volunteer id and nothing else that matters, and every page reads
+  the role fresh, so a removed organizer stops being one at once.
+- **The keys that sign the cookie live in Postgres** (`data_protection_keys`).
+  In the container they would be replaced by every deploy, signing everyone
+  out on each merge to `main`.
+
+The anonymous forms that send mail are throttled per address, on the submit
+rather than the page view: five sign-in links in fifteen minutes, twenty
+signups or joins in five. The address is Cloudflare's `CF-Connecting-IP`;
+behind it every reader would otherwise share one.
 
 ## 4. Data
 
@@ -97,6 +140,7 @@ Postgres, one schema (`public`), defined by
 | `invites`, `invite_tokens` | Emailed invitations, and their link hashes, apart |
 | `outbox` | Everything waiting to be sent |
 | `email_messages` | Volunteers' transactional mail, as sent |
+| `data_protection_keys` | The keys that sign the sign-in cookie and form tokens |
 | `external_publications`, `activity_pings`, `discord_role_grants` | What has been announced, who has been pinged, which Discord roles the bot granted |
 | `crm_*` | The CRM and outreach mail |
 | `federal_officials`, `sync_runs` | The officials directory and its refreshes |
@@ -170,11 +214,16 @@ docker run -d --name manyhands-db -e POSTGRES_PASSWORD=dev -p 5432:5432 postgres
 cd Website.Portal
 dotnet user-secrets set "ManyHands:Enabled" "true"
 dotnet user-secrets set "ConnectionStrings:ManyHands" "Host=localhost;Username=postgres;Password=dev;Database=postgres"
+dotnet user-secrets set "ManyHands:Seed" "true"
 dotnet run
 ```
 
-The schema is applied at startup. `ManyHands.Tests` starts its own container,
-so `dotnet test` needs Docker running.
+The schema is applied at startup, and with `ManyHands:Seed` the fictional
+data in `9999_seed_dev.sql` too: a few activities, one of them full, and
+`organizer@example.test`, an admin. Mail is only logged locally, so to sign in
+ask for a link on `/volunteer/sign-in` and copy it out of the console.
+`ManyHands.Tests` starts its own container, so `dotnet test` needs Docker
+running.
 
 ## 7. Status
 
@@ -184,7 +233,7 @@ Coming across in phases, one PR each.
 |---|---|
 | 1. Projects, schema, migrations, tests | **built** |
 | 2. Volunteers, activities, signup and waitlist, sign-in tokens, outbox, mail, reminders | **built** |
-| 3. Public pages: activities, signup, join, sign-in, my activities, unsubscribe, calendar | not started |
+| 3. Public pages: activities, signup, join, sign-in, my activities, unsubscribe, calendar | **built** |
 | 4. Organizer console: editor, roster, check-in, invites, roles, export | not started |
 | 5. CRM, outreach email and the inbound webhook, the officials directory | not started |
 | 6. Discord | not started |

@@ -1,0 +1,103 @@
+@page "/volunteer/sign-in"
+@inject VolunteerRepository Volunteers
+@inject AuthTokenRepository Tokens
+@inject ManyHands.Data.Email.EmailDispatcher Email
+@inject FormThrottle Throttle
+
+<PageMeta Title="Sign in" Description="Sign in to PhillyPause with a link by email. No password." NoIndex="true" />
+
+
+<div class="wrap page-head">
+    <h1>Sign in</h1>
+    <p class="lead">No password. Give us your email and we send you a link that signs you in.</p>
+</div>
+
+<div class="wrap vol-body">
+    <section class="vol-card vol-narrow" aria-labelledby="sign-in-head">
+        @if (_sent)
+        {
+            <h2 id="sign-in-head">Check your email</h2>
+            <p>
+                If that address is right, a sign-in link is on its way. It works once,
+                for @((int)AuthTokenRepository.Lifetime.TotalMinutes) minutes.
+                Nothing there? Look in spam, then try again.
+            </p>
+        }
+        else
+        {
+            <h2 id="sign-in-head">Email me a link</h2>
+            @if (Expired)
+            {
+                <p class="vol-error" role="alert">That link has expired or was already used. Ask for a fresh one.</p>
+            }
+            <EditForm Model="Input" FormName="sign-in" OnValidSubmit="SendAsync" class="vol-form">
+                <DataAnnotationsValidator />
+                <label>
+                    <span>Email</span>
+                    <InputText @bind-Value="Input!.Email" type="email" autocomplete="email" />
+                    <ValidationMessage For="() => Input!.Email" />
+                </label>
+                @if (_refused is not null)
+                {
+                    <p class="vol-error" role="alert">@_refused</p>
+                }
+                <button class="btn" type="submit">Send the link</button>
+            </EditForm>
+        }
+    </section>
+</div>
+
+@code {
+    [CascadingParameter] private HttpContext HttpContext { get; set; } = default!;
+
+    [SupplyParameterFromQuery(Name = "expired")] private bool Expired { get; set; }
+
+    [SupplyParameterFromForm(FormName = "sign-in")] private SignInInput? Input { get; set; }
+
+    protected override void OnInitialized() => Input ??= new();
+
+    private bool _sent;
+    private string? _refused;
+
+    private async Task SendAsync()
+    {
+        if (!Throttle.AllowSignIn(HttpContext))
+        {
+            _refused = "That is a lot of links in a short time. Wait a quarter of an hour and try again.";
+            return;
+        }
+
+        var address = Input!.Email.Trim();
+        if (!EmailAddress.LooksValid(address))
+        {
+            _refused = "That does not look like an email address.";
+            return;
+        }
+
+        // Asking for a link is joining, as it always has been: the address is
+        // the identity, and whoever can read its mail is its owner.
+        var volunteerId = await Volunteers.UpsertByEmailAsync(address, displayName: null);
+
+        if (await Volunteers.GetByIdAsync(volunteerId) is { IsDeleted: false } volunteer)
+        {
+            var token = await Tokens.IssueAsync(volunteerId);
+            var (subject, body) = ManyHands.Data.Email.EmailTemplates.MagicLink(
+                volunteer.DisplayName, Email.Link(ManyHandsPaths.RedeemSignIn(token)), AuthTokenRepository.Lifetime);
+
+            // Requested by the person themselves, so it goes even to someone who
+            // unsubscribed from everything else.
+            await Email.SendAsync(volunteer, subject, body, "magic-link", bypassOptIn: true);
+        }
+
+        // The same answer whether or not the address was known: whether someone
+        // is on file is not something a stranger gets to find out here.
+        _sent = true;
+    }
+
+    private sealed class SignInInput
+    {
+        [Required(ErrorMessage = "Enter the email address you use with us.")]
+        [StringLength(254)]
+        public string Email { get; set; } = string.Empty;
+    }
+}

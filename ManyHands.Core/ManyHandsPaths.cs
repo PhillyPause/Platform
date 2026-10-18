@@ -27,7 +27,14 @@ public static class ManyHandsPaths
 
     public static string AcceptInvite(string token) => $"/volunteer/join/{token}";
 
+    /// <summary>The link in an email's footer: a page with a button, so a mail scanner cannot unsubscribe anyone.</summary>
     public static string Unsubscribe(Guid commsKey) => $"/volunteer/unsubscribe/{commsKey}";
+
+    /// <summary>The List-Unsubscribe header's target: a mail client's own button POSTs here (RFC 8058).</summary>
+    public static string OneClickUnsubscribe(Guid commsKey) => $"/volunteer/unsubscribe/{commsKey}/one-click";
+
+    /// <summary>Everything held about the signed-in volunteer, as a file to keep.</summary>
+    public const string Export = "/volunteer/me/export.json";
 
     /// <summary>Every published activity, for any calendar app.</summary>
     public const string Calendar = "/volunteer/calendar.ics";

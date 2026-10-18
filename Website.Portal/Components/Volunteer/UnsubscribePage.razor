@@ -1,0 +1,53 @@
+@page "/volunteer/unsubscribe/{CommsKey:guid}"
+@inject VolunteerRepository Volunteers
+
+@* The link at the foot of every email. It asks before it acts, because mail
+   scanners open links to check them and would otherwise unsubscribe people
+   who never chose to. A mail client's own unsubscribe button posts to the
+   one-click endpoint instead, which needs no page. *@
+
+<PageMeta Title="Unsubscribe" Description="Stop PhillyPause emails." NoIndex="true" />
+
+
+<div class="wrap page-head">
+    <h1>@(_done ? "You are unsubscribed" : "Stop the emails?")</h1>
+</div>
+
+<div class="wrap vol-body">
+    <section class="vol-card vol-narrow">
+        @if (_done)
+        {
+            <p>
+                No more email from us. Sign-in links you ask for yourself still arrive,
+                and you can switch the rest back on from <a href="@ManyHandsPaths.Me">your page</a>.
+            </p>
+        }
+        else
+        {
+            <p>You will not hear from us again unless you ask for a sign-in link.</p>
+            <EditForm Model="Input" FormName="unsubscribe" OnSubmit="UnsubscribeAsync" class="vol-form">
+                <button class="btn" type="submit">Unsubscribe me</button>
+            </EditForm>
+        }
+    </section>
+</div>
+
+@code {
+    [Parameter] public Guid CommsKey { get; set; }
+
+    [SupplyParameterFromForm(FormName = "unsubscribe")] private UnsubscribeInput? Input { get; set; }
+
+    protected override void OnInitialized() => Input ??= new();
+
+    private bool _done;
+
+    // The same answer whether or not the key matched anyone: this page must not
+    // tell a stranger that an address is real.
+    private async Task UnsubscribeAsync()
+    {
+        await Volunteers.UnsubscribeByCommsKeyAsync(CommsKey);
+        _done = true;
+    }
+
+    private sealed class UnsubscribeInput;
+}

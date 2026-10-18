@@ -1,6 +1,7 @@
 using ManyHands.Data;
 using Microsoft.AspNetCore.HttpOverrides;
 using Website.Portal.Components;
+using Website.Portal.Volunteer;
 using Website.Content;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -20,12 +21,19 @@ var manyHandsEnabled = builder.Configuration.IsManyHandsEnabled();
 if (manyHandsEnabled)
 {
     builder.Services.AddManyHands(builder.Configuration);
+    builder.Services.AddSingleton<FormThrottle>();
 }
+
+// Registered either way, so the volunteer pages' [Authorize] has something to
+// answer to. Nothing issues the cookie unless a volunteer signs in, and with
+// ManyHands off nobody can.
+builder.Services.AddVolunteerSession(builder.Environment.IsDevelopment());
 
 // App Platform terminates TLS and fronts this container, so without honouring
 // X-Forwarded-Proto every request looks like plain HTTP and the redirect below
-// loops. Same setup as ManyHands' Api/Program.cs: the container is reachable
-// only through the platform router, so trusting the immediate proxy is right.
+// loops. The container is reachable only through the platform router, so
+// trusting the immediate proxy is right. A reader's own address comes from
+// Cloudflare's header instead (FormThrottle.ClientAddress).
 builder.Services.Configure<ForwardedHeadersOptions>(options =>
 {
     options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
@@ -62,14 +70,25 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseStatusCodePagesWithReExecute("/not-found", createScopeForStatusCodePages: true);
+
+// After the status-code pages, so a gated path renders the ordinary 404.
+app.UseManyHandsGate(manyHandsEnabled);
+
+app.UseAuthentication();
+app.UseAuthorization();
 app.UseAntiforgery();
 
 app.MapStaticAssets();
+
+if (manyHandsEnabled)
+{
+    app.MapVolunteerEndpoints();
+}
 app.MapRazorComponents<App>()
     .AddInteractiveWebAssemblyRenderMode()
     .AddAdditionalAssemblies(typeof(Website.Client._Imports).Assembly);
 
 app.Run();
 
-/// <summary>Exposed so tests can drive the real pipeline, as in ManyHands.</summary>
+/// <summary>Exposed so tests can drive the real pipeline.</summary>
 public partial class Program;

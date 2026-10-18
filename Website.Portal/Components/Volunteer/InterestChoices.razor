@@ -1,0 +1,34 @@
+@* The kinds of thing a volunteer likes doing, as checkboxes. Plain inputs
+   named "interest", read back with Read() below: a set of checkboxes is the
+   one shape form binding makes awkward, and this keeps it a list of ids. *@
+
+<fieldset class="vol-interests">
+    <legend>@Legend</legend>
+    @foreach (var type in Types)
+    {
+        <label>
+            <input type="checkbox" name="@FieldName" value="@type.Id" checked="@Selected.Contains(type.Id)" />
+            <span>@type.Label</span>
+        </label>
+    }
+</fieldset>
+
+@code {
+    public const string FieldName = "interest";
+
+    [Parameter, EditorRequired] public required IReadOnlyList<ActivityType> Types { get; set; }
+
+    [Parameter] public IReadOnlyCollection<short> Selected { get; set; } = [];
+
+    [Parameter] public string Legend { get; set; } = "What do you like doing?";
+
+    /// <summary>The ids ticked on the form just posted. Unknown values are dropped.</summary>
+    public static short[] Read(HttpContext http) =>
+        http.Request.HasFormContentType
+            ? http.Request.Form[FieldName]
+                .Select(v => short.TryParse(v, out var id) ? id : (short)-1)
+                .Where(id => id > 0)
+                .Distinct()
+                .ToArray()
+            : [];
+}

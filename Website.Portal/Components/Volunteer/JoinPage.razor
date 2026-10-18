@@ -1,0 +1,96 @@
+@page "/volunteer/join"
+@inject ActivityTypeRepository Types
+@inject VolunteerRepository Volunteers
+@inject FormThrottle Throttle
+
+<PageMeta Title="Join PhillyPause" Description="Tell us what you like doing and we will tell you when it is on. No experience needed, and it commits you to nothing." />
+
+<div class="wrap page-head">
+    <h1>Join us</h1>
+    <p class="lead">
+        Tell us what you like doing, and we will tell you when it is on. That is
+        all joining means: no dues, no meetings you have to attend, nothing to sign.
+    </p>
+</div>
+
+<div class="wrap vol-body">
+    <section class="vol-card vol-narrow" aria-labelledby="join-head">
+        @if (_joined is not null)
+        {
+            <h2 id="join-head">@(_joined.AlreadyMember ? "You are already one of us" : "Welcome")</h2>
+            <p>
+                @(_joined.AlreadyMember
+                    ? "We have saved what you ticked alongside what you told us before."
+                    : "A welcome email is on its way. Until then, see what is coming up.")
+            </p>
+            <p><a class="btn" href="@ManyHandsPaths.Activities">See what&rsquo;s on</a></p>
+        }
+        else
+        {
+            <h2 id="join-head">Count me in</h2>
+            <EditForm Model="Input" FormName="join" OnValidSubmit="JoinAsync" class="vol-form">
+                <DataAnnotationsValidator />
+                <label>
+                    <span>Your name</span>
+                    <InputText @bind-Value="Input!.DisplayName" autocomplete="name" />
+                </label>
+                <label>
+                    <span>Email</span>
+                    <InputText @bind-Value="Input!.Email" type="email" autocomplete="email" />
+                    <ValidationMessage For="() => Input!.Email" />
+                </label>
+                <InterestChoices Types="_types" />
+                @if (_refused is not null)
+                {
+                    <p class="vol-error" role="alert">@_refused</p>
+                }
+                <button class="btn" type="submit">Join</button>
+                <p class="vol-small">
+                    We only email you about the kinds of thing you ticked, and every email
+                    has a one-click way out. <a href="/privacy">What we keep</a>.
+                </p>
+            </EditForm>
+        }
+    </section>
+</div>
+
+@code {
+    [CascadingParameter] private HttpContext HttpContext { get; set; } = default!;
+
+    [SupplyParameterFromForm(FormName = "join")] private JoinInput? Input { get; set; }
+
+    private IReadOnlyList<ActivityType> _types = [];
+    private JoinResult.Ok? _joined;
+    private string? _refused;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Input ??= new();
+        _types = await Types.GetActiveAsync();
+    }
+
+    private async Task JoinAsync()
+    {
+        if (!Throttle.AllowPublicWrite(HttpContext))
+        {
+            _refused = "That is a lot of joining from one place. Wait a few minutes and try again.";
+            return;
+        }
+
+        var result = await Volunteers.JoinAsync(
+            Input!.DisplayName ?? string.Empty, Input.Email, InterestChoices.Read(HttpContext));
+
+        if (result is JoinResult.Ok ok) _joined = ok;
+        else _refused = "That does not look like an email address.";
+    }
+
+    private sealed class JoinInput
+    {
+        [StringLength(100)]
+        public string? DisplayName { get; set; }
+
+        [Required(ErrorMessage = "We need an email to tell you what is on.")]
+        [StringLength(254)]
+        public string Email { get; set; } = string.Empty;
+    }
+}
