@@ -1,12 +1,12 @@
 # PhillyPause website — plan
 
 A Blazor WebAssembly site for PhillyPause at `phillypause.org`, reimagining
-[pauseai.info](https://pauseai.info) for one city, sharing a domain and a
-design language with [`PhillyPause/ManyHands`](https://github.com/PhillyPause/ManyHands).
+[pauseai.info](https://pauseai.info) for one city, sharing a host, a domain
+and a design language with ManyHands, PhillyPause's volunteer system
+([`MANYHANDS.md`](MANYHANDS.md)).
 
-Present tense: this file describes what the plan **is**. Conventions follow
-ManyHands' `CLAUDE.md` — UPPERCASE doc names, conventional commits, protected
-`main`, no ADRs.
+Present tense: this file describes what the plan **is**. Conventions: UPPERCASE
+doc names, conventional commits, protected `main`, no ADRs.
 
 ---
 
@@ -44,9 +44,11 @@ Owner decisions. Settled — do not relitigate.
    review. The mark is replaced rather than cleared (§3.1), and content comes
    from PauseAI Global's CC-BY licence (§3), which grants permission in advance
    and asks nothing of anyone.
-3. **The website ships before any substantial further work on ManyHands.**
-   ManyHands is feature-complete for v1 and frozen for the duration. This
-   reshapes §5 and §7 — see the ManyHands-dependency note in §5.
+3. **ManyHands serves PhillyPause and nothing else.** It came from a
+   multi-chapter platform built for PauseAI US; what moved into this
+   solution is the subset PhillyPause uses, with chapters, tenants and the
+   "national" tier taken out for good. The site shipped first, and does not
+   depend on ManyHands being there (§5).
 
 ## 1. What we are cloning, and what we are not
 
@@ -91,28 +93,23 @@ prerendering (crawl the routes, emit static HTML) so the bundle can sit on a
 $0 static host. That is an extra moving part for the same outcome; prefer the
 Web App.
 
-### 2.2 Separate repo, shared domain
+### 2.2 One repo, one host
 
-ManyHands' `Api/Program.cs` ends with:
+The website and ManyHands are one solution, served by one host,
+`Website.Portal`, as one App Platform component. ManyHands' pages are more
+routes on `phillypause.org`; its background work (the outbox, reminders,
+Discord) runs as hosted services in the same process. One instance, one
+deploy, one bill.
 
-```csharp
-// The bare root is not ours: the app lives under a path on the main site.
-app.MapGet("/", () => Results.Redirect("/manyhands/"));
-```
+What that costs is coupling, and two rules keep it small:
 
-The split was designed in from day one. Honour it:
-
-- **`PhillyPause/Platform`** — this repo, its own DigitalOcean App Platform
-  component, serving `/`.
-- **`PhillyPause/ManyHands`** — unchanged, keeps `/manyhands/`. Its root
-  redirect simply stops being reached.
-- One domain via App Platform **ingress rules**: `/manyhands` → the ManyHands
-  service, `/` → the site.
-
-The site deploys on a content typo without redeploying an app that carries
-Postgres RLS, a Discord gateway and an outbox. That separation is the whole
-argument; do not collapse the two into one host for the sake of one fewer
-pipeline.
+- **ManyHands is behind `ManyHands:Enabled`.** Off, nothing of it is
+  registered and the host needs no database, so the site deploys on a content
+  typo exactly as it did before ManyHands arrived.
+- **The home page never waits on the database**, flag on or off. What it
+  shows of ManyHands comes from an in-memory copy a worker keeps fresh, with
+  a static fallback (§5). A Postgres outage takes the volunteer pages down,
+  not the front page.
 
 `phillypause.org` is **live**, on App Platform behind Cloudflare, which still
 holds the zone (`aldo`/`liv.ns.cloudflare.com`). Apex and `www` are proxied
@@ -146,7 +143,10 @@ Website.Portal/       ASP.NET Core host — prerender, routing, OG tags, sitemap
 Website.Client/       Blazor WASM — interactive islands only
 Website.Content/      Markdown + the MSBuild task that compiles it
 Website.Tests/        xunit; snapshot the rendered HTML of every route
-Docs/                 DESIGN.md, CONTENT.md, MOTION.md, HOSTING.md
+ManyHands.Core/       the volunteer system's domain
+ManyHands.Data/       its repositories, migrations, mail, Discord and workers
+ManyHands.Tests/      xunit against real Postgres
+Docs/                 MANYHANDS.md, HOSTING.md, DESIGN.md, CONTENT.md, MOTION.md
 Deploy/digitalocean/  app spec + ingress rules
 ```
 
@@ -168,17 +168,18 @@ Website.Tests       its tests
 ```
 
 The solution is `Platform.slnx` at the repo root, named for the
-organisation rather than any one product, because **ManyHands moves into this
-same solution** when the site has shipped (section 5). Its projects take the
-same shape and sit beside the website's as siblings:
+organisation rather than any one product, because **ManyHands lives in this
+same solution**. Its projects take the same shape and sit beside the
+website's as siblings:
 
 ```
-ManyHands.Api       the service
 ManyHands.Core      its domain
-ManyHands.Client    its front end, if it keeps one
+ManyHands.Data      its data layer, mail, Discord and workers
 ManyHands.Tests     its tests
 Shared.*            only if something is genuinely shared by both products
 ```
+
+ManyHands has no host of its own: its pages live in `Website.Portal` (§2.2).
 
 Two rules that follow from this, and are the reason for the convention:
 
@@ -195,10 +196,9 @@ already say it, and nothing here is published to NuGet. If anything ever is,
 that package gets the prefix at pack time rather than the whole tree getting
 it now.
 
-Match ManyHands' infrastructure exactly: `Directory.Packages.props` for
-central version pinning, `ManagePackageVersionsCentrally`, FluentAssertions
-pinned to 7.2.2 (the last Apache-2.0 release), Playwright for the smoke suite,
-and the same four required CI checks so the two repos feel like one project.
+One infrastructure for both products: `Directory.Packages.props` for central
+version pinning, `ManagePackageVersionsCentrally`, FluentAssertions pinned to
+7.2.2 (the last Apache-2.0 release), and one CI workflow.
 
 ## 3. Licence and attribution — the part to get right first
 
@@ -275,60 +275,35 @@ Nothing else in this plan depends on which mark wins.
 `/act` carrying the weight is the point of difference. PauseAI Global is a
 movement explainer; this is a **door into a room on a Tuesday night**.
 
-## 5. ManyHands integration
+## 5. ManyHands on the site
 
-Under §0.3 ManyHands is **frozen**. So this is a one-way, read-only
-relationship: the site consumes endpoints that already exist, and **ships no
-commits to the ManyHands repo**. Every touchpoint below needs zero changes
-there.
+ManyHands is PhillyPause's own volunteer system, in this solution and served
+by this host ([`MANYHANDS.md`](MANYHANDS.md)). The site reaches it in-process,
+through `ManyHands.Data`, never over HTTP:
 
-A note on what ManyHands now is. Its README describes it as "volunteer
-coordination for PauseAI US chapters" and its data model is multi-tenant by
-chapter — written when PhillyPause expected to be one. Under §0.0 that framing
-is obsolete: ManyHands is **PhillyPause's own volunteer system**, which happens
-to be built to host more than one group and is MIT licensed so any other group
-can run it. Nothing technical has to change; the multi-tenancy is a harmless
-capability rather than a statement of affiliation. Its own copy is stale and
-§0.3 says leave it alone — fix it when it next thaws, not before.
-
-- **Events** — `/manyhands/api/chapters/philly/...` is already
-  anonymous-readable. Fetch server-side during prerender so events land in the
-  HTML for crawlers and unfurls, then hydrate. Same origin, so no CORS, no
-  keys, no new endpoint.
-- **Join** — `/join` is a page of copy and a link to the built, rate-limited,
-  flood-capped join flow. Do not build a second signup form.
-- **Calendar** — the existing per-chapter ICS feed is a link, not a feature.
-- **Shared tokens** — `Web/ManyHands.Client/wwwroot/css/app.css` already
-  defines the palette (`--accent: #c05a0e`, Liberty-Bell orange, with a
-  dark-mode `#ee8a3a`). The site's `tokens.css` **copies those values and
-  becomes the source of truth**; ManyHands can adopt it whenever it next
-  thaws. Inverting the direction keeps §0.3 intact and costs one duplicated
-  `:root` block in the meantime.
+- **Events** — the upcoming published activities, on `/` and `/act`. The home
+  page reads them from an in-memory copy a background worker refreshes, so a
+  request never waits on Postgres and the prerender always has HTML for
+  crawlers and unfurls.
+- **Join** — the Join us links lead to ManyHands' own join page, which is
+  rate-limited and flood-capped. There is one signup form, and it is that one.
+- **Calendar** — the ICS feed is a link, not a feature.
+- **Shared tokens** — the site's `tokens.css` is the source of truth for the
+  palette, and ManyHands' pages use it rather than a copy.
 
 ### 5.1 The site must work when ManyHands is not there
 
-ManyHands is built but **not deployed** — its own `HANDOFF.md` §5 gates on
-owner decisions, and §0.3 freezes it. So the site ships first, against an
-origin that may 404.
+Every touchpoint has a real fallback, not an error:
 
-Every ManyHands touchpoint is therefore behind one config flag
-(`ManyHands:Enabled`, false by default, matching ManyHands' own
-logging-stand-in convention) with a real fallback, not an error:
-
-| Touchpoint | Flag off, or fetch fails |
+| Touchpoint | Flag off, or ManyHands unreachable |
 |---|---|
-| Events on `/` and `/act` | A static "next gathering" block from Markdown, hand-edited |
-| `/join` | Email address, plus PauseAI Global's directory of groups |
+| Events on `/` and `/act` | The hand-edited "next event" block |
+| Join us | `join@phillypause.org`, subject Count Me In, as now |
 | Calendar feed | Link hidden |
 
-A prerender must never fail because a downstream service is absent. The fetch
-is wrapped, timeboxed, and falls through to the static block — tested with the
-flag both ways.
-
-This is the honest cost of the ordering in §0.3: `/act` is the page that
-justifies a local site at all, and until ManyHands is deployed it is a
-hand-edited block rather than a live feed. That is acceptable, and it is cheap to upgrade —
-turning the flag on is the whole migration.
+A prerender must never fail because ManyHands is absent, and this is tested
+with the flag both ways. Until ManyHands is enabled in production, no page
+links to it.
 
 ## 6. Motion graphics
 
@@ -380,11 +355,11 @@ it is cheapest to build in before there are 14 pages to retrofit.
 Shared `tokens.css` (and the ManyHands PR), the chosen mark as animated SVG,
 scroll-driven hero, reduced-motion tests, performance budget in CI.
 
-**P4 — ManyHands bridge** (read-only, flag-gated — §5.1)
-The static fallbacks ship in P2 as ordinary content, so P4 is only the live
-path: prerendered events on `/` and `/act`, calendar links, and the flag
-flipped. No commits to the ManyHands repo. If ManyHands is still undeployed
-when the rest is done, P4 waits and nothing else is blocked.
+**P4 — ManyHands** (flag-gated — §5.1)
+ManyHands comes into this solution in its own phases, tracked in
+[`MANYHANDS.md`](MANYHANDS.md) §7. The site's side is the live path: events on
+`/` and `/act`, the join links, calendar links, and the flag flipped. The
+static fallbacks are already ordinary content, so nothing else waits on it.
 
 **P5 — The originals**
 `/act/congress` delegation data, `/pennsylvania`, press kit, RSS, generated OG
@@ -394,20 +369,19 @@ P2 is the long pole. P1 is a day. P0 is a conversation.
 
 ## 8. Open decisions
 
-Mirroring ManyHands' `HANDOFF.md` §5, which this plan does not supersede:
-
 - **Palette.** Does orange stay primary, or become an affiliation accent under
   Philadelphia civic navy/gold? This is the one P0 item that actually blocks
   P2, because it decides `tokens.css`. The mark itself does not (§3.1).
 - **Who writes the adapted content.** The engine is a week; condensing 20
   PauseAI pages into 6 good ones is the actual work, and it is editorial, not
   technical.
-- **Whether ManyHands gets deployed during the site build** (§5). Deploying
-  what is already built is not "further work on ManyHands" under §0.3, but it
-  is still a call, and `/act` is thinner until it happens.
+- **When ManyHands is switched on in production.** It needs a managed
+  Postgres, a mail provider and, for Discord, a bot token; `/act` is thinner
+  until then.
 
 Resolved by §0 and no longer open: localisation, asking PauseAI US about the
-mark, and whether the site or ManyHands goes first.
+mark, whether the site or ManyHands goes first, and whether ManyHands keeps
+its multi-chapter design (it does not).
 
 Resolved by shipping: where the domain points. `phillypause.org` is on App
 Platform behind Cloudflare — [`HOSTING.md`](HOSTING.md).

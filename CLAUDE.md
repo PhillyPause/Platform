@@ -1,10 +1,13 @@
 # PhillyPause Platform
 
 `github.com/PhillyPause/Platform` — the organisation's solution. It holds the
-public website. It is named for the platform rather than the site because
-other projects join the solution later (PLAN.md §2.5).
+public website and ManyHands, PhillyPause's volunteer system. It is named for
+the platform rather than the site because it holds more than one product
+(PLAN.md §2.5).
 
 Public site for PhillyPause, at `/` on `phillypause.org`. Open source (MIT).
+ManyHands is served by the same host and is off unless `ManyHands:Enabled` is
+set; its design, rules and status are [`Docs/MANYHANDS.md`](Docs/MANYHANDS.md).
 Present-tense docs only: this file and `Docs/` describe what IS; `git log` is
 the only history.
 
@@ -19,7 +22,10 @@ The full plan — architecture, content strategy, licensing, phases — is
 | `Website.Client/` | Blazor WASM; interactive islands only |
 | `Website.Content/` | Markdown content + the build-time compile pipeline |
 | `Website.Tests/` | xunit |
-| `Docs/` | PLAN, and DESIGN / CONTENT / MOTION / HOSTING as they land |
+| `ManyHands.Core/` | ManyHands' domain: records, enums, results; no framework |
+| `ManyHands.Data/` | Dapper repositories, DbUp migrations, mail, Discord, background workers |
+| `ManyHands.Tests/` | xunit against real Postgres (Testcontainers) |
+| `Docs/` | PLAN, MANYHANDS, HOSTING, and DESIGN / CONTENT / MOTION as they land |
 
 Projects are `<Product>.<Role>` — product area first, job second. Folder,
 project file, assembly and root namespace are all the same string, with no
@@ -29,13 +35,15 @@ project file, assembly and root namespace are all the same string, with no
 `Core` — the product segment is what keeps two products apart. `Shared.*` is
 earned by a third duplication, not assumed at the first.
 
-Docs filenames: UPPERCASE, underscores not dashes, short. Same as ManyHands.
+Docs filenames: UPPERCASE, underscores not dashes, short.
 
 ## Commands
 
 - Build: `dotnet build Platform.slnx`
-- Run: `dotnet run --project Website.Portal` (no Docker, no database)
-- Test: `dotnet test Platform.slnx`
+- Run: `dotnet run --project Website.Portal` (no Docker, no database; to run
+  ManyHands too, MANYHANDS.md §6)
+- Test: `dotnet test Platform.slnx` — **Docker must be running**: ManyHands'
+  tests start their own Postgres
 - New machine: `git pull` then `.\go.ps1` — sets the repo-local commit
   identity, points pushes at the `gh` CLI, checks the account, scope and SDK,
   then runs the site. Idempotent. README has the detail.
@@ -72,10 +80,10 @@ direction.
 - **No communications with PauseAI US.** There is no relationship to maintain.
   Nothing here needs their input, assets, sign-off or review, and no proposal
   should assume otherwise.
-- **The site ships before any work on ManyHands.** ManyHands is a future
-  project: nothing in this repo depends on it, links to it, or mentions it to a
-  reader. It is not deployed and its repo is not public, so a link to it is a
-  404 (PLAN.md §5).
+- **ManyHands serves PhillyPause and nothing else.** One organisation: no
+  chapters, tenants, "national" tier or row-level security, ever. Simplicity
+  is the point; MANYHANDS.md §2 has the rest of its rules. Until it is enabled
+  in production, no page links to it or mentions it to a reader.
 - **The old logo is retired, not cleared.** PauseAI US's mark with a Liberty
   Bell flag swapped in is a derivative of another organisation's identity, and
   one we have no affiliation with. It appears nowhere in this repo, not even as
@@ -130,7 +138,7 @@ mail arrives pre-sorted — a bare `mailto:` is a bug.
 - **Bash heredocs on this machine mangle backslashes** — a `<<'EOF'` block
   embedding `\n` or `\\` can arrive corrupted. Write multi-line files with a
   file tool, or write to the scratchpad and run the file. This has bitten
-  repeatedly in ManyHands.
+  repeatedly.
 - **Keep `.ps1` files pure ASCII.** Windows PowerShell 5.1 reads a BOM-less
   UTF-8 file as Windows-1252, so an em dash decodes to three characters, one
   of which is `"` — the script then dies with "string is missing the
@@ -148,8 +156,14 @@ mail arrives pre-sorted — a bare `mailto:` is a bug.
   project published both standalone and as a dependency collides with itself
   over `obj/` — compression, then the IL-trimmer, then webcil
   (dotnet/aspnetcore#38429). The client is still published as the portal's
-  dependency, which is the only way its assets are served.
-- **Nothing here calls ManyHands, and no such integration exists yet.** When
-  one lands it goes behind a config flag with a static fallback, because a
-  prerender must never fail for want of a downstream service (PLAN.md §5.1).
-  Until then, do not describe the flag as if it were there.
+  dependency, which is the only way its assets are served. `ManyHands.Core`,
+  `ManyHands.Data` and `ManyHands.Tests` are `IsPublishable=false` too; the
+  libraries reach the image as the portal's dependencies.
+- **ManyHands is behind `ManyHands:Enabled`, off by default.** Off, nothing of
+  it is registered and the site needs no database. A prerender must never fail
+  for want of it: any page that shows ManyHands data falls back to static
+  content when it is off or unreachable.
+- **Dapper and Npgsql fail at runtime, not compile time** — value tuples never
+  map, and `timestamptz`, `bigint` and arrays need the handlers in
+  `ManyHands.Data/DapperTypeHandlers.cs`. MANYHANDS.md §4 has the table.
+  Test SQL against real Postgres, never a stub reader.

@@ -1,3 +1,4 @@
+using ManyHands.Data;
 using Microsoft.AspNetCore.HttpOverrides;
 using Website.Portal.Components;
 using Website.Content;
@@ -12,6 +13,15 @@ builder.Services.AddRazorComponents()
 builder.Services.AddSingleton(new ContentStore(
     Path.Combine(AppContext.BaseDirectory, "Content")));
 
+// ManyHands, the volunteer system, is off unless ManyHands:Enabled is set.
+// Off, nothing of it is registered and the site needs no database; the home
+// page never touches one either way (Docs/MANYHANDS.md).
+var manyHandsEnabled = builder.Configuration.IsManyHandsEnabled();
+if (manyHandsEnabled)
+{
+    builder.Services.AddManyHands(builder.Configuration);
+}
+
 // App Platform terminates TLS and fronts this container, so without honouring
 // X-Forwarded-Proto every request looks like plain HTTP and the redirect below
 // loops. Same setup as ManyHands' Api/Program.cs: the container is reachable
@@ -24,6 +34,13 @@ builder.Services.Configure<ForwardedHeadersOptions>(options =>
 });
 
 var app = builder.Build();
+
+if (manyHandsEnabled)
+{
+    // Before the first request, and fatal on failure: one instance, so
+    // nothing else can be migrating at the same time.
+    app.Services.MigrateManyHands();
+}
 
 if (app.Environment.IsDevelopment())
 {

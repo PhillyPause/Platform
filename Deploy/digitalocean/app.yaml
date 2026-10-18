@@ -67,9 +67,8 @@ services:
 
 ingress:
   rules:
-    # Everything to the website for now. ManyHands takes /manyhands here when
-    # it arrives, which is the reason this is an ingress rule and not a single
-    # default route (PLAN.md section 2.2).
+    # Everything to the one component. ManyHands is served by it too, under
+    # its own routes, so there is no second rule (PLAN.md section 2.2).
     - component:
         name: website
       match:

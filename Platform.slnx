@@ -4,6 +4,9 @@
     <Platform Name="x64" />
     <Platform Name="x86" />
   </Configurations>
+  <Project Path="ManyHands.Core/ManyHands.Core.csproj" />
+  <Project Path="ManyHands.Data/ManyHands.Data.csproj" />
+  <Project Path="ManyHands.Tests/ManyHands.Tests.csproj" />
   <Project Path="Website.Client/Website.Client.csproj" />
   <Project Path="Website.Content/Website.Content.csproj" />
   <Project Path="Website.Tests/Website.Tests.csproj" />

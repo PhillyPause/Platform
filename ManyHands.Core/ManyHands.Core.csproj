@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- The domain: records, enums and results. No framework and no packages,
+       so nothing here can reach a database or a request. -->
+  <PropertyGroup>
+    <IsPublishable>false</IsPublishable>
+  </PropertyGroup>
+
+</Project>
