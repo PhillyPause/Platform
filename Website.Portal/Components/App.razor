@@ -37,6 +37,10 @@
        component is parked until the 60-second video lands. Files stay in the
        repo so it can be switched back on in one line. *@
     <script src="@Assets["_framework/blazor.web.js"]"></script>
+
+    @* The Watch dialog's first-visit opening and click-to-play player. A
+       no-op on every page without the dialog. *@
+    <script type="module" src="@Assets["watch.js"]"></script>
 </body>
 
 </html>

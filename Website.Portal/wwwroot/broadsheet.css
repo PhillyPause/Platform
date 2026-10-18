@@ -25,6 +25,10 @@ a:hover { color: #15110C; }
   background: #EBE3D2;
   color: #AE2012;
 }
+/* The one nav item with a glyph: a red play mark, so the video reads as a
+   thing to press rather than another section to read. */
+.navwatch { display: inline-flex; align-items: center; gap: 7px; }
+.navwatch svg { color: #AE2012; }
 
 .joinbtn {
   background: #AE2012;
@@ -146,6 +150,7 @@ a:hover { color: #15110C; }
 }
 /* One rule per dialog. The radios are siblings of every .paneldlg, so the
    checked one shows its own and nothing else can be checked at the same time. */
+#watch-open:checked ~ .paneldlg.d-watch { display: grid; }
 #panel-open:checked ~ .paneldlg.d-panel { display: grid; }
 #join-open:checked ~ .paneldlg.d-join { display: grid; }
 #primer-open:checked ~ .paneldlg.d-primer { display: grid; }
@@ -281,8 +286,87 @@ a:hover { color: #15110C; }
 .flyrole { font-size: 10px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: #AE2012; margin: 3px 0 6px; }
 .flybio { margin: 0; font-size: 13.5px; line-height: 1.55; color: #4A443A; }
 
+/* Watch dialog. The poster is drawn here rather than fetched from YouTube, so
+   opening the dialog costs the reader nothing and tells Google nothing. It is
+   a 16:9 field of ink with a red play button; the player replaces it in the
+   same box, so nothing shifts when it starts. The ring around the button
+   pulses slowly, the only thing on the page that asks to be pressed. */
+.d-watch .paneldlg-box { width: min(880px, 100%); }
+.watchframe { position: relative; aspect-ratio: 16 / 9; background: #15110C; }
+.watchposter,
+.watchvideo { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.watchposter {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 24px;
+  text-align: center;
+  color: #FBF8F1;
+  text-decoration: none;
+}
+.watchposter[hidden] { display: none; }
+.watchposter:hover { color: #FBF8F1; }
+.watchposter:focus-visible { outline: 3px solid #E8714F; outline-offset: -6px; }
+.watchkicker {
+  font-size: 11px; font-weight: 600; letter-spacing: 0.18em;
+  text-transform: uppercase; color: #E8714F;
+}
+.watchtitle {
+  max-width: 20ch;
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(24px, 3.4vw, 40px);
+  font-weight: 900;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+}
+.watchplay {
+  position: relative;
+  width: 76px; height: 76px;
+  display: grid;
+  place-items: center;
+  /* Optically centre the triangle, whose mass sits left of its box. */
+  padding-left: 5px;
+  background: #AE2012;
+  color: #FBF8F1;
+  transition: background 140ms ease, color 140ms ease;
+}
+.watchplay::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border: 2px solid #E8714F;
+  animation: watch-pulse 2.4s ease-out infinite;
+}
+@keyframes watch-pulse {
+  from { opacity: 0.9; transform: scale(1); }
+  to { opacity: 0; transform: scale(1.55); }
+}
+.watchposter:hover .watchplay,
+.watchposter:focus-visible .watchplay { background: #FBF8F1; color: #AE2012; }
+.watchcta { font-size: 12px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; }
+.watchmeta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px 20px;
+  margin-top: 14px;
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: #6A6254;
+}
+/* A phone gives the poster about 190px of height: room for the title and the
+   button, not the lines either side of them. */
+@media (max-width: 560px) {
+  .watchkicker, .watchcta { display: none; }
+  .watchplay { width: 58px; height: 58px; }
+  .watchplay svg { width: 20px; height: 23px; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .paneldlg-box { animation: none; }
+  .watchplay::after { animation: none; display: none; }
 }
 
 /* Mailing list. Lives in the Join us dialog, on ivory. 46px minimum target
