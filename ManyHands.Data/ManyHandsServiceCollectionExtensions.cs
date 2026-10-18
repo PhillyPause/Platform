@@ -1,5 +1,7 @@
 using ManyHands.Data.Email;
 using ManyHands.Data.Workers;
+using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.DataProtection.KeyManagement;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -44,6 +46,14 @@ public static class ManyHandsServiceCollectionExtensions
         services.AddSingleton<OutboxRepository>();
         services.AddSingleton<EmailMessageRepository>();
         services.AddSingleton<NotificationQueries>();
+        services.AddSingleton<VolunteerDataRepository>();
+        services.AddSingleton<CalendarRepository>();
+
+        // Sign-in cookies and antiforgery tokens survive a deploy only if the
+        // keys that sign them do.
+        services.AddDataProtection().SetApplicationName(Core.Organisation.Name);
+        services.AddOptions<KeyManagementOptions>()
+            .Configure<NpgsqlDataSource>((options, db) => options.XmlRepository = new DataProtectionKeyStore(db));
 
         services.AddManyHandsEmail(configuration);
 

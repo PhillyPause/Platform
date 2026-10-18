@@ -15,9 +15,20 @@
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="@Title" />
     <meta name="twitter:description" content="@Description" />
+
+    @if (NoIndex)
+    {
+        <meta name="robots" content="noindex" />
+    }
 </HeadContent>
 
 @code {
+    // Blazor shows only the last <HeadContent> rendered on a page, so anything
+    // a page needs in <head> comes through here rather than a second one.
+
+    /// <summary>For pages that belong to one person: sign-in, their own page, unsubscribe.</summary>
+    [Parameter] public bool NoIndex { get; set; }
+
     [Parameter, EditorRequired] public required string Title { get; set; }
 
     [Parameter, EditorRequired] public required string Description { get; set; }

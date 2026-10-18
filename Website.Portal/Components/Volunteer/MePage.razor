@@ -1,0 +1,211 @@
+@page "/volunteer/me"
+@attribute [Authorize]
+@inject VolunteerRepository Volunteers
+@inject SignupRepository Signups
+@inject ActivityTypeRepository Types
+@inject VolunteerDataRepository Data
+@inject ManyHands.Data.Email.EmailDispatcher Email
+@inject NavigationManager Navigation
+
+<PageMeta Title="My page" Description="Your PhillyPause signups, interests and email settings." NoIndex="true" />
+
+
+@if (_me is null)
+{
+    return;
+}
+
+<div class="wrap page-head">
+    <h1>Hello, @_me.DisplayName</h1>
+    <p class="lead">What you have signed up for, what you like doing, and what we hold about you.</p>
+</div>
+
+<div class="wrap vol-body vol-stack">
+    @if (_notice is not null)
+    {
+        <p class="vol-notice" role="status">@_notice</p>
+    }
+
+    <section aria-labelledby="coming-head">
+        <h2 id="coming-head">Coming up</h2>
+        @if (_upcoming.Count == 0)
+        {
+            <p>Nothing yet. <a href="@ManyHandsPaths.Activities">See what&rsquo;s on</a>.</p>
+        }
+        else
+        {
+            <EditForm Model="Cancel" FormName="cancel" OnSubmit="CancelAsync">
+                <ul class="vol-list vol-mine">
+                    @foreach (var signup in _upcoming)
+                    {
+                        <li>
+                            <h3><a href="@ManyHandsPaths.Activity(signup.ActivityId)">@signup.Title</a></h3>
+                            <p class="vol-meta">
+                                <span>@Show.When(signup.StartsAt)</span>
+                                <span>@Show.Where(signup.Location)</span>
+                                <span class="vol-status">@Show.Status(signup.Status)</span>
+                            </p>
+                            @* The button that was pressed is the one whose value is posted. *@
+                            <button class="btn btn-ghost" type="submit" name="Cancel.SignupId" value="@signup.SignupId">
+                                Cannot make it
+                            </button>
+                        </li>
+                    }
+                </ul>
+            </EditForm>
+        }
+        <p class="vol-aside">
+            <a href="@_calendarUrl">Your own calendar feed</a> &mdash; subscribe to it in any
+            calendar app and your signups appear there. It is private to you: do not share the link.
+        </p>
+    </section>
+
+    @if (_past.Count > 0)
+    {
+        <section aria-labelledby="past-head">
+            <h2 id="past-head">Done</h2>
+            <ul class="vol-past">
+                @foreach (var signup in _past)
+                {
+                    <li>@signup.Title <span class="vol-meta">@Show.When(signup.StartsAt)</span></li>
+                }
+            </ul>
+        </section>
+    }
+
+    <section aria-labelledby="interests-head">
+        <h2 id="interests-head">What you like doing</h2>
+        <EditForm Model="Interests" FormName="interests" OnSubmit="SaveInterestsAsync" class="vol-form">
+            <InterestChoices Types="_types" Selected="_interests" Legend="We tell you when one of these is on" />
+            <label class="vol-check">
+                <InputCheckbox @bind-Value="Interests!.EmailOptIn" />
+                <span>Email me about new activities like these</span>
+            </label>
+            <button class="btn" type="submit">Save</button>
+        </EditForm>
+    </section>
+
+    <section aria-labelledby="data-head">
+        <h2 id="data-head">Your data</h2>
+        <p>
+            <a href="@ManyHandsPaths.Export">Download everything we hold about you</a>, as a file
+            to keep. It is short: your name, your email, what you like doing, what you signed up
+            for, and the subjects of the emails we sent you.
+        </p>
+        <EditForm Model="Delete" FormName="delete" OnValidSubmit="DeleteAsync" class="vol-form vol-danger">
+            <DataAnnotationsValidator />
+            <label class="vol-check">
+                <InputCheckbox @bind-Value="Delete!.Confirm" />
+                <span>Delete me. My name and email go; the fact that someone came to things stays, without me on it.</span>
+            </label>
+            <ValidationMessage For="() => Delete!.Confirm" />
+            <button class="btn btn-ghost" type="submit">Delete me</button>
+        </EditForm>
+    </section>
+
+    <EditForm Model="SignOut" FormName="sign-out" OnSubmit="SignOutAsync">
+        <button class="btn btn-ghost" type="submit">Sign out</button>
+    </EditForm>
+</div>
+
+@code {
+    [CascadingParameter] private HttpContext HttpContext { get; set; } = default!;
+
+    [SupplyParameterFromForm(FormName = "cancel")] private CancelInput? Cancel { get; set; }
+    [SupplyParameterFromForm(FormName = "interests")] private InterestsInput? Interests { get; set; }
+    [SupplyParameterFromForm(FormName = "delete")] private DeleteInput? Delete { get; set; }
+    [SupplyParameterFromForm(FormName = "sign-out")] private SignOutInput? SignOut { get; set; }
+
+    private Volunteer? _me;
+    private IReadOnlyList<ActivityType> _types = [];
+    private IReadOnlyCollection<short> _interests = [];
+    private IReadOnlyList<MyActivity> _upcoming = [];
+    private IReadOnlyList<MyActivity> _past = [];
+    private string _calendarUrl = string.Empty;
+    private string? _notice;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Cancel ??= new();
+        Interests ??= new();
+        Delete ??= new();
+        SignOut ??= new();
+
+        _me = HttpContext.User.VolunteerId() is Guid id ? await Volunteers.GetByIdAsync(id) : null;
+
+        // A cookie can outlive the person it names: deleted, or a database
+        // rebuilt underneath it. Either way it signs nobody in.
+        if (_me is null || _me.IsDeleted)
+        {
+            await VolunteerSession.SignOutAsync(HttpContext);
+            Navigation.NavigateTo(ManyHandsPaths.SignIn);
+            _me = null;
+            return;
+        }
+
+        _types = await Types.GetActiveAsync();
+        _calendarUrl = Email.Link(ManyHandsPaths.PersonalCalendar(_me.CalendarKey));
+
+        if (HttpMethods.IsGet(HttpContext.Request.Method))
+            Interests.EmailOptIn = _me.CanReceiveEmail;
+
+        await LoadAsync();
+    }
+
+    private async Task LoadAsync()
+    {
+        _interests = await Volunteers.GetInterestIdsAsync(_me!.Id);
+
+        var now = DateTimeOffset.UtcNow;
+        var mine = await Signups.GetForVolunteerAsync(_me.Id);
+        _upcoming = mine.Where(s => s.Status != SignupStatus.Cancelled && (s.EndsAt ?? s.StartsAt ?? now) >= now).ToList();
+        _past = mine.Where(s => s.Status == SignupStatus.Confirmed && (s.EndsAt ?? s.StartsAt) < now).ToList();
+    }
+
+    private async Task CancelAsync()
+    {
+        if (await Signups.CancelAsync(Cancel!.SignupId, _me!.Id))
+            _notice = "Done — your place has gone to the next person, if there was one waiting.";
+
+        await LoadAsync();
+    }
+
+    private async Task SaveInterestsAsync()
+    {
+        await Volunteers.SetInterestsAsync(_me!.Id, InterestChoices.Read(HttpContext));
+        await Volunteers.SetEmailOptInAsync(_me.Id, Interests!.EmailOptIn);
+        _notice = "Saved.";
+        await LoadAsync();
+    }
+
+    private async Task DeleteAsync()
+    {
+        await Data.DeleteAsync(_me!.Id);
+        await VolunteerSession.SignOutAsync(HttpContext);
+        Navigation.NavigateTo($"{ManyHandsPaths.Activities}?deleted=true");
+    }
+
+    private async Task SignOutAsync()
+    {
+        await VolunteerSession.SignOutAsync(HttpContext);
+        Navigation.NavigateTo(ManyHandsPaths.Activities);
+    }
+
+    private sealed class CancelInput
+    {
+        public Guid SignupId { get; set; }
+    }
+
+    private sealed class InterestsInput
+    {
+        public bool EmailOptIn { get; set; }
+    }
+
+    private sealed class DeleteInput
+    {
+        [Range(typeof(bool), "true", "true", ErrorMessage = "Tick the box to say you mean it.")]
+        public bool Confirm { get; set; }
+    }
+
+    private sealed class SignOutInput;
+}

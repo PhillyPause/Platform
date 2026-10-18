@@ -37,6 +37,8 @@
          release. If this line ever needs to move, AwesomeAssertions is the
          MIT-licensed fork with the same API. -->
     <PackageVersion Include="FluentAssertions" Version="7.2.2" />
+    <!-- The real host, in memory, for tests that drive pages end to end. -->
+    <PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="10.0.13" />
     <!-- Real Postgres for ManyHands' tests. Needs Docker. -->
     <PackageVersion Include="Testcontainers.PostgreSql" Version="4.14.0" />
   </ItemGroup>

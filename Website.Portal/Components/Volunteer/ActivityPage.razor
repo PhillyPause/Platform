@@ -1,0 +1,169 @@
+@page "/volunteer/activity/{Id:guid}"
+@inject ActivityRepository Activities
+@inject ActivityTypeRepository Types
+@inject SignupRepository Signups
+@inject VolunteerRepository Volunteers
+@inject FormThrottle Throttle
+
+@if (_activity is null)
+{
+    <PageMeta Title="Not found" Description="That activity is not on, or never was." />
+    <div class="wrap page-head">
+        <h1>That one is not on</h1>
+        <p class="lead">It may have finished or been taken down. <a href="@ManyHandsPaths.Activities">See what is</a>.</p>
+    </div>
+    return;
+}
+
+<PageMeta Title="@_activity.Title" Description="@($"{Show.When(_activity.StartsAt)}, {Show.Where(_activity.Location)}. Sign up with PhillyPause.")" />
+
+<div class="wrap page-head">
+    <h1>@_activity.Title</h1>
+    <p class="vol-meta vol-meta-lead">
+        <span>@Show.When(_activity.StartsAt)</span>
+        <span>@Show.Where(_activity.Location)</span>
+    </p>
+</div>
+
+<div class="wrap vol-body vol-split">
+    <div class="prose">
+        @foreach (var paragraph in Show.Paragraphs(_activity.Description))
+        {
+            <p>@paragraph</p>
+        }
+        @if (Show.SafeLink(_activity.MeetingUrl) is { } meeting)
+        {
+            <p>Online: <a href="@meeting" target="_blank" rel="noopener">@meeting</a></p>
+        }
+        @if (_activity.Tags.Count > 0)
+        {
+            <p class="vol-tags">@string.Join(" · ", _activity.Tags)</p>
+        }
+    </div>
+
+    <section class="vol-card" aria-labelledby="signup-head">
+        @if (_outcome is not null)
+        {
+            <h2 id="signup-head">@_outcome.Heading</h2>
+            <p>@_outcome.Text</p>
+            <p><a href="@ManyHandsPaths.Activities">See what else is on</a></p>
+        }
+        else
+        {
+            <h2 id="signup-head">@(_activity.IsFull ? "Join the waitlist" : "Sign up")</h2>
+            @if (Show.Room(_activity) is { } room)
+            {
+                <p class="vol-room">@room</p>
+            }
+            @if (_activity.IsFull)
+            {
+                <p>It is full, but people drop out. If a place opens, it goes to the first person on the list and we email them.</p>
+            }
+
+            <EditForm Model="Input" FormName="signup" OnValidSubmit="SignUpAsync" class="vol-form">
+                <DataAnnotationsValidator />
+                <label>
+                    <span>Your name</span>
+                    <InputText @bind-Value="Input!.DisplayName" autocomplete="name" />
+                </label>
+                <label>
+                    <span>Email</span>
+                    <InputText @bind-Value="Input!.Email" type="email" autocomplete="email" />
+                    <ValidationMessage For="() => Input!.Email" />
+                </label>
+                <InterestChoices Types="_types" Selected="_suggested" Legend="Tell me about more like this" />
+                @if (_refused is not null)
+                {
+                    <p class="vol-error" role="alert">@_refused</p>
+                }
+                <button class="btn" type="submit">@(_activity.IsFull ? "Join the waitlist" : "Count me in")</button>
+                <p class="vol-small">We email you the details and a reminder the day before. Nothing else unless you ask.</p>
+            </EditForm>
+        }
+    </section>
+</div>
+
+@code {
+    [Parameter] public Guid Id { get; set; }
+
+    [CascadingParameter] private HttpContext HttpContext { get; set; } = default!;
+
+    [SupplyParameterFromForm(FormName = "signup")] private SignupInput? Input { get; set; }
+
+    private ActivityListItem? _activity;
+    private IReadOnlyList<ActivityType> _types = [];
+    private IReadOnlyCollection<short> _suggested = [];
+    private Outcome? _outcome;
+    private string? _refused;
+
+    private sealed record Outcome(string Heading, string Text);
+
+    protected override async Task OnInitializedAsync()
+    {
+        Input ??= new();
+        _activity = await Activities.GetPublishedByIdAsync(Id);
+        if (_activity is null)
+        {
+            HttpContext.Response.StatusCode = StatusCodes.Status404NotFound;
+            return;
+        }
+
+        _types = await Types.GetActiveAsync();
+        _suggested = _types.Where(t => _activity.Tags.Contains(t.Label)).Select(t => t.Id).ToArray();
+
+        // A signed-in volunteer should not have to type themselves out again.
+        if (HttpMethods.IsGet(HttpContext.Request.Method)
+            && HttpContext.User.VolunteerId() is Guid volunteerId
+            && await Volunteers.GetByIdAsync(volunteerId) is { IsDeleted: false } me)
+        {
+            Input.DisplayName = me.DisplayName;
+            Input.Email = me.Email ?? string.Empty;
+        }
+    }
+
+    private async Task SignUpAsync()
+    {
+        if (!Throttle.AllowPublicWrite(HttpContext))
+        {
+            _refused = "That is a lot of signups from one place. Wait a few minutes and try again.";
+            return;
+        }
+
+        var result = await Signups.SignUpAsync(
+            Id, Input!.DisplayName ?? string.Empty, Input.Email, InterestChoices.Read(HttpContext));
+
+        switch (result)
+        {
+            case SignupResult.Ok ok:
+                _outcome = Describe(ok);
+                break;
+            case SignupResult.InvalidEmail:
+                _refused = "That does not look like an email address.";
+                break;
+            case SignupResult.ActivityFinished:
+                _refused = "This one has already happened.";
+                break;
+            default:
+                _refused = "This one is no longer on.";
+                break;
+        }
+    }
+
+    private static Outcome Describe(SignupResult.Ok ok) => (ok.AlreadySignedUp, ok.Status) switch
+    {
+        (true, SignupStatus.Waitlisted) => new("Still on the waitlist", "You were already on the list for this one. We will email you if a place opens."),
+        (true, _) => new("Already signed up", "You were already down for this one — nothing has changed."),
+        (false, SignupStatus.Waitlisted) => new("You are on the waitlist", "It is full for now. If a place opens up, it is yours and we will email you straight away."),
+        _ => new("You are signed up", "Thank you. The details are on their way to your inbox, and we will remind you the day before.")
+    };
+
+    private sealed class SignupInput
+    {
+        [StringLength(100)]
+        public string? DisplayName { get; set; }
+
+        [Required(ErrorMessage = "We need an email to send you the details.")]
+        [StringLength(254)]
+        public string Email { get; set; } = string.Empty;
+    }
+}

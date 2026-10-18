@@ -209,7 +209,9 @@ a:hover { color: var(--heading); }
 
 /* --- prose (the few remaining Markdown pages) ----------------------------- */
 
-.page-head { padding: clamp(2rem, 5vw, 3.5rem) 0 1.2rem; }
+/* Block padding only: .page-head always sits on a .wrap, and the shorthand
+   would zero the wrap's side padding and pull the title left of the page. */
+.page-head { padding-block: clamp(2rem, 5vw, 3.5rem) 1.2rem; }
 .page-head h1 { font-size: var(--step-h2); text-transform: uppercase; max-width: 26ch; }
 .page-head .lead { font-size: var(--step-lead); color: var(--muted); max-width: var(--measure); margin: 0; }
 

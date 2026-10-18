@@ -1,0 +1,55 @@
+@page "/volunteer/sign-in/{Token}"
+@inject AuthTokenRepository Tokens
+@inject NavigationManager Navigation
+
+@* Opening the link does not sign anyone in; pressing the button does. Mail
+   scanners open every link in a message to check it, and a link spent on
+   arrival would be spent by the scanner, leaving the volunteer an "expired"
+   page and no idea why. *@
+
+<PageMeta Title="Sign in" Description="Finish signing in to PhillyPause." NoIndex="true" />
+
+
+<div class="wrap page-head">
+    <h1>One more click</h1>
+    <p class="lead">This signs you in on this device, and keeps you signed in for a month.</p>
+</div>
+
+<div class="wrap vol-body">
+    <section class="vol-card vol-narrow">
+        <EditForm Model="Input" FormName="redeem" OnSubmit="RedeemAsync" class="vol-form">
+            <button class="btn" type="submit">Sign me in</button>
+        </EditForm>
+    </section>
+</div>
+
+@code {
+    [Parameter] public string Token { get; set; } = string.Empty;
+
+    [CascadingParameter] private HttpContext HttpContext { get; set; } = default!;
+
+    // The button carries nothing; the token is in the address.
+    [SupplyParameterFromForm(FormName = "redeem")] private RedeemInput? Input { get; set; }
+
+    protected override void OnInitialized()
+    {
+        Input ??= new();
+
+        // The token is in this page's address; nothing it links to needs to see it.
+        HttpContext.Response.Headers["Referrer-Policy"] = "no-referrer";
+    }
+
+    private async Task RedeemAsync()
+    {
+        if (await Tokens.RedeemAsync(Token) is MagicLinkResult.Ok ok)
+        {
+            await VolunteerSession.SignInAsync(HttpContext, ok.VolunteerId, ok.DisplayName);
+            Navigation.NavigateTo(ManyHandsPaths.Me);
+            return;
+        }
+
+        Navigation.NavigateTo($"{ManyHandsPaths.SignIn}?expired=true");
+    }
+
+    private sealed class RedeemInput;
+}

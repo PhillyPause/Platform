@@ -80,7 +80,7 @@ public sealed class SchemaTests(DatabaseFixture db)
     }
 
     [Theory]
-    [InlineData("ManyHands.Data.Scripts.0002_seed_dev.sql", true)]
+    [InlineData("ManyHands.Data.Scripts.9999_seed_dev.sql", true)]
     [InlineData("ManyHands.Data.Scripts.0001_schema.sql", false)]
     public void Only_seed_scripts_are_treated_as_seed(string name, bool isSeed) =>
         ManyHandsDatabase.IsSeedScript(name).Should().Be(isSeed);

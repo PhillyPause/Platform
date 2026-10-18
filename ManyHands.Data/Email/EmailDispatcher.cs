@@ -50,7 +50,7 @@ public sealed class EmailDispatcher(
 
         return await SendRawAsync(
             volunteer.Id, volunteer.Email, subject, body, kind,
-            unsubscribeUrl: bypassOptIn ? null : UnsubscribeUrl(volunteer.CommsKey), ct);
+            unsubscribeUrl: bypassOptIn ? null : Link(ManyHandsPaths.OneClickUnsubscribe(volunteer.CommsKey)), ct);
     }
 
     public async Task<EmailStatus> SendRawAsync(

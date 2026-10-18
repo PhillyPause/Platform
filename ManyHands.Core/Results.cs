@@ -20,6 +20,15 @@ public abstract record SignupResult
     public sealed record InvalidEmail : SignupResult;
 }
 
+/// <summary>Outcome of somebody joining.</summary>
+public abstract record JoinResult
+{
+    /// <summary>Joined, or was already one of us — both a success to the person joining.</summary>
+    public sealed record Ok(Guid VolunteerId, bool AlreadyMember) : JoinResult;
+
+    public sealed record InvalidEmail : JoinResult;
+}
+
 /// <summary>Outcome of redeeming a sign-in link.</summary>
 public abstract record MagicLinkResult
 {

@@ -1,0 +1,36 @@
+@inherits LayoutComponentBase
+@layout MainLayout
+
+@* Every volunteer page: the site's own header and footer, plus the places a
+   volunteer moves between. Its stylesheet loads here and nowhere else, so the
+   rest of the site never pays for it. In the body rather than a <HeadContent>,
+   because only the last <HeadContent> on a page is shown and PageMeta's is
+   that one; a stylesheet link is valid in the body. *@
+
+<link rel="stylesheet" href="@Assets["volunteer.css"]" />
+
+<nav class="vol-nav" aria-label="Volunteering">
+    <div class="wrap">
+        <a href="@ManyHandsPaths.Activities">What&rsquo;s on</a>
+        @if (_signedIn)
+        {
+            <a href="@ManyHandsPaths.Me">My page</a>
+        }
+        else
+        {
+            <a href="@ManyHandsPaths.Join">Join</a>
+            <a href="@ManyHandsPaths.SignIn">Sign in</a>
+        }
+    </div>
+</nav>
+
+@Body
+
+@code {
+    [CascadingParameter] private HttpContext? HttpContext { get; set; }
+
+    private bool _signedIn;
+
+    protected override void OnParametersSet() =>
+        _signedIn = HttpContext?.User.VolunteerId() is not null;
+}

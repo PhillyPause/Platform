@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <PackageReference Include="FluentAssertions" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
     <PackageReference Include="Testcontainers.PostgreSql" />
     <PackageReference Include="xunit" />
@@ -19,6 +20,7 @@
   <ItemGroup>
     <ProjectReference Include="..\ManyHands.Core\ManyHands.Core.csproj" />
     <ProjectReference Include="..\ManyHands.Data\ManyHands.Data.csproj" />
+    <ProjectReference Include="..\Website.Portal\Website.Portal.csproj" />
   </ItemGroup>
 
   <ItemGroup>

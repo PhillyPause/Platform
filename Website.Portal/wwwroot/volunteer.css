@@ -1,0 +1,83 @@
+/* The volunteer pages. Loaded by VolunteerLayout only, so the rest of the
+   site never downloads it. Everything comes from tokens.css: the same paper,
+   ink and navy as the pages around it, and the alarm orange kept for the one
+   thing to press. */
+
+.vol-nav { border-bottom: 1px solid var(--rule); }
+.vol-nav .wrap { display: flex; gap: 0.25rem 1.5rem; flex-wrap: wrap; padding-block: 0.6rem; }
+.vol-nav a {
+  font-weight: 700; font-size: 0.92rem; letter-spacing: 0.06em; text-transform: uppercase;
+  text-decoration: none; color: var(--heading); padding-block: 0.3rem;
+}
+.vol-nav a:hover { color: var(--alarm-ink); }
+
+.vol-body { padding-bottom: 4rem; }
+.vol-stack > * + * { margin-top: 2.5rem; }
+.vol-stack h2, .vol-card h2 { font-size: var(--step-h3); }
+
+/* What's on: one activity per row, divided by hairlines like the quotes. */
+.vol-list { list-style: none; margin: 0; padding: 0; max-width: 44rem; }
+.vol-list > li { padding: 1.25rem 0; border-top: 1px solid var(--rule); }
+.vol-list > li:last-child { border-bottom: 1px solid var(--rule); }
+.vol-list h2, .vol-list h3 { font-size: var(--step-h3); margin: 0 0 0.3rem; }
+.vol-list h2 a, .vol-list h3 a { color: var(--heading); text-decoration: none; }
+.vol-list h2 a:hover, .vol-list h3 a:hover { color: var(--alarm-ink); text-decoration: underline; }
+
+.vol-meta { display: flex; flex-wrap: wrap; gap: 0.1rem 1.25rem; margin: 0; color: var(--muted); }
+.vol-meta-lead { font-size: var(--step-lead); }
+.vol-room { margin: 0.4rem 0 0; font-weight: 700; color: var(--alarm-ink); }
+.vol-tags { margin: 0.4rem 0 0; font-size: 0.9rem; color: var(--muted); }
+.vol-status { font-weight: 700; color: var(--ink); }
+.vol-mine .btn { margin-top: 0.75rem; min-height: 40px; padding: 0.4rem 1rem; font-size: 0.92rem; }
+.vol-past { padding-left: 1.2rem; }
+.vol-past li { margin-bottom: 0.3rem; }
+.vol-past .vol-meta { display: inline; margin-left: 0.5rem; }
+
+.vol-filter { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.5rem; }
+.vol-filter a {
+  padding: 0.3rem 0.8rem; border: 1px solid var(--rule); border-radius: 999px;
+  font-size: 0.9rem; text-decoration: none; color: var(--ink);
+}
+.vol-filter a:hover { border-color: var(--heading); color: var(--heading); }
+.vol-filter a[aria-current="page"] { background: var(--navy); border-color: var(--navy); color: #fff; }
+
+.vol-empty, .vol-aside { max-width: var(--measure); color: var(--muted); }
+.vol-aside { margin-top: 1.5rem; font-size: 0.95rem; }
+
+/* An activity page: the description beside the signup card, stacked on a phone. */
+.vol-split { display: grid; gap: 2rem; align-items: start; }
+@media (min-width: 52rem) { .vol-split { grid-template-columns: minmax(0, 1fr) 22rem; } }
+.vol-split .prose { padding-bottom: 0; }
+
+.vol-card {
+  background: var(--surface); border: 1px solid var(--line); border-top: 4px solid var(--navy);
+  padding: 1.5rem; border-radius: 0 0 var(--radius) var(--radius);
+}
+.vol-narrow { max-width: 30rem; }
+
+/* Forms: big targets, labels above their fields, nothing clever. */
+.vol-form { display: grid; gap: 1rem; }
+.vol-form label { display: grid; gap: 0.3rem; }
+.vol-form label > span { font-weight: 700; font-size: 0.95rem; }
+.vol-form input[type="text"], .vol-form input[type="email"], .vol-form input:not([type]) {
+  width: 100%; min-height: 48px; padding: 0.6rem 0.8rem;
+  font: inherit; color: var(--ink); background: var(--bg);
+  border: 1px solid var(--rule); border-radius: 4px;
+}
+.vol-form input:focus-visible { border-color: var(--heading); }
+.vol-form .btn { justify-self: start; }
+
+.vol-interests { border: 0; margin: 0; padding: 0; display: grid; gap: 0.35rem; }
+@media (min-width: 30rem) { .vol-interests { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.vol-interests legend { font-weight: 700; font-size: 0.95rem; margin-bottom: 0.4rem; padding: 0; }
+.vol-interests label, .vol-check { display: flex; gap: 0.55rem; align-items: flex-start; font-weight: 400; }
+.vol-interests input, .vol-check input { width: 1.15rem; height: 1.15rem; margin-top: 0.25rem; accent-color: var(--navy); flex: none; }
+.vol-check > span { font-weight: 400 !important; }
+
+.vol-small { margin: 0; font-size: 0.88rem; color: var(--muted); }
+.vol-notice {
+  max-width: var(--measure); margin: 0; padding: 0.8rem 1rem;
+  border-left: 4px solid var(--navy); background: var(--surface);
+}
+.vol-error, .validation-message { margin: 0; color: var(--alarm-ink); font-weight: 700; font-size: 0.95rem; }
+.vol-danger { margin-top: 1.25rem; padding-top: 1.25rem; border-top: 1px solid var(--line); max-width: var(--measure); }
