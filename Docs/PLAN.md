@@ -114,10 +114,10 @@ Postgres RLS, a Discord gateway and an outbox. That separation is the whole
 argument; do not collapse the two into one host for the sake of one fewer
 pipeline.
 
-`phillypause.org` is **already registered and on Cloudflare nameservers**
-(`aldo`/`liv.ns.cloudflare.com`) with no A record. So the "domain name (TBD
-since day one)" item in ManyHands' `HANDOFF.md` §5 is further along than that
-file records — what is open is where it points.
+`phillypause.org` is **live**, on App Platform behind Cloudflare, which still
+holds the zone (`aldo`/`liv.ns.cloudflare.com`). Apex and `www` are proxied
+CNAMEs to the app, so Cloudflare terminates TLS. The app, the spec and what
+the .NET buildpack imposes are in [`HOSTING.md`](HOSTING.md).
 
 ### 2.3 Content pipeline
 
@@ -399,8 +399,6 @@ Mirroring ManyHands' `HANDOFF.md` §5, which this plan does not supersede:
 - **Palette.** Does orange stay primary, or become an affiliation accent under
   Philadelphia civic navy/gold? This is the one P0 item that actually blocks
   P2, because it decides `tokens.css`. The mark itself does not (§3.1).
-- **Where the domain points**, and whether the site fronts Cloudflare (already
-  the DNS provider) or sits directly on App Platform.
 - **Who writes the adapted content.** The engine is a week; condensing 20
   PauseAI pages into 6 good ones is the actual work, and it is editorial, not
   technical.
@@ -410,3 +408,6 @@ Mirroring ManyHands' `HANDOFF.md` §5, which this plan does not supersede:
 
 Resolved by §0 and no longer open: localisation, asking PauseAI US about the
 mark, and whether the site or ManyHands goes first.
+
+Resolved by shipping: where the domain points. `phillypause.org` is on App
+Platform behind Cloudflare — [`HOSTING.md`](HOSTING.md).

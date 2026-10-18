@@ -81,6 +81,26 @@ of them is one download away.
 dotnet test Platform.slnx
 ```
 
+## Deploying
+
+The site is live at **[phillypause.org](https://phillypause.org)**, on
+DigitalOcean App Platform behind Cloudflare.
+
+Shipping is merging to `main`. The branch requires `build-and-test`, and the
+app spec sets `deploy_on_push`, so a merge that passed CI builds and goes out —
+about three minutes.
+
+`Deploy/digitalocean/app.yaml` is the deployed configuration. Change it there
+and apply it; do not edit the app in the control panel.
+
+```bash
+doctl apps update a21db074-3a86-449d-810f-edb0d48e45d6 \
+  --spec Deploy/digitalocean/app.yaml
+```
+
+[`Docs/HOSTING.md`](Docs/HOSTING.md) has the rest: DNS, TLS, build logs, how to
+undo a release, and the two constraints App Platform's .NET buildpack imposes.
+
 ## Solution layout
 
 | Project | Purpose |
