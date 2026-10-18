@@ -18,7 +18,7 @@ shifts, and argue about tactics.
 You do not need to prepare anything, know anything technical, or speak. Sitting
 in the corner listening is a completely normal first meeting.
 
-Email [info@phillypause.org](mailto:info@phillypause.org?subject=Count%20Me%20In) and we will send you
+Email [join@phillypause.org](mailto:join@phillypause.org?subject=Count%20Me%20In) and we will send you
 the room and the time.
 
 ## Get the monthly email
