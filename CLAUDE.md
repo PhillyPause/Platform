@@ -98,6 +98,10 @@ mail arrives pre-sorted — a bare `mailto:` is a bug.
   enforced by a test rather than a code review.
 - Policy documents (code of conduct, safeguarding) are **linked, never
   cloned**. A chapter publishing its own stale policy is worse off.
+- **Every external link opens a new window** — `target="_blank"` plus
+  `rel="noopener"`, no exceptions. A reader halfway down this page should not
+  lose it to a side trip. Internal routes (`/privacy`, `/license`) stay in the
+  tab.
 
 ## Git — non-negotiable
 
