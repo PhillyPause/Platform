@@ -12,9 +12,13 @@
 <nav class="vol-nav" aria-label="Volunteering">
     <div class="wrap">
         <a href="@ManyHandsPaths.Activities">What&rsquo;s on</a>
-        @if (_signedIn)
+        @if (_me is not null)
         {
             <a href="@ManyHandsPaths.Me">My page</a>
+            @if (_me.IsAtLeast(VolunteerRole.Organizer))
+            {
+                <a class="vol-nav-aside" href="@ManyHandsPaths.Team">Team</a>
+            }
         }
         else
         {
@@ -29,8 +33,13 @@
 @code {
     [CascadingParameter] private HttpContext? HttpContext { get; set; }
 
-    private bool _signedIn;
+    [Inject] private VolunteerRepository Volunteers { get; set; } = default!;
 
-    protected override void OnParametersSet() =>
-        _signedIn = HttpContext?.User.VolunteerId() is not null;
+    private Volunteer? _me;
+
+    protected override async Task OnParametersSetAsync() =>
+        _me = HttpContext?.User.VolunteerId() is Guid id
+              && await Volunteers.GetByIdAsync(id) is { IsDeleted: false } volunteer
+            ? volunteer
+            : null;
 }

@@ -69,6 +69,20 @@ public sealed class VolunteerRepository(NpgsqlDataSource db)
         await using var conn = await db.OpenConnectionAsync(ct);
         await using var tx = await conn.BeginTransactionAsync(ct);
 
+        var joined = await JoinCoreAsync(conn, tx, name, address, interestIds, ct);
+
+        await tx.CommitAsync(ct);
+        return joined;
+    }
+
+    /// <summary>
+    /// What both doors share — the join page and an accepted invite: upsert the
+    /// person, record what they like doing, and welcome them the first time.
+    /// </summary>
+    internal static async Task<JoinResult.Ok> JoinCoreAsync(
+        NpgsqlConnection conn, NpgsqlTransaction tx, string name, string address,
+        IReadOnlyCollection<short> interestIds, CancellationToken ct)
+    {
         // xmax is zero only on a row this statement inserted, which is how the
         // upsert says whether the person is new.
         var joined = await conn.QuerySingleAsync<JoinedRow>(new CommandDefinition(
@@ -96,8 +110,16 @@ public sealed class VolunteerRepository(NpgsqlDataSource db)
         if (joined.Inserted)
             await Outbox.QueueAsync(conn, tx, OutboxKinds.MemberWelcome, new { volunteerId = joined.Id }, ct);
 
-        await tx.CommitAsync(ct);
         return new JoinResult.Ok(joined.Id, AlreadyMember: !joined.Inserted);
+    }
+
+    /// <summary>Raises a role, never lowers it: how a configured admin becomes one on signing in.</summary>
+    public async Task PromoteAsync(Guid volunteerId, VolunteerRole role, CancellationToken ct = default)
+    {
+        await using var conn = await db.OpenConnectionAsync(ct);
+        await conn.ExecuteAsync(new CommandDefinition(
+            "UPDATE volunteers SET role = GREATEST(role, @role) WHERE id = @volunteerId AND NOT is_deleted",
+            new { volunteerId, role = (int)role }, cancellationToken: ct));
     }
 
     public async Task<IReadOnlyList<short>> GetInterestIdsAsync(
@@ -156,6 +178,43 @@ public sealed class VolunteerRepository(NpgsqlDataSource db)
             WHERE id = @volunteerId AND NOT is_deleted
             """,
             new { volunteerId, optIn }, cancellationToken: ct));
+    }
+
+    /// <summary>Everyone, with what they like doing: the members page.</summary>
+    public async Task<IReadOnlyList<Member>> GetMembersAsync(CancellationToken ct = default)
+    {
+        await using var conn = await db.OpenConnectionAsync(ct);
+        var rows = await conn.QueryAsync<Member>(new CommandDefinition(
+            """
+            SELECT v.id, v.display_name, v.email, v.role, v.created_at,
+                   (v.email_opt_in AND v.unsubscribed_at IS NULL) AS can_email,
+                   COALESCE((SELECT array_agg(a.label ORDER BY a.sort_order)
+                               FROM volunteer_interests vi
+                               JOIN activity_types a ON a.id = vi.activity_type_id
+                              WHERE vi.volunteer_id = v.id), '{}'::text[]) AS interests
+            FROM volunteers v
+            WHERE NOT v.is_deleted
+            ORDER BY v.role DESC, lower(v.display_name)
+            """,
+            cancellationToken: ct));
+        return rows.AsList();
+    }
+
+    public async Task<bool> SetRoleAsync(Guid volunteerId, VolunteerRole role, CancellationToken ct = default)
+    {
+        await using var conn = await db.OpenConnectionAsync(ct);
+        return await conn.ExecuteAsync(new CommandDefinition(
+            "UPDATE volunteers SET role = @role WHERE id = @volunteerId AND NOT is_deleted",
+            new { volunteerId, role = (int)role }, cancellationToken: ct)) > 0;
+    }
+
+    /// <summary>How many admins are left, so the last one cannot demote themselves.</summary>
+    public async Task<int> CountAdminsAsync(CancellationToken ct = default)
+    {
+        await using var conn = await db.OpenConnectionAsync(ct);
+        return await conn.ExecuteScalarAsync<int>(new CommandDefinition(
+            "SELECT count(*)::int FROM volunteers WHERE role = 2 AND NOT is_deleted",
+            cancellationToken: ct));
     }
 
     /// <summary>One-click unsubscribe by opaque key — no sign-in required.</summary>

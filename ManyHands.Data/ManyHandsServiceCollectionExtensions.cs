@@ -48,6 +48,11 @@ public static class ManyHandsServiceCollectionExtensions
         services.AddSingleton<NotificationQueries>();
         services.AddSingleton<VolunteerDataRepository>();
         services.AddSingleton<CalendarRepository>();
+        services.AddSingleton<ActivityAdminRepository>();
+        services.AddSingleton<ReportingRepository>();
+        services.AddSingleton<PingRepository>();
+        services.AddSingleton<InviteRepository>();
+        services.AddSingleton<SelfCheckInRepository>();
 
         // Sign-in cookies and antiforgery tokens survive a deploy only if the
         // keys that sign them do.

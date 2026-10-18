@@ -1,0 +1,171 @@
+@page "/team/invites"
+@inject InviteRepository Invites
+@inject VolunteerRepository Volunteers
+@inject ManyHands.Data.Email.EmailDispatcher Links
+
+<PageMeta Title="Invites" Description="Invite people to join PhillyPause." NoIndex="true" />
+
+<div class="wrap page-head">
+    <h1>Invite people</h1>
+    <p class="lead">Two ways in: a link anyone can use, or a personal invitation by email.</p>
+</div>
+
+<div class="wrap vol-body vol-stack">
+    @if (_notice is not null)
+    {
+        <p class="vol-notice" role="status">@_notice</p>
+    }
+
+    <section aria-labelledby="link-head">
+        <h2 id="link-head">The join link</h2>
+        <p>
+            Anyone with it can join and say what they like doing. Put it on a card, in a group
+            chat or on a QR code at the table; there is nothing to send.
+        </p>
+        <p><code class="vol-code">@Links.Link(ManyHandsPaths.Join)</code></p>
+    </section>
+
+    <section aria-labelledby="email-head">
+        <h2 id="email-head">Invite by email</h2>
+        <EditForm Model="Send" FormName="invite" OnValidSubmit="SendAsync" class="vol-form vol-narrow">
+            <DataAnnotationsValidator />
+            <label>
+                <span>Email addresses</span>
+                <InputTextArea @bind-Value="Send!.Addresses" rows="5" placeholder="sam@example.org&#10;dana@example.org" />
+                <span class="vol-small">
+                    One per line, or pasted from a spreadsheet. People who already joined are skipped,
+                    so an old list is safe. At most @InviteRepository.MaxPerRequest at a time.
+                </span>
+                <ValidationMessage For="() => Send!.Addresses" />
+            </label>
+            <label>
+                <span>A note from you, if you like</span>
+                <InputTextArea @bind-Value="Send!.Note" rows="3" placeholder="Great meeting you at the market on Saturday!" />
+            </label>
+            <button class="btn" type="submit">Send the invites</button>
+        </EditForm>
+    </section>
+
+    <section aria-labelledby="sent-head">
+        <h2 id="sent-head">Already invited</h2>
+        @if (_invites.Count == 0)
+        {
+            <p class="vol-empty">Nobody yet.</p>
+        }
+        else
+        {
+            <EditForm Model="Act" FormName="invite-action" OnSubmit="ActAsync">
+                <table class="vol-table">
+                    <thead><tr><th scope="col">Who</th><th scope="col">State</th><th scope="col"><span class="vol-sr">Actions</span></th></tr></thead>
+                    <tbody>
+                        @foreach (var invite in _invites)
+                        {
+                            var state = invite.StateAt(DateTimeOffset.UtcNow);
+                            <tr>
+                                <td>
+                                    @invite.Email
+                                    @if (invite.InvitedByName is not null) { <div class="vol-small">from @invite.InvitedByName</div> }
+                                </td>
+                                <td>@Describe(invite, state)</td>
+                                <td>
+                                    @if (state is InviteState.Sent or InviteState.Expired or InviteState.Queued)
+                                    {
+                                        <button class="vol-link-button" type="submit" name="Act.Value" value="@($"resend:{invite.Id}")">Send again</button>
+                                    }
+                                    @if (state is InviteState.Sent or InviteState.Queued)
+                                    {
+                                        <button class="vol-link-button" type="submit" name="Act.Value" value="@($"revoke:{invite.Id}")">Cancel</button>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </EditForm>
+        }
+    </section>
+</div>
+
+@code {
+    [CascadingParameter] private HttpContext HttpContext { get; set; } = default!;
+
+    [SupplyParameterFromForm(FormName = "invite")] private SendInput? Send { get; set; }
+    [SupplyParameterFromForm(FormName = "invite-action")] private ActionInput? Act { get; set; }
+
+    private IReadOnlyList<Invite> _invites = [];
+    private string? _notice;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Send ??= new();
+        Act ??= new();
+        _invites = await Invites.ListAsync();
+    }
+
+    private async Task SendAsync()
+    {
+        var addresses = Send!.Addresses
+            .Split([',', ';', '\n', '\r', ' ', '\t'], StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .ToList();
+
+        var result = await Invites.CreateAsync(addresses, string.IsNullOrWhiteSpace(Send.Note) ? null : Send.Note.Trim(),
+            HttpContext.User.VolunteerId());
+
+        _notice = Describe(result);
+        Send = new();
+        _invites = await Invites.ListAsync();
+    }
+
+    private async Task ActAsync()
+    {
+        var parts = Act!.Value?.Split(':') ?? [];
+        if (parts.Length == 2 && Guid.TryParse(parts[1], out var inviteId))
+        {
+            var done = parts[0] switch
+            {
+                "resend" => await Invites.ResendAsync(inviteId),
+                "revoke" => await Invites.RevokeAsync(inviteId),
+                _ => false
+            };
+            _notice = done ? (parts[0] == "resend" ? "Sent again, with a fresh link." : "Cancelled. The link no longer works.") : null;
+        }
+
+        _invites = await Invites.ListAsync();
+    }
+
+    /// <summary>The skipped counts are said out loud: forty pasted and three sent needs explaining.</summary>
+    private static string Describe(InviteBatchResult result)
+    {
+        var parts = new List<string>
+        {
+            result.Invited switch { 0 => "No invites went out", 1 => "1 invite on its way", var n => $"{n} invites on their way" }
+        };
+        if (result.AlreadyMembers > 0) parts.Add($"{result.AlreadyMembers} already joined");
+        if (result.Rejected > 0) parts.Add($"{result.Rejected} did not look like email addresses");
+        return string.Join(" · ", parts) + ".";
+    }
+
+    private static string Describe(Invite invite, InviteState state) => state switch
+    {
+        InviteState.Queued => "sending",
+        InviteState.Sent => $"sent {LocalTime.ToLocal(invite.SentAt ?? invite.CreatedAt):MMM d}",
+        InviteState.Accepted => $"joined {LocalTime.ToLocal(invite.AcceptedAt!.Value):MMM d}",
+        InviteState.Expired => "expired",
+        _ => "cancelled"
+    };
+
+    private sealed class SendInput
+    {
+        [Required(ErrorMessage = "Paste at least one address.")]
+        public string Addresses { get; set; } = string.Empty;
+
+        [StringLength(1000)]
+        public string? Note { get; set; }
+    }
+
+    private sealed class ActionInput
+    {
+        public string? Value { get; set; }
+    }
+}

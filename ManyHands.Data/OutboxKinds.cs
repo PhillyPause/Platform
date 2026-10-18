@@ -18,4 +18,10 @@ public static class OutboxKinds
 
     /// <summary>Payload <c>volunteerId</c>. One welcome, the first time someone joins.</summary>
     public const string MemberWelcome = "member.welcome";
+
+    /// <summary>Payload <c>activityId</c>. Tells the people whose interests match.</summary>
+    public const string ActivityPublished = "activity.published";
+
+    /// <summary>Payload <c>inviteId</c>. Mints the invite link and emails it.</summary>
+    public const string InviteSent = "invite.sent";
 }

@@ -1,0 +1,196 @@
+@page "/team/activity/new"
+@page "/team/activity/{Id:guid}/edit"
+@inject ActivityAdminRepository Admin
+@inject ActivityTypeRepository Types
+@inject NavigationManager Navigation
+
+<PageMeta Title="@(_isNew ? "New activity" : "Edit activity")" Description="Edit an activity." NoIndex="true" />
+
+@if (_missing)
+{
+    return;
+}
+
+<div class="wrap page-head">
+    <h1>@(_isNew ? "New activity" : "Edit activity")</h1>
+    <p class="lead">
+        @(_isNew
+            ? "It stays a draft until you publish it, so nothing goes out while you are still writing."
+            : "Changes show on the public page straight away. People who signed up are not emailed about them.")
+    </p>
+</div>
+
+<div class="wrap vol-body">
+    <EditForm Model="Input" FormName="activity" OnValidSubmit="SaveAsync" class="vol-form vol-editor">
+        <DataAnnotationsValidator />
+
+        <label>
+            <span>Title</span>
+            <InputText @bind-Value="Input!.Title" />
+            <ValidationMessage For="() => Input!.Title" />
+        </label>
+
+        <label>
+            <span>What it involves</span>
+            <InputTextArea @bind-Value="Input!.Description" rows="6" />
+            <span class="vol-small">Plain text. Leave a blank line between paragraphs.</span>
+        </label>
+
+        <fieldset class="vol-choice">
+            <legend>Is it at a set time?</legend>
+            <InputRadioGroup @bind-Value="Input!.Kind">
+                <label><InputRadio Value="ActivityKind.OneTime" /><span>Yes, it is at a set time</span></label>
+                <label><InputRadio Value="ActivityKind.Ongoing" /><span>No, people do it whenever they can</span></label>
+            </InputRadioGroup>
+        </fieldset>
+
+        <div class="vol-pair">
+            <label>
+                <span>Starts (Philadelphia time)</span>
+                <InputDate Type="InputDateType.DateTimeLocal" @bind-Value="Input!.StartsAt" />
+                <ValidationMessage For="() => Input!.StartsAt" />
+            </label>
+            <label>
+                <span>Ends</span>
+                <InputDate Type="InputDateType.DateTimeLocal" @bind-Value="Input!.EndsAt" />
+                <ValidationMessage For="() => Input!.EndsAt" />
+            </label>
+        </div>
+
+        <label>
+            <span>Where</span>
+            <InputText @bind-Value="Input!.Location" />
+        </label>
+
+        <label>
+            <span>Online meeting link</span>
+            <InputText @bind-Value="Input!.MeetingUrl" type="url" placeholder="https://" />
+            <ValidationMessage For="() => Input!.MeetingUrl" />
+        </label>
+
+        <label>
+            <span>How many people, at most</span>
+            <InputNumber @bind-Value="Input!.Capacity" min="1" />
+            <span class="vol-small">Leave blank for no limit. Past the limit, people join a waitlist.</span>
+            <ValidationMessage For="() => Input!.Capacity" />
+        </label>
+
+        <InterestChoices Types="_types" Selected="_selected" Legend="What kind of thing is it? People who like these are told when you publish." />
+
+        <p class="vol-actions">
+            <button class="btn" type="submit">@(_isNew ? "Save as a draft" : "Save")</button>
+            <a class="btn btn-ghost" href="@(_isNew ? ManyHandsPaths.Team : ManyHandsPaths.TeamActivity(Id!.Value))">Cancel</a>
+        </p>
+    </EditForm>
+</div>
+
+@code {
+    [Parameter] public Guid? Id { get; set; }
+
+    [CascadingParameter] private HttpContext HttpContext { get; set; } = default!;
+
+    [SupplyParameterFromForm(FormName = "activity")] private ActivityInput? Input { get; set; }
+
+    private IReadOnlyList<ActivityType> _types = [];
+    private IReadOnlyCollection<short> _selected = [];
+    private bool _isNew;
+    private bool _missing;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Input ??= new();
+        _isNew = Id is null;
+        _types = await Types.GetActiveAsync();
+
+        if (_isNew || !HttpMethods.IsGet(HttpContext.Request.Method))
+        {
+            _selected = InterestChoices.Read(HttpContext);
+            return;
+        }
+
+        if (await Admin.GetAsync(Id!.Value) is not { } draft)
+        {
+            _missing = true;
+            HttpContext.Response.StatusCode = StatusCodes.Status404NotFound;
+            return;
+        }
+
+        Input.Title = draft.Title;
+        Input.Description = draft.Description;
+        Input.Kind = draft.Kind;
+        Input.Location = draft.Location;
+        Input.MeetingUrl = draft.MeetingUrl;
+        Input.StartsAt = draft.StartsAt is { } s ? LocalTime.ToLocal(s) : null;
+        Input.EndsAt = draft.EndsAt is { } e ? LocalTime.ToLocal(e) : null;
+        Input.Capacity = draft.Capacity;
+        _selected = draft.TypeIds;
+    }
+
+    private async Task SaveAsync()
+    {
+        var ongoing = Input!.Kind == ActivityKind.Ongoing;
+        var fields = new ActivityFields(
+            Input.Title.Trim(),
+            Blank(Input.Description),
+            Input.Kind,
+            Blank(Input.Location),
+            Blank(Input.MeetingUrl),
+            // Ongoing work has no time, whatever was left in the fields.
+            ongoing || Input.StartsAt is not { } starts ? null : LocalTime.FromLocal(starts),
+            ongoing || Input.EndsAt is not { } ends ? null : LocalTime.FromLocal(ends),
+            Input.Capacity,
+            InterestChoices.Read(HttpContext));
+
+        if (_isNew)
+        {
+            var id = await Admin.CreateAsync(fields);
+            Navigation.NavigateTo(ManyHandsPaths.TeamActivity(id));
+            return;
+        }
+
+        if (await Admin.UpdateAsync(Id!.Value, fields))
+            Navigation.NavigateTo(ManyHandsPaths.TeamActivity(Id.Value));
+    }
+
+    private static string? Blank(string? value) => string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+
+    private sealed class ActivityInput : IValidatableObject
+    {
+        [Required(ErrorMessage = "Give it a title volunteers will recognise.")]
+        [StringLength(200, ErrorMessage = "That title is too long.")]
+        public string Title { get; set; } = string.Empty;
+
+        [StringLength(5000)]
+        public string? Description { get; set; }
+
+        public ActivityKind Kind { get; set; } = ActivityKind.OneTime;
+
+        public DateTime? StartsAt { get; set; }
+
+        public DateTime? EndsAt { get; set; }
+
+        [StringLength(300)]
+        public string? Location { get; set; }
+
+        [StringLength(500)]
+        public string? MeetingUrl { get; set; }
+
+        [Range(1, 10_000, ErrorMessage = "Leave it blank for no limit, or give a number above zero.")]
+        public int? Capacity { get; set; }
+
+        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+        {
+            if (Kind == ActivityKind.OneTime && StartsAt is null)
+                yield return new("A set-time activity needs a start.", [nameof(StartsAt)]);
+
+            if (Kind == ActivityKind.OneTime && StartsAt is { } starts && EndsAt is { } ends && ends <= starts)
+                yield return new("It has to end after it starts.", [nameof(EndsAt)]);
+
+            // The link goes into emails and calendars, where a bare
+            // "meet.google.com/abc" is not clickable and http is a downgrade.
+            if (!string.IsNullOrWhiteSpace(MeetingUrl)
+                && !(Uri.TryCreate(MeetingUrl.Trim(), UriKind.Absolute, out var uri) && uri.Scheme == Uri.UriSchemeHttps))
+                yield return new("A meeting link has to be a full https:// address.", [nameof(MeetingUrl)]);
+        }
+    }
+}

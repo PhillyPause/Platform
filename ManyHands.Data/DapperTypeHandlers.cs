@@ -29,6 +29,7 @@ internal static class DapperTypeHandlers
         SqlMapper.AddTypeHandler(new DateTimeOffsetHandler());
         SqlMapper.AddTypeHandler(new UInt64Handler());
         SqlMapper.AddTypeHandler(new StringArrayHandler());
+        SqlMapper.AddTypeHandler(new ShortArrayHandler());
         SqlMapper.AddTypeHandler(new DateOnlyHandler());
 
         // Registering a handler is not enough for the parameter half. Dapper
@@ -123,6 +124,20 @@ internal static class DapperTypeHandlers
         };
 
         public override void SetValue(IDbDataParameter parameter, string[]? value)
+            => parameter.Value = value ?? (object)DBNull.Value;
+    }
+
+    /// <summary>smallint[] columns (array_agg of activity type ids), for the same reason.</summary>
+    private sealed class ShortArrayHandler : SqlMapper.TypeHandler<short[]>
+    {
+        public override short[] Parse(object value) => value switch
+        {
+            short[] array => array,
+            Array array => array.Cast<object>().Select(Convert.ToInt16).ToArray(),
+            _ => throw new DataException($"Cannot convert {value.GetType()} to short[].")
+        };
+
+        public override void SetValue(IDbDataParameter parameter, short[]? value)
             => parameter.Value = value ?? (object)DBNull.Value;
     }
 }

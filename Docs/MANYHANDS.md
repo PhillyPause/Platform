@@ -119,6 +119,40 @@ Three things about signing in:
   In the container they would be replaced by every deploy, signing everyone
   out on each merge to `main`.
 
+### The team pages
+
+Under `/team`, in `Website.Portal/Components/Team`, all behind
+`TeamPolicies.Organizer`. A member who wanders onto one gets the ordinary 404:
+there is nothing there for them. The role is read from the database on every
+request.
+
+| Route | Page | Who |
+|---|---|---|
+| `/team` | Every activity, drafts included, with the numbers; the participation CSV | Organizers |
+| `/team/activity/new`, `/team/activity/{id}/edit` | The editor. Times are typed in Philadelphia's clock and stored as instants | Organizers |
+| `/team/activity/{id}` | Publish or unpublish; the roster, one big button per name for check-in; walk-ins | Organizers |
+| `/team/activity/{id}/check-in` | The QR code for the door | Organizers |
+| `/team/members` | Everyone, with what they like doing. Changing a role is admins' alone, and the last admin cannot stop being one | Organizers see; admins change |
+| `/team/invites` | The join link, invitations by email, and their state | Organizers |
+
+Two public pages come with them: `/volunteer/join/{token}`, where an
+invitation lands (accepting signs the person in, since it proves they read
+mail at that address), and `/volunteer/check-in/{token}`, where the door code
+leads.
+
+- **Publishing is the announcement.** It queues `activity.published`, which
+  emails everyone whose interests match the activity's types, once each,
+  however often the row is delivered. Publishing something already published
+  queues nothing; unpublishing is silent.
+- **The door code** is the activity and an expiry sealed by Data Protection's
+  time-limited protector, valid for twelve hours. Its keys are the ones in
+  Postgres, so it needs no secret of its own and survives a restart.
+- **A walk-in** is confirmed and checked in on the spot, past capacity if need
+  be, with or without an email.
+- **The participation CSV defuses formulas.** Names in it were typed into
+  public forms, so a cell starting with `=`, `+`, `-` or `@` gets a leading
+  apostrophe before a spreadsheet can run it.
+
 The anonymous forms that send mail are throttled per address, on the submit
 rather than the page view: five sign-in links in fifteen minutes, twenty
 signups or joins in five. The address is Cloudflare's `CF-Connecting-IP`;
@@ -161,6 +195,8 @@ day-before reminders every five minutes.
 | `signup.promoted` | `signupId` | "You are in", off the waitlist |
 | `activity.reminder` | `signupId` | The reminder, a day before |
 | `member.welcome` | `volunteerId` | One welcome, the first time someone joins |
+| `activity.published` | `activityId` | An email to everyone whose interests match, once each (claimed in `activity_pings`) |
+| `invite.sent` | `inviteId` | Mints the invite link and emails it |
 
 Until the first real deploy, `0001_schema.sql` is edited in place; nothing is
 deployed, so there is nothing to migrate. **The first deploy freezes it**, and
@@ -185,6 +221,7 @@ against real Postgres. Test against the real thing.
 |---|---|---|
 | `ManyHands:Enabled` | `false` | Everything. Off, nothing below is read |
 | `ManyHands:Seed` | `false` | Run the `_seed_` scripts. Local development only |
+| `ManyHands:Admins` | `[]` | Addresses that become admins when they sign in: how the first admin exists. Taking one off the list demotes nobody |
 | `ConnectionStrings:ManyHands` | — | Postgres. Required when enabled |
 | `Email:Provider` | `log` | `log` writes every message to the log and sends nothing; `resend` sends |
 | `Email:ApiKey` | — | Resend. Required when the provider is `resend` |
@@ -234,7 +271,7 @@ Coming across in phases, one PR each.
 | 1. Projects, schema, migrations, tests | **built** |
 | 2. Volunteers, activities, signup and waitlist, sign-in tokens, outbox, mail, reminders | **built** |
 | 3. Public pages: activities, signup, join, sign-in, my activities, unsubscribe, calendar | **built** |
-| 4. Organizer console: editor, roster, check-in, invites, roles, export | not started |
+| 4. Organizer console: editor, roster, check-in, invites, roles, export | **built** |
 | 5. CRM, outreach email and the inbound webhook, the officials directory | not started |
 | 6. Discord | not started |
 | 7. The site links to it; Small Print, privacy and hosting updated | not started |

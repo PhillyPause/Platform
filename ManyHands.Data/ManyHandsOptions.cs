@@ -17,4 +17,10 @@ public sealed class ManyHandsOptions
     /// local development. Never set in production.
     /// </summary>
     public bool Seed { get; set; }
+
+    /// <summary>
+    /// Addresses that are admins the moment they sign in. How the first admin
+    /// exists at all; after that, admins make each other on the members page.
+    /// </summary>
+    public string[] Admins { get; set; } = [];
 }

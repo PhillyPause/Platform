@@ -1,0 +1,19 @@
+@inherits LayoutComponentBase
+@layout MainLayout
+
+@* The organizers' pages: the same frame as the volunteer pages, with the
+   team's own places instead. Every page in this folder is behind
+   TeamPolicies.Organizer, through _Imports. *@
+
+<link rel="stylesheet" href="@Assets["volunteer.css"]" />
+
+<nav class="vol-nav vol-nav-team" aria-label="Team">
+    <div class="wrap">
+        <a href="@ManyHandsPaths.Team">Activities</a>
+        <a href="@ManyHandsPaths.TeamMembers">Members</a>
+        <a href="@ManyHandsPaths.TeamInvites">Invites</a>
+        <a class="vol-nav-aside" href="@ManyHandsPaths.Activities">Public pages</a>
+    </div>
+</nav>
+
+@Body

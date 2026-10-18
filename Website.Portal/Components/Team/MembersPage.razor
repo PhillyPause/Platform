@@ -1,0 +1,110 @@
+@page "/team/members"
+@inject VolunteerRepository Volunteers
+@inject Microsoft.AspNetCore.Authorization.IAuthorizationService Authorization
+
+<PageMeta Title="Members" Description="Everyone who has joined PhillyPause." NoIndex="true" />
+
+<div class="wrap page-head">
+    <h1>Members</h1>
+    <p class="lead">
+        Everyone who has joined, signed up or been added at the door: @_members.Count people.
+        @(_isAdmin ? "As an admin, you decide who else organizes." : "Admins decide who organizes.")
+    </p>
+</div>
+
+<div class="wrap vol-body">
+    @if (_notice is not null)
+    {
+        <p class="vol-notice" role="status">@_notice</p>
+    }
+
+    <EditForm Model="Role" FormName="role" OnSubmit="SetRoleAsync">
+        <table class="vol-table">
+            <thead>
+                <tr>
+                    <th scope="col">Name</th>
+                    <th scope="col">Likes doing</th>
+                    <th scope="col">Role</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var member in _members)
+                {
+                    <tr>
+                        <td>
+                            <strong>@member.DisplayName</strong>
+                            <div class="vol-small">
+                                @(member.Email ?? "no email")@(member.Email is not null && !member.CanEmail ? " · unsubscribed" : "")
+                            </div>
+                        </td>
+                        <td class="vol-small">@string.Join(", ", member.Interests)</td>
+                        <td>
+                            @member.Role
+                            @if (_isAdmin && member.Email is not null)
+                            {
+                                <div class="vol-role-buttons">
+                                    @foreach (var role in Enum.GetValues<VolunteerRole>().Where(r => r != member.Role))
+                                    {
+                                        <button class="vol-link-button" type="submit" name="Role.Value" value="@($"{member.Id}:{role}")">
+                                            Make @role.ToString().ToLowerInvariant()
+                                        </button>
+                                    }
+                                </div>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </EditForm>
+</div>
+
+@code {
+    [CascadingParameter] private HttpContext HttpContext { get; set; } = default!;
+
+    [SupplyParameterFromForm(FormName = "role")] private RoleInput? Role { get; set; }
+
+    private IReadOnlyList<Member> _members = [];
+    private bool _isAdmin;
+    private string? _notice;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Role ??= new();
+        _isAdmin = (await Authorization.AuthorizeAsync(HttpContext.User, TeamPolicies.Admin)).Succeeded;
+        _members = await Volunteers.GetMembersAsync();
+    }
+
+    private async Task SetRoleAsync()
+    {
+        // Checked again here, not just by hiding the buttons: an organizer can
+        // post the form by hand.
+        if (!_isAdmin) return;
+
+        var parts = Role!.Value?.Split(':') ?? [];
+        if (parts.Length != 2 || !Guid.TryParse(parts[0], out var volunteerId)
+            || !Enum.TryParse<VolunteerRole>(parts[1], out var role))
+            return;
+
+        // Someone has to be left holding the keys.
+        if (role != VolunteerRole.Admin
+            && _members.FirstOrDefault(m => m.Id == volunteerId)?.Role == VolunteerRole.Admin
+            && await Volunteers.CountAdminsAsync() <= 1)
+        {
+            _notice = "That is the last admin. Make someone else an admin first.";
+            return;
+        }
+
+        if (await Volunteers.SetRoleAsync(volunteerId, role))
+            _notice = $"{_members.First(m => m.Id == volunteerId).DisplayName} is now {Article(role)} {role.ToString().ToLowerInvariant()}.";
+
+        _members = await Volunteers.GetMembersAsync();
+    }
+
+    private static string Article(VolunteerRole role) => role == VolunteerRole.Admin ? "an" : "a";
+
+    private sealed class RoleInput
+    {
+        public string? Value { get; set; }
+    }
+}

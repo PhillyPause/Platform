@@ -25,6 +25,23 @@ public static class LocalTime
     public static string FormatShort(DateTimeOffset instant) =>
         Render(instant, "dddd 'at' h:mm tt");
 
+    /// <summary>
+    /// A time an organizer typed, read as Philadelphia's clock. A time that
+    /// does not exist (the hour clocks skip in March) moves forward an hour,
+    /// which is what anyone setting it meant.
+    /// </summary>
+    public static DateTimeOffset FromLocal(DateTime wallClock)
+    {
+        var unspecified = DateTime.SpecifyKind(wallClock, DateTimeKind.Unspecified);
+        if (Zone.IsInvalidTime(unspecified)) unspecified = unspecified.AddHours(1);
+        // UTC, because that is the only offset Npgsql will write to timestamptz.
+        return new DateTimeOffset(unspecified, Zone.GetUtcOffset(unspecified)).ToUniversalTime();
+    }
+
+    /// <summary>The wall-clock form of an instant, for putting back in a date-and-time field.</summary>
+    public static DateTime ToLocal(DateTimeOffset instant) =>
+        DateTime.SpecifyKind(TimeZoneInfo.ConvertTime(instant, Zone).DateTime, DateTimeKind.Unspecified);
+
     // Invariant, so a server whose culture is not en-US still writes
     // "Saturday" and "AM".
     private static string Render(DateTimeOffset instant, string pattern) =>
