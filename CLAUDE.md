@@ -36,6 +36,9 @@ Docs filenames: UPPERCASE, underscores not dashes, short. Same as ManyHands.
 - Build: `dotnet build Platform.slnx`
 - Run: `dotnet run --project Website.Portal` (no Docker, no database)
 - Test: `dotnet test Platform.slnx`
+- New machine: `git pull` then `.\go.ps1` — sets the repo-local commit
+  identity, points pushes at the `gh` CLI, checks the account, scope and SDK,
+  then runs the site. Idempotent. README has the detail.
 
 ## Who PhillyPause is (get this right — it has been got wrong)
 
@@ -98,6 +101,13 @@ direction.
   embedding `\n` or `\\` can arrive corrupted. Write multi-line files with a
   file tool, or write to the scratchpad and run the file. This has bitten
   repeatedly in ManyHands.
+- **Keep `.ps1` files pure ASCII.** Windows PowerShell 5.1 reads a BOM-less
+  UTF-8 file as Windows-1252, so an em dash decodes to three characters, one
+  of which is `"` — the script then dies with "string is missing the
+  terminator" pointing at a line nowhere near the real one. Write `--`.
+- **Quote git config keys in PowerShell.** `credential."https://github.com".helper`
+  as a bare argument starts a string and swallows the line; write
+  `'credential.https://github.com.helper'`.
 - `TreatWarningsAsErrors` is on. A warning is a build break, by choice.
 - Central package management is on: versions go in `Directory.Packages.props`,
   never in a `.csproj`. A version attribute on a `PackageReference` is NU1008.
