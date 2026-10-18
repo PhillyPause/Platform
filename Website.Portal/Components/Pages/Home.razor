@@ -31,6 +31,7 @@
   <input type="radio" name="dlg" id="volunteer-open" class="dlgtoggle" aria-label="Volunteer">
   <input type="radio" name="dlg" id="educate-open" class="dlgtoggle" aria-label="Educate">
   <input type="radio" name="dlg" id="organize-open" class="dlgtoggle" aria-label="Organize">
+  <input type="radio" name="dlg" id="notices-open" class="dlgtoggle" aria-label="Small Print">
 
   <div style="position: relative; max-width: 1180px; margin: 0 auto; padding: 0 32px">
 
@@ -198,7 +199,7 @@
     </div>
   </div>
 
-  <div id="learn" style="max-width: 1180px; margin: 0 auto; padding: 40px 32px 10px">
+  <div id="learn" style="max-width: 1180px; margin: 0 auto; padding: 40px 32px 0">
     <div style="display: flex; align-items: baseline; gap: 16px; border-bottom: 3px double #15110C; padding-bottom: 10px; margin-bottom: 26px; flex-wrap: wrap">
       <h2 style="margin: 0; font-family: 'Playfair Display', serif; font-size: 30px; font-weight: 800; letter-spacing: -0.02em">The people who built it are sounding the alarm</h2>
       <label for="primer-open" style="margin-left: auto; font-size: 12px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; white-space: nowrap; color: #AE2012; cursor: pointer">The primer &rarr;</label>
@@ -255,22 +256,12 @@
       </div>
 
     </div>
-
-    <p style="margin: 26px auto 0; font-size: 11.5px; line-height: 1.6; color: #8C8276; max-width: 110ch; text-align: center">
-      None of the people quoted here is connected to PhillyPause.
-      Portraits, all cropped: Altman &mdash; Government of Japan (<a href="https://creativecommons.org/licenses/by/4.0/" rel="license noopener" style="color: #8C8276">CC BY 4.0</a>);
-      Hinton &mdash; Arthur Petron (<a href="https://creativecommons.org/licenses/by-sa/4.0/" rel="license noopener" style="color: #8C8276">CC BY-SA 4.0</a>);
-      Turing &mdash; Elliott &amp; Fry, 1951 (public domain);
-      Amodei &mdash; TechCrunch (<a href="https://creativecommons.org/licenses/by/2.0/" rel="license noopener" style="color: #8C8276">CC BY 2.0</a>);
-      Musk &mdash; Steve Jurvetson (CC BY 2.0);
-      Bengio &mdash; Xuthoria (CC BY-SA 4.0).
-    </p>
   </div>
 
-
-  <div style="max-width: 1180px; margin: 0 auto; padding: 32px 32px 48px">
+  <div style="max-width: 1180px; margin: 0 auto; padding: 22px 32px 48px">
     <div style="border-top: 1px solid #CFC7B6; padding-top: 22px; text-align: center; font-size: 12.5px; line-height: 1.7; color: #6A6254">
-      <p style="margin: 0">We are an independent, volunteer-run Philadelphia organisation. We are nobody&rsquo;s chapter and nobody pays us. <a href="mailto:info@@phillypause.org?subject=Hello%20from%20the%20website" style="font-weight: 600">info@@phillypause.org</a>.</p>
+      <p style="margin: 0">We are an independent, volunteer-run Philadelphia organisation. We are nobody&rsquo;s chapter and nobody pays us. <a href="mailto:info@@phillypause.org?subject=Hello%20from%20the%20website" style="font-weight: 600">info@@phillypause.org</a>.
+      <label for="notices-open" class="primerlink" style="margin-left: 6px">Small Print</label></p>
     </div>
   </div>
 
@@ -501,6 +492,67 @@
           <div class="signuprow">
             <a class="signupbtn" href="https://act.controlai.org/" target="_blank" rel="noopener">Who to call</a>
             <span class="signupalt">opens ControlAI, in a new window</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  @* Small Print. Everything a careful reader is entitled to ask, in one place,
+     rather than as grey type nobody reads under the thing it qualifies. The
+     full privacy and licence pages are routes of their own; this summarises
+     and links to them. *@
+  <div class="paneldlg d-notices">
+    <label class="paneldlg-scrim" for="dlg-none" aria-label="Close"></label>
+    <div class="paneldlg-box" role="dialog" aria-modal="true" aria-labelledby="noticesdlg-title">
+      <div class="paneldlg-head">
+        <span id="noticesdlg-title">Small Print</span>
+        <label class="paneldlg-x" for="dlg-none" aria-label="Close">&times;</label>
+      </div>
+      <div class="paneldlg-body joinbody">
+        <h2>The things worth saying plainly</h2>
+        <p class="joinlede">Nothing here is buried. If any of it is wrong, that is a bug and we would like to hear about it.</p>
+
+        <div class="joinways">
+          <div class="joinway">
+            <div class="joinway-k">The people quoted here</div>
+            <p>None of them is connected to PhillyPause, and none has endorsed us. Their words are quoted accurately and attributed; the faces are there because they said these things, not because they are with us.</p>
+          </div>
+          <div class="joinway">
+            <div class="joinway-k">Photographs</div>
+            <p>All cropped. Altman &mdash; Government of Japan (<a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="license noopener">CC BY 4.0</a>); Hinton &mdash; Arthur Petron (<a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="license noopener">CC BY-SA 4.0</a>); Turing &mdash; Elliott &amp; Fry, 1951 (public domain); Amodei &mdash; TechCrunch (<a href="https://creativecommons.org/licenses/by/2.0/" target="_blank" rel="license noopener">CC BY 2.0</a>); Musk &mdash; Steve Jurvetson (CC BY 2.0); Bengio &mdash; Xuthoria (CC BY-SA 4.0).</p>
+          </div>
+          <div class="joinway">
+            <div class="joinway-k">Tracking, of which there is none</div>
+            <p>No analytics, no advertising, no third-party pixels, no fingerprinting. Nobody is counting you and no profile of you exists. You need no account to read anything here.</p>
+          </div>
+          <div class="joinway">
+            <div class="joinway-k">Cookies, of which there is one</div>
+            <p>The web framework sets a single <code>.AspNetCore.Antiforgery</code> cookie to protect form submissions. It identifies a request, not a person, we never read it, and it tells us nothing about you.</p>
+          </div>
+          <div class="joinway">
+            <div class="joinway-k">What leaves this page</div>
+            <p>Two typefaces load from Google Fonts, so Google sees the request and your IP address. We would rather self-host them and intend to. Everything else on the page is served from here.</p>
+          </div>
+          <div class="joinway">
+            <div class="joinway-k">Server logs</div>
+            <p>Requests are logged, as every web server does, and kept only as long as it takes to run the site and find faults. Full detail on the <a href="/privacy">privacy page</a>.</p>
+          </div>
+          <div class="joinway">
+            <div class="joinway-k">Licence</div>
+            <p>Words are <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="license noopener">CC BY 4.0</a> and the code is <a href="https://github.com/PhillyPause/Platform" target="_blank" rel="noopener">MIT</a>. Neither covers a logo, and quotations belong to the people who said them. <a href="/license">Licence and credits</a>.</p>
+          </div>
+          <div class="joinway">
+            <div class="joinway-k">Corrections</div>
+            <p>Every figure on this page comes from the published record, and the sources are listed above. If something is unsourced, misattributed or simply wrong, tell us and we will source it, correct it or remove it.</p>
+          </div>
+        </div>
+
+        <div class="joinform">
+          <p class="joinform-ask">Found a mistake, or want to know what we hold about you?</p>
+          <div class="signuprow">
+            <a class="signupbtn" href="mailto:support@@phillypause.org?subject=Correction">Tell us</a>
+            <span class="signupalt">or write to <b>support@@phillypause.org</b></span>
           </div>
         </div>
       </div>

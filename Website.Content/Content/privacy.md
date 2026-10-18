@@ -50,5 +50,5 @@ Last updated at the date shown above.
 
 ## Questions
 
-[info@phillypause.org](mailto:info@phillypause.org?subject=Privacy%20request). If you want something
+[support@phillypause.org](mailto:support@phillypause.org?subject=Privacy%20request). If you want something
 deleted, say so and we will do it — you do not need to give a reason.
