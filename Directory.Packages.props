@@ -18,6 +18,15 @@
     <PackageVersion Include="YamlDotNet" Version="18.1.0" />
   </ItemGroup>
 
+  <ItemGroup Label="ManyHands">
+    <!-- Handwritten SQL through thin repositories, not EF: the queries that
+         matter (signup capacity, outbox claiming) are Postgres-specific and
+         read better as SQL. DbUp runs the numbered scripts. -->
+    <PackageVersion Include="Dapper" Version="2.1.79" />
+    <PackageVersion Include="Npgsql" Version="10.0.3" />
+    <PackageVersion Include="dbup-postgresql" Version="7.0.1" />
+  </ItemGroup>
+
   <ItemGroup Label="Testing">
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.9.0" />
     <PackageVersion Include="xunit" Version="2.9.3" />
@@ -28,5 +37,7 @@
          release. If this line ever needs to move, AwesomeAssertions is the
          MIT-licensed fork with the same API. -->
     <PackageVersion Include="FluentAssertions" Version="7.2.2" />
+    <!-- Real Postgres for ManyHands' tests. Needs Docker. -->
+    <PackageVersion Include="Testcontainers.PostgreSql" Version="4.14.0" />
   </ItemGroup>
 </Project>

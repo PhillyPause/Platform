@@ -89,11 +89,13 @@ Two things to keep true:
 - `Program.cs` honours `X-Forwarded-Proto`, which is what makes that redirect
   see the real scheme through two proxies rather than looping.
 
-## When ManyHands arrives
+## ManyHands
 
-The spec uses an `ingress` rule rather than a single default route, so
-`/manyhands` can be added as a second component without restructuring (PLAN.md
-§2.2). Until then everything matches `/` and goes to the website.
+ManyHands is served by this same component, so the spec has one ingress rule
+and always will (PLAN.md §2.2). It is off in production: the spec sets no
+`ManyHands__Enabled`, and no database is attached. Switching it on needs a
+managed Postgres, its connection string as `ConnectionStrings__ManyHands`,
+and the flag — [`MANYHANDS.md`](MANYHANDS.md) §5.
 
 ## Tokens
 

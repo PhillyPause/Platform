@@ -1,0 +1,34 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Everything that touches the outside world: Postgres through Dapper, the
+       migrations, mail, Discord, and the background workers. Published only
+       as the portal's dependency. -->
+  <PropertyGroup>
+    <IsPublishable>false</IsPublishable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Hosting, options, logging and HttpClientFactory, without restating a
+         version for each of them in Directory.Packages.props. -->
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Dapper" />
+    <PackageReference Include="dbup-postgresql" />
+    <PackageReference Include="Npgsql" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ManyHands.Core\ManyHands.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Scripts\**\*.sql" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="ManyHands.Tests" />
+  </ItemGroup>
+
+</Project>
