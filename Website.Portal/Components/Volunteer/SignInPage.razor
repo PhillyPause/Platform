@@ -3,6 +3,8 @@
 @inject AuthTokenRepository Tokens
 @inject ManyHands.Data.Email.EmailDispatcher Email
 @inject FormThrottle Throttle
+@inject ManyHands.Data.Email.IEmailSender Sender
+@inject IWebHostEnvironment Environment
 
 <PageMeta Title="Sign in" Description="Sign in to PhillyPause with a link by email. No password." NoIndex="true" />
 
@@ -22,6 +24,13 @@
                 for @((int)AuthTokenRepository.Lifetime.TotalMinutes) minutes.
                 Nothing there? Look in spam, then try again.
             </p>
+            @if (_devLink is not null)
+            {
+                <p class="vol-error" role="note">
+                    Development only: mail goes to the console here, so here is the link.
+                    <a href="@_devLink">Open it</a>
+                </p>
+            }
         }
         else
         {
@@ -58,6 +67,7 @@
 
     private bool _sent;
     private string? _refused;
+    private string? _devLink;
 
     private async Task SendAsync()
     {
@@ -87,6 +97,13 @@
             // Requested by the person themselves, so it goes even to someone who
             // unsubscribed from everything else.
             await Email.SendAsync(volunteer, subject, body, "magic-link", bypassOptIn: true);
+
+            // Locally no mail leaves the machine, and digging the link out of
+            // the console is the wrong way to try the site. Never in production,
+            // and never once a real mail provider is set: there, showing the
+            // link would sign in whoever typed the address.
+            if (Environment.IsDevelopment() && !Sender.IsLive)
+                _devLink = ManyHandsPaths.RedeemSignIn(token);
         }
 
         // The same answer whether or not the address was known: whether someone
