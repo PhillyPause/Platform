@@ -534,7 +534,9 @@ a:hover { color: #15110C; }
 /* Compact on purpose: on a laptop the whole dialog should fit without a
    scroll bar, so name and email share a row and the small print sits
    beside the button. */
-.d-join .joinform { margin-top: 18px; padding-top: 16px; }
+/* The same hairline as the rules between the four ways above it. */
+.d-join .joinform { margin-top: 18px; padding-top: 16px; border-top-color: #CFC7B6; }
+.joinnote a { color: #15110C; font-weight: 600; }
 .joinfields { display: grid; gap: 12px; }
 @media (min-width: 620px) {
   .joinfields { grid-template-columns: 1fr 1fr; column-gap: 16px; }
