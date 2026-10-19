@@ -8,6 +8,7 @@
     <ProjectReference Include="..\Website.Client\Website.Client.csproj" />
     <ProjectReference Include="..\Website.Content\Website.Content.csproj" />
     <ProjectReference Include="..\ManyHands.Data\ManyHands.Data.csproj" />
+    <ProjectReference Include="..\Platform.ServiceDefaults\Platform.ServiceDefaults.csproj" />
   </ItemGroup>
 
   <ItemGroup>

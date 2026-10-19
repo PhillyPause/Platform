@@ -113,7 +113,7 @@ if (-not $ghOk) {
 }
 
 if ($NoRun) {
-    Step "ready. Run the site with: dotnet run --project Website.Portal"
+    Step "ready. Run everything with: dotnet run --project Platform.AppHost (needs Docker)"
     Write-Host ""
     exit 0
 }

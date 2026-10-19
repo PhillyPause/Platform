@@ -6,6 +6,11 @@ using Website.Content;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Telemetry and health checks (Platform.ServiceDefaults). Under the Aspire
+// AppHost, logs, traces and metrics stream to its dashboard; in production no
+// OTLP endpoint is set, so nothing is sent anywhere.
+builder.AddServiceDefaults();
+
 builder.Services.AddRazorComponents()
     .AddInteractiveWebAssemblyComponents();
 
@@ -93,6 +98,7 @@ app.UseAuthorization();
 app.UseAntiforgery();
 
 app.MapStaticAssets();
+app.MapDefaultEndpoints();
 
 if (manyHandsEnabled)
 {

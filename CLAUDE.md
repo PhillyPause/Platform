@@ -25,6 +25,8 @@ The full plan — architecture, content strategy, licensing, phases — is
 | `ManyHands.Core/` | ManyHands' domain: records, enums, results; no framework |
 | `ManyHands.Data/` | Dapper repositories, DbUp migrations, mail, Discord, background workers |
 | `ManyHands.Tests/` | xunit against real Postgres (Testcontainers) |
+| `Platform.AppHost/` | .NET Aspire: local orchestration only, never deployed |
+| `Platform.ServiceDefaults/` | `AddServiceDefaults()`: OpenTelemetry and health checks, for every service |
 | `Docs/` | PLAN, MANYHANDS, HOSTING, and DESIGN / CONTENT / MOTION as they land |
 
 Projects are `<Product>.<Role>` — product area first, job second. Folder,
@@ -40,8 +42,12 @@ Docs filenames: UPPERCASE, underscores not dashes, short.
 ## Commands
 
 - Build: `dotnet build Platform.slnx`
-- Run: `dotnet run --project Website.Portal` (no Docker, no database; to run
-  ManyHands too, MANYHANDS.md §6)
+- Run everything: `dotnet run --project Platform.AppHost` — Aspire starts
+  Postgres and the site with ManyHands on and seeded; dashboard at
+  https://localhost:17203 (logs, traces, metrics), site at
+  http://localhost:5203. Needs Docker (MANYHANDS.md §6)
+- Run the site alone: `dotnet run --project Website.Portal` (no Docker, no
+  database, ManyHands off)
 - Test: `dotnet test Platform.slnx` — **Docker must be running**: ManyHands'
   tests start their own Postgres
 - New machine: `git pull` then `.\go.ps1` — sets the repo-local commit
@@ -157,8 +163,15 @@ mail arrives pre-sorted — a bare `mailto:` is a bug.
   over `obj/` — compression, then the IL-trimmer, then webcil
   (dotnet/aspnetcore#38429). The client is still published as the portal's
   dependency, which is the only way its assets are served. `ManyHands.Core`,
-  `ManyHands.Data` and `ManyHands.Tests` are `IsPublishable=false` too; the
-  libraries reach the image as the portal's dependencies.
+  `ManyHands.Data`, `ManyHands.Tests`, `Platform.AppHost` and
+  `Platform.ServiceDefaults` are `IsPublishable=false` too; the libraries
+  reach the image as the portal's dependencies. Any new project gets it.
+- **Aspire's service defaults leave out the HTTP resilience handler** on
+  purpose: its 30-second total timeout would cut off the two-minute Congress
+  download. Add resilience per client, never globally.
+- **`NuGetAuditMode` is `all`**, so a transitive advisory breaks the build.
+  Fix it by pinning the patched version in `Directory.Packages.props`
+  (transitive pinning is on), as `MessagePack` is for Aspire.
 - **ManyHands is behind `ManyHands:Enabled`, off by default.** Off, nothing of
   it is registered and the site needs no database. A prerender must never fail
   for want of it: any page that shows ManyHands data falls back to static

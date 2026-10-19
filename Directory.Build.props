@@ -5,8 +5,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 
-    <!-- Unlike ManyHands this repo has no Aspire tree, so every advisory that
-         can fire is one we chose ourselves. Audit everything. -->
+    <!-- Every advisory that can fire, direct or transitive, breaks the build:
+         Aspire's tree included. Pin the patch in Directory.Packages.props. -->
     <NuGetAuditMode>all</NuGetAuditMode>
   </PropertyGroup>
 </Project>
