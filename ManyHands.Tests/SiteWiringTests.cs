@@ -79,6 +79,22 @@ public sealed class SiteWiringTests(DatabaseFixture db) : IAsyncLifetime
         (await volunteers.GetInterestIdsAsync(joined.Id)).Should().Equal(TestData.Flyering);
     }
 
+    /// <summary>The browser's required checks are what gray the Join button; the server holds the same line.</summary>
+    [Fact]
+    public async Task Joining_needs_a_name_as_well_as_an_email()
+    {
+        var email = TestData.NewEmail();
+        var home = await _portal.Browser().GetStringAsync(ManyHandsPaths.Join);
+
+        var response = await Forms.SubmitAsync(_portal.Browser(), ManyHandsPaths.Join, "join",
+            ("Input.DisplayName", "   "), ("Input.Email", email));
+
+        home.Should().Contain(@"autocomplete=""name"" required pattern="".*\S.*""")
+            .And.Contain("autocomplete=\"email\" required");
+        (await response.Content.ReadAsStringAsync()).Should().Contain("We need a name to greet you by");
+        (await new ManyHands.Data.VolunteerRepository(db.DataSource).GetByEmailAsync(email)).Should().BeNull();
+    }
+
     [Fact]
     public async Task Privacy_says_what_ManyHands_holds()
     {

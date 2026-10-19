@@ -33,11 +33,12 @@ else
         <DataAnnotationsValidator />
         <label>
             <span>Your name</span>
-            <InputText @bind-Value="Input!.DisplayName" autocomplete="name" />
+            <InputText @bind-Value="Input!.DisplayName" autocomplete="name" required pattern=".*\S.*" maxlength="100" />
+            <ValidationMessage For="() => Input!.DisplayName" />
         </label>
         <label>
             <span>Email</span>
-            <InputText @bind-Value="Input!.Email" type="email" autocomplete="email" />
+            <InputText @bind-Value="Input!.Email" type="email" autocomplete="email" required maxlength="254" />
             <ValidationMessage For="() => Input!.Email" />
         </label>
         <InterestChoices Types="_types" />
@@ -95,7 +96,7 @@ else
         }
 
         var result = await Volunteers.JoinAsync(
-            Input!.DisplayName ?? string.Empty, Input.Email, InterestChoices.Read(HttpContext));
+            Input!.DisplayName, Input.Email, InterestChoices.Read(HttpContext));
 
         if (result is JoinResult.Ok ok) _joined = ok;
         else _refused = "That does not look like an email address.";
@@ -103,8 +104,9 @@ else
 
     private sealed class JoinInput
     {
+        [Required(ErrorMessage = "We need a name to greet you by.")]
         [StringLength(100)]
-        public string? DisplayName { get; set; }
+        public string DisplayName { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "We need an email to tell you what is on.")]
         [StringLength(254)]
