@@ -73,6 +73,13 @@ a:hover { color: #15110C; }
    third always starts below the box: a taller box pushes the row down rather
    than covering it. Two columns on a tablet (the story beside the box) and
    one on a phone, below. */
+
+/* The account bar (app.css) on the front page: .front's column exactly, so
+   its words and button sit on the masthead's and the event box's edges, and
+   the masthead's 24px of top air doubled beneath it. */
+.broadsheet .account-bar { margin-bottom: 24px; }
+.broadsheet .account-bar-inner { max-width: 1180px; padding-inline: 32px; }
+
 .front {
   max-width: 1180px;
   margin: 0 auto;

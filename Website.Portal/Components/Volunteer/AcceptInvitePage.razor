@@ -83,7 +83,7 @@
             return;
         }
 
-        await VolunteerSession.SignInAsync(HttpContext, volunteer.Id, volunteer.DisplayName);
+        await VolunteerSession.SignInAsync(HttpContext, volunteer);
         Navigation.NavigateTo(ManyHandsPaths.Me);
     }
 

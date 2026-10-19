@@ -114,8 +114,13 @@ Three things about signing in:
   scanner. The unsubscribe link in an email body asks first for the same
   reason.
 - **The cookie names the person; the database says what they may do.** It
-  carries the volunteer id and nothing else that matters, and every page reads
-  the role fresh, so a removed organizer stops being one at once.
+  carries the volunteer id, plus a name and role for the account bar to show,
+  so no page waits on the database to say who is signed in. Access never reads
+  those: every team page reads the role fresh, so a removed organizer stops
+  being one at once. The name and role in the cookie are re-checked against
+  the database every five minutes, and a deleted volunteer is signed out.
+- **A signed-in page is never cached** (`Cache-Control: no-store, private`):
+  it carries the reader's name, and a copy would greet the next reader as them.
 - **The keys that sign the cookie live in Postgres** (`data_protection_keys`).
   In the container they would be replaced by every deploy, signing everyone
   out on each merge to `main`.
@@ -248,6 +253,7 @@ it; `ManyHandsGateTests` holds that, and `SiteWiringTests` the flag-on side.
 
 | Where | On | Off |
 |---|---|---|
+| The account bar, top of every page | Signed out: What's on, Join, **Sign in**. Signed in: "Signed in as *name*", My page, What's on, **Team** for organizers, Sign out | Not rendered |
 | The front page's "Next event" box | The soonest dated published activity, with Sign up, everything coming up, and the calendar feed | The hand-edited block in `Home.razor` |
 | Count me in | `/volunteer/join` | `join@`, subject Count Me In |
 | I can help | `/volunteer` | `join@`, subject I can help |
