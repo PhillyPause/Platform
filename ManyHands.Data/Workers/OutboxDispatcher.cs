@@ -175,7 +175,7 @@ public sealed class OutboxDispatcher(
 
         var (subject, body) = EmailTemplates.Welcome(
             volunteer.DisplayName,
-            activitiesUrl: email.Link(ManyHandsPaths.Activities),
+            activitiesUrl: email.Link(ManyHandsPaths.Events),
             ManageUrl,
             email.UnsubscribeUrl(volunteer.CommsKey));
 

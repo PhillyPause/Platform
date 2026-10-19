@@ -10,7 +10,7 @@
     <PageMeta Title="Not found" Description="That activity is not on, or never was." />
     <div class="wrap page-head">
         <h1>That one is not on</h1>
-        <p class="lead">It may have finished or been taken down. <a href="@ManyHandsPaths.Activities">See what is</a>.</p>
+        <p class="lead">It may have finished or been taken down. <a href="@ManyHandsPaths.Events" data-enhance-nav="false">See the events that are</a>.</p>
     </div>
     return;
 }
@@ -46,7 +46,7 @@
         {
             <h2 id="signup-head">@_outcome.Heading</h2>
             <p>@_outcome.Text</p>
-            <p><a href="@ManyHandsPaths.Activities">See what else is on</a></p>
+            <p><a href="@ManyHandsPaths.Events" data-enhance-nav="false">See the other events</a></p>
         }
         else
         {

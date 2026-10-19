@@ -15,7 +15,7 @@
 .vol-stack > * + * { margin-top: 2.5rem; }
 .vol-stack h2, .vol-card h2 { font-size: var(--step-h3); }
 
-/* What's on: one activity per row, divided by hairlines like the quotes. */
+/* A list of activities (My page): one per row, divided by hairlines like the quotes. */
 .vol-list { list-style: none; margin: 0; padding: 0; max-width: 44rem; }
 .vol-list > li { padding: 1.25rem 0; border-top: 1px solid var(--rule); }
 .vol-list > li:last-child { border-bottom: 1px solid var(--rule); }

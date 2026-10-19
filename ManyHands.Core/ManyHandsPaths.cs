@@ -7,8 +7,14 @@ namespace ManyHands.Core;
 /// </summary>
 public static class ManyHandsPaths
 {
-    /// <summary>What is coming up, open to anyone.</summary>
-    public const string Activities = "/volunteer";
+    /// <summary>Everything a volunteer has a page for sits under this.</summary>
+    public const string Volunteer = "/volunteer";
+
+    /// <summary>
+    /// What is coming up, open to anyone: the front page's Events dialog, not
+    /// a page of its own. <c>/events</c> loads the front page with it open.
+    /// </summary>
+    public const string Events = "/events";
 
     public static string Activity(Guid activityId) => $"/volunteer/activity/{activityId}";
 

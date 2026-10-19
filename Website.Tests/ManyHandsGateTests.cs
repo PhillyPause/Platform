@@ -14,6 +14,7 @@ public class ManyHandsGateTests(WebApplicationFactory<Program> factory)
 {
     [Theory]
     [InlineData("/volunteer")]
+    [InlineData("/events")]
     [InlineData("/volunteer/me")]
     [InlineData("/volunteer/sign-in")]
     [InlineData("/volunteer/calendar.ics")]
@@ -34,7 +35,7 @@ public class ManyHandsGateTests(WebApplicationFactory<Program> factory)
     {
         var page = await factory.CreateClient().GetStringAsync(path);
 
-        page.Should().NotContain("/volunteer").And.NotContain("phillypause.session")
+        page.Should().NotContain("/volunteer").And.NotContain("events-open").And.NotContain("phillypause.session")
             .And.NotContain("account-bar")
             .And.NotContain("If you sign up on this site");
     }

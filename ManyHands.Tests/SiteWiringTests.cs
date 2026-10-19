@@ -39,14 +39,33 @@ public sealed class SiteWiringTests(DatabaseFixture db) : IAsyncLifetime
     }
 
     [Fact]
-    public async Task The_join_dialog_holds_the_signup_form_and_I_can_help_leads_to_ManyHands()
+    public async Task The_join_dialog_holds_the_signup_form_and_I_can_help_opens_Events()
     {
         var home = await _portal.Browser().GetStringAsync("/");
 
         home.Should().Contain($"action=\"{ManyHandsPaths.Join}#join-form\"")
             .And.Contain("name=\"_handler\" value=\"join\"")
-            .And.Contain($"class=\"signupbtn\" href=\"{ManyHandsPaths.Activities}\"")
+            .And.Contain("<label class=\"signupbtn\" for=\"events-open\">I can help</label>")
             .And.Contain("phillypause.session");
+    }
+
+    /// <summary>Events is a dialog on the front page: /events opens it, and a filter keeps it open.</summary>
+    [Fact]
+    public async Task Events_opens_as_a_dialog_on_the_front_page_with_what_is_published()
+    {
+        var title = $"Dialog listed {Guid.NewGuid():N}";
+        await TestData.ActivityAsync(db.DataSource, title);
+        var browser = _portal.Browser();
+
+        var events = await browser.GetStringAsync(ManyHandsPaths.Events);
+        var filtered = await browser.GetStringAsync($"{ManyHandsPaths.Events}?type=protests");
+
+        events.Should().Contain("id=\"events-open\" class=\"dlgtoggle\" checked")
+            .And.Contain("aria-labelledby=\"eventsdlg-title\"")
+            .And.Contain(title)
+            .And.Contain(StaticEventDay);
+        filtered.Should().Contain("id=\"events-open\" class=\"dlgtoggle\" checked")
+            .And.Contain("aria-current=\"page\">Protests &amp; rallies</a>");
     }
 
     /// <summary>What we keep opens over Join us, with the privacy page's own text, ManyHands' part included.</summary>
@@ -120,7 +139,7 @@ public sealed class SiteWiringTests(DatabaseFixture db) : IAsyncLifetime
         var browser = _portal.Browser();
         await Forms.SignInAsync(browser, db.DataSource, member.Id);
 
-        foreach (var path in new[] { "/", "/privacy", ManyHandsPaths.Activities })
+        foreach (var path in new[] { "/", "/privacy", ManyHandsPaths.Events })
         {
             var response = await browser.GetAsync(path);
             var page = await response.Content.ReadAsStringAsync();

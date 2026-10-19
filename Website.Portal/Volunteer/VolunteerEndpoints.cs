@@ -28,7 +28,8 @@ public static class VolunteerEndpoints
             });
 
     internal static bool IsManyHandsPath(PathString path) =>
-        path.StartsWithSegments(ManyHandsPaths.Activities) || path.StartsWithSegments(ManyHandsPaths.Team);
+        path.StartsWithSegments(ManyHandsPaths.Volunteer) || path.StartsWithSegments(ManyHandsPaths.Events)
+        || path.StartsWithSegments(ManyHandsPaths.Team);
 
     public static IEndpointRouteBuilder MapVolunteerEndpoints(this IEndpointRouteBuilder app)
     {

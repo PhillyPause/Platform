@@ -31,7 +31,7 @@
         <h2 id="coming-head">Coming up</h2>
         @if (_upcoming.Count == 0)
         {
-            <p>Nothing yet. <a href="@ManyHandsPaths.Activities">See what&rsquo;s on</a>.</p>
+            <p>Nothing yet. <a href="@ManyHandsPaths.Events" data-enhance-nav="false">See events</a>.</p>
         }
         else
         {
@@ -200,7 +200,7 @@
     {
         await Data.DeleteAsync(_me!.Id);
         await VolunteerSession.SignOutAsync(HttpContext);
-        Navigation.NavigateTo($"{ManyHandsPaths.Activities}?deleted=true");
+        Navigation.NavigateTo($"{ManyHandsPaths.Events}?deleted=true");
     }
 
     private async Task UnlinkAsync()
@@ -213,7 +213,7 @@
     private async Task SignOutAsync()
     {
         await VolunteerSession.SignOutAsync(HttpContext);
-        Navigation.NavigateTo(ManyHandsPaths.Activities);
+        Navigation.NavigateTo(ManyHandsPaths.Events);
     }
 
     private sealed class CancelInput
