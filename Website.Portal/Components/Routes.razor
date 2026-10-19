@@ -1,6 +1,22 @@
 ﻿<Router AppAssembly="typeof(Program).Assembly" AdditionalAssemblies="new[] { typeof(Client._Imports).Assembly }" NotFoundPage="typeof(Pages.NotFound)">
     <Found Context="routeData">
-        <RouteView RouteData="routeData" DefaultLayout="typeof(Layout.MainLayout)" />
+        @* AuthorizeRouteView, not RouteView: in the organizers' app a page
+           change never reaches the server's middleware, so [Authorize] has
+           to be enforced here too. Static pages are already checked before
+           they render, so for them this only repeats the same answer. *@
+        <AuthorizeRouteView RouteData="routeData" DefaultLayout="typeof(Layout.MainLayout)">
+            <NotAuthorized>
+                @if (context.User.Identity?.IsAuthenticated == true)
+                {
+                    @* Not an organizer: there is nothing here, as on a static page. *@
+                    <Website.Portal.Components.Pages.NotFound />
+                }
+                else
+                {
+                    <RedirectToSignIn />
+                }
+            </NotAuthorized>
+        </AuthorizeRouteView>
         @* The content region, not the h1. Focusing the headline puts a ring
            round the masthead's lead story on arrival; focusing <main> moves a
            screen reader to the same place without marking up the type. Both

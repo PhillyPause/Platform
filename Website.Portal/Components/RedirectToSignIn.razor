@@ -1,0 +1,10 @@
+@inject NavigationManager Navigation
+
+@* Sent from the router when a signed-out reader reaches a signed-in page.
+   A full page load, because signing in sets a cookie, which a live
+   connection cannot. *@
+
+@code {
+    protected override void OnInitialized() =>
+        Navigation.NavigateTo(ManyHands.Core.ManyHandsPaths.SignIn, forceLoad: true);
+}

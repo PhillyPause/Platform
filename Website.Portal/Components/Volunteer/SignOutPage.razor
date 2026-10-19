@@ -1,0 +1,44 @@
+@page "/volunteer/sign-out"
+@inject NavigationManager Navigation
+
+@* Where the organizers' app sends "Sign out". Static, with a button, because
+   signing out clears a cookie, which only an ordinary request can do, and a
+   bare link that signed people out could be followed by anything. *@
+
+<PageMeta Title="Sign out" Description="Sign out of PhillyPause." NoIndex="true" />
+
+<div class="wrap page-head">
+    <h1>Sign out</h1>
+</div>
+
+<div class="wrap vol-body">
+    <section class="vol-card vol-narrow">
+        @if (HttpContext.User.VolunteerId() is null)
+        {
+            <p>You are signed out. <a href="/">Back to the front page</a></p>
+        }
+        else
+        {
+            <p>Sign out of PhillyPause on this device?</p>
+            <EditForm Model="Input" FormName="sign-out-page" OnSubmit="SignOutAsync" class="vol-form">
+                <button class="btn" type="submit">Sign out</button>
+            </EditForm>
+        }
+    </section>
+</div>
+
+@code {
+    [CascadingParameter] private HttpContext HttpContext { get; set; } = default!;
+
+    [SupplyParameterFromForm(FormName = "sign-out-page")] private SignOutInput? Input { get; set; }
+
+    protected override void OnInitialized() => Input ??= new();
+
+    private async Task SignOutAsync()
+    {
+        await VolunteerSession.SignOutAsync(HttpContext);
+        Navigation.NavigateTo("/");
+    }
+
+    private sealed class SignOutInput;
+}

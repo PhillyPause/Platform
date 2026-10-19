@@ -64,6 +64,30 @@ public sealed partial class TeamPagesTests(DatabaseFixture db) : IAsyncLifetime
     }
 
     [Fact]
+    public async Task The_activities_page_is_the_interactive_app_with_a_grid_and_says_who_is_signed_in()
+    {
+        var organizer = await SignedInAsync(VolunteerRole.Organizer, "Grid Organizer");
+        var title = $"Grid activity {Guid.NewGuid():N}";
+        await TestData.ActivityAsync(db.DataSource, title);
+
+        var page = await organizer.GetStringAsync(ManyHandsPaths.Team);
+
+        Assert.Contains("\"type\":\"server\"", page);
+        Assert.Contains("syncfusion-blazor.min.js", page);
+        Assert.Contains("e-grid", page);
+        Assert.Contains(title, page);
+        Assert.Contains("Signed in as <strong>Grid Organizer</strong>", page);
+    }
+
+    [Fact]
+    public async Task The_app_stays_closed_to_a_member()
+    {
+        var member = await SignedInAsync(VolunteerRole.Member);
+
+        Assert.Equal(HttpStatusCode.NotFound, (await member.GetAsync(ManyHandsPaths.Team)).StatusCode);
+    }
+
+    [Fact]
     public async Task Every_record_page_opens_for_an_organizer()
     {
         var crm = new CrmRepository(db.DataSource);

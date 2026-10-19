@@ -22,7 +22,7 @@
                     <a href="@ManyHandsPaths.Activities">What&rsquo;s on</a>
                     @if (User.ShowsTeam())
                     {
-                        <a class="account-primary" href="@ManyHandsPaths.Team">Team</a>
+                        <a class="account-primary" href="@ManyHandsPaths.Team" data-enhance-nav="false">Team</a>
                     }
                     <EditForm Model="SignOut" FormName="account-sign-out" OnSubmit="SignOutAsync" class="account-signout">
                         <button type="submit">Sign out</button>
