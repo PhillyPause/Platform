@@ -267,7 +267,7 @@ Nothing else in this plan depends on which mark wins.
 | `/pennsylvania` | originate | Local orgs, campuses, Harrisburg, local press |
 | `/learn` | adapt | Curated reading and quotes |
 | `/about` | originate | Who we are — independent, loosely affiliated with PauseAI Global (§0.0) |
-| `/join` | originate | → `/manyhands/philly` |
+| `/join` | originate | The front page with Join us open: the address on posters |
 | `/press` | originate | Assets, boilerplate, contact |
 | `/license` | originate | §3 |
 | `/privacy` | originate | Short, honest, matches what ManyHands actually stores |
@@ -298,8 +298,9 @@ Every touchpoint has a real fallback, not an error:
 | Touchpoint | Flag off, or ManyHands unreachable |
 |---|---|
 | Events on `/` and `/act` | The hand-edited "next event" block |
-| Join us | `join@phillypause.org`, subject Count Me In, as now |
+| Join us | `join@phillypause.org`, subject Count Me In |
 | Calendar feed | Link hidden |
+| Small Print and `/privacy` | Say nothing of ManyHands; on, they add what it sets and holds |
 
 A prerender must never fail because ManyHands is absent, and this is tested
 with the flag both ways. Until ManyHands is enabled in production, no page
@@ -356,10 +357,12 @@ Shared `tokens.css` (and the ManyHands PR), the chosen mark as animated SVG,
 scroll-driven hero, reduced-motion tests, performance budget in CI.
 
 **P4 — ManyHands** (flag-gated — §5.1)
-ManyHands comes into this solution in its own phases, tracked in
-[`MANYHANDS.md`](MANYHANDS.md) §7. The site's side is the live path: events on
-`/` and `/act`, the join links, calendar links, and the flag flipped. The
-static fallbacks are already ordinary content, so nothing else waits on it.
+ManyHands is in this solution and built, with the site's side wired: events
+on `/`, the join links, the calendar link, the privacy supplement
+([`MANYHANDS.md`](MANYHANDS.md) "On the site"). What remains is the flag
+flipped, a runbook in [`HOSTING.md`](HOSTING.md), and events on `/act` when
+that page returns. The static fallbacks are ordinary content, so nothing else
+waits on it.
 
 **P5 — The originals**
 `/act/congress` delegation data, `/pennsylvania`, press kit, RSS, generated OG

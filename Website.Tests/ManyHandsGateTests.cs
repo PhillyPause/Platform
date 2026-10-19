@@ -27,6 +27,26 @@ public class ManyHandsGateTests(WebApplicationFactory<Program> factory)
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
 
+    [Theory]
+    [InlineData("/")]
+    [InlineData("/privacy")]
+    public async Task While_it_is_off_no_page_links_to_it_or_mentions_it(string path)
+    {
+        var page = await factory.CreateClient().GetStringAsync(path);
+
+        page.Should().NotContain("/volunteer").And.NotContain("phillypause.session")
+            .And.NotContain("If you sign up on this site");
+    }
+
+    [Fact]
+    public async Task While_it_is_off_the_join_buttons_write_to_join()
+    {
+        var page = await factory.CreateClient().GetStringAsync("/");
+
+        page.Should().Contain("href=\"mailto:join@phillypause.org?subject=Count%20Me%20In\"")
+            .And.Contain("href=\"mailto:join@phillypause.org?subject=I%20can%20help\"");
+    }
+
     [Fact]
     public async Task The_home_page_needs_no_database()
     {

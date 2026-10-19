@@ -10,7 +10,7 @@ Short, because there is not much to say.
 ## This website
 
 - **No tracking.** No analytics, no advertising, no third-party pixels, no
-  fingerprinting, no cookies set by us.
+  fingerprinting, and no cookies set by us while you read.
 - **No account needed** to read anything here.
 - **Fonts** are served from Google Fonts, which means Google sees the request.
   We are looking at self-hosting them to remove even that.
@@ -29,9 +29,9 @@ That is the complete list for the site itself.
 We keep your message so we can reply and so we remember the conversation. We do
 not add you to a mailing list because you emailed us.
 
-## If you join the mailing list
+## If you write to join us
 
-We hold the email address you gave us, and nothing else. No name unless you
+We hold the email address you wrote from, and nothing else. No name unless you
 sign it, no phone number, no address, no record of which emails you opened.
 
 What we do **not** do with it:
@@ -42,6 +42,8 @@ What we do **not** do with it:
 
 Ask us and we will tell you exactly what we hold about you, or delete it. You
 do not need to give a reason.
+
+<!-- manyhands -->
 
 ## Unsubscribing
 

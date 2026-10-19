@@ -27,6 +27,11 @@ if (manyHandsEnabled)
     builder.Services.AddSingleton<Microsoft.AspNetCore.Authorization.IAuthorizationHandler, TeamRoleHandler>();
 }
 
+// Registered either way: the home page reads it, and with ManyHands off it
+// stays empty, which is what selects the static "next event" block.
+builder.Services.AddSingleton(TimeProvider.System);
+builder.Services.AddSingleton<ManyHands.Data.Workers.UpcomingActivities>();
+
 // Registered either way, so the volunteer pages' [Authorize] has something to
 // answer to. Nothing issues the cookie unless a volunteer signs in, and with
 // ManyHands off nobody can.

@@ -93,9 +93,36 @@ Two things to keep true:
 
 ManyHands is served by this same component, so the spec has one ingress rule
 and always will (PLAN.md §2.2). It is off in production: the spec sets no
-`ManyHands__Enabled`, and no database is attached. Switching it on needs a
-managed Postgres, its connection string as `ConnectionStrings__ManyHands`,
-and the flag — [`MANYHANDS.md`](MANYHANDS.md) §5.
+`ManyHands__Enabled`, and no database is attached. Every key is in
+[`MANYHANDS.md`](MANYHANDS.md) §5.
+
+### Switching it on
+
+In this order, each through `app.yaml` and `doctl apps update`, never the
+control panel. Secrets go in as `type: SECRET`; App Platform encrypts them,
+and only the encrypted `EV[...]` form that `doctl apps spec get` hands back is
+committed.
+
+1. **A managed Postgres** in the app's region. Add the app to its trusted
+   sources. The connection string is Npgsql's key-value form, not the
+   `postgresql://` URL App Platform offers, so it is set by hand:
+   `ConnectionStrings__ManyHands` = `Host=…;Port=25060;Database=…;Username=…;Password=…;SSL Mode=Require`.
+   The schema is applied at startup; nothing else is run.
+2. **Mail.** A Resend account, with a sending subdomain verified (SPF, DKIM
+   and DMARC records at Cloudflare). Then `Email__Provider` = `resend`,
+   `Email__ApiKey` (secret), `Email__FromAddress` on that subdomain, and
+   `Email__PublicBaseUrl` = `https://phillypause.org`.
+3. **The first admin**: `ManyHands__Admins__0` = their address. They become
+   admin the first time they sign in.
+4. **Optional, any time later**: `Discord__BotToken` (secret),
+   `Discord__GuildId`, `Discord__RoleId`; `Email__InboundSecret` (secret) for
+   outreach replies; `FederalOfficials__Enabled` = `true`.
+5. **The flag**: `ManyHands__Enabled` = `true`, last, so the deploy that turns
+   it on has everything it needs. Startup fails loudly on a missing
+   connection string or mail key, and the previous deployment keeps serving.
+
+Off again is the flag alone. The site goes back to its static event box and
+the `join@` links, and the database keeps everything until it is wanted.
 
 ## Tokens
 
