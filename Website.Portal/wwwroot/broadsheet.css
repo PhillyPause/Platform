@@ -337,18 +337,24 @@ a:hover { color: #15110C; }
 .paneldlg-box {
   position: relative;
   width: min(560px, 100%);
-  /* Of the viewport, not a percentage: inside the centring grid a percentage
-     resolves against nothing, and a long dialog ran off the bottom of a phone
-     with no way to scroll to its button. dvh where it is known, so a phone's
-     address bar does not hide the bottom. */
-  max-height: 88vh;
-  max-height: 88dvh;
+  /* The viewport less .paneldlg's padding, not a percentage: inside the
+     centring grid a percentage resolves against nothing, and a long dialog
+     ran off the bottom of a phone with no way to scroll to its button. dvh
+     where it is known, so a phone's address bar does not hide the bottom. */
+  max-height: calc(100vh - 48px);
+  max-height: calc(100dvh - 48px);
   display: flex;
   flex-direction: column;
   background: #FBF8F1;
   border: 1px solid #15110C;
   box-shadow: 0 18px 50px rgba(21, 17, 12, 0.4);
   animation: dlg-in 200ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+/* A short laptop screen gets the dialog closer to its edges, so Join us
+   still fits without scrolling. */
+@media (max-height: 760px) {
+  .paneldlg { padding-block: 12px; }
+  .paneldlg-box { max-height: calc(100vh - 24px); max-height: calc(100dvh - 24px); }
 }
 @keyframes dlg-in {
   from { opacity: 0; transform: translateY(10px) scale(0.985); }
@@ -525,12 +531,23 @@ a:hover { color: #15110C; }
 /* The join form in the Join us dialog (JoinForm.razor), with ManyHands on. */
 /* It borrows .signup's field and button; the labels keep .signup's small
    red capitals, the ticks below go back to ordinary text. */
-.joinfields { display: grid; gap: 14px; }
-.joinfields > label { display: grid; gap: 6px; margin: 0; }
+/* Compact on purpose: on a laptop the whole dialog should fit without a
+   scroll bar, so name and email share a row and the small print sits
+   beside the button. */
+.d-join .joinform { margin-top: 18px; padding-top: 16px; }
+.joinfields { display: grid; gap: 12px; }
+@media (min-width: 620px) {
+  .joinfields { grid-template-columns: 1fr 1fr; column-gap: 16px; }
+  .joinfields > :not(label) { grid-column: 1 / -1; }
+}
+.joinfields > label { display: grid; gap: 6px; margin: 0; align-content: start; }
 .joinfields .vol-interests label { text-transform: none; letter-spacing: 0; margin: 0; }
-.joinfields .vol-interests { border: 0; margin: 4px 0 0; padding: 0; display: grid; gap: 6px 16px; }
+.joinfields .vol-interests { border: 0; margin: 0; padding: 0; display: grid; gap: 6px 16px; }
 @media (min-width: 480px) { .joinfields .vol-interests { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-@media (min-width: 720px) { .joinfields .vol-interests { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (min-width: 720px) { .joinfields .vol-interests { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+.joinfields .signuprow { flex-wrap: nowrap; }
+@media (max-width: 479px) { .joinfields .signuprow { flex-wrap: wrap; } }
+.joinnote { font-size: 12.5px; line-height: 1.5; color: #6A6254; }
 .joinfields .vol-interests legend {
   font-size: 10.5px; font-weight: 700; letter-spacing: 0.16em;
   text-transform: uppercase; color: #AE2012; padding: 0; margin-bottom: 8px;
@@ -542,7 +559,7 @@ a:hover { color: #15110C; }
   margin: 0; font-size: 13px; font-weight: 600; letter-spacing: 0;
   text-transform: none; color: #AE2012;
 }
-.joinfields .signuprow { margin-top: 4px; }
+.joinfields .signuprow { margin-top: 2px; }
 .joindone { padding: 16px 18px; border-left: 4px solid #AE2012; background: #F3EEE3; }
 .joindone p { margin: 0 0 12px; font-size: 14px; line-height: 1.55; color: #4A443A; }
 .joindone .joindone-head { margin-bottom: 6px; font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 800; color: #15110C; }
