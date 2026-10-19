@@ -1,5 +1,7 @@
 @page "/"
+@page "/join"
 @layout BroadsheetLayout
+@inject NavigationManager Navigation
 
 @* The home page, as a broadsheet front: masthead and nav, the lead story on
    the July 2026 incident, and the dialogs: watch, panelists, join us, the
@@ -15,7 +17,8 @@
    because scoped CSS rewrites the sibling selectors the dialogs depend on. *@
 
 <PageMeta Title="Stop the AI death race"
-          Description="In July 2026, 700 AI agents broke out of their sandboxes to cheat on a test. PhillyPause is an independent, volunteer-run Philadelphia organisation working to stop the AI death race." />
+          Description="In July 2026, 700 AI agents broke out of their sandboxes to cheat on a test. PhillyPause is an independent, volunteer-run Philadelphia organisation working to stop the AI death race."
+          Canonical="@(JoinOpen ? Navigation.BaseUri : null)" />
 
 
 <div class="broadsheet" style="background: #FBF8F1; color: #15110C; font-family: Archivo, sans-serif">
@@ -23,11 +26,13 @@
   @* One radio group rather than six checkboxes, so that opening a dialog
      closes whichever was open and a link inside one dialog can hand the reader
      to another. Every close control points at dlg-none, which is checked on
-     load, so nothing shows until something is chosen. No script involved. *@
-  <input type="radio" name="dlg" id="dlg-none" class="dlgtoggle" checked aria-label="No panel open">
+     load, so nothing shows until something is chosen. No script involved.
+     /join is the one exception: the address on posters, it loads with Join us
+     already open, and closing it leaves the reader on the front page. *@
+  <input type="radio" name="dlg" id="dlg-none" class="dlgtoggle" checked="@(!JoinOpen)" aria-label="No panel open">
   <input type="radio" name="dlg" id="watch-open" class="dlgtoggle" aria-label="Watch">
   <input type="radio" name="dlg" id="panel-open" class="dlgtoggle" aria-label="Who is on the panel">
-  <input type="radio" name="dlg" id="join-open" class="dlgtoggle" aria-label="Join us">
+  <input type="radio" name="dlg" id="join-open" class="dlgtoggle" checked="@JoinOpen" aria-label="Join us">
   <input type="radio" name="dlg" id="primer-open" class="dlgtoggle" aria-label="The primer">
   <input type="radio" name="dlg" id="volunteer-open" class="dlgtoggle" aria-label="Volunteer">
   <input type="radio" name="dlg" id="educate-open" class="dlgtoggle" aria-label="Educate">
@@ -591,6 +596,12 @@
 </div>
 
 @code {
+    // watch.js only opens the video when dlg-none is checked, so on /join the
+    // first-visit video never lands on top of the Join dialog.
+    private bool JoinOpen =>
+        Navigation.ToBaseRelativePath(Navigation.Uri).Split('?', '#')[0]
+            .Equals("join", StringComparison.OrdinalIgnoreCase);
+
     // The Watch dialog's video. A stand-in until our own is cut; swapping it
     // is these five lines. A new id also re-opens the dialog once for readers
     // who saw the old one, because watch.js remembers by id.

@@ -20,6 +20,11 @@
     {
         <meta name="robots" content="noindex" />
     }
+
+    @if (Canonical is not null)
+    {
+        <link rel="canonical" href="@Canonical" />
+    }
 </HeadContent>
 
 @code {
@@ -28,6 +33,9 @@
 
     /// <summary>For pages that belong to one person: sign-in, their own page, unsubscribe.</summary>
     [Parameter] public bool NoIndex { get; set; }
+
+    /// <summary>For a second address of the same page, so search engines count it once.</summary>
+    [Parameter] public string? Canonical { get; set; }
 
     [Parameter, EditorRequired] public required string Title { get; set; }
 
