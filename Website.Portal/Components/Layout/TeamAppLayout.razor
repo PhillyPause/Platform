@@ -1,0 +1,84 @@
+@inherits LayoutComponentBase
+@using ManyHands.Core
+@using Syncfusion.Blazor.Navigations
+@using Syncfusion.Blazor.Buttons
+@using Website.Portal.Volunteer
+
+@* The organizers' app: an app bar that always says who is signed in, a
+   sidebar with every team page, and the page. Interactive on the server
+   (TeamApp). It stands alone rather than inside MainLayout: the site's header
+   and account bar are for readers, this is a tool. *@
+
+<div class="team-app">
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <SfAppBar ColorMode="AppBarColor.Dark" CssClass="team-appbar">
+        <SfButton CssClass="e-inherit team-menu" IconCss="e-icons e-menu" aria-label="Show or hide the menu" OnClick="@(() => _sidebarOpen = !_sidebarOpen)" />
+        <a class="team-brand" href="/" target="_top">PhillyPause</a>
+        <span class="team-product">Team</span>
+        <AppBarSpacer />
+        @if (_name is not null)
+        {
+            <span class="team-who"><span class="team-who-label">Signed in as </span><strong>@_name</strong></span>
+        }
+        <a class="team-bar-link team-bar-me" href="@ManyHandsPaths.Me" target="_top">My page</a>
+        <a class="team-bar-link" href="@ManyHandsPaths.SignOut" target="_top">Sign out</a>
+    </SfAppBar>
+
+    <div class="team-body">
+        <SfSidebar Width="232px" Target=".team-body" Type="SidebarType.Auto" MediaQuery="(min-width: 960px)"
+                   @bind-IsOpen="_sidebarOpen" CssClass="team-sidebar">
+            <ChildContent>
+                <nav class="team-nav" aria-label="Team">
+                    @foreach (var group in Sections)
+                    {
+                        <div class="team-nav-group">@group.Heading</div>
+                        @foreach (var (label, path) in group.Links)
+                        {
+                            @if (TeamApp.IsAppPage(path))
+                            {
+                                <NavLink class="team-nav-link" href="@path" Match="NavLinkMatch.All">@label</NavLink>
+                            }
+                            else
+                            {
+                                @* Not rebuilt yet: a static page, so a full load. *@
+                                <a class="team-nav-link" href="@path" target="_top">@label</a>
+                            }
+                        }
+                    }
+                    <div class="team-nav-group">Site</div>
+                    <a class="team-nav-link" href="@ManyHandsPaths.Me" target="_top">My page</a>
+                    <a class="team-nav-link" href="@ManyHandsPaths.Activities" target="_top">Public activity pages</a>
+                </nav>
+            </ChildContent>
+        </SfSidebar>
+
+        <main id="main" class="team-main" tabindex="-1">
+            @Body
+        </main>
+    </div>
+</div>
+
+@code {
+    [CascadingParameter] private Task<AuthenticationState>? AuthenticationState { get; set; }
+
+    private sealed record Section(string Heading, (string Label, string Path)[] Links);
+
+    private static readonly Section[] Sections =
+    [
+        new("Volunteering", [("Activities", ManyHandsPaths.Team), ("Members", ManyHandsPaths.TeamMembers), ("Invites", ManyHandsPaths.TeamInvites)]),
+        new("Lobbying", [("Organizations", ManyHandsPaths.Crm), ("Pipeline", ManyHandsPaths.CrmPipeline), ("Officials", ManyHandsPaths.CrmOfficials)]),
+        new("Mail", [("Inbox", ManyHandsPaths.Inbox), ("Write", ManyHandsPaths.InboxCompose), ("Templates", ManyHandsPaths.InboxTemplates)])
+    ];
+
+    private string? _name;
+    // Closed to start: the MediaQuery opens it on wide screens, and on a
+    // phone it waits for the menu button rather than covering the page.
+    private bool _sidebarOpen;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (AuthenticationState is not null)
+            _name = (await AuthenticationState).User.DisplayName();
+    }
+}

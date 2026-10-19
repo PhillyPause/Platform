@@ -79,7 +79,7 @@
 
         <p class="vol-actions">
             <button class="btn" type="submit">@(_isNew ? "Save as a draft" : "Save")</button>
-            <a class="btn btn-ghost" href="@(_isNew ? ManyHandsPaths.Team : ManyHandsPaths.TeamActivity(Id!.Value))">Cancel</a>
+            <a class="btn btn-ghost" href="@(_isNew ? ManyHandsPaths.Team : ManyHandsPaths.TeamActivity(Id!.Value))" data-enhance-nav="false">Cancel</a>
         </p>
     </EditForm>
 </div>

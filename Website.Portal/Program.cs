@@ -1,4 +1,5 @@
 using ManyHands.Data;
+using Syncfusion.Blazor;
 using Microsoft.AspNetCore.HttpOverrides;
 using Website.Portal.Components;
 using Website.Portal.Volunteer;
@@ -11,8 +12,19 @@ var builder = WebApplication.CreateBuilder(args);
 // OTLP endpoint is set, so nothing is sent anywhere.
 builder.AddServiceDefaults();
 
+// Static server rendering everywhere, except the organizers' app under /team,
+// which runs interactive on the server (TeamApp): Syncfusion's grids and
+// layout need a live connection. Visitors never open one.
 builder.Services.AddRazorComponents()
+    .AddInteractiveServerComponents()
     .AddInteractiveWebAssemblyComponents();
+builder.Services.AddCascadingAuthenticationState();
+builder.Services.AddSyncfusionBlazor();
+
+// Never committed: user secrets locally, an App Platform secret in
+// production. Without it the components work and show a trial banner.
+if (builder.Configuration["Syncfusion:LicenseKey"] is { Length: > 0 } syncfusionKey)
+    Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(syncfusionKey);
 
 // Content is read and rendered once, at startup. A request never touches the
 // disk or the Markdown parser (PLAN.md 2.3).
@@ -106,6 +118,7 @@ if (manyHandsEnabled)
     app.MapTeamEndpoints();
 }
 app.MapRazorComponents<App>()
+    .AddInteractiveServerRenderMode()
     .AddInteractiveWebAssemblyRenderMode()
     .AddAdditionalAssemblies(typeof(Website.Client._Imports).Assembly);
 

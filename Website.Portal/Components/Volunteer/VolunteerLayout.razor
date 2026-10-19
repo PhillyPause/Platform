@@ -17,7 +17,7 @@
             <a href="@ManyHandsPaths.Me">My page</a>
             @if (_me.IsAtLeast(VolunteerRole.Organizer))
             {
-                <a class="vol-nav-aside" href="@ManyHandsPaths.Team">Team</a>
+                <a class="vol-nav-aside" href="@ManyHandsPaths.Team" data-enhance-nav="false">Team</a>
             }
         }
         else

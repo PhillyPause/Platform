@@ -17,6 +17,9 @@ public static class ManyHandsPaths
 
     public const string SignIn = "/volunteer/sign-in";
 
+    /// <summary>A page with one button: the organizers' app sends people here, as signing out must clear a cookie.</summary>
+    public const string SignOut = "/volunteer/sign-out";
+
     /// <summary>
     /// Where a sign-in link lands. The page asks for one click before the token
     /// is spent, because mail scanners open links on the reader's behalf.

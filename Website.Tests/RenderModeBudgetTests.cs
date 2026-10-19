@@ -15,7 +15,13 @@ namespace Website.Tests;
 public class RenderModeBudgetTests
 {
     /// <summary>Razor files allowed to declare an interactive render mode.</summary>
-    private static readonly string[] AllowedInteractiveComponents = [];
+    private static readonly string[] AllowedInteractiveComponents =
+    [
+        // Chooses per request: interactive on the server for the organizers'
+        // app (TeamApp), static for every other page. Public pages are held to
+        // static by StaticPublicPageTests.
+        "Website.Portal/Components/App.razor"
+    ];
 
     [Fact]
     public void Only_allowlisted_components_declare_an_interactive_render_mode()

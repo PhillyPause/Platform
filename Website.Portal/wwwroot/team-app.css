@@ -1,0 +1,70 @@
+/* The organizers' app (TeamAppLayout): Syncfusion's Fluent 2 theme, in the
+   front page's ink, cream and red. Loaded only on the app's pages. */
+
+:root {
+  --team-ink: #15110C;
+  --team-cream: #FBF8F1;
+  --team-paper: #FFFFFF;
+  --team-red: #AE2012;
+  --team-red-deep: #8E190E;
+  --team-rule: #CFC7B6;
+  --team-muted: #6A6254;
+
+  /* Fluent 2's own variables, so its buttons, focus rings and selections
+     use the same red rather than its default blue. */
+  --color-sf-primary: #AE2012;
+  --color-sf-primary-bg-color: #AE2012;
+  --color-sf-primary-bg-color-hover: #8E190E;
+  --color-sf-primary-bg-color-pressed: #7A150C;
+  --color-sf-primary-border-color: #AE2012;
+  --color-sf-primary-text-color: #FFFFFF;
+}
+
+body { background: var(--team-cream); margin: 0; }
+
+.team-app { min-height: 100vh; display: flex; flex-direction: column; font-family: var(--sans); color: var(--team-ink); }
+
+.team-appbar.e-appbar { background: var(--team-ink); color: var(--team-cream); gap: 14px; padding-inline: 12px 20px; }
+.team-brand { color: var(--team-cream); font-family: "Playfair Display", serif; font-weight: 800; font-size: 20px; text-decoration: none; }
+.team-product {
+  font-size: 11px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase;
+  background: var(--team-red); color: #fff; padding: 3px 8px;
+}
+.team-who { font-size: 13px; }
+.team-bar-link {
+  color: var(--team-cream); font-size: 12px; font-weight: 600; letter-spacing: 0.06em;
+  text-transform: uppercase; text-decoration: none; white-space: nowrap;
+}
+.team-bar-link:hover, .team-bar-link:focus-visible { text-decoration: underline; }
+
+.team-body { flex: 1; display: flex; min-height: 0; position: relative; }
+.team-sidebar.e-sidebar { background: var(--team-paper); border-right: 1px solid var(--team-rule); }
+.team-nav { display: flex; flex-direction: column; padding: 14px 0 24px; }
+.team-nav-group {
+  font-size: 10px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--team-red); padding: 14px 20px 6px;
+}
+.team-nav-link { color: var(--team-ink); text-decoration: none; padding: 7px 20px; font-size: 14px; border-left: 3px solid transparent; }
+.team-nav-link:hover, .team-nav-link:focus-visible { background: var(--team-cream); }
+.team-nav-link.active { border-left-color: var(--team-red); font-weight: 700; background: var(--team-cream); }
+
+.team-main { flex: 1; min-width: 0; padding: 24px 28px 48px; }
+.team-main:focus { outline: none; }
+
+.team-page-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 24px; margin-bottom: 18px; }
+.team-page-head h1 { font-family: "Playfair Display", serif; font-weight: 800; font-size: 30px; margin: 0; }
+.team-stats { color: var(--team-muted); font-size: 14px; margin: 4px 0 0; }
+.team-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+
+.team-cell-sub { color: var(--team-muted); font-size: 12px; }
+.team-state { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 2px 8px; border-radius: 2px; }
+.team-state-draft { background: #EFE9DC; color: var(--team-muted); }
+.team-state-published { background: #E4F1E6; color: #1E6B30; }
+.team-state-finished { background: #ECECEC; color: #555; }
+
+@media (max-width: 639px) {
+  .team-main { padding: 16px; }
+  /* The name stays, so a phone still says who is signed in. */
+  .team-who-label, .team-bar-me, .team-product { display: none; }
+  .team-who { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 45vw; }
+}
