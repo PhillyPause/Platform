@@ -363,24 +363,31 @@ production they are App Platform environment variables
 
 ## 6. Running it locally
 
-The site runs without any of this. To run ManyHands too, start a Postgres and
-point the portal at it:
+With Docker Desktop running:
 
 ```powershell
-docker run -d --name manyhands-db -e POSTGRES_PASSWORD=dev -p 5432:5432 postgres:17-alpine
-cd Website.Portal
-dotnet user-secrets set "ManyHands:Enabled" "true"
-dotnet user-secrets set "ConnectionStrings:ManyHands" "Host=localhost;Username=postgres;Password=dev;Database=postgres"
-dotnet user-secrets set "ManyHands:Seed" "true"
-dotnet run
+dotnet run --project Platform.AppHost
 ```
 
-The schema is applied at startup, and with `ManyHands:Seed` the fictional
-data in `9999_seed_dev.sql` too: a few activities, one of them full, and
-`organizer@example.test`, an admin. Mail is only logged locally, so to sign in
-ask for a link on `/volunteer/sign-in` and copy it out of the console.
-`ManyHands.Tests` starts its own container, so `dotnet test` needs Docker
-running.
+The Aspire AppHost starts a Postgres 17 container and the site with
+ManyHands on and seeded, and opens the dashboard at
+<https://localhost:17203>: every resource, its console, and the site's
+structured logs, traces (each request, with its database queries timed
+inside it) and metrics. The site is at <http://localhost:5203>.
+
+The database is **ephemeral**: every run starts from nothing, applies the
+schema and seeds the fictional data in `9999_seed_dev.sql` again — a few
+activities, one of them full, `organizer@example.test` (an admin) and
+`ben@example.test`. That is what lets `0001_schema.sql` be edited in place
+until the first deploy.
+
+Mail is only logged locally. To sign in, ask for a link on
+`/volunteer/sign-in`: in development, with no mail provider, the page shows
+the link it logged. Emails are in the dashboard's logs for `website`.
+
+`dotnet run --project Website.Portal` still runs the site alone, with
+ManyHands off and no database. `ManyHands.Tests` starts its own container,
+so `dotnet test` needs Docker running too.
 
 ## 7. Status
 
