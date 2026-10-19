@@ -40,12 +40,12 @@ public class ManyHandsGateTests(WebApplicationFactory<Program> factory)
     }
 
     [Fact]
-    public async Task While_it_is_off_the_join_buttons_write_to_join()
+    public async Task While_it_is_off_there_is_no_email_signup_and_I_can_help_opens_Join_us()
     {
         var page = await factory.CreateClient().GetStringAsync("/");
 
-        page.Should().Contain("href=\"mailto:join@phillypause.org?subject=Count%20Me%20In\"")
-            .And.Contain("href=\"mailto:join@phillypause.org?subject=I%20can%20help\"");
+        page.Should().NotContain("mailto:join@")
+            .And.Contain("<label class=\"signupbtn\" for=\"join-open\">I can help</label>");
     }
 
     [Fact]

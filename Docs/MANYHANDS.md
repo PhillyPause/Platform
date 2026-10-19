@@ -253,8 +253,8 @@ it; `ManyHandsGateTests` holds that, and `SiteWiringTests` the flag-on side.
 | Where | On | Off |
 |---|---|---|
 | The account bar, top of every page | Signed out: What's on, Join, **Sign in**. Signed in: "Signed in as *name*", My page, What's on, **Team** for organizers, Sign out | Not rendered |
-| Join us dialog, front page | The signup form itself (`JoinForm`): name, email, interests. It posts to `/join`, the front page with the dialog open, and answers there; if the database is unreachable it falls back to the email button | `join@`, subject Count Me In |
-| I can help | `/volunteer` | `join@`, subject I can help |
+| Join us dialog, front page | The signup form itself (`JoinForm`): name, email, interests. It posts to `/join`, the front page with the dialog open, and answers there; if the database is unreachable it says so | No form and no email signup: the dialog says what joining means |
+| I can help | `/volunteer` | Opens Join us |
 | Small Print, cookies | Adds the sign-in cookie | One cookie |
 | `/privacy` | Adds what ManyHands holds, from `Content/_manyhands/privacy.md` | The base page |
 

@@ -121,7 +121,7 @@ committed.
    it on has everything it needs. Startup fails loudly on a missing
    connection string or mail key, and the previous deployment keeps serving.
 
-Off again is the flag alone. The site goes back to the `join@` links and no
+Off again is the flag alone. The Join us dialog loses its form, there is no
 account bar, and the database keeps everything until it is wanted.
 
 ## Tokens

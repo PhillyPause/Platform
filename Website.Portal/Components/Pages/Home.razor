@@ -371,30 +371,21 @@
         </div>
         </div>
 
-        <div class="joinform">
-          <p class="joinform-ask">Send us a line and we will tell you what is on, and what we can do to help you take the next step.</p>
-          @* With ManyHands on, the signup form itself, here in the dialog:
-             rate-limited and flood-capped (PLAN.md section 5). Off, the
-             button opens the reader's own mail client with the subject
-             filled in; there is no field, because a dead input would lie.
-             The address stays beside it either way, for anyone who would
-             rather write. *@
-          @if (ManyHandsOn)
-          {
+        @* The signup form itself, here in the dialog: rate-limited and
+           flood-capped (PLAN.md section 5). There is no email signup: off,
+           the dialog says what joining means and offers nothing to press,
+           because a form that cannot save would lie. *@
+        @if (ManyHandsOn)
+        {
+          <div class="joinform">
+            <p class="joinform-ask">Tell us who you are and what you like doing, and we will tell you what is on and help you take the next step.</p>
             <Website.Portal.Components.Volunteer.JoinForm />
-          }
-          else
-          {
-            <div class="signuprow">
-              <a class="signupbtn" href="mailto:join@phillypause.org?subject=Count%20Me%20In">Count me in</a>
-              <span class="signupalt">or write to <b>join@@phillypause.org</b>, subject <b>Count Me In</b></span>
-            </div>
-          }
-          <p class="signup-note">
-            Expect one or two emails a month unless you ask for more. We never share
-            your info with anyone, and writing to us commits you to nothing.
-          </p>
-        </div>
+            <p class="signup-note">
+              Expect one or two emails a month unless you ask for more. We never share
+              your info with anyone, and joining commits you to nothing.
+            </p>
+          </div>
+        }
       </div>
     </div>
   </div>
@@ -481,9 +472,17 @@
 
         <div class="joinform">
           <p class="joinform-ask">Our next event is always in the box at the top of this page. Come to that one, or say hello now and we will look out for you.</p>
+          @* On, what is coming up. Off, the Join us dialog, as a label like
+             every other link between dialogs. *@
           <div class="signuprow">
-            <a class="signupbtn" href="@(ManyHandsOn ? ManyHandsPaths.Activities : "mailto:join@phillypause.org?subject=I%20can%20help")">I can help</a>
-            <span class="signupalt">or write to <b>join@@phillypause.org</b></span>
+            @if (ManyHandsOn)
+            {
+              <a class="signupbtn" href="@ManyHandsPaths.Activities">I can help</a>
+            }
+            else
+            {
+              <label class="signupbtn" for="join-open">I can help</label>
+            }
           </div>
         </div>
       </div>

@@ -24,11 +24,8 @@
 }
 else if (_unavailable)
 {
-    @* The database is out of reach: the address still works. *@
-    <div class="signuprow">
-        <a class="signupbtn" href="mailto:join@phillypause.org?subject=Count%20Me%20In">Count me in</a>
-        <span class="signupalt">or write to <b>join@@phillypause.org</b>, subject <b>Count Me In</b></span>
-    </div>
+    @* The database is out of reach: say so, rather than show a form that cannot save. *@
+    <p class="joinerror" role="status">Joining is not working this minute. Try again shortly.</p>
 }
 else
 {
@@ -49,8 +46,7 @@ else
             <p class="joinerror" role="alert">@_refused</p>
         }
         <div class="signuprow">
-            <button type="submit">Count me in</button>
-            <span class="signupalt">or write to <b>join@@phillypause.org</b>, subject <b>Count Me In</b></span>
+            <button type="submit">Join</button>
         </div>
     </EditForm>
 }

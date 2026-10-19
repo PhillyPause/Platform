@@ -104,7 +104,7 @@ mail arrives pre-sorted — a bare `mailto:` is a bug.
 | Alias | Carries |
 |---|---|
 | `info@` | general enquiries, the footer greeting |
-| `join@` | Count Me In, I can help — the two joining links, and the list to import from when a provider lands |
+| `join@` | the list to import from when a provider lands. Never a signup: joining is the Join us dialog's form |
 | `support@` | corrections, privacy and deletion requests |
 
 `press@` is not set up; the archived press page still points at `info@`.
