@@ -19,14 +19,14 @@
         <AppBarSpacer />
         @if (_name is not null)
         {
-            <span class="team-who">Signed in as <strong>@_name</strong></span>
+            <span class="team-who"><span class="team-who-label">Signed in as </span><strong>@_name</strong></span>
         }
-        <a class="team-bar-link" href="@ManyHandsPaths.Me" target="_top">My page</a>
+        <a class="team-bar-link team-bar-me" href="@ManyHandsPaths.Me" target="_top">My page</a>
         <a class="team-bar-link" href="@ManyHandsPaths.SignOut" target="_top">Sign out</a>
     </SfAppBar>
 
     <div class="team-body">
-        <SfSidebar Width="232px" Target=".team-main" Type="SidebarType.Auto" MediaQuery="(min-width: 960px)"
+        <SfSidebar Width="232px" Target=".team-body" Type="SidebarType.Auto" MediaQuery="(min-width: 960px)"
                    @bind-IsOpen="_sidebarOpen" CssClass="team-sidebar">
             <ChildContent>
                 <nav class="team-nav" aria-label="Team">
@@ -47,6 +47,7 @@
                         }
                     }
                     <div class="team-nav-group">Site</div>
+                    <a class="team-nav-link" href="@ManyHandsPaths.Me" target="_top">My page</a>
                     <a class="team-nav-link" href="@ManyHandsPaths.Activities" target="_top">Public activity pages</a>
                 </nav>
             </ChildContent>
@@ -71,7 +72,9 @@
     ];
 
     private string? _name;
-    private bool _sidebarOpen = true;
+    // Closed to start: the MediaQuery opens it on wide screens, and on a
+    // phone it waits for the menu button rather than covering the page.
+    private bool _sidebarOpen;
 
     protected override async Task OnInitializedAsync()
     {

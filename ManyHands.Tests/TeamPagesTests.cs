@@ -76,7 +76,7 @@ public sealed partial class TeamPagesTests(DatabaseFixture db) : IAsyncLifetime
         Assert.Contains("syncfusion-blazor.min.js", page);
         Assert.Contains("e-grid", page);
         Assert.Contains(title, page);
-        Assert.Contains("Signed in as <strong>Grid Organizer</strong>", page);
+        Assert.Contains("Signed in as </span><strong>Grid Organizer</strong>", page);
     }
 
     [Fact]

@@ -27,9 +27,11 @@
     </div>
 </div>
 
-<SfGrid TValue="Row" DataSource="_rows" AllowSorting="true" AllowFiltering="true"
+<SfGrid TValue="Row" DataSource="_rows" AllowSorting="true" AllowFiltering="true" AllowTextWrap="true"
         Toolbar="@(new List<string> { "Search" })" GridLines="GridLine.Horizontal">
     <GridFilterSettings Type="Syncfusion.Blazor.Grids.FilterType.Excel" />
+    @* Wrap rather than cut: on a phone a long title takes two lines, not an ellipsis. *@
+    <GridTextWrapSettings WrapMode="WrapMode.Content" />
     <GridSortSettings>
         <GridSortColumns>
             <GridSortColumn Field="@nameof(Row.Starts)" Direction="Syncfusion.Blazor.Grids.SortDirection.Ascending" />
@@ -49,7 +51,7 @@
         <GridColumn Field="@nameof(Row.Starts)" HeaderText="When" Width="24%">
             <Template>@(((Row)context).When)</Template>
         </GridColumn>
-        <GridColumn Field="@nameof(Row.SignedUp)" HeaderText="Signed up" TextAlign="TextAlign.Right" Width="12%">
+        <GridColumn Field="@nameof(Row.SignedUp)" HeaderText="Going" TextAlign="TextAlign.Right" Width="96">
             <Template>
                 @{ var row = (Row)context; }
                 @row.SignedUp@(row.Capacity is { } cap ? $" / {cap}" : "")
@@ -59,8 +61,9 @@
                 }
             </Template>
         </GridColumn>
-        <GridColumn Field="@nameof(Row.CheckedIn)" HeaderText="Checked in" TextAlign="TextAlign.Right" Width="12%" />
-        <GridColumn Field="@nameof(Row.State)" HeaderText="State" Width="14%">
+        @* Phones get the three columns that matter: what, when, how full. *@
+        <GridColumn Field="@nameof(Row.CheckedIn)" HeaderText="Checked in" TextAlign="TextAlign.Right" Width="120" HideAtMedia="(min-width: 720px)" />
+        <GridColumn Field="@nameof(Row.State)" HeaderText="State" Width="130" HideAtMedia="(min-width: 560px)">
             <Template>
                 @{ var row = (Row)context; }
                 <span class="team-state team-state-@row.State.ToLowerInvariant()">@row.State</span>
@@ -84,7 +87,7 @@
         _rows = (await Admin.GetAllAsync())
             .Select(a => new Row(
                 a.Id, a.Title, string.IsNullOrWhiteSpace(a.Location) ? null : a.Location,
-                a.StartsAt is { } s ? LocalTime.ToLocal(s) : null, Show.When(a.StartsAt),
+                a.StartsAt is { } s ? LocalTime.ToLocal(s) : null, When(a.StartsAt),
                 a.SignupCount, a.Capacity, a.WaitlistCount, a.CheckedInCount, State(a)))
             .ToList();
     }
@@ -92,6 +95,12 @@
     // The editor is not part of the app yet: a full page load.
     private void NewActivity() =>
         Navigation.NavigateTo(ManyHandsPaths.TeamNewActivity, forceLoad: !TeamApp.IsAppPage(ManyHandsPaths.TeamNewActivity));
+
+    /// <summary>"Thu, Oct 22 · 1:00 PM": every time in the app is Philadelphia's, so no label.</summary>
+    private static string When(DateTimeOffset? startsAt) =>
+        startsAt is { } s
+            ? LocalTime.ToLocal(s).ToString("ddd, MMM d · h:mm tt", System.Globalization.CultureInfo.InvariantCulture)
+            : "Ongoing";
 
     private static string State(ActivityAdminRow a) =>
         !a.IsPublished ? "Draft"

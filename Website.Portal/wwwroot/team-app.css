@@ -33,7 +33,7 @@ body { background: var(--team-cream); margin: 0; }
 .team-who { font-size: 13px; }
 .team-bar-link {
   color: var(--team-cream); font-size: 12px; font-weight: 600; letter-spacing: 0.06em;
-  text-transform: uppercase; text-decoration: none;
+  text-transform: uppercase; text-decoration: none; white-space: nowrap;
 }
 .team-bar-link:hover, .team-bar-link:focus-visible { text-decoration: underline; }
 
@@ -64,5 +64,7 @@ body { background: var(--team-cream); margin: 0; }
 
 @media (max-width: 639px) {
   .team-main { padding: 16px; }
-  .team-who { display: none; }
+  /* The name stays, so a phone still says who is signed in. */
+  .team-who-label, .team-bar-me, .team-product { display: none; }
+  .team-who { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 45vw; }
 }
