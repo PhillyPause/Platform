@@ -76,6 +76,61 @@ public sealed class SiteWiringTests(DatabaseFixture db) : IAsyncLifetime
     }
 
     [Fact]
+    public async Task Signed_out_the_front_page_offers_sign_in_at_the_top()
+    {
+        var home = await _portal.Browser().GetStringAsync("/");
+
+        home.Should().Contain("class=\"account-bar\"")
+            .And.Contain($"class=\"account-primary\" href=\"{ManyHandsPaths.SignIn}\"")
+            .And.NotContain("Signed in as");
+    }
+
+    [Fact]
+    public async Task Signed_in_every_page_says_who_and_is_never_cached()
+    {
+        var member = await TestData.VolunteerAsync(db.DataSource, "Maya Member");
+        var browser = _portal.Browser();
+        await Forms.SignInAsync(browser, db.DataSource, member.Id);
+
+        foreach (var path in new[] { "/", "/privacy", ManyHandsPaths.Activities })
+        {
+            var response = await browser.GetAsync(path);
+            var page = await response.Content.ReadAsStringAsync();
+
+            page.Should().Contain("Signed in as <strong>Maya Member</strong>", path)
+                .And.Contain($"href=\"{ManyHandsPaths.Me}\"")
+                .And.NotContain($"class=\"account-primary\" href=\"{ManyHandsPaths.Team}\"");
+            response.Headers.CacheControl!.NoStore.Should().BeTrue(path);
+        }
+    }
+
+    [Fact]
+    public async Task An_organizer_gets_the_team_button_on_the_front_page()
+    {
+        var organizer = await TestData.VolunteerAsync(db.DataSource, "Olu Organizer", VolunteerRole.Organizer);
+        var browser = _portal.Browser();
+        await Forms.SignInAsync(browser, db.DataSource, organizer.Id);
+
+        var home = await browser.GetStringAsync("/");
+
+        home.Should().Contain("Signed in as <strong>Olu Organizer</strong>")
+            .And.Contain($"class=\"account-primary\" href=\"{ManyHandsPaths.Team}\"");
+    }
+
+    [Fact]
+    public async Task Signing_out_from_the_front_page_signs_out()
+    {
+        var member = await TestData.VolunteerAsync(db.DataSource, "Sam Signout");
+        var browser = _portal.Browser();
+        await Forms.SignInAsync(browser, db.DataSource, member.Id);
+
+        await Forms.SubmitAsync(browser, "/", "account-sign-out");
+
+        (await browser.GetStringAsync("/")).Should().NotContain("Signed in as");
+        (await browser.GetAsync(ManyHandsPaths.Me)).StatusCode.Should().Be(System.Net.HttpStatusCode.Redirect);
+    }
+
+    [Fact]
     public void A_finished_activity_drops_out_of_the_box_even_if_the_cache_is_stale()
     {
         var clock = new StepClock(DateTimeOffset.UtcNow);

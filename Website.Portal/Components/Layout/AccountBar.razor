@@ -1,0 +1,61 @@
+@using ManyHands.Core
+@using ManyHands.Data
+@using Website.Portal.Volunteer
+@inject IConfiguration Configuration
+@inject NavigationManager Navigation
+
+@* The top of every page while ManyHands is on: who is signed in, and the way
+   into the volunteer and team pages. Never buried in a dialog or a form.
+   Everything here comes from the sign-in cookie, so it costs no database
+   call; VolunteerSession keeps the name and role in it current. Off, it
+   renders nothing: no page mentions ManyHands before it exists. *@
+
+@if (Configuration.IsManyHandsEnabled())
+{
+    <div class="account-bar">
+        <div class="account-bar-inner">
+            @if (User?.DisplayName() is { } name)
+            {
+                <span class="account-who">Signed in as <strong>@name</strong></span>
+                <span class="account-links">
+                    <a href="@ManyHandsPaths.Me">My page</a>
+                    <a href="@ManyHandsPaths.Activities">What&rsquo;s on</a>
+                    @if (User.ShowsTeam())
+                    {
+                        <a class="account-primary" href="@ManyHandsPaths.Team">Team</a>
+                    }
+                    <EditForm Model="SignOut" FormName="account-sign-out" OnSubmit="SignOutAsync" class="account-signout">
+                        <button type="submit">Sign out</button>
+                    </EditForm>
+                </span>
+            }
+            else
+            {
+                <span class="account-who">Volunteering with PhillyPause?</span>
+                <span class="account-links">
+                    <a href="@ManyHandsPaths.Activities">What&rsquo;s on</a>
+                    <a href="@ManyHandsPaths.Join">Join</a>
+                    <a class="account-primary" href="@ManyHandsPaths.SignIn">Sign in</a>
+                </span>
+            }
+        </div>
+    </div>
+}
+
+@code {
+    [CascadingParameter] private HttpContext? HttpContext { get; set; }
+
+    [SupplyParameterFromForm(FormName = "account-sign-out")] private SignOutInput? SignOut { get; set; }
+
+    private System.Security.Claims.ClaimsPrincipal? User => HttpContext?.User;
+
+    protected override void OnInitialized() => SignOut ??= new();
+
+    private async Task SignOutAsync()
+    {
+        await VolunteerSession.SignOutAsync(HttpContext!);
+        Navigation.NavigateTo("/");
+    }
+
+    private sealed class SignOutInput;
+}

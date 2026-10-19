@@ -35,6 +35,7 @@ public class ManyHandsGateTests(WebApplicationFactory<Program> factory)
         var page = await factory.CreateClient().GetStringAsync(path);
 
         page.Should().NotContain("/volunteer").And.NotContain("phillypause.session")
+            .And.NotContain("account-bar")
             .And.NotContain("If you sign up on this site");
     }
 

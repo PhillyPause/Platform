@@ -247,3 +247,26 @@ a:hover { color: var(--heading); }
   background: var(--alarm); color: #fff; padding: 0.9rem 1.2rem; text-align: center;
 }
 #blazor-error-ui a { color: #fff; }
+
+/* The account bar (Components/Layout/AccountBar.razor): the top of every page
+   while ManyHands is on. The front page's ink and red, on every page, so the
+   way in looks the same wherever a volunteer starts. */
+.account-bar { background: #15110C; color: #FBF8F1; font-family: var(--sans); font-size: 13px; }
+.account-bar-inner {
+  max-width: 1280px; margin-inline: auto; padding: 8px 16px;
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 20px;
+}
+.account-who strong { font-weight: 700; }
+.account-links { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 18px; }
+.account-links a, .account-signout button {
+  color: #FBF8F1; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; font-size: 12px;
+  text-decoration: none;
+}
+.account-links a:hover, .account-links a:focus-visible,
+.account-signout button:hover, .account-signout button:focus-visible { text-decoration: underline; }
+.account-links .account-primary {
+  background: #AE2012; padding: 6px 14px; letter-spacing: 0.12em;
+}
+.account-links .account-primary:hover, .account-links .account-primary:focus-visible { background: #8E190E; text-decoration: none; }
+.account-signout { display: inline; margin: 0; }
+.account-signout button { background: none; border: 0; padding: 0; cursor: pointer; font-family: inherit; }

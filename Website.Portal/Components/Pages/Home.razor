@@ -44,6 +44,11 @@
   <input type="radio" name="dlg" id="organize-open" class="dlgtoggle" aria-label="Organize">
   <input type="radio" name="dlg" id="notices-open" class="dlgtoggle" aria-label="Small Print">
 
+  @* Who is signed in, and the way into the volunteer and team pages, above
+     the masthead. Between the radios and the dialogs is safe: the dialogs
+     hang off general-sibling selectors, which skip over it. *@
+  <AccountBar />
+
   @* The front: masthead, nav, lead story and the event box, laid out as one
      grid in broadsheet.css (three columns, then two, then one) rather than
      with fixed offsets, so nothing can slide under anything else. *@

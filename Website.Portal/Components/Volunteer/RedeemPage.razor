@@ -1,6 +1,7 @@
 @page "/volunteer/sign-in/{Token}"
 @inject AuthTokenRepository Tokens
 @inject AdminBootstrap Admins
+@inject VolunteerRepository Volunteers
 @inject NavigationManager Navigation
 
 @* Opening the link does not sign anyone in; pressing the button does. Mail
@@ -45,9 +46,14 @@
         if (await Tokens.RedeemAsync(Token) is MagicLinkResult.Ok ok)
         {
             await Admins.ApplyAsync(ok.VolunteerId);
-            await VolunteerSession.SignInAsync(HttpContext, ok.VolunteerId, ok.DisplayName);
-            Navigation.NavigateTo(ManyHandsPaths.Me);
-            return;
+
+            // Read after the bootstrap, so a new admin's first cookie says so.
+            if (await Volunteers.GetByIdAsync(ok.VolunteerId) is { IsDeleted: false } volunteer)
+            {
+                await VolunteerSession.SignInAsync(HttpContext, volunteer);
+                Navigation.NavigateTo(ManyHandsPaths.Me);
+                return;
+            }
         }
 
         Navigation.NavigateTo($"{ManyHandsPaths.SignIn}?expired=true");

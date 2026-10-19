@@ -83,6 +83,17 @@ app.UseStatusCodePagesWithReExecute("/not-found", createScopeForStatusCodePages:
 app.UseManyHandsGate(manyHandsEnabled);
 
 app.UseAuthentication();
+
+// A signed-in page carries the reader's name in the account bar. Nothing may
+// keep a copy of it — not Cloudflare, not a shared proxy — or the next reader
+// would be greeted as someone else.
+app.Use((context, next) =>
+{
+    if (context.User.VolunteerId() is not null)
+        context.Response.Headers.CacheControl = "no-store, private";
+    return next();
+});
+
 app.UseAuthorization();
 app.UseAntiforgery();
 
