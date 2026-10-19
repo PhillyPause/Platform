@@ -29,7 +29,7 @@ var website = builder.AddProject<Projects.Website_Portal>("website", launchProfi
 //   dotnet user-secrets set --project Platform.AppHost "Email:ApiKey" "re_..."
 // Only what is set travels, so the site's own defaults stay the single place a
 // default is decided. ManyHands:Enabled and :Seed are fixed above.
-foreach (var section in new[] { "ManyHands", "Email", "Discord", "FederalOfficials" })
+foreach (var section in new[] { "ManyHands", "Email", "Discord", "FederalOfficials", "Syncfusion" })
 {
     foreach (var (key, value) in builder.Configuration.GetSection(section).AsEnumerable())
     {
