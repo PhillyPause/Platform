@@ -1,0 +1,112 @@
+@inject ActivityTypeRepository Types
+@inject VolunteerRepository Volunteers
+@inject FormThrottle Throttle
+@inject ILogger<JoinForm> Logger
+
+@* Joining: name, email and interests, inside the front page's Join us dialog
+   rather than on a page of its own. A plain static form: it posts to /join,
+   which is the front page with the dialog open, so the answer lands where
+   the question was: the anchor scrolls the dialog to the reply, or to what
+   needs fixing. Only rendered with ManyHands on. *@
+
+<div id="@Anchor">
+@if (_joined is not null)
+{
+    <div class="joindone" role="status">
+        <p class="joindone-head">@(_joined.AlreadyMember ? "You are already one of us" : "Welcome")</p>
+        <p>
+            @(_joined.AlreadyMember
+                ? "We have saved what you ticked alongside what you told us before."
+                : "A welcome email is on its way. Until then, see what is coming up.")
+        </p>
+        <a class="signupbtn" href="@ManyHandsPaths.Activities">See what&rsquo;s on</a>
+    </div>
+}
+else if (_unavailable)
+{
+    @* The database is out of reach: the address still works. *@
+    <div class="signuprow">
+        <a class="signupbtn" href="mailto:join@phillypause.org?subject=Count%20Me%20In">Count me in</a>
+        <span class="signupalt">or write to <b>join@@phillypause.org</b>, subject <b>Count Me In</b></span>
+    </div>
+}
+else
+{
+    <EditForm Model="Input" FormName="join" OnValidSubmit="JoinAsync" action="@(ManyHandsPaths.Join + "#" + Anchor)" class="signup joinfields">
+        <DataAnnotationsValidator />
+        <label>
+            <span>Your name</span>
+            <InputText @bind-Value="Input!.DisplayName" autocomplete="name" />
+        </label>
+        <label>
+            <span>Email</span>
+            <InputText @bind-Value="Input!.Email" type="email" autocomplete="email" />
+            <ValidationMessage For="() => Input!.Email" />
+        </label>
+        <InterestChoices Types="_types" />
+        @if (_refused is not null)
+        {
+            <p class="joinerror" role="alert">@_refused</p>
+        }
+        <div class="signuprow">
+            <button type="submit">Count me in</button>
+            <span class="signupalt">or write to <b>join@@phillypause.org</b>, subject <b>Count Me In</b></span>
+        </div>
+    </EditForm>
+}
+</div>
+
+@code {
+    private const string Anchor = "join-form";
+
+    [CascadingParameter] private HttpContext HttpContext { get; set; } = default!;
+
+    [SupplyParameterFromForm(FormName = "join")] private JoinInput? Input { get; set; }
+
+    private IReadOnlyList<ActivityType> _types = [];
+    private JoinResult.Ok? _joined;
+    private string? _refused;
+    private bool _unavailable;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Input ??= new();
+        try
+        {
+            _types = await Types.GetActiveAsync();
+        }
+        catch (Exception e) when (e is Npgsql.NpgsqlException or TimeoutException)
+        {
+            // The front page never fails for want of ManyHands (CLAUDE.md).
+            Logger.LogWarning(e, "The join form fell back to email: the database is unreachable");
+            _unavailable = true;
+        }
+    }
+
+    private async Task JoinAsync()
+    {
+        if (_unavailable) return;
+
+        if (!Throttle.AllowPublicWrite(HttpContext))
+        {
+            _refused = "That is a lot of joining from one place. Wait a few minutes and try again.";
+            return;
+        }
+
+        var result = await Volunteers.JoinAsync(
+            Input!.DisplayName ?? string.Empty, Input.Email, InterestChoices.Read(HttpContext));
+
+        if (result is JoinResult.Ok ok) _joined = ok;
+        else _refused = "That does not look like an email address.";
+    }
+
+    private sealed class JoinInput
+    {
+        [StringLength(100)]
+        public string? DisplayName { get; set; }
+
+        [Required(ErrorMessage = "We need an email to tell you what is on.")]
+        [StringLength(254)]
+        public string Email { get; set; } = string.Empty;
+    }
+}

@@ -39,13 +39,32 @@ public sealed class SiteWiringTests(DatabaseFixture db) : IAsyncLifetime
     }
 
     [Fact]
-    public async Task The_join_buttons_lead_to_ManyHands()
+    public async Task The_join_dialog_holds_the_signup_form_and_I_can_help_leads_to_ManyHands()
     {
         var home = await _portal.Browser().GetStringAsync("/");
 
-        home.Should().Contain($"class=\"signupbtn\" href=\"{ManyHandsPaths.Join}\"")
+        home.Should().Contain($"action=\"{ManyHandsPaths.Join}#join-form\"")
+            .And.Contain("name=\"_handler\" value=\"join\"")
             .And.Contain($"class=\"signupbtn\" href=\"{ManyHandsPaths.Activities}\"")
             .And.Contain("phillypause.session");
+    }
+
+    [Fact]
+    public async Task Joining_in_the_dialog_saves_the_volunteer_and_answers_in_the_dialog()
+    {
+        var email = TestData.NewEmail();
+
+        var response = await Forms.SubmitAsync(_portal.Browser(), ManyHandsPaths.Join, "join",
+            ("Input.DisplayName", "Dialog Joiner"), ("Input.Email", email),
+            ("interest", TestData.Flyering.ToString()));
+
+        var page = await response.Content.ReadAsStringAsync();
+        page.Should().Contain("id=\"join-open\" class=\"dlgtoggle\" checked")
+            .And.Contain("A welcome email is on its way");
+        var volunteers = new ManyHands.Data.VolunteerRepository(db.DataSource);
+        var joined = await volunteers.GetByEmailAsync(email);
+        joined!.DisplayName.Should().Be("Dialog Joiner");
+        (await volunteers.GetInterestIdsAsync(joined.Id)).Should().Equal(TestData.Flyering);
     }
 
     [Fact]

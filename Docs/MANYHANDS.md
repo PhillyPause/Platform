@@ -94,7 +94,7 @@ Static SSR Razor components in `Website.Portal/Components/Volunteer`, on
 |---|---|
 | `/volunteer` | What's on, filterable by type, with the public calendar feed |
 | `/volunteer/activity/{id}` | One activity and its signup form |
-| `/volunteer/join` | Joining: name, email, interests; a welcome the first time |
+| `/join` | Joining is not a page here: it is the front page's Join us dialog (On the site, below). Every Join link goes to it |
 | `/volunteer/sign-in` | Ask for a sign-in link |
 | `/volunteer/sign-in/{token}` | Opening the link shows a button; **pressing it** spends the token |
 | `/volunteer/me` | Signups and cancelling, interests and email, Discord unlink, the personal calendar feed, export, delete, sign out |
@@ -253,7 +253,7 @@ it; `ManyHandsGateTests` holds that, and `SiteWiringTests` the flag-on side.
 | Where | On | Off |
 |---|---|---|
 | The account bar, top of every page | Signed out: What's on, Join, **Sign in**. Signed in: "Signed in as *name*", My page, What's on, **Team** for organizers, Sign out | Not rendered |
-| Count me in | `/volunteer/join` | `join@`, subject Count Me In |
+| Join us dialog, front page | The signup form itself (`JoinForm`): name, email, interests. It posts to `/join`, the front page with the dialog open, and answers there; if the database is unreachable it falls back to the email button | `join@`, subject Count Me In |
 | I can help | `/volunteer` | `join@`, subject I can help |
 | Small Print, cookies | Adds the sign-in cookie | One cookie |
 | `/privacy` | Adds what ManyHands holds, from `Content/_manyhands/privacy.md` | The base page |

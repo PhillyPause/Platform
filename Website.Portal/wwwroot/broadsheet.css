@@ -337,7 +337,12 @@ a:hover { color: #15110C; }
 .paneldlg-box {
   position: relative;
   width: min(560px, 100%);
-  max-height: 88%;
+  /* Of the viewport, not a percentage: inside the centring grid a percentage
+     resolves against nothing, and a long dialog ran off the bottom of a phone
+     with no way to scroll to its button. dvh where it is known, so a phone's
+     address bar does not hide the bottom. */
+  max-height: 88vh;
+  max-height: 88dvh;
   display: flex;
   flex-direction: column;
   background: #FBF8F1;
@@ -516,6 +521,30 @@ a:hover { color: #15110C; }
 .signup button:hover, .signup button:focus-visible,
 .signupbtn:hover, .signupbtn:focus-visible { background: #AE2012; border-color: #AE2012; color: #FBF8F1; }
 .signup-note { margin: 16px 0 0; font-size: 12.5px; line-height: 1.55; color: #6A6254; }
+
+/* The join form in the Join us dialog (JoinForm.razor), with ManyHands on. */
+/* It borrows .signup's field and button; the labels keep .signup's small
+   red capitals, the ticks below go back to ordinary text. */
+.joinfields { display: grid; gap: 14px; }
+.joinfields > label { display: grid; gap: 6px; margin: 0; }
+.joinfields .vol-interests label { text-transform: none; letter-spacing: 0; margin: 0; }
+.joinfields .vol-interests { border: 0; margin: 4px 0 0; padding: 0; display: grid; gap: 6px 16px; }
+@media (min-width: 480px) { .joinfields .vol-interests { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.joinfields .vol-interests legend {
+  font-size: 10.5px; font-weight: 700; letter-spacing: 0.16em;
+  text-transform: uppercase; color: #AE2012; padding: 0; margin-bottom: 8px;
+}
+.joinfields .vol-interests label { display: flex; gap: 9px; align-items: flex-start; }
+.joinfields .vol-interests label > span { font-size: 14px; font-weight: 400; color: #4A443A; }
+.joinfields .vol-interests input { width: 18px; min-height: 0; height: 18px; margin: 1px 0 0; padding: 0; flex: none; accent-color: #AE2012; }
+.joinfields .validation-message, .joinerror {
+  margin: 0; font-size: 13px; font-weight: 600; letter-spacing: 0;
+  text-transform: none; color: #AE2012;
+}
+.joinfields .signuprow { margin-top: 4px; }
+.joindone { padding: 16px 18px; border-left: 4px solid #AE2012; background: #F3EEE3; }
+.joindone p { margin: 0 0 12px; font-size: 14px; line-height: 1.55; color: #4A443A; }
+.joindone .joindone-head { margin-bottom: 6px; font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 800; color: #15110C; }
 
 /* Resource box, a sibling of the event box in treatment. */
 .speed { border: 1px solid #15110C; background: #F5F0E4; scroll-margin-top: 20px; }

@@ -26,7 +26,11 @@ public static class ManyHandsPaths
     /// </summary>
     public static string RedeemSignIn(string token) => $"/volunteer/sign-in/{token}";
 
-    public const string Join = "/volunteer/join";
+    /// <summary>
+    /// Joining is the front page's Join us dialog, not a page of its own:
+    /// <c>/join</c> loads the front page with it open, and its form posts here.
+    /// </summary>
+    public const string Join = "/join";
 
     public static string AcceptInvite(string token) => $"/volunteer/join/{token}";
 

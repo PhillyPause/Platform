@@ -373,15 +373,23 @@
 
         <div class="joinform">
           <p class="joinform-ask">Send us a line and we will tell you what is on, and what we can do to help you take the next step.</p>
-          @* With ManyHands on, the button is its join page: one signup form,
-             rate-limited and flood-capped (PLAN.md section 5). Off, it opens
-             the reader's own mail client with the subject filled in; there is
-             no field, because a dead input would lie. The address stays
-             beside it either way, for anyone who would rather write. *@
-          <div class="signuprow">
-            <a class="signupbtn" href="@(ManyHandsOn ? ManyHandsPaths.Join : "mailto:join@phillypause.org?subject=Count%20Me%20In")">Count me in</a>
-            <span class="signupalt">or write to <b>join@@phillypause.org</b>, subject <b>Count Me In</b></span>
-          </div>
+          @* With ManyHands on, the signup form itself, here in the dialog:
+             rate-limited and flood-capped (PLAN.md section 5). Off, the
+             button opens the reader's own mail client with the subject
+             filled in; there is no field, because a dead input would lie.
+             The address stays beside it either way, for anyone who would
+             rather write. *@
+          @if (ManyHandsOn)
+          {
+            <Website.Portal.Components.Volunteer.JoinForm />
+          }
+          else
+          {
+            <div class="signuprow">
+              <a class="signupbtn" href="mailto:join@phillypause.org?subject=Count%20Me%20In">Count me in</a>
+              <span class="signupalt">or write to <b>join@@phillypause.org</b>, subject <b>Count Me In</b></span>
+            </div>
+          }
           <p class="signup-note">
             Expect one or two emails a month unless you ask for more. We never share
             your info with anyone, and writing to us commits you to nothing.
