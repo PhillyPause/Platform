@@ -49,6 +49,18 @@ public sealed class SiteWiringTests(DatabaseFixture db) : IAsyncLifetime
             .And.Contain("phillypause.session");
     }
 
+    /// <summary>What we keep opens over Join us, with the privacy page's own text, ManyHands' part included.</summary>
+    [Fact]
+    public async Task What_we_keep_is_a_dialog_over_join_us_with_the_privacy_page_in_it()
+    {
+        var home = await _portal.Browser().GetStringAsync(ManyHandsPaths.Join);
+
+        home.Should().Contain("<input type=\"checkbox\" id=\"privacy-open\"")
+            .And.Contain("<label class=\"joinnote-link\" for=\"privacy-open\">What we keep</label>")
+            .And.Contain("aria-labelledby=\"privacydlg-title\"")
+            .And.Contain("If you sign up on this site");
+    }
+
     [Fact]
     public async Task Joining_in_the_dialog_saves_the_volunteer_and_answers_in_the_dialog()
     {

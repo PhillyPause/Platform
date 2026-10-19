@@ -5,6 +5,7 @@
 @using ManyHands.Data
 @inject NavigationManager Navigation
 @inject IConfiguration Configuration
+@inject ContentStore Content
 
 @* The home page, as a broadsheet front: masthead and nav, the lead story on
    the July 2026 incident, and the dialogs: watch, panelists, join us, the
@@ -41,6 +42,12 @@
   <input type="radio" name="dlg" id="educate-open" class="dlgtoggle" aria-label="Educate">
   <input type="radio" name="dlg" id="organize-open" class="dlgtoggle" aria-label="Organize">
   <input type="radio" name="dlg" id="notices-open" class="dlgtoggle" aria-label="Small Print">
+  @* Not one of the radios: What we keep opens on top of Join us rather
+     than in its place, so closing it puts the reader back in the form. *@
+  @if (ManyHandsOn)
+  {
+    <input type="checkbox" id="privacy-open" class="dlgtoggle" aria-label="What we keep">
+  }
 
   @* Who is signed in, and the way into the volunteer and team pages, above
      the masthead. Between the radios and the dialogs is safe: the dialogs
@@ -384,6 +391,28 @@
       </div>
     </div>
   </div>
+
+  @* What we keep, over Join us: the privacy page itself, ManyHands' part
+     included, so the dialog and /privacy can never disagree. *@
+  @if (ManyHandsOn && Content.Find("privacy") is { } privacy)
+  {
+    <div class="paneldlg d-privacy">
+      <label class="paneldlg-scrim" for="privacy-open" aria-label="Close"></label>
+      <div class="paneldlg-box" role="dialog" aria-modal="true" aria-labelledby="privacydlg-title">
+        <div class="paneldlg-head">
+          <span id="privacydlg-title">What we keep</span>
+          <label class="paneldlg-x" for="privacy-open" aria-label="Close">&times;</label>
+        </div>
+        <div class="paneldlg-body privacybody">
+          <p class="joinlede">@privacy.Description</p>
+          @((MarkupString)Content.HtmlFor(privacy, manyHandsOn: true))
+          <div class="signuprow privacyback">
+            <label class="signupbtn" for="privacy-open">Back to joining</label>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
   <!-- Primer. Same mechanism as the others. Every link opens in another window:
        people arrive here mid-read and should not lose the page.
        Ordered as a path rather than by medium: an hour's worth first, then the

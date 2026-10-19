@@ -258,6 +258,10 @@ a:hover { color: #15110C; }
 #educate-open:checked ~ .paneldlg.d-educate { display: grid; }
 #organize-open:checked ~ .paneldlg.d-organize { display: grid; }
 #notices-open:checked ~ .paneldlg.d-notices { display: grid; }
+/* What we keep is a checkbox, not one of the radios, so it opens over Join
+   us and closing it leaves Join us where it was. Later in the DOM and one
+   z-index up, so it is the one on top. */
+#privacy-open:checked ~ .paneldlg.d-privacy { display: grid; z-index: 110; }
 
 /* Join us dialog. Plain ivory, like the panel — nothing here needs a colour
    field of its own. Its job is to make the case for joining: the four things
@@ -536,7 +540,33 @@ a:hover { color: #15110C; }
    beside the button. */
 /* The same hairline as the rules between the four ways above it. */
 .d-join .joinform { margin-top: 18px; padding-top: 16px; border-top-color: #CFC7B6; }
-.joinnote a { color: #15110C; font-weight: 600; }
+/* A label, so it opens What we keep with no script, but it reads as a link:
+   .signup's small red capitals on labels do not apply to it. */
+.signup .joinnote-link {
+  display: inline; margin: 0;
+  font-size: inherit; font-weight: 600; letter-spacing: 0; text-transform: none;
+  color: #15110C; text-decoration: underline; cursor: pointer;
+}
+.signup .joinnote-link:hover { color: #AE2012; }
+
+/* What we keep: the privacy page's Markdown, set in the dialog's type.
+   Narrower and shorter than Join us, so it plainly sits on top of it. */
+.d-privacy .paneldlg-box {
+  width: min(680px, 100%);
+  max-height: calc(100vh - 120px); max-height: calc(100dvh - 120px);
+}
+.privacybody h2 {
+  margin: 22px 0 6px; padding-top: 12px; border-top: 1px solid #CFC7B6;
+  font-size: 10.5px; font-weight: 700; letter-spacing: 0.16em;
+  text-transform: uppercase; color: #AE2012;
+}
+.privacybody p, .privacybody li { font-size: 14px; line-height: 1.6; color: #4A443A; }
+.privacybody p { margin: 0 0 10px; }
+.privacybody ul { margin: 0 0 10px; padding-left: 1.2em; }
+.privacybody li { margin-bottom: 5px; }
+.privacybody strong { color: #15110C; }
+.privacybody a { color: #15110C; font-weight: 600; }
+.privacyback { margin-top: 20px; }
 .joinfields { display: grid; gap: 12px; }
 @media (min-width: 620px) {
   .joinfields { grid-template-columns: 1fr 1fr; column-gap: 16px; }
