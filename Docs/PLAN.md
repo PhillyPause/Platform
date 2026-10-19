@@ -106,10 +106,9 @@ What that costs is coupling, and two rules keep it small:
 - **ManyHands is behind `ManyHands:Enabled`.** Off, nothing of it is
   registered and the host needs no database, so the site deploys on a content
   typo exactly as it did before ManyHands arrived.
-- **The home page never waits on the database**, flag on or off. What it
-  shows of ManyHands comes from an in-memory copy a worker keeps fresh, with
-  a static fallback (§5). A Postgres outage takes the volunteer pages down,
-  not the front page.
+- **The home page never touches the database**, flag on or off: its content
+  is hand-edited, and the account bar reads only the sign-in cookie. A
+  Postgres outage takes the volunteer pages down, not the front page.
 
 `phillypause.org` is **live**, on App Platform behind Cloudflare, which still
 holds the zone (`aldo`/`liv.ns.cloudflare.com`). Apex and `www` are proxied
@@ -281,10 +280,10 @@ ManyHands is PhillyPause's own volunteer system, in this solution and served
 by this host ([`MANYHANDS.md`](MANYHANDS.md)). The site reaches it in-process,
 through `ManyHands.Data`, never over HTTP:
 
-- **Events** — the upcoming published activities, on `/` and `/act`. The home
-  page reads them from an in-memory copy a background worker refreshes, so a
-  request never waits on Postgres and the prerender always has HTML for
-  crawlers and unfurls.
+- **Events** — ManyHands' published activities live on its own pages,
+  `/volunteer`. The front page's Next event box is **not** fed from them: it
+  is hand-edited, because what the site leads with is an editorial choice,
+  and a published activity must never push it aside.
 - **Join** — the Join us links lead to ManyHands' own join page, which is
   rate-limited and flood-capped. There is one signup form, and it is that one.
 - **Calendar** — the ICS feed is a link, not a feature.
@@ -297,7 +296,6 @@ Every touchpoint has a real fallback, not an error:
 
 | Touchpoint | Flag off, or ManyHands unreachable |
 |---|---|
-| Events on `/` and `/act` | The hand-edited "next event" block |
 | Join us | `join@phillypause.org`, subject Count Me In |
 | Calendar feed | Link hidden |
 | Small Print and `/privacy` | Say nothing of ManyHands; on, they add what it sets and holds |
@@ -357,12 +355,11 @@ Shared `tokens.css` (and the ManyHands PR), the chosen mark as animated SVG,
 scroll-driven hero, reduced-motion tests, performance budget in CI.
 
 **P4 — ManyHands** (flag-gated — §5.1)
-ManyHands is in this solution and built, with the site's side wired: events
-on `/`, the join links, the calendar link, the privacy supplement
+ManyHands is in this solution and built, with the site's side wired: the
+account bar, the join links, the privacy supplement
 ([`MANYHANDS.md`](MANYHANDS.md) "On the site"). What remains is the flag
-flipped, a runbook in [`HOSTING.md`](HOSTING.md), and events on `/act` when
-that page returns. The static fallbacks are ordinary content, so nothing else
-waits on it.
+flipped, a runbook in [`HOSTING.md`](HOSTING.md). The front page's Next event
+stays hand-edited.
 
 **P5 — The originals**
 `/act/congress` delegation data, `/pennsylvania`, press kit, RSS, generated OG
