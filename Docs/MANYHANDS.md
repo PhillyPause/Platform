@@ -240,6 +240,29 @@ privileged intents. In the server it needs Send Messages, Create Public
 Threads and Send Messages in Threads, and Manage Roles with its own role
 above `Discord:RoleId`.
 
+### On the site
+
+Where the website meets ManyHands, each with the fallback it shows when
+ManyHands is off or has nothing to say. Off, no page links to it or mentions
+it; `ManyHandsGateTests` holds that, and `SiteWiringTests` the flag-on side.
+
+| Where | On | Off |
+|---|---|---|
+| The front page's "Next event" box | The soonest dated published activity, with Sign up, everything coming up, and the calendar feed | The hand-edited block in `Home.razor` |
+| Count me in | `/volunteer/join` | `join@`, subject Count Me In |
+| I can help | `/volunteer` | `join@`, subject I can help |
+| Small Print, cookies | Adds the sign-in cookie | One cookie |
+| `/privacy` | Adds what ManyHands holds, from `Content/_manyhands/privacy.md` | The base page |
+
+The event box never waits on the database. `UpcomingActivities` is an
+in-memory copy that `UpcomingActivitiesWorker` refreshes every minute; a
+failed refresh keeps the last copy, and an activity drops out once it has
+ended whether or not the copy is fresh. Empty means the static block.
+
+A file in `Content/_manyhands/` supplements the page with the same slug,
+at its `<!-- manyhands -->` marker or else at the end, only while ManyHands is
+on. A supplement for a page that does not exist stops the site starting.
+
 ## 4. Data
 
 Postgres, one schema (`public`), defined by
@@ -358,14 +381,6 @@ running.
 
 ## 7. Status
 
-Coming across in phases, one PR each.
-
-| Phase | State |
-|---|---|
-| 1. Projects, schema, migrations, tests | **built** |
-| 2. Volunteers, activities, signup and waitlist, sign-in tokens, outbox, mail, reminders | **built** |
-| 3. Public pages: activities, signup, join, sign-in, my activities, unsubscribe, calendar | **built** |
-| 4. Organizer console: editor, roster, check-in, invites, roles, export | **built** |
-| 5. CRM, outreach email and the inbound webhook, the officials directory | **built** |
-| 6. Discord: announcements and threads, DMs, slash commands, linking, role sync | **built** |
-| 7. The site links to it; Small Print, privacy and hosting updated | not started |
+All of it is built and tested, flag on and flag off. It is **off in
+production**; switching it on is a runbook, in
+[`HOSTING.md`](HOSTING.md) under "Switching it on".

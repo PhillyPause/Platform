@@ -1,0 +1,72 @@
+@using System.Globalization
+@using ManyHands.Core
+@using ManyHands.Data
+@using Website.Portal.Volunteer
+
+@* The front page's "Next event" box, from ManyHands. Same look as the static
+   block it replaces in Home.razor, which is what shows when ManyHands is off
+   or has nothing coming up. The data is the in-memory copy in
+   UpcomingActivities, so rendering this never waits on the database. *@
+
+<div style="font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 800; line-height: 1.12; letter-spacing: -0.015em">@Day</div>
+<div style="font-size: 14px; font-weight: 600; color: #AE2012; margin-top: 4px">@Hours</div>
+
+<div style="font-size: 13px; line-height: 1.55; color: #4A443A; margin-top: 13px; padding-top: 13px; border-top: 1px solid #CFC7B6">
+  <span style="color: #15110C; font-weight: 600">@Activity.Title</span><br>
+  @if (!string.IsNullOrWhiteSpace(Activity.Location))
+  {
+    <a href="@MapLink" target="_blank" rel="noopener" style="text-decoration: none; color: #4A443A">@Activity.Location</a>
+  }
+  @if (Show.SafeLink(Activity.MeetingUrl) is { } online)
+  {
+    <div><a href="@online" target="_blank" rel="noopener" style="text-decoration: none; font-weight: 600">Join online</a></div>
+  }
+  @if (Show.Room(Activity) is { } room)
+  {
+    <div style="margin-top: 7px; font-weight: 600; color: #15110C">@room</div>
+  }
+</div>
+
+@foreach (var paragraph in Show.Paragraphs(Activity.Description).Take(2))
+{
+  <p style="font-size: 13px; line-height: 1.55; color: #4A443A; margin: 13px 0 0; padding-top: 13px; border-top: 1px solid #CFC7B6">@paragraph</p>
+}
+
+<div style="margin-top: 13px; padding-top: 13px; border-top: 1px solid #CFC7B6; font-size: 13px; line-height: 1.7">
+  <a href="@ManyHandsPaths.Activity(Activity.Id)" style="font-weight: 600">@(Activity.IsFull ? "Join the waitlist" : "Sign up")</a><br>
+  <a href="@ManyHandsPaths.Activities" style="text-decoration: none; color: #4A443A">Everything coming up</a>
+  &middot;
+  <a href="@ManyHandsPaths.Calendar" style="text-decoration: none; color: #4A443A">Add to your calendar</a>
+</div>
+
+@code {
+    [Parameter, EditorRequired] public required ActivityListItem Activity { get; set; }
+
+    private DateTime Start => LocalTime.ToLocal(Activity.StartsAt!.Value);
+
+    private string Day => Start.ToString("dddd d MMMM", CultureInfo.InvariantCulture);
+
+    /// <summary>"7:00 – 9:00 pm", or "7:00 pm" with no end; Philadelphia's clock.</summary>
+    private string Hours
+    {
+        get
+        {
+            var start = Clock(Start);
+            if (Activity.EndsAt is not DateTimeOffset ends) return Suffix(start, Start);
+
+            var end = LocalTime.ToLocal(ends);
+            return end.Date != Start.Date
+                ? $"{Suffix(start, Start)} – {end.ToString("dddd", CultureInfo.InvariantCulture)} {Suffix(Clock(end), end)}"
+                : Start.Hour < 12 == end.Hour < 12
+                    ? $"{start} – {Suffix(Clock(end), end)}"
+                    : $"{Suffix(start, Start)} – {Suffix(Clock(end), end)}";
+        }
+    }
+
+    private static string Clock(DateTime t) => t.ToString("h:mm", CultureInfo.InvariantCulture);
+
+    private static string Suffix(string clock, DateTime t) => $"{clock} {(t.Hour < 12 ? "am" : "pm")}";
+
+    private string MapLink =>
+        $"https://www.google.com/maps/search/?api=1&query={Uri.EscapeDataString(Activity.Location!)}";
+}

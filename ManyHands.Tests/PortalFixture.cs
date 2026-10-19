@@ -30,7 +30,8 @@ public sealed class PortalFactory(string connectionString, params (string Key, s
                          .Where(d => d.ServiceType == typeof(IHostedService)
                                      && (d.ImplementationType == typeof(OutboxWorker)
                                          || d.ImplementationType == typeof(ReminderWorker)
-                                         || d.ImplementationType == typeof(ManyHands.Data.Discord.DiscordRoleSyncWorker)))
+                                         || d.ImplementationType == typeof(ManyHands.Data.Discord.DiscordRoleSyncWorker)
+                                         || d.ImplementationType == typeof(UpcomingActivitiesWorker)))
                          .ToList())
             {
                 services.Remove(worker);

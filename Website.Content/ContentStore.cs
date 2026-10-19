@@ -1,5 +1,6 @@
 using Markdig;
 using Markdig.Extensions.Yaml;
+using Markdig.Renderers.Html;
 using Markdig.Syntax;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
@@ -32,7 +33,11 @@ public sealed class ContentStore
         .IgnoreUnmatchedProperties()
         .Build();
 
+    /// <summary>Where supplements live: set aside, so never a page of their own.</summary>
+    public const string ManyHandsFolder = "_manyhands";
+
     private readonly Dictionary<string, ContentPage> _bySlug;
+    private readonly Dictionary<string, string> _manyHandsSupplements;
 
     public ContentStore(string contentRoot)
     {
@@ -44,6 +49,21 @@ public sealed class ContentStore
             .Where(path => !IsSetAside(path, contentRoot))
             .Select(path => Parse(path, contentRoot))
             .ToDictionary(page => page.Slug, StringComparer.OrdinalIgnoreCase);
+
+        var supplements = Path.Combine(contentRoot, ManyHandsFolder);
+        _manyHandsSupplements = !Directory.Exists(supplements)
+            ? new(StringComparer.OrdinalIgnoreCase)
+            : Directory
+                .EnumerateFiles(supplements, "*.md", SearchOption.AllDirectories)
+                .ToDictionary(
+                    path => SlugFor(path, supplements),
+                    path => Render(Markdig.Markdown.Parse(File.ReadAllText(path), Pipeline)),
+                    StringComparer.OrdinalIgnoreCase);
+
+        // A supplement for a page that does not exist is a typo, and a silent
+        // one: say so at startup rather than never showing it.
+        foreach (var slug in _manyHandsSupplements.Keys.Where(slug => !_bySlug.ContainsKey(slug)))
+            throw new InvalidDataException($"{ManyHandsFolder}/{slug}.md supplements a page that does not exist.");
 
         NavPages = _bySlug.Values
             .Where(page => page.Nav is not null)
@@ -67,6 +87,56 @@ public sealed class ContentStore
 
     public ContentPage? Find(string? slug) =>
         _bySlug.GetValueOrDefault((slug ?? string.Empty).Trim('/'));
+
+    /// <summary>Where in a page its supplement goes. Without one it goes at the end.</summary>
+    public const string ManyHandsMarker = "<!-- manyhands -->";
+
+    /// <summary>
+    /// A page's HTML, with its ManyHands supplement when ManyHands is on: what
+    /// that page must say about the volunteer system, which a reader must not
+    /// see before it exists. <c>_manyhands/privacy.md</c> supplements
+    /// <c>/privacy</c>. Off, the marker is an HTML comment and renders as nothing.
+    /// </summary>
+    public string HtmlFor(ContentPage page, bool manyHandsOn)
+    {
+        if (!manyHandsOn || !_manyHandsSupplements.TryGetValue(page.Slug, out var supplement)) return page.Html;
+
+        var at = page.Html.IndexOf(ManyHandsMarker, StringComparison.Ordinal);
+        return at < 0
+            ? page.Html + supplement
+            : page.Html[..at] + supplement + page.Html[(at + ManyHandsMarker.Length)..];
+    }
+
+    /// <summary>
+    /// Every external link opens a new window (CLAUDE.md): set here, on the
+    /// parsed document, so a volunteer writing Markdown never has to remember.
+    /// Internal routes and mailto links stay as they are.
+    /// </summary>
+    private static string Render(MarkdownDocument document)
+    {
+        foreach (var link in document.Descendants<Markdig.Syntax.Inlines.LinkInline>())
+        {
+            if (link.IsImage
+                || !Uri.TryCreate(link.Url, UriKind.Absolute, out var uri)
+                || (uri.Scheme != Uri.UriSchemeHttp && uri.Scheme != Uri.UriSchemeHttps))
+                continue;
+
+            var attributes = link.GetAttributes();
+            attributes.AddPropertyIfNotExist("target", "_blank");
+            attributes.AddPropertyIfNotExist("rel", "noopener");
+        }
+
+        // Autolinks (a bare https://...) are a different node, with the same rule.
+        foreach (var link in document.Descendants<Markdig.Syntax.Inlines.AutolinkInline>())
+        {
+            if (link.IsEmail) continue;
+            var attributes = link.GetAttributes();
+            attributes.AddPropertyIfNotExist("target", "_blank");
+            attributes.AddPropertyIfNotExist("rel", "noopener");
+        }
+
+        return document.ToHtml(Pipeline);
+    }
 
     private static ContentPage Parse(string path, string contentRoot)
     {
@@ -96,7 +166,7 @@ public sealed class ContentStore
             Slug = SlugFor(path, contentRoot),
             Title = meta.Title,
             Description = meta.Description,
-            Html = Markdig.Markdown.ToHtml(markdown, Pipeline),
+            Html = Render(document),
             Nav = meta.Nav,
             Order = meta.Order ?? int.MaxValue,
             Source = meta.Source is null ? null : new Uri(meta.Source),

@@ -1,5 +1,7 @@
 @page "/{*Slug}"
 @inject ContentStore Content
+@inject IConfiguration Configuration
+@using ManyHands.Data
 
 @* Every Markdown page routes through here. Static server rendering — no
    interactivity, so no WebAssembly download (PLAN.md 2.1). *@
@@ -26,7 +28,7 @@ else
 
     <div class="wrap" style="padding-bottom: 4rem">
         <article class="prose">
-            @((MarkupString)_page.Html)
+            @((MarkupString)Content.HtmlFor(_page, Configuration.IsManyHandsEnabled()))
         </article>
         <SourceCredit Page="_page" />
     </div>
