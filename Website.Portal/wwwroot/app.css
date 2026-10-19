@@ -251,11 +251,18 @@ a:hover { color: var(--heading); }
 /* The account bar (Components/Layout/AccountBar.razor): the top of every page
    while ManyHands is on. The front page's ink and red, on every page, so the
    way in looks the same wherever a volunteer starts. */
-.account-bar { background: #15110C; color: #FBF8F1; font-family: var(--sans); font-size: 13px; }
+.account-bar {
+  background: #15110C; color: #FBF8F1; font-family: var(--sans); font-size: 13px;
+  /* Doubles the site header's own top padding, below. */
+  margin-bottom: 0.7rem;
+}
+/* The same column as .wrap, so the words and the button sit on the content's
+   own edges. The front page has a wider column; broadsheet.css matches it. */
 .account-bar-inner {
-  max-width: 1280px; margin-inline: auto; padding: 8px 16px;
+  max-width: var(--page); margin-inline: auto; padding: 8px 1.25rem;
   display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 20px;
 }
+@media (min-width: 40rem) { .account-bar-inner { padding-inline: 2rem; } }
 .account-who strong { font-weight: 700; }
 .account-links { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 18px; }
 .account-links a, .account-signout button {
