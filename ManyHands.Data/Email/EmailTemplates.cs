@@ -69,7 +69,9 @@ public static class EmailTemplates
              Stop receiving these emails: {unsubscribeUrl}
              """;
 
-        return ($"Signed up: {activityTitle}", body);
+        // The subject is what an inbox shows: a waitlisted person must not
+        // read "Signed up" there and turn up to a full room.
+        return (waitlisted ? $"On the waitlist: {activityTitle}" : $"Signed up: {activityTitle}", body);
     }
 
     /// <summary>The email the public page promises: "we will email you if a place opens."</summary>

@@ -62,6 +62,16 @@ public sealed class EmailTextTests
     }
 
     [Fact]
+    public void A_waitlist_notice_says_waitlist_in_the_subject()
+    {
+        var (subject, body) = EmailTemplates.SignupConfirmation(
+            "Maya", Title, AugustSaturday, Where, waitlisted: true, ManageUrl, UnsubscribeUrl);
+
+        subject.Should().Be($"On the waitlist: {Title}");
+        body.Should().Contain($"You are on the waitlist for {Title}.");
+    }
+
+    [Fact]
     public void A_waitlisted_volunteer_is_told_the_truth()
     {
         var (_, body) = EmailTemplates.SignupConfirmation(
