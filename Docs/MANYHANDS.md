@@ -50,10 +50,9 @@ What is built so far is in [section 7](#7-status).
   and `EditForm`s, like the rest of the site. They call the data layer
   directly; there is no HTTP API and no WASM.
 - **The site never needs ManyHands.** Off, nothing of it is registered and the
-  site needs no database. On, the home page still never waits on the
-  database: what it shows of ManyHands comes from an in-memory copy a worker
-  keeps fresh, falling back to static content, so an outage cannot take the
-  front page down.
+  site needs no database. On, the home page still never touches the
+  database: its content is hand-edited and the account bar reads only the
+  sign-in cookie, so an outage cannot take the front page down.
 - **Every message leaves through the outbox**, queued in the same transaction
   as the write that caused it. Delivery is at least once, so every handler
   must survive running twice. Renaming an outbox `kind` means migrating the
@@ -254,16 +253,14 @@ it; `ManyHandsGateTests` holds that, and `SiteWiringTests` the flag-on side.
 | Where | On | Off |
 |---|---|---|
 | The account bar, top of every page | Signed out: What's on, Join, **Sign in**. Signed in: "Signed in as *name*", My page, What's on, **Team** for organizers, Sign out | Not rendered |
-| The front page's "Next event" box | The soonest dated published activity, with Sign up, everything coming up, and the calendar feed | The hand-edited block in `Home.razor` |
 | Count me in | `/volunteer/join` | `join@`, subject Count Me In |
 | I can help | `/volunteer` | `join@`, subject I can help |
 | Small Print, cookies | Adds the sign-in cookie | One cookie |
 | `/privacy` | Adds what ManyHands holds, from `Content/_manyhands/privacy.md` | The base page |
 
-The event box never waits on the database. `UpcomingActivities` is an
-in-memory copy that `UpcomingActivitiesWorker` refreshes every minute; a
-failed refresh keeps the last copy, and an activity drops out once it has
-ended whether or not the copy is fresh. Empty means the static block.
+**The front page's Next event box is not ManyHands'.** It is hand-edited in
+`Home.razor` and shows what PhillyPause chooses to lead with, flag on or off.
+A published activity never replaces it; `SiteWiringTests` holds that.
 
 A file in `Content/_manyhands/` supplements the page with the same slug,
 at its `<!-- manyhands -->` marker or else at the end, only while ManyHands is

@@ -73,10 +73,6 @@ public static class ManyHandsServiceCollectionExtensions
         services.AddHostedService<OutboxWorker>();
         services.AddHostedService<ReminderWorker>();
 
-        // The cache itself is the host's to register (it must exist with
-        // ManyHands off); only what fills it lives here.
-        services.AddHostedService<UpcomingActivitiesWorker>();
-
         services.AddFederalOfficials(configuration);
         services.AddDiscord(configuration);
 

@@ -3,9 +3,7 @@
 @layout BroadsheetLayout
 @using ManyHands.Core
 @using ManyHands.Data
-@using ManyHands.Data.Workers
 @inject NavigationManager Navigation
-@inject UpcomingActivities Upcoming
 @inject IConfiguration Configuration
 
 @* The home page, as a broadsheet front: masthead and nav, the lead story on
@@ -90,14 +88,8 @@
     <div class="eventbox" id="next-event">
       <div class="boxhead" style="background: #15110C; color: #FBF8F1; padding: 9px 16px; font-size: 11px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; transition: background 200ms ease">Next event</div>
       <div style="padding: 16px">
-        @if (Upcoming.Next is { } next)
-        {
-          <UpcomingEvent Activity="next" />
-        }
-        else
-        {
-        @* The static block: what shows with ManyHands off, or with nothing
-           published and dated. Hand-edited, so it is never empty. *@
+        @* Hand-edited, and always this: the next event is what PhillyPause
+           says it is, never whatever happens to be published in ManyHands. *@
         <div style="font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 800; line-height: 1.12; letter-spacing: -0.015em">Wednesday 28 October</div>
         <div style="font-size: 14px; font-weight: 600; color: #AE2012; margin-top: 4px">7:00 &ndash; 9:00 pm</div>
 
@@ -121,7 +113,6 @@
           <div style="font-size: 13px; line-height: 1.7"><span style="color: #15110C; font-weight: 600">Joel S. Rosen</span> <span style="color: #6A6254">(PhillyPause)</span><label for="panel-open" class="flyicon" title="Who they are"><svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="square" aria-hidden="true"><path d="M6.8 1.5h3.7v3.7"></path><path d="M10.5 1.5 5.6 6.4"></path><path d="M9 7.1v3.4H1.5V3h3.4"></path></svg></label></div>
           <div style="font-size: 13px; line-height: 1.7"><span style="color: #15110C; font-weight: 600">Malcolm Harris</span> <span style="color: #6A6254">(Journalist; Author)</span><label for="panel-open" class="flyicon" title="Who they are"><svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="square" aria-hidden="true"><path d="M6.8 1.5h3.7v3.7"></path><path d="M10.5 1.5 5.6 6.4"></path><path d="M9 7.1v3.4H1.5V3h3.4"></path></svg></label></div>
         </div>
-        }
       </div>
     </div>
 
