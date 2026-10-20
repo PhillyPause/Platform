@@ -8,7 +8,10 @@
    into the volunteer and team pages. Never buried in a dialog or a form.
    Everything here comes from the sign-in cookie, so it costs no database
    call; VolunteerSession keeps the name and role in it current. Off, it
-   renders nothing: no page mentions ManyHands before it exists. *@
+   renders nothing: no page mentions ManyHands before it exists.
+   Events and Join open front-page dialogs, so their links load the page in
+   full: enhanced navigation patches the radios' checked attribute, which a
+   radio the reader has already clicked ignores, and the dialog stays shut. *@
 
 @if (Configuration.IsManyHandsEnabled())
 {
@@ -19,7 +22,7 @@
                 <span class="account-who">Signed in as <strong>@name</strong></span>
                 <span class="account-links">
                     <a href="@ManyHandsPaths.Me">My page</a>
-                    <a href="@ManyHandsPaths.Activities">What&rsquo;s on</a>
+                    <a href="@ManyHandsPaths.Events" data-enhance-nav="false">Events</a>
                     @if (User.ShowsTeam())
                     {
                         <a class="account-primary" href="@ManyHandsPaths.Team" data-enhance-nav="false">Team</a>
@@ -33,8 +36,8 @@
             {
                 <span class="account-who">Volunteering with PhillyPause?</span>
                 <span class="account-links">
-                    <a href="@ManyHandsPaths.Activities">What&rsquo;s on</a>
-                    <a href="@ManyHandsPaths.Join">Join</a>
+                    <a href="@ManyHandsPaths.Events" data-enhance-nav="false">Events</a>
+                    <a href="@ManyHandsPaths.Join" data-enhance-nav="false">Join</a>
                     <a class="account-primary" href="@ManyHandsPaths.SignIn">Sign in</a>
                 </span>
             }

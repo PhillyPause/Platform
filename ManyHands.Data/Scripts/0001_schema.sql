@@ -457,15 +457,15 @@ CREATE TABLE sync_runs (
 
 -- Not demo data: the app is wrong without it.
 INSERT INTO activity_types (id, slug, label, description, sort_order) VALUES
-  (1,  'tabling',        'Tabling',               'Staffing an info table at events or on the street.',   10),
-  (2,  'flyering',       'Flyering',              'Handing out flyers and talking to passers-by.',         20),
+  (1,  'tabling',        'Tabling / Outreach',    'Staffing an info table at events or on the street.',   10),
+  (2,  'flyering',       'Flyering',              'Handing out flyers and talking to passers-by.',         60),
   (3,  'calling',        'Calling Congress',      'Phone calls to congressional offices.',                 30),
   (4,  'letter-writing', 'Letter & email writing','Writing to representatives and local press.',           40),
-  (5,  'lobby-meetings', 'Lobby meetings',        'Attending meetings with congressional offices.',        50),
-  (6,  'event-support',  'Event support',         'Setup, logistics, greeting, and teardown.',             60),
+  (5,  'lobby-meetings', 'Lobbying Congress',     'Attending meetings with congressional offices.',        50),
+  (6,  'event-support',  'Event Support',         'Setup, logistics, greeting, and teardown.',            100),
   (7,  'protests',       'Protests & rallies',    'Showing up for demonstrations.',                        70),
   (8,  'social-media',   'Social media',          'Posting, amplifying, and community management.',        80),
   (9,  'research',       'Research & writing',    'Background research, briefs, and talking points.',      90),
-  (10, 'tech-ops',       'Tech & ops',            'Website, data, tooling, and back-office help.',        100),
+  (10, 'tech-ops',       'Website / Tech',        'Website, data, tooling, and back-office help.',         20),
   (11, 'design',         'Design & media',        'Graphics, photography, and video.',                    110),
   (12, 'outreach',       'Community outreach',    'Partner orgs, campus groups, and coalition building.', 120);

@@ -7,8 +7,14 @@ namespace ManyHands.Core;
 /// </summary>
 public static class ManyHandsPaths
 {
-    /// <summary>What is coming up, open to anyone.</summary>
-    public const string Activities = "/volunteer";
+    /// <summary>Everything a volunteer has a page for sits under this.</summary>
+    public const string Volunteer = "/volunteer";
+
+    /// <summary>
+    /// What is coming up, open to anyone: the front page's Events dialog, not
+    /// a page of its own. <c>/events</c> loads the front page with it open.
+    /// </summary>
+    public const string Events = "/events";
 
     public static string Activity(Guid activityId) => $"/volunteer/activity/{activityId}";
 
@@ -26,7 +32,11 @@ public static class ManyHandsPaths
     /// </summary>
     public static string RedeemSignIn(string token) => $"/volunteer/sign-in/{token}";
 
-    public const string Join = "/volunteer/join";
+    /// <summary>
+    /// Joining is the front page's Join us dialog, not a page of its own:
+    /// <c>/join</c> loads the front page with it open, and its form posts here.
+    /// </summary>
+    public const string Join = "/join";
 
     public static string AcceptInvite(string token) => $"/volunteer/join/{token}";
 

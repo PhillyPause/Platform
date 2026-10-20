@@ -1,0 +1,115 @@
+@inject ActivityTypeRepository Types
+@inject VolunteerRepository Volunteers
+@inject FormThrottle Throttle
+@inject ILogger<JoinForm> Logger
+
+@* Joining: name, email and interests, inside the front page's Join us dialog
+   rather than on a page of its own. A plain static form: it posts to /join,
+   which is the front page with the dialog open, so the answer lands where
+   the question was: the anchor scrolls the dialog to the reply, or to what
+   needs fixing. Only rendered with ManyHands on. *@
+
+<div id="@Anchor">
+@if (_joined is not null)
+{
+    <div class="joindone" role="status">
+        <p class="joindone-head">@(_joined.AlreadyMember ? "You are already one of us" : "Welcome")</p>
+        <p>
+            @(_joined.AlreadyMember
+                ? "We have saved what you ticked alongside what you told us before."
+                : "A welcome email is on its way. Until then, see what is coming up.")
+        </p>
+        <label class="signupbtn" for="events-open">See events</label>
+    </div>
+}
+else if (_unavailable)
+{
+    @* The database is out of reach: say so, rather than show a form that cannot save. *@
+    <p class="joinerror" role="status">Joining is not working this minute. Try again shortly.</p>
+}
+else
+{
+    <EditForm Model="Input" FormName="join" OnValidSubmit="JoinAsync" action="@(ManyHandsPaths.Join + "#" + Anchor)" class="signup joinfields">
+        <DataAnnotationsValidator />
+        <label>
+            <span>Your name</span>
+            <InputText @bind-Value="Input!.DisplayName" autocomplete="name" required pattern=".*\S.*" maxlength="100" />
+            <ValidationMessage For="() => Input!.DisplayName" />
+        </label>
+        <label>
+            <span>Email</span>
+            <InputText @bind-Value="Input!.Email" type="email" autocomplete="email" required maxlength="254" />
+            <ValidationMessage For="() => Input!.Email" />
+        </label>
+        <InterestChoices Types="_types" />
+        @if (_refused is not null)
+        {
+            <p class="joinerror" role="alert">@_refused</p>
+        }
+        <div class="signuprow">
+            <button type="submit">Join</button>
+            <span class="joinnote">
+                Expect one or two emails a month, only about the kinds of thing you ticked,
+                and every one has a one-click way out. We never share your details with
+                anyone, and joining commits you to nothing. <label class="joinnote-link" for="privacy-open">What we keep</label>.
+            </span>
+        </div>
+    </EditForm>
+}
+</div>
+
+@code {
+    private const string Anchor = "join-form";
+
+    [CascadingParameter] private HttpContext HttpContext { get; set; } = default!;
+
+    [SupplyParameterFromForm(FormName = "join")] private JoinInput? Input { get; set; }
+
+    private IReadOnlyList<ActivityType> _types = [];
+    private JoinResult.Ok? _joined;
+    private string? _refused;
+    private bool _unavailable;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Input ??= new();
+        try
+        {
+            _types = await Types.GetActiveAsync();
+        }
+        catch (Exception e) when (e is Npgsql.NpgsqlException or TimeoutException)
+        {
+            // The front page never fails for want of ManyHands (CLAUDE.md).
+            Logger.LogWarning(e, "The join form fell back to email: the database is unreachable");
+            _unavailable = true;
+        }
+    }
+
+    private async Task JoinAsync()
+    {
+        if (_unavailable) return;
+
+        if (!Throttle.AllowPublicWrite(HttpContext))
+        {
+            _refused = "That is a lot of joining from one place. Wait a few minutes and try again.";
+            return;
+        }
+
+        var result = await Volunteers.JoinAsync(
+            Input!.DisplayName, Input.Email, InterestChoices.Read(HttpContext));
+
+        if (result is JoinResult.Ok ok) _joined = ok;
+        else _refused = "That does not look like an email address.";
+    }
+
+    private sealed class JoinInput
+    {
+        [Required(ErrorMessage = "We need a name to greet you by.")]
+        [StringLength(100)]
+        public string DisplayName { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "We need an email to tell you what is on.")]
+        [StringLength(254)]
+        public string Email { get; set; } = string.Empty;
+    }
+}

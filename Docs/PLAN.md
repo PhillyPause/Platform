@@ -267,6 +267,7 @@ Nothing else in this plan depends on which mark wins.
 | `/learn` | adapt | Curated reading and quotes |
 | `/about` | originate | Who we are — independent, loosely affiliated with PauseAI Global (§0.0) |
 | `/join` | originate | The front page with Join us open: the address on posters |
+| `/events` | originate | The front page with Events open: ManyHands' published activities |
 | `/press` | originate | Assets, boilerplate, contact |
 | `/license` | originate | §3 |
 | `/privacy` | originate | Short, honest, matches what ManyHands actually stores |
@@ -280,12 +281,13 @@ ManyHands is PhillyPause's own volunteer system, in this solution and served
 by this host ([`MANYHANDS.md`](MANYHANDS.md)). The site reaches it in-process,
 through `ManyHands.Data`, never over HTTP:
 
-- **Events** — ManyHands' published activities live on its own pages,
-  `/volunteer`. The front page's Next event box is **not** fed from them: it
+- **Events** — ManyHands' published activities are the front page's
+  Events dialog, `/events`. The front page's Next event box is **not** fed from them: it
   is hand-edited, because what the site leads with is an editorial choice,
   and a published activity must never push it aside.
-- **Join** — the Join us links lead to ManyHands' own join page, which is
-  rate-limited and flood-capped. There is one signup form, and it is that one.
+- **Join** — ManyHands' join form is the front page's Join us dialog,
+  rate-limited and flood-capped, and every Join link opens it. There is one
+  signup form, and it is that one; there is no email signup.
 - **Calendar** — the ICS feed is a link, not a feature.
 - **Shared tokens** — the site's `tokens.css` is the source of truth for the
   palette, and ManyHands' pages use it rather than a copy.
@@ -296,7 +298,7 @@ Every touchpoint has a real fallback, not an error:
 
 | Touchpoint | Flag off, or ManyHands unreachable |
 |---|---|
-| Join us | `join@phillypause.org`, subject Count Me In |
+| Join us | No form, and never an email signup; I can help opens it |
 | Calendar feed | Link hidden |
 | Small Print and `/privacy` | Say nothing of ManyHands; on, they add what it sets and holds |
 

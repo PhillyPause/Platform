@@ -1,0 +1,85 @@
+@inject ActivityRepository Activities
+@inject ActivityTypeRepository Types
+@inject ILogger<EventsList> Logger
+
+@* What is coming up, inside the front page's Events dialog rather than on a
+   page of its own. The kinds are plain links back to /events?type=..., which
+   is the front page with the dialog open and the list filtered: no script.
+   Only rendered with ManyHands on. *@
+
+@if (_unavailable)
+{
+    @* The database is out of reach: say so, rather than show an empty list that lies. *@
+    <p class="joinerror" role="status">The events list is not working this minute. Try again shortly.</p>
+}
+else
+{
+    <nav class="evfilter" aria-label="Filter by kind">
+        <a href="@ManyHandsPaths.Events" data-enhance-nav="false" aria-current="@(_type is null ? "page" : null)">Everything</a>
+        @foreach (var type in _types)
+        {
+            <a href="@($"{ManyHandsPaths.Events}?type={type.Slug}")" data-enhance-nav="false" aria-current="@(_type?.Id == type.Id ? "page" : null)">@type.Label</a>
+        }
+    </nav>
+
+    @if (_activities.Count == 0)
+    {
+        <p class="evempty">
+            Nothing @(_type is null ? "on" : $"for {_type.Label.ToLowerInvariant()}") right now.
+            <label class="evlink" for="join-open">Join</label> and we will tell you when there is.
+        </p>
+    }
+    else
+    {
+        <ul class="evlist">
+            @foreach (var activity in _activities)
+            {
+                <li>
+                    <h3><a href="@ManyHandsPaths.Activity(activity.Id)">@activity.Title</a></h3>
+                    <p class="evmeta">
+                        <span>@Show.When(activity.StartsAt)</span>
+                        <span>@Show.Where(activity.Location)</span>
+                    </p>
+                    @if (Show.Room(activity) is { } room)
+                    {
+                        <p class="evroom">@room</p>
+                    }
+                    @if (activity.Tags.Count > 0)
+                    {
+                        <p class="evtags">@string.Join(" · ", activity.Tags)</p>
+                    }
+                </li>
+            }
+        </ul>
+    }
+
+    <p class="evaside">
+        <a href="@ManyHandsPaths.Calendar">Add these to your calendar</a>: the link
+        works in any calendar app and keeps itself up to date.
+    </p>
+}
+
+@code {
+    [SupplyParameterFromQuery(Name = "type")] private string? TypeSlug { get; set; }
+
+    private IReadOnlyList<ActivityType> _types = [];
+    private IReadOnlyList<ActivityListItem> _activities = [];
+    private ActivityType? _type;
+    private bool _unavailable;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            _types = await Types.GetActiveAsync();
+            _type = _types.FirstOrDefault(t => string.Equals(t.Slug, TypeSlug, StringComparison.OrdinalIgnoreCase));
+            _activities = await Activities.GetPublishedAsync(_type?.Id);
+        }
+        catch (Exception e) when (e is Npgsql.NpgsqlException or TimeoutException)
+        {
+            // The front page never fails for want of ManyHands (CLAUDE.md).
+            Logger.LogWarning(e, "The events list is empty: the database is unreachable");
+            _unavailable = true;
+        }
+    }
+}

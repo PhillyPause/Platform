@@ -79,7 +79,7 @@ What is built so far is in [section 7](#7-status).
 `Website.Portal/Program.cs` calls `AddManyHands()` and `MigrateManyHands()`
 only when the flag is on. The background workers are hosted services in the
 same process: there is one instance, so there is nothing to coordinate. With
-the flag off, `UseManyHandsGate` answers every `/volunteer` and `/team` path
+the flag off, `UseManyHandsGate` answers every `/volunteer`, `/events` and `/team` path
 with the ordinary 404, so no page reaches for a service that was never
 registered.
 
@@ -92,9 +92,9 @@ Static SSR Razor components in `Website.Portal/Components/Volunteer`, on
 
 | Route | Page |
 |---|---|
-| `/volunteer` | What's on, filterable by type, with the public calendar feed |
+| `/events` | Not a page here: the front page's Events dialog (`EventsList`), what is coming up, filterable by type, with the public calendar feed. Its filters link back to `/events?type=...` |
 | `/volunteer/activity/{id}` | One activity and its signup form |
-| `/volunteer/join` | Joining: name, email, interests; a welcome the first time |
+| `/join` | Joining is not a page here: it is the front page's Join us dialog (On the site, below). Every Join link goes to it |
 | `/volunteer/sign-in` | Ask for a sign-in link |
 | `/volunteer/sign-in/{token}` | Opening the link shows a button; **pressing it** spends the token |
 | `/volunteer/me` | Signups and cancelling, interests and email, Discord unlink, the personal calendar feed, export, delete, sign out |
@@ -252,9 +252,10 @@ it; `ManyHandsGateTests` holds that, and `SiteWiringTests` the flag-on side.
 
 | Where | On | Off |
 |---|---|---|
-| The account bar, top of every page | Signed out: What's on, Join, **Sign in**. Signed in: "Signed in as *name*", My page, What's on, **Team** for organizers, Sign out | Not rendered |
-| Count me in | `/volunteer/join` | `join@`, subject Count Me In |
-| I can help | `/volunteer` | `join@`, subject I can help |
+| The account bar, top of every page | Signed out: Events, Join, **Sign in**. Signed in: "Signed in as *name*", My page, Events, **Team** for organizers, Sign out. Events and Join load the page in full (`data-enhance-nav="false"`): enhanced navigation would leave the dialog shut | Not rendered |
+| Join us dialog, front page | The signup form itself (`JoinForm`): name, email, interests. It posts to `/join`, the front page with the dialog open, and answers there; if the database is unreachable it says so | No form and no email signup: the dialog says what joining means |
+| Events dialog, front page | What is coming up; if the database is unreachable it says so | Not rendered, and `/events` is a 404 |
+| I can help | Opens Events | Opens Join us |
 | Small Print, cookies | Adds the sign-in cookie | One cookie |
 | `/privacy` | Adds what ManyHands holds, from `Content/_manyhands/privacy.md` | The base page |
 
@@ -355,7 +356,7 @@ in `ManyHands.Core/Organisation.cs`, not configuration: there is no second
 organisation to configure for. Every time in an email is Philadelphia's
 clock, labelled "Eastern time". Every route is in
 `ManyHands.Core/ManyHandsPaths.cs`: volunteers' pages under `/volunteer`,
-organizers' under `/team`.
+organizers' under `/team`, and `/join` and `/events` are front-page dialogs.
 
 Locally, secrets go in `dotnet user-secrets` on `Website.Portal`; in
 production they are App Platform environment variables

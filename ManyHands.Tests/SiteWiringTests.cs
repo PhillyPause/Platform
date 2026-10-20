@@ -39,13 +39,79 @@ public sealed class SiteWiringTests(DatabaseFixture db) : IAsyncLifetime
     }
 
     [Fact]
-    public async Task The_join_buttons_lead_to_ManyHands()
+    public async Task The_join_dialog_holds_the_signup_form_and_I_can_help_opens_Events()
     {
         var home = await _portal.Browser().GetStringAsync("/");
 
-        home.Should().Contain($"class=\"signupbtn\" href=\"{ManyHandsPaths.Join}\"")
-            .And.Contain($"class=\"signupbtn\" href=\"{ManyHandsPaths.Activities}\"")
+        home.Should().Contain($"action=\"{ManyHandsPaths.Join}#join-form\"")
+            .And.Contain("name=\"_handler\" value=\"join\"")
+            .And.Contain("<label class=\"signupbtn\" for=\"events-open\">I can help</label>")
             .And.Contain("phillypause.session");
+    }
+
+    /// <summary>Events is a dialog on the front page: /events opens it, and a filter keeps it open.</summary>
+    [Fact]
+    public async Task Events_opens_as_a_dialog_on_the_front_page_with_what_is_published()
+    {
+        var title = $"Dialog listed {Guid.NewGuid():N}";
+        await TestData.ActivityAsync(db.DataSource, title);
+        var browser = _portal.Browser();
+
+        var events = await browser.GetStringAsync(ManyHandsPaths.Events);
+        var filtered = await browser.GetStringAsync($"{ManyHandsPaths.Events}?type=protests");
+
+        events.Should().Contain("id=\"events-open\" class=\"dlgtoggle\" checked")
+            .And.Contain("aria-labelledby=\"eventsdlg-title\"")
+            .And.Contain(title)
+            .And.Contain(StaticEventDay);
+        filtered.Should().Contain("id=\"events-open\" class=\"dlgtoggle\" checked")
+            .And.Contain("aria-current=\"page\">Protests &amp; rallies</a>");
+    }
+
+    /// <summary>What we keep opens over Join us, with the privacy page's own text, ManyHands' part included.</summary>
+    [Fact]
+    public async Task What_we_keep_is_a_dialog_over_join_us_with_the_privacy_page_in_it()
+    {
+        var home = await _portal.Browser().GetStringAsync(ManyHandsPaths.Join);
+
+        home.Should().Contain("<input type=\"checkbox\" id=\"privacy-open\"")
+            .And.Contain("<label class=\"joinnote-link\" for=\"privacy-open\">What we keep</label>")
+            .And.Contain("aria-labelledby=\"privacydlg-title\"")
+            .And.Contain("If you sign up on this site");
+    }
+
+    [Fact]
+    public async Task Joining_in_the_dialog_saves_the_volunteer_and_answers_in_the_dialog()
+    {
+        var email = TestData.NewEmail();
+
+        var response = await Forms.SubmitAsync(_portal.Browser(), ManyHandsPaths.Join, "join",
+            ("Input.DisplayName", "Dialog Joiner"), ("Input.Email", email),
+            ("interest", TestData.Flyering.ToString()));
+
+        var page = await response.Content.ReadAsStringAsync();
+        page.Should().Contain("id=\"join-open\" class=\"dlgtoggle\" checked")
+            .And.Contain("A welcome email is on its way");
+        var volunteers = new ManyHands.Data.VolunteerRepository(db.DataSource);
+        var joined = await volunteers.GetByEmailAsync(email);
+        joined!.DisplayName.Should().Be("Dialog Joiner");
+        (await volunteers.GetInterestIdsAsync(joined.Id)).Should().Equal(TestData.Flyering);
+    }
+
+    /// <summary>The browser's required checks are what gray the Join button; the server holds the same line.</summary>
+    [Fact]
+    public async Task Joining_needs_a_name_as_well_as_an_email()
+    {
+        var email = TestData.NewEmail();
+        var home = await _portal.Browser().GetStringAsync(ManyHandsPaths.Join);
+
+        var response = await Forms.SubmitAsync(_portal.Browser(), ManyHandsPaths.Join, "join",
+            ("Input.DisplayName", "   "), ("Input.Email", email));
+
+        home.Should().Contain(@"autocomplete=""name"" required pattern="".*\S.*""")
+            .And.Contain("autocomplete=\"email\" required");
+        (await response.Content.ReadAsStringAsync()).Should().Contain("We need a name to greet you by");
+        (await new ManyHands.Data.VolunteerRepository(db.DataSource).GetByEmailAsync(email)).Should().BeNull();
     }
 
     [Fact]
@@ -73,7 +139,7 @@ public sealed class SiteWiringTests(DatabaseFixture db) : IAsyncLifetime
         var browser = _portal.Browser();
         await Forms.SignInAsync(browser, db.DataSource, member.Id);
 
-        foreach (var path in new[] { "/", "/privacy", ManyHandsPaths.Activities })
+        foreach (var path in new[] { "/", "/privacy", ManyHandsPaths.Events })
         {
             var response = await browser.GetAsync(path);
             var page = await response.Content.ReadAsStringAsync();

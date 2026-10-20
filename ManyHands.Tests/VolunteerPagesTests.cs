@@ -36,7 +36,7 @@ public sealed class VolunteerPagesTests(DatabaseFixture db) : IAsyncLifetime
         await TestData.ActivityAsync(db.DataSource, title);
         await TestData.ActivityAsync(db.DataSource, draftTitle, published: false);
 
-        var page = await _portal.Browser().GetStringAsync(ManyHandsPaths.Activities);
+        var page = await _portal.Browser().GetStringAsync(ManyHandsPaths.Events);
 
         Assert.Contains(title, page);
         Assert.DoesNotContain(draftTitle, page);

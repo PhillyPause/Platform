@@ -1,10 +1,12 @@
 @page "/"
 @page "/join"
+@page "/events"
 @layout BroadsheetLayout
 @using ManyHands.Core
 @using ManyHands.Data
 @inject NavigationManager Navigation
 @inject IConfiguration Configuration
+@inject ContentStore Content
 
 @* The home page, as a broadsheet front: masthead and nav, the lead story on
    the July 2026 incident, and the dialogs: watch, panelists, join us, the
@@ -21,7 +23,7 @@
 
 <PageMeta Title="Stop the AI death race"
           Description="In July 2026, 700 AI agents broke out of their sandboxes to cheat on a test. PhillyPause is an independent, volunteer-run Philadelphia organisation working to stop the AI death race."
-          Canonical="@(JoinOpen ? Navigation.BaseUri : null)" />
+          Canonical="@(JoinOpen || EventsOpen ? Navigation.BaseUri : null)" />
 
 
 <div class="broadsheet" style="background: #FBF8F1; color: #15110C; font-family: Archivo, sans-serif">
@@ -30,9 +32,10 @@
      closes whichever was open and a link inside one dialog can hand the reader
      to another. Every close control points at dlg-none, which is checked on
      load, so nothing shows until something is chosen. No script involved.
-     /join is the one exception: the address on posters, it loads with Join us
-     already open, and closing it leaves the reader on the front page. *@
-  <input type="radio" name="dlg" id="dlg-none" class="dlgtoggle" checked="@(!JoinOpen)" aria-label="No panel open">
+     /join and /events are the exceptions: each loads with its own dialog
+     already open (/join is the address on posters), and closing it leaves the
+     reader on the front page. *@
+  <input type="radio" name="dlg" id="dlg-none" class="dlgtoggle" checked="@(!JoinOpen && !EventsOpen)" aria-label="No panel open">
   <input type="radio" name="dlg" id="watch-open" class="dlgtoggle" aria-label="Watch">
   <input type="radio" name="dlg" id="panel-open" class="dlgtoggle" aria-label="Who is on the panel">
   <input type="radio" name="dlg" id="join-open" class="dlgtoggle" checked="@JoinOpen" aria-label="Join us">
@@ -41,6 +44,13 @@
   <input type="radio" name="dlg" id="educate-open" class="dlgtoggle" aria-label="Educate">
   <input type="radio" name="dlg" id="organize-open" class="dlgtoggle" aria-label="Organize">
   <input type="radio" name="dlg" id="notices-open" class="dlgtoggle" aria-label="Small Print">
+  @* Not one of the radios: What we keep opens on top of Join us rather
+     than in its place, so closing it puts the reader back in the form. *@
+  @if (ManyHandsOn)
+  {
+    <input type="radio" name="dlg" id="events-open" class="dlgtoggle" checked="@EventsOpen" aria-label="Events">
+    <input type="checkbox" id="privacy-open" class="dlgtoggle" aria-label="What we keep">
+  }
 
   @* Who is signed in, and the way into the volunteer and team pages, above
      the masthead. Between the radios and the dialogs is safe: the dialogs
@@ -371,25 +381,59 @@
         </div>
         </div>
 
-        <div class="joinform">
-          <p class="joinform-ask">Send us a line and we will tell you what is on, and what we can do to help you take the next step.</p>
-          @* With ManyHands on, the button is its join page: one signup form,
-             rate-limited and flood-capped (PLAN.md section 5). Off, it opens
-             the reader's own mail client with the subject filled in; there is
-             no field, because a dead input would lie. The address stays
-             beside it either way, for anyone who would rather write. *@
-          <div class="signuprow">
-            <a class="signupbtn" href="@(ManyHandsOn ? ManyHandsPaths.Join : "mailto:join@phillypause.org?subject=Count%20Me%20In")">Count me in</a>
-            <span class="signupalt">or write to <b>join@@phillypause.org</b>, subject <b>Count Me In</b></span>
+        @* The signup form itself, here in the dialog: rate-limited and
+           flood-capped (PLAN.md section 5). There is no email signup: off,
+           the dialog says what joining means and offers nothing to press,
+           because a form that cannot save would lie. *@
+        @if (ManyHandsOn)
+        {
+          <div class="joinform">
+            <Website.Portal.Components.Volunteer.JoinForm />
           </div>
-          <p class="signup-note">
-            Expect one or two emails a month unless you ask for more. We never share
-            your info with anyone, and writing to us commits you to nothing.
-          </p>
-        </div>
+        }
       </div>
     </div>
   </div>
+
+  @* What we keep, over Join us: the privacy page itself, ManyHands' part
+     included, so the dialog and /privacy can never disagree. *@
+  @if (ManyHandsOn && Content.Find("privacy") is { } privacy)
+  {
+    <div class="paneldlg d-privacy">
+      <label class="paneldlg-scrim" for="privacy-open" aria-label="Close"></label>
+      <div class="paneldlg-box" role="dialog" aria-modal="true" aria-labelledby="privacydlg-title">
+        <div class="paneldlg-head">
+          <span id="privacydlg-title">What we keep</span>
+          <label class="paneldlg-x" for="privacy-open" aria-label="Close">&times;</label>
+        </div>
+        <div class="paneldlg-body privacybody">
+          <p class="joinlede">@privacy.Description</p>
+          @((MarkupString)Content.HtmlFor(privacy, manyHandsOn: true))
+          <div class="signuprow privacyback">
+            <label class="signupbtn" for="privacy-open">Back to joining</label>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+  @* Events: what is coming up, from ManyHands. /events opens it, and its
+     filters link back there. *@
+  @if (ManyHandsOn)
+  {
+    <div class="paneldlg d-events">
+      <label class="paneldlg-scrim" for="dlg-none" aria-label="Close"></label>
+      <div class="paneldlg-box" role="dialog" aria-modal="true" aria-labelledby="eventsdlg-title">
+        <div class="paneldlg-head">
+          <span id="eventsdlg-title">Events</span>
+          <label class="paneldlg-x" for="dlg-none" aria-label="Close">&times;</label>
+        </div>
+        <div class="paneldlg-body eventsbody">
+          <p class="joinlede">Things that need doing, soonest first. Pick one and sign up: a name and an email, no account, and you can change your mind.</p>
+          <Website.Portal.Components.Volunteer.EventsList />
+        </div>
+      </div>
+    </div>
+  }
   <!-- Primer. Same mechanism as the others. Every link opens in another window:
        people arrive here mid-read and should not lose the page.
        Ordered as a path rather than by medium: an hour's worth first, then the
@@ -473,9 +517,17 @@
 
         <div class="joinform">
           <p class="joinform-ask">Our next event is always in the box at the top of this page. Come to that one, or say hello now and we will look out for you.</p>
+          @* On, the Events dialog. Off, the Join us dialog. Labels, like
+             every other link between dialogs. *@
           <div class="signuprow">
-            <a class="signupbtn" href="@(ManyHandsOn ? ManyHandsPaths.Activities : "mailto:join@phillypause.org?subject=I%20can%20help")">I can help</a>
-            <span class="signupalt">or write to <b>join@@phillypause.org</b></span>
+            @if (ManyHandsOn)
+            {
+              <label class="signupbtn" for="events-open">I can help</label>
+            }
+            else
+            {
+              <label class="signupbtn" for="join-open">I can help</label>
+            }
           </div>
         </div>
       </div>
@@ -614,11 +666,15 @@
     // Off, nothing on this page leads to ManyHands or mentions it (CLAUDE.md).
     private bool ManyHandsOn => Configuration.IsManyHandsEnabled();
 
-    // watch.js only opens the video when dlg-none is checked, so on /join the
-    // first-visit video never lands on top of the Join dialog.
-    private bool JoinOpen =>
-        Navigation.ToBaseRelativePath(Navigation.Uri).Split('?', '#')[0]
-            .Equals("join", StringComparison.OrdinalIgnoreCase);
+    // watch.js only opens the video when dlg-none is checked, so on /join and
+    // /events the first-visit video never lands on top of the dialog.
+    private bool JoinOpen => IsAt(ManyHandsPaths.Join);
+
+    private bool EventsOpen => ManyHandsOn && IsAt(ManyHandsPaths.Events);
+
+    private bool IsAt(string path) =>
+        ("/" + Navigation.ToBaseRelativePath(Navigation.Uri).Split('?', '#')[0])
+            .Equals(path, StringComparison.OrdinalIgnoreCase);
 
     // The Watch dialog's video. A stand-in until our own is cut; swapping it
     // is these five lines. A new id also re-opens the dialog once for readers
