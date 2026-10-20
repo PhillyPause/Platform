@@ -2,6 +2,8 @@
 """Make a portable source archive after rendering, finishing and preflight.
 
 Excludes dependencies, temporary renders and all copyrighted reference stills.
+Reads finish.py's exports from build/exports/ and writes the archive under
+build/; see paths.py.
 """
 from __future__ import annotations
 import argparse
@@ -10,7 +12,9 @@ import json
 from pathlib import Path
 import zipfile
 
-ROOT=Path(__file__).resolve().parent
+import paths
+
+ROOT=paths.ROOT
 
 def portable(value):
     if isinstance(value,dict):return {k:portable(v) for k,v in value.items()}
@@ -38,7 +42,7 @@ def build(destination,exports):
         selected.append(p)
     missing=[str(p.relative_to(ROOT)) for p in selected if not p.is_file()]
     if missing:raise FileNotFoundError('Missing package inputs: '+', '.join(missing))
-    manifest=[];destination.parent.mkdir(exist_ok=True,parents=True)
+    manifest=[];destination=paths.writable(destination)
     prefix='PhillyPause_Production/'
     with zipfile.ZipFile(destination,'w',compression=zipfile.ZIP_DEFLATED,compresslevel=6,allowZip64=True) as archive:
       for p in sorted(set(selected)):
@@ -62,7 +66,7 @@ def build(destination,exports):
 
 if __name__=='__main__':
     parser=argparse.ArgumentParser()
-    parser.add_argument('--exports',type=Path,default=ROOT/'exports')
-    parser.add_argument('--output',type=Path,default=ROOT/'PhillyPause_Production_Files.zip')
+    parser.add_argument('--exports',type=Path,default=paths.BUILD/'exports')
+    parser.add_argument('--output',type=Path,default=paths.BUILD/'PhillyPause_Production_Files.zip')
     args=parser.parse_args()
     build(args.output.resolve(),args.exports.resolve())

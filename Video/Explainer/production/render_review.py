@@ -14,17 +14,15 @@ import time
 
 from film import Film, INTRO_SECONDS, END_HOLD_START, END_HOLD_SECONDS, DURATION, FPS, skia
 import paths
-
-ROOT = Path(__file__).resolve().parent
+import revision4_timing as timing
 
 
 def render(output, work, width=1280, preset='medium', crf=20):
     work = paths.writable(work)
     work.mkdir(exist_ok=True)
     output = paths.writable(output)
-    audio = ROOT / 'audio/mix_revision4.wav'
-    if not audio.is_file():
-        raise FileNotFoundError('Run revision4_timing.py to prepare the 76-second mix first.')
+    # Built afresh under build/ and checked sample for sample against the approved mix.
+    audio, _ = timing.build_soundtrack()
     film = Film('landscape')
     height = round(width * film.H / film.W)
     total = round(DURATION * FPS)
@@ -42,6 +40,8 @@ def render(output, work, width=1280, preset='medium', crf=20):
         '-map', '0:v:0', '-map', '1:a:0', '-c:v', 'libx264', '-threads', '4',
         '-preset', preset, '-crf', str(crf), '-pix_fmt', 'yuv420p',
         '-frames:v', str(total), '-force_key_frames', f'{INTRO_SECONDS},{END_HOLD_START}',
+        # Every frame after the hold's keyframe copies it; see finish.py's mux().
+        '-x264-params', f'zones={hold_frame+1},{total-1},q=51',
         '-c:a', 'aac', '-b:a', '192k', '-ar', '48000', '-ac', '2',
         '-t', str(DURATION), '-movflags', '+faststart', '-metadata',
         'title=PhillyPause — revision 5 approval preview', str(output)

@@ -57,6 +57,6 @@ def text_sha256(path):
 
 
 def portable(path):
-    """Record a file relative to production/ when it lives there."""
+    """Record a file relative to production/ when it lives there, with forward slashes on every OS."""
     path=Path(path).resolve()
-    return str(path.relative_to(ROOT)) if inside(path,ROOT) else str(path)
+    return (path.relative_to(ROOT) if inside(path,ROOT) else path).as_posix()

@@ -667,7 +667,7 @@ def render(args):
   print('Artwork:',', '.join(f'{len(v)} {k}' for k,v in prov['artwork'].items()),'| crumples:',', '.join(f'{k} {v["origin"]}' for k,v in prov['crumples'].items()));return
  width=args.width or film.W;height=int(round(width*film.H/film.W/2)*2)
  out=paths.writable(args.output)
- cmd=['ffmpeg','-y','-loglevel','error','-f','rawvideo','-pix_fmt','rgba','-s',f'{width}x{height}','-r','24','-i','-','-an','-c:v','libx264','-threads','4','-preset',args.preset,'-crf',str(args.crf),'-pix_fmt','yuv420p','-movflags','+faststart',str(out)]
+ cmd=['ffmpeg','-y','-loglevel','error','-f','rawvideo','-pix_fmt','rgba','-s',f'{width}x{height}','-r','24','-i','-','-an','-c:v','libx264','-threads','4','-preset',args.preset,'-crf',str(args.crf),'-pix_fmt','yuv420p','-force_key_frames',f'{INTRO_SECONDS},{END_HOLD_START}','-movflags','+faststart',str(out)]
  if args.prores:
   pro=paths.writable(args.prores)
   cmd+=['-an','-c:v','prores_ks','-threads','4','-profile:v','2','-pix_fmt','yuv422p10le','-vendor','apl0',str(pro)]

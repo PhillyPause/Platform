@@ -7,8 +7,11 @@ The timbres are deliberately synthetic evocations of small acoustic instruments,
 not claimed recordings of an orchestra. The supplied narration is read only to
 make a very gentle, slow level envelope; its audio is never added to either stem.
 
-Run: python audio_score.py
-Requires Python, numpy, scipy and ffmpeg. Outputs 48 kHz stereo 24-bit PCM WAV.
+Run: python production/audio_score.py
+Requires Python, numpy, scipy and ffmpeg. Outputs 48 kHz stereo 24-bit PCM WAV
+to build/audio/score/: music.wav, foley.wav and score_metadata.json. The
+approved stems in audio/ are source and never written; on the reference
+toolchain the regenerated stems match them sample for sample. See paths.py.
 """
 from __future__ import annotations
 
@@ -21,9 +24,10 @@ import numpy as np
 from scipy.ndimage import uniform_filter1d
 from scipy.signal import butter, sosfilt
 
-ROOT = Path(__file__).resolve().parent
-OUT = ROOT / "audio"
-OUT.mkdir(parents=True, exist_ok=True)
+import paths
+
+ROOT = paths.ROOT
+OUT = paths.BUILD / "audio" / "score"
 SR = 48_000
 DURATION = 67.5
 N = round(DURATION * SR)
@@ -372,7 +376,8 @@ def contour_and_silence(x: np.ndarray) -> np.ndarray:
 
 def write_wav(path: Path, data: np.ndarray) -> None:
     subprocess.run(["ffmpeg","-v","error","-y","-f","f32le","-ac","2","-ar",str(SR),"-i","pipe:0",
-                    "-c:a","pcm_s24le",str(path)], input=data.astype("<f4").tobytes(), check=True)
+                    "-c:a","pcm_s24le","-fflags","+bitexact",str(paths.writable(path))],
+                   input=data.astype("<f4").tobytes(), check=True)
 
 
 def measure(path: Path) -> dict:
@@ -396,7 +401,7 @@ def render_stem(x: np.ndarray, path: Path, target_lufs: float) -> dict:
     write_wav(path,x)
     final = measure(path)
     silent = x[round(53.12*SR):round(54.18*SR)]
-    return {"path": str(path), "sample_rate": SR, "channels": 2, "pcm_bits":24,
+    return {"path": paths.portable(path), "sample_rate": SR, "channels": 2, "pcm_bits":24,
             "duration":DURATION, "integrated_lufs":float(final["input_i"]),
             "true_peak_dbtp":float(final["input_tp"]), "loudness_range_lu":float(final["input_lra"]),
             "sample_peak_dbfs":round(20*math.log10(max(np.max(np.abs(x)),1e-12)),3),
@@ -423,7 +428,7 @@ def main() -> None:
         "foley":render_stem(foley,OUT/"foley.wav",-42.0),
         "events":EVENTS,
     }
-    (OUT/"score_metadata.json").write_text(json.dumps(metadata,indent=2)+"\n")
+    paths.writable(OUT/"score_metadata.json").write_text(json.dumps(metadata,indent=2)+"\n",newline="\n")
     print(json.dumps({k:v for k,v in metadata.items() if k!="events"},indent=2))
 
 
