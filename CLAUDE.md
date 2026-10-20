@@ -54,6 +54,25 @@ Docs filenames: UPPERCASE, underscores not dashes, short.
   identity, points pushes at the `gh` CLI, checks the account, scope and SDK,
   then runs the site. Idempotent. README has the detail.
 
+## Switching machines: `pickup`
+
+Work moves between PCs through the remote. Before a hand-off, the last commit
+on the working branch carries the hand-off in its message: what was done,
+the command that reproduces it, and what is outstanding.
+
+When the user's whole message is **pickup**, they have just pulled on another
+machine, on whatever branch it happened to be. Run `git fetch --prune`, then
+switch to the remote branch other than `main` with the newest commit
+(`git branch -r --sort=-committerdate`), unless already on it, and say which.
+If uncommitted changes would block the switch, stop and ask; never discard
+them. Read `git log -1` and the docs it names. Set up what the machine lacks,
+without asking: for `Video/Explainer`, Git LFS content, ffmpeg on `PATH`, and
+`.venv` from `production/requirements.txt`. Make sure the user-level
+`~/.claude/CLAUDE.md` carries this rule too, so `pickup` works on that machine
+from any branch, even one older than the rule. Run the tests for the area,
+then report where things stand in a few lines and carry on with what is
+outstanding, asking only about decisions that are the user's.
+
 ## Deploying
 
 **The site is live at `phillypause.org`**, on DigitalOcean App Platform behind
