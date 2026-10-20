@@ -22,6 +22,12 @@ END_HOLD_SECONDS=10.0
 DURATION=END_HOLD_START+END_HOLD_SECONDS
 STARTS=[0,6.810,12.210,19.410,25.100,26.610,30.790,32.920,35.900,40.210,44.950,49.700,52.320,53.830,60.720,END_START]
 ENDS=STARTS[1:]+[DURATION-INTRO_SECONDS]
+# The AE timeline's sound. The approved 76 s mix already carries the lead-in;
+# the stems are on the story clock, so their layers start INTRO_SECONDS in.
+TRACE_AUDIO=[{'file':'audio/mix_revision4.wav','name':'Final mixed audio','gainDb':0,'startTime':0},
+ {'file':'audio/voice.wav','name':'Narration stem','gainDb':0,'enabled':False,'startTime':INTRO_SECONDS},
+ {'file':'audio/music.wav','name':'Original score stem','gainDb':0,'enabled':False,'startTime':INTRO_SECONDS},
+ {'file':'audio/foley.wav','name':'Foley stem','gainDb':0,'enabled':False,'startTime':INTRO_SECONDS}]
 
 def clamp(x,a=0,b=1):return max(a,min(b,x))
 def ease(x):x=clamp(x);return x*x*(3-2*x)
@@ -635,7 +641,7 @@ class Film:
   # Preserve every displayed sample. AE uses HOLD interpolation, reproducing the
   # 24fps raster samples exactly while leaving all individual layers editable.
   self.order_trace_layers()
-  data={'width':self.W,'height':self.H,'fps':FPS,'duration':DURATION,'assets':{k:self.bank.meta[k] for k in sorted(self.used)},'tracks':list(self.tracks.values()),'audio':[{'file':'audio/mix.wav','name':'Final mixed audio','gainDb':0},{'file':'audio/voice.wav','name':'Narration stem','gainDb':0,'enabled':False},{'file':'audio/music.wav','name':'Original score stem','gainDb':0,'enabled':False},{'file':'audio/foley.wav','name':'Foley stem','gainDb':0,'enabled':False}]}
+  data={'width':self.W,'height':self.H,'fps':FPS,'duration':DURATION,'leadInSeconds':INTRO_SECONDS,'endHoldStart':END_HOLD_START,'assets':{k:self.bank.meta[k] for k in sorted(self.used)},'tracks':list(self.tracks.values()),'audio':TRACE_AUDIO}
   p=paths.output('master_timeline.json');p.write_text(json.dumps(data,separators=(',',':')));print('Saved',p,p.stat().st_size,flush=True)
   return p
  def provenance(self):

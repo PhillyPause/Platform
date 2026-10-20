@@ -22,15 +22,15 @@ code's footprint, including its four-module white quiet zone, is approximately
 200 x 200 CSS pixels when the video is displayed at the measured 830-pixel
 width. The 16:9 framing must remain uncropped so that white margin stays intact.
 
-The card begins at 64.458333 s, settles over 0.52 s, and is fully stationary
-from the 65.000-second frame to the 67.458333-second endpoint. Allow the ended
+The card begins at 65.458333 s, settles over 0.54 s, and is fully stationary
+from the 66.000-second frame to the end of the 76-second film. Allow the ended
 video to retain its last frame rather than automatically closing or rewinding
 the popup; this gives viewers time to scan. A visible URL also lets someone
 watching on the same phone open the destination without scanning their screen.
 
 Use the revised delivered closing-card poster with this export. The QR payload
 and layout are design specifications; final encoded-file checks are recorded
-in the delivery's Export_Validation.json.
+in the delivery's finish_report.json.
 
 INTEGRATION REQUIRED
 

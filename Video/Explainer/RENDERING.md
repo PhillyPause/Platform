@@ -68,7 +68,11 @@ then the closing card held still from 66 seconds to the end (`INTRO_SECONDS`,
 `audio/mix.wav` (exactly voice + music + foley) and the caption timings in
 `audio_alignment.json` all run on the story clock, which starts with the
 narration. `revision4_timing.py` delays sound and captions by the lead-in. No
-other script applies that offset:
+other script shifts a sound or caption file. The After Effects timeline from
+`film.py --trace` uses the approved 76-second mix as it stands, and starts the
+muted story-clock stems `INTRO_SECONDS` in (each audio entry's `startTime`).
+The builder's storyboard markers are the story beats moved by the trace's
+`leadInSeconds`, with the end card at `endHoldStart`. The timing outputs:
 
 - `build/audio/mix_revision4.wav`: 48,000 samples of digital silence, then
   `mix.wav` bit for bit, then silence to 76 seconds.

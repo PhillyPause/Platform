@@ -118,6 +118,24 @@ class Timeline(unittest.TestCase):
         self.assertEqual(len(hold),1,'the closing card must be still from 66 s to the end')
 
 
+class AfterEffectsTrace(unittest.TestCase):
+    def test_sound_is_on_the_film_clock(self):
+        import film
+        audio={a['file']:a for a in film.TRACE_AUDIO}
+        for name in audio:self.assertIn(name,APPROVED,'the AE timeline uses only approved sound')
+        self.assertEqual((audio['audio/mix_revision4.wav']['startTime'],audio['audio/mix_revision4.wav'].get('enabled',True)),(0,True),
+                         'the 76-second mix already carries the lead-in')
+        self.assertNotIn('audio/mix.wav',audio,'the story-clock mix would play a second early')
+        for name in ('audio/voice.wav','audio/music.wav','audio/foley.wav'):
+            self.assertEqual((audio[name]['startTime'],audio[name]['enabled']),(film.INTRO_SECONDS,False))
+
+    def test_markers_are_the_story_beats(self):
+        import film
+        jsx=(PRODUCTION/'Build_PhillyPause_AfterEffects.jsx').read_text(encoding='utf-8')
+        beats=[float(s) for s in re.findall(r'^\s*\[(\d+\.\d+), "\d\d - ',jsx,re.M)]
+        self.assertEqual(beats,film.STARTS[:-1],'markers are story-clock beats, shifted by leadInSeconds in the builder')
+
+
 class Captions(unittest.TestCase):
     @classmethod
     def setUpClass(cls):

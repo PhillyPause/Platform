@@ -231,6 +231,7 @@
             item = audio[i];
             requireThat(item && typeof item.file === "string", "Invalid audio entry " + i);
             if (own(item, "gainDb")) { requireThat(number(item.gainDb) && item.gainDb >= -192 && item.gainDb <= 12, "Audio gainDb must be between -192 and +12: " + item.file); }
+            if (own(item, "startTime")) { requireThat(number(item.startTime) && item.startTime >= 0 && item.startTime < data.duration, "Audio startTime must be within the composition: " + item.file); }
             file = relativeFile(folder, item.file);
             if (!file.exists) { missing.push(item.file); }
         }
@@ -301,7 +302,8 @@
         return 0;
     }
 
-    function addMarkers(comp, fps, duration) {
+    // Beats are on the story clock, which starts leadIn seconds into the film.
+    function addMarkers(comp, fps, duration, leadIn, endHoldStart) {
         var markers = comp.markerProperty;
         if (!markers) { warnings.push("Composition markers are unavailable in this After Effects version."); return; }
         var beats = [
@@ -321,13 +323,14 @@
             [53.830, "14 - Join / share / tell Congress", 54.180],
             [60.720, "15 - This time, it's us", 61.020]
         ];
-        var endCard = Math.round((duration - 3) * fps) / fps;
+        var endCard = Math.round((number(endHoldStart) ? endHoldStart : duration - 3) * fps) / fps;
+        var offset = number(leadIn) ? leadIn : 0;
         var i, start, end, marker;
         for (i = 0; i < beats.length; i++) {
-            start = Math.round(beats[i][0] * fps) / fps;
+            start = Math.round((beats[i][0] + offset) * fps) / fps;
             if (start >= duration) { continue; }
-            end = i + 1 < beats.length ? Math.round(beats[i + 1][0] * fps) / fps : endCard;
-            marker = new MarkerValue(beats[i][1] + " | VO starts " + beats[i][2].toFixed(3) + " s");
+            end = i + 1 < beats.length ? Math.round((beats[i + 1][0] + offset) * fps) / fps : endCard;
+            marker = new MarkerValue(beats[i][1] + " | VO starts " + (beats[i][2] + offset).toFixed(3) + " s");
             marker.duration = Math.max(0, Math.min(end, duration) - start);
             markers.setValueAtTime(start, marker);
         }
@@ -443,7 +446,7 @@
         }
 
         var audioNotes = [];
-        var gain, audioGroup, levels;
+        var gain, audioGroup, levels, start;
         for (i = 0; i < validated.audio.length; i++) {
             item = validated.audio[i];
             context = "Import audio: " + item.file;
@@ -451,9 +454,11 @@
             requireThat(footage.hasAudio, "Audio entry contains no audio stream: " + item.file);
             layer = comp.layers.add(footage);
             layer.name = item.name || item.file;
-            layer.startTime = 0;
-            layer.inPoint = 0;
-            layer.outPoint = Math.min(duration, footage.duration);
+            // Story-clock stems start after the lead-in; the finished mix already includes it.
+            start = own(item, "startTime") ? Math.round(item.startTime * data.fps) / data.fps : 0;
+            layer.startTime = start;
+            layer.inPoint = start;
+            layer.outPoint = Math.min(duration, start + footage.duration);
             layer.audioEnabled = item.enabled !== false;
             gain = audioGain(item);
             audioGroup = layer.property("ADBE Audio Group");
@@ -465,7 +470,7 @@
             audioNotes.push(layer.name + ": " + gain + " dB" + (item.enabled === false ? " (muted)" : ""));
         }
         context = "Add storyboard markers";
-        addMarkers(comp, data.fps, duration);
+        addMarkers(comp, data.fps, duration, data.leadInSeconds, data.endHoldStart);
         comp.time = 0;
         comp.openInViewer();
         if (progress) { progress.window.close(); progress = null; }
