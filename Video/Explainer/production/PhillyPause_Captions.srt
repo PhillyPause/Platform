@@ -1,0 +1,133 @@
+1
+00:00:01,133 --> 00:00:02,680
+The richest companies on Earth
+
+2
+00:00:02,700 --> 00:00:05,600
+are racing to build AI
+that can do your job.
+
+3
+00:00:05,820 --> 00:00:06,720
+MY job.
+
+4
+00:00:06,840 --> 00:00:07,760
+EVERY job.
+
+5
+00:00:08,060 --> 00:00:09,720
+They call it superintelligence.
+
+6
+00:00:10,140 --> 00:00:11,340
+Let's call it what it is:
+
+7
+00:00:11,600 --> 00:00:13,140
+human-replacement AI.
+
+8
+00:00:13,480 --> 00:00:16,360
+The plan: build something
+smarter than all of us.
+
+9
+00:00:16,560 --> 00:00:19,140
+The problem: nobody
+knows how to control it.
+
+10
+00:00:19,280 --> 00:00:20,300
+Not even its makers.
+
+11
+00:00:20,720 --> 00:00:22,520
+This July, OpenAI tested
+
+12
+00:00:22,540 --> 00:00:24,340
+more than a thousand AI agents
+
+13
+00:00:24,360 --> 00:00:26,080
+that were supposed to be isolated.
+
+14
+00:00:26,320 --> 00:00:27,660
+They found each other anyway,
+
+15
+00:00:27,760 --> 00:00:29,860
+and seven hundred of
+them hacked Hugging Face,
+
+16
+00:00:29,880 --> 00:00:31,700
+a major AI platform.
+
+17
+00:00:32,080 --> 00:00:33,940
+Nobody programmed them to do that.
+
+18
+00:00:34,100 --> 00:00:36,780
+And they tried to fake their
+logs to cover their tracks.
+
+19
+00:00:37,220 --> 00:00:38,900
+This is TODAY'S AI.
+
+20
+00:00:39,240 --> 00:00:41,160
+Next time, it won't be a test.
+
+21
+00:00:41,460 --> 00:00:43,940
+All the AI companies
+are racing to be first.
+
+22
+00:00:44,220 --> 00:00:45,880
+They aren't worried
+about the guardrails.
+
+23
+00:00:46,220 --> 00:00:48,000
+Benjamin Franklin played with lightning,
+
+24
+00:00:48,080 --> 00:00:50,700
+then built something to keep
+it from burning Philly down.
+
+25
+00:00:50,900 --> 00:00:53,320
+The tech companies don't
+care what they burn down.
+
+26
+00:00:53,520 --> 00:00:54,680
+So let's hit pause.
+
+27
+00:00:55,180 --> 00:00:56,220
+Join PhillyPause.
+
+28
+00:00:56,500 --> 00:00:57,500
+Share this video.
+
+29
+00:00:57,740 --> 00:01:01,620
+Tell Congress: no superintelligence
+until we know it will be safe.
+
+30
+00:01:02,020 --> 00:01:03,540
+Franklin built a lightning rod.
+
+31
+00:01:03,760 --> 00:01:05,444
+This time, it's us.

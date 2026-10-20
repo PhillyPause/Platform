@@ -1,0 +1,7 @@
+# Python 3.12 or newer; ffmpeg must also be installed on PATH.
+skia-python==144.0.post2
+numpy==2.5.4
+Pillow>=10
+scipy>=1.15
+# Needed only to regenerate the supplied QR PNG; rendering reuses that asset.
+qrcode==8.2

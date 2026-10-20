@@ -1,0 +1,149 @@
+{
+  "created": "2026-10-19",
+  "scope": "Five principal public-domain image sources plus one optional period portrait donor. No Lemony Snicket imagery or footage.",
+  "assets": [
+    {
+      "id": "franklin_hall_1868",
+      "selection": "primary",
+      "title": "Benjamin Franklin",
+      "author": "H. B. Hall, engraver, after Joseph-Siffred Duplessis (portrait from 1783)",
+      "date": "1868",
+      "institution": "Library of Congress",
+      "source_page": "https://www.loc.gov/item/2004671903/",
+      "download_url": "https://tile.loc.gov/storage-services/master/pnp/cph/3a20000/3a26000/3a26400/3a26485u.tif",
+      "rights_statement": "No known restrictions on publication.",
+      "public_domain_basis": "Public-domain historical artwork, published before 1929; faithful digitization supplied by the institution.",
+      "raw_path": "assets/historical/franklin_hall_1868.tif",
+      "production_path": "assets/historical/franklin_hall_1868.jpg",
+      "width": 3301,
+      "height": 4144,
+      "raw_bytes": 13683702,
+      "sha256_raw": "ecbc97ea40b7b3bc2a7187fa795ba611c244700ee321c21b01965cf94f08cc51",
+      "modifications": "Full-resolution TIFF-to-JPEG format conversion only; no creative alteration.",
+      "useful_elements": [
+        "Recognizable bald head, side curls, face, shoulders and coat for a Franklin puppet",
+        "Fine engraved hatch marks for original faces and cloth shading"
+      ]
+    },
+    {
+      "id": "philadelphia_1768",
+      "selection": "primary",
+      "title": "An east prospect of the city of Philadelphia; taken by George Heap from the Jersey shore, under the direction of Nicholas Scull surveyor general of the Province of Pennsylvania / engrav'd by T. Jefferys.",
+      "author": "Thomas Jefferys, engraver, after George Heap under Nicholas Scull",
+      "date": "[1768]",
+      "institution": "Library of Congress",
+      "source_page": "https://www.loc.gov/item/2004672470/",
+      "download_url": "https://tile.loc.gov/storage-services/master/pnp/pga/01600/01698u.tif",
+      "rights_statement": "No known restrictions on publication.",
+      "public_domain_basis": "Public-domain historical artwork, published before 1929; faithful digitization supplied by the institution.",
+      "raw_path": "assets/historical/philadelphia_1768.tif",
+      "production_path": "assets/historical/philadelphia_1768.jpg",
+      "width": 10223,
+      "height": 5708,
+      "raw_bytes": 175081908,
+      "sha256_raw": "434643f367ec1fbf36c419594c5de567d7dca0e4b32e91d49ce49f02941299a5",
+      "modifications": "Full-resolution TIFF-to-JPEG format conversion only; no creative alteration.",
+      "useful_elements": [
+        "Long Philadelphia waterfront skyline for distant parallax layer",
+        "Sailing ships and separate church towers",
+        "Frontal State House inset for a clean colonial facade",
+        "Period street grid for map and ledger props",
+        "Unprinted beige paper around edges as scanned-paper texture"
+      ]
+    },
+    {
+      "id": "state_house_1787",
+      "selection": "primary",
+      "title": "A N.W. view of the state house in Philadelphia taken 1778 / C.W. Peale delin. ; J.T. sculp.",
+      "author": "James Trenchard, engraver, after Charles Willson Peale",
+      "date": "[1787]",
+      "institution": "Library of Congress",
+      "source_page": "https://www.loc.gov/item/2004671521/",
+      "download_url": "https://tile.loc.gov/storage-services/master/pnp/ppmsca/30500/30579u.tif",
+      "rights_statement": "No known restrictions on publication.",
+      "public_domain_basis": "Public-domain historical artwork, published before 1929; faithful digitization supplied by the institution.",
+      "raw_path": "assets/historical/state_house_1787.tif",
+      "production_path": "assets/historical/state_house_1787.jpg",
+      "width": 5152,
+      "height": 3648,
+      "raw_bytes": 56414750,
+      "sha256_raw": "2b6cdca4577a81e16e94c666630b6a461380130b629fdaa8ff55a7f3e09c8a0a",
+      "modifications": "Full-resolution TIFF-to-JPEG format conversion only; no creative alteration.",
+      "useful_elements": [
+        "Large Independence Hall silhouette, clock face and roofs",
+        "Engraved clouds for a separate moving sky layer",
+        "Foreground tree silhouettes and tiny townspeople",
+        "Worn paper margins and real plate impression"
+      ]
+    },
+    {
+      "id": "franklin_1780",
+      "selection": "optional alternate",
+      "title": "Benjamin Franklin L.L.D. - envoy from the American Congress to the French Court",
+      "author": "Unknown engraver; published by R. Faulder in An impartial history of the war in America (1780)",
+      "date": "[1780]",
+      "institution": "Library of Congress",
+      "source_page": "https://www.loc.gov/item/2003675417/",
+      "download_url": "https://tile.loc.gov/storage-services/master/pnp/cph/3a40000/3a45000/3a45400/3a45459u.tif",
+      "rights_statement": "No known restrictions on publication in the U.S. Use elsewhere may be restricted by other countries' laws. For general information see \"Copyright and Other Restrictions...\" (http://lcweb.loc.gov/rr/print/195_copr.html)",
+      "public_domain_basis": "Public-domain historical artwork, published before 1929; faithful digitization supplied by the institution.",
+      "raw_path": "assets/historical/franklin_1780.tif",
+      "production_path": "assets/historical/franklin_1780.jpg",
+      "width": 984,
+      "height": 1536,
+      "raw_bytes": 1513410,
+      "sha256_raw": "793a11bcb6d20e09e812dbfc3f720e6cf163bdcd8d920680a6ca7b85ce9dd29c",
+      "modifications": "Full-resolution TIFF-to-JPEG format conversion only; no creative alteration.",
+      "useful_elements": [
+        "Period coat, waistcoat, articulated forearms and chair; optional donor for an original rig",
+        "Not selected as main face because this wigged depiction is less recognizable to modern viewers"
+      ]
+    },
+    {
+      "id": "racknitz_1789",
+      "selection": "primary",
+      "title": "Racknitz — The Turk, plate 3",
+      "author": "Joseph Friedrich von Racknitz",
+      "date": "1789",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Racknitz_-_The_Turk_3.jpg",
+      "download_url": "https://upload.wikimedia.org/wikipedia/commons/6/6e/Racknitz_-_The_Turk_3.jpg",
+      "rights_statement": "Commons PD-Art / PD-old-100; faithful reproduction of a public-domain 1789 engraving. US copyright expired.",
+      "public_domain_basis": "Commons PD-Art / PD-old-100; faithful reproduction of a public-domain 1789 engraving. US copyright expired.",
+      "raw_path": "assets/historical/racknitz_1789.jpg",
+      "production_path": "assets/historical/racknitz_1789.jpg",
+      "width": 2678,
+      "height": 2439,
+      "raw_bytes": 7278540,
+      "sha256_raw": "1c3b42fd555ec947d6cc141368b6975e9483c6dd7dd22a8a01f14266410e51c1",
+      "modifications": "None.",
+      "useful_elements": [
+        "Cabinet gears, cranks, rods, brass axles and mechanical textures for an ORIGINAL automaton template",
+        "Jointed arm and clockwork hand geometry; do not duplicate the historic costume as the AI swarm",
+        "Engraved floor and wall linework for small workshop set inserts"
+      ]
+    },
+    {
+      "id": "linen_18th_century",
+      "selection": "primary",
+      "title": "Textile, 18th century (Cooper Hewitt 1955-45-1-a/c)",
+      "author": "Unknown textile maker; image from Cooper Hewitt, Smithsonian Design Museum",
+      "date": "18th century; modern museum digitization",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Textile,_18th_century_(CH_18404637).jpg",
+      "download_url": "https://upload.wikimedia.org/wikipedia/commons/e/eb/Textile%2C_18th_century_%28CH_18404637%29.jpg",
+      "rights_statement": "Commons PD-old-100-expired / Public Domain Mark. Historical two-dimensional textile reproduced by Cooper Hewitt; Smithsonian catalog search result also labels media CC0.",
+      "public_domain_basis": "Commons PD-old-100-expired / Public Domain Mark. Historical two-dimensional textile reproduced by Cooper Hewitt; Smithsonian catalog search result also labels media CC0.",
+      "raw_path": "assets/historical/linen_18th_century.jpg",
+      "production_path": "assets/historical/linen_18th_century.jpg",
+      "width": 4096,
+      "height": 2407,
+      "raw_bytes": 12857698,
+      "sha256_raw": "2e882e98c2864bcd21e939a44727a1c7249d9a0169772d6c078626ee17bd5b91",
+      "modifications": "None.",
+      "useful_elements": [
+        "Actual quilted linen fibres and seam lines",
+        "Cream and oxblood floral textile for waistcoats, skirt panels or curtain pieces",
+        "Photographed artefact texture; NOT represented as a personally scanned thrift-store fabric"
+      ]
+    }
+  ]
+}

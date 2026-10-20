@@ -1,0 +1,126 @@
+PHILLYPAUSE EXPLAINER — ASSET SOURCES
+19 October 2026
+
+Paths below are relative to the project folder. Detailed image records,
+dimensions, crop/mask coordinates and SHA-256 hashes are retained in:
+  assets/historical/historical_asset_log.json
+  assets/cutouts/cutout_log.json
+
+HISTORICAL IMAGERY AND MATERIALS
+
+1. Benjamin Franklin, engraved by H. B. Hall, 1868, after Joseph-Siffred
+   Duplessis's 1783 portrait. Library of Congress.
+   https://www.loc.gov/item/2004671903/
+   File: assets/historical/franklin_hall_1868.jpg
+   Rights record: “No known restrictions on publication.” Historical artwork
+   published in 1868; public domain in the United States.
+   Use: manually masked, sepia-treated Franklin head for the animated puppet.
+   A separate engraved torso is also retained as an optional editable asset;
+   the film uses an original articulated body and limbs.
+
+2. An east prospect of the city of Philadelphia, [1768], engraved by Thomas
+   Jefferys after George Heap, under Nicholas Scull. Library of Congress.
+   https://www.loc.gov/item/2004672470/
+   File: assets/historical/philadelphia_1768.jpg
+   Rights record: “No known restrictions on publication.” Published in 1768;
+   public domain in the United States.
+   Use: waterfront skyline and the frontal State House inset, separately
+   masked and treated in sepia for the distant set and architectural layers.
+
+3. A N.W. view of the state house in Philadelphia taken 1778, [1787], James
+   Trenchard after Charles Willson Peale. Library of Congress.
+   https://www.loc.gov/item/2004671521/
+   File: assets/historical/state_house_1787.jpg
+   Rights record: “No known restrictions on publication.” Published in 1787;
+   public domain in the United States.
+   Use: masked engraved clouds and a crop of the unprinted paper margin.
+   The paper is repeated, resized and color-treated across original props.
+
+4. Racknitz — The Turk, plate 3, Joseph Friedrich von Racknitz, 1789.
+   https://commons.wikimedia.org/wiki/File:Racknitz_-_The_Turk_3.jpg
+   File: assets/historical/racknitz_1789.jpg
+   Rights record: Wikimedia Commons PD-Art / PD-old-100; faithful reproduction
+   of a public-domain engraving. US copyright expired.
+   Use: cropped mechanical engraving texture. A circular mechanism cutout is
+   retained as an optional asset. The AI puppet's body, face, limbs and gears
+   are original geometry; the historical Turk character is not reproduced.
+
+5. Textile, 18th century, Cooper Hewitt, Smithsonian Design Museum,
+   accession 1955-45-1-a/c; maker unknown.
+   https://commons.wikimedia.org/wiki/File:Textile,_18th_century_(CH_18404637).jpg
+   File: assets/historical/linen_18th_century.jpg
+   Rights record: Commons PD-old-100-expired / Public Domain Mark; the source
+   log also records Smithsonian's media listing as CC0.
+   Use: cropped, desaturated and tinted textile surface on clothes, curtains,
+   scenery and props. This is a museum digitization, not a new physical scan
+   of thrift-store fabric made for this production.
+
+6. Optional alternate, unused in the rendered film: Benjamin Franklin L.L.D.,
+   envoy from the American Congress to the French Court, [1780], unknown
+   engraver, published by R. Faulder. Library of Congress.
+   https://www.loc.gov/item/2003675417/
+   File: assets/historical/franklin_1780.jpg
+   Rights record: no known restrictions on publication in the United States;
+   the catalog notes that other countries' laws can differ. Published in 1780;
+   retained as a public-domain alternate portrait donor.
+
+ORIGINAL VISUAL ASSETS
+
+art.py and film.py define the original puppet geometry, independent limbs,
+automaton template, carriages, stage scenery, jars, cabinet, banners, ledger,
+clockwork, fire, lightning, rod, lever and petition. These shapes are filled
+with the sourced material textures above and rendered as separate PNG assets.
+Cutout masks preserve the historical scans; no generative image replacement
+was used. Repeated crowd plates reuse the one original automaton design.
+
+USER BRANDING AND NARRATION
+
+PhillyPause logo: the user's existing website artwork, downloaded from
+https://phillypause.org/img/logo.svg
+Source: assets/brand/logo.svg. The film's soot-colored rendering preserves
+the supplied vector paths. This is user branding, not a public-domain asset.
+
+Narration: the user-supplied PhillyPauseSiteHeroVideo.mp3, retained in the
+package as audio/source_narration.mp3. The supplied words and performance
+are used; no replacement voice was generated. The recording is not claimed
+as public domain or licensed for unrelated reuse.
+
+ORIGINAL MUSIC AND FOLEY
+
+The Paper Lightning Rod: original composition and procedural synthesis in
+audio_score.py. Separate stems: audio/music.wav and audio/foley.wav.
+Music-box, pizzicato, clarinet-like and accordion-like timbres are synthesized
+oscillators and decay models, not recordings of acoustic instruments.
+Paper, gears, wood, quill and restrained thunder are synthesized noise/tone
+effects. No downloaded samples, soundfonts, third-party melody or film score
+were used. See audio/score_metadata.json for the note/effect event list and
+measurements. The narration is not included in either instrumental stem.
+
+FONTS
+
+Libre Caslon Text Regular and Italic — Copyright 2018 The Libre Caslon Text
+Project Authors. SIL Open Font License 1.1.
+https://github.com/thundernixon/Libre-Caslon
+License: assets/fonts/OFL-LibreCaslon.txt
+
+Rye Regular — Copyright 2011 Sorkin Type Co.; reserved font name “Rye.”
+SIL Open Font License 1.1.
+https://github.com/google/fonts/tree/main/ofl/rye
+License: assets/fonts/OFL-Rye.txt
+
+DejaVu Sans — Bitstream Vera font license; DejaVu changes are public domain.
+This font is used for captions/technical proof labeling, not the period signs.
+https://dejavu-fonts.github.io/
+License: assets/fonts/LICENSE-DejaVu.txt
+
+Keep the supplied notices with redistributed font files. Lettering already
+painted into a PNG remains an image in the After Effects reconstruction.
+
+STYLE REFERENCE
+
+Jamie Caliri's Lemony Snicket end titles informed the requested paper-theatre
+approach. Reference footage, film stills, original characters and original
+music are not production assets and are excluded from the delivery package.
+Reference links only:
+https://vimeo.com/10005002
+https://www.watchthetitles.com/titlesequence/lemony-snickets-a-series-of-unfortunate-events/

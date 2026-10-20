@@ -1,0 +1,88 @@
+PHILLYPAUSE.ORG — WATCH VIDEO INSTALLATION — REVISION 2
+
+SIZE AND RECOMMENDED FILE
+
+The Watch popup was inspected at a 1363 x 936 viewport. Its modal has a maximum
+width of 880 CSS pixels; the inner video card measured 830 x 466.875 pixels,
+exactly 16:9. Keep that aspect ratio and let the existing popup resize with the
+viewport. Do not set a fixed 830-pixel width on mobile.
+
+Use the delivered CLEAN Web720p MP4 (1280 x 720, H.264 video and AAC audio) for
+this popup. It exceeds the measured 830-pixel display width while reducing the
+initial download compared with the 1920 x 1080 master. Retain the clean 1080p
+master for larger/fullscreen use if desired. Use the clean video plus an
+optional English VTT caption track; burned-in captions are available for uses
+that need captions always visible.
+
+CLOSING QR CODE
+
+The revised closing card includes a QR code with the exact destination
+https://phillypause.org, plus the printed URL and SCAN TO JOIN label. The
+code's footprint, including its four-module white quiet zone, is approximately
+200 x 200 CSS pixels when the video is displayed at the measured 830-pixel
+width. The 16:9 framing must remain uncropped so that white margin stays intact.
+
+The card begins at 64.458333 s, settles over 0.52 s, and is fully stationary
+from the 65.000-second frame to the 67.458333-second endpoint. Allow the ended
+video to retain its last frame rather than automatically closing or rewinding
+the popup; this gives viewers time to scan. A visible URL also lets someone
+watching on the same phone open the destination without scanning their screen.
+
+Use the revised delivered closing-card poster with this export. The QR payload
+and layout are design specifications; final encoded-file checks are recorded
+in the delivery's Export_Validation.json.
+
+INTEGRATION REQUIRED
+
+The current Watch flow uses a YouTube-backed poster anchor identified by
+[data-watch-play]. Uploading an MP4 alone does not replace that player. The
+site maintainer must replace the YouTube/embed media markup and the associated
+click handler with an HTML video element, while retaining the popup's open,
+close, responsive layout and focus behavior.
+
+On Watch/play, show the video and call video.play() from that user click. On
+popup close, pause the video. Handle a rejected play() promise by leaving the
+native controls available. Do not retain a second YouTube player underneath it.
+
+EXAMPLE PLAYER MARKUP
+
+Replace ALL_CAPS_URL placeholders with the actual hosted asset URLs; these are
+not supplied paths or automatic upload destinations. The ID/class names below
+are examples to adapt to the existing site's component.
+
+<video id="phillypause-watch-video" class="phillypause-watch-video"
+       width="1280" height="720" controls playsinline preload="metadata"
+       poster="POSTER_IMAGE_URL">
+  <source src="CLEAN_WEB720P_MP4_URL" type="video/mp4">
+  <track kind="captions" src="ENGLISH_VTT_URL"
+         srclang="en" label="English">
+  <a href="CLEAN_WEB720P_MP4_URL">Download the PhillyPause video</a>
+</video>
+
+.phillypause-watch-video {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  object-fit: contain;
+  background: #181710;
+}
+
+Use PhillyPause_Captions.vtt for ENGLISH_VTT_URL; SRT is an editing/delivery
+format, not the browser track file. Add "default" to the track element if
+captions should start enabled. Host the VTT on the same origin as the page,
+or configure the required cross-origin access. Serve it as text/vtt.
+
+Use the supplied poster image for POSTER_IMAGE_URL. Keep controls and
+playsinline; preload="metadata" avoids downloading the full video merely
+because someone opens the page. Keep the video out of the page's initial
+layout if the existing Watch popup is closed.
+
+AFTER THE MAINTAINER CONNECTS IT
+
+Open Watch on desktop and mobile. Confirm correct 16:9 framing, narration,
+caption toggle, readable end card, fullscreen, and that closing the popup stops
+the sound. Test the closing QR at actual desktop and mobile display sizes,
+including the encoded 720p file, and confirm the last frame stays visible after
+playback ends. No website publishing or live-site changes were performed as part
+of preparing these files.

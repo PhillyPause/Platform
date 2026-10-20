@@ -1,0 +1,1864 @@
+{
+  "title": "The Paper Lightning Rod",
+  "provenance": "Original composition and procedural audio synthesis created for this explainer. No third-party composition, recording, sample, soundfont, or voice used. All stochastic material is seeded noise; all instruments are mathematical oscillator/decay models. The provided narration is read only for a gentle level-following envelope and is absent from both stems.",
+  "musical_design": "Sparse original D-minor 3/4 chamber waltz at 96 quarter notes/minute, music-box melody, plucked-string bass, occasional low clarinet answers and brief accordion breaths; transitions to restrained D-major invitation and coda. Not a reconstruction or sound-alike of the reference score.",
+  "pause": "Both stems contain exactly zero-valued samples from 53.12 up to 54.18 s. The lever click ends at 53.12 s.",
+  "mix_note": "Quiet source stems are intended to sit under the supplied voice. Final narration compression, relative balance and final program loudness are deliberately left to the final mix. Music is gently and slowly ducked from the supplied narration level; foley avoids loud lightning impulses.",
+  "timing_source": "audio_alignment.json; actual supplied narration 64.44408163265307 s. Score and end-card coverage 67.5 s.",
+  "music": {
+    "path": "audio/music.wav",
+    "sample_rate": 48000,
+    "channels": 2,
+    "pcm_bits": 24,
+    "duration": 67.5,
+    "integrated_lufs": -35.5,
+    "true_peak_dbtp": -20.07,
+    "loudness_range_lu": 4.4,
+    "sample_peak_dbfs": -20.078,
+    "pause_53.12_to_54.18_max_absolute": 0.0
+  },
+  "foley": {
+    "path": "audio/foley.wav",
+    "sample_rate": 48000,
+    "channels": 2,
+    "pcm_bits": 24,
+    "duration": 67.5,
+    "integrated_lufs": -42.3,
+    "true_peak_dbtp": -19.87,
+    "loudness_range_lu": 10.3,
+    "sample_peak_dbfs": -19.872,
+    "pause_53.12_to_54.18_max_absolute": 0.0
+  },
+  "events": [
+    {
+      "stem": "music",
+      "instrument": "pizz",
+      "midi": 50,
+      "time": 0.12,
+      "length": 0.7
+    },
+    {
+      "stem": "music",
+      "instrument": "pizz",
+      "midi": 57,
+      "time": 0.9575,
+      "length": 0.55
+    },
+    {
+      "stem": "music",
+      "instrument": "bellows",
+      "midi": 62,
+      "time": 0.4,
+      "length": 1.18
+    },
+    {
+      "stem": "music",
+      "instrument": "bellows",
+      "midi": 65,
+      "time": 0.4,
+      "length": 1.18
+    },
+    {
+      "stem": "music",
+      "instrument": "box",
+      "midi": 74,
+      "time": 0.121,
+      "length": 1.55
+    },
+    {
+      "stem": "music",
+      "instrument": "box",
+      "midi": 77,
+      "time": 1.049,
+      "length": 1.55
+    },
+    {
+      "stem": "music",
+      "instrument": "box",
+      "midi": 76,
+      "time": 1.3723,
+      "length": 1.55
+    },
+    {
+      "stem": "music",
+      "instrument": "pizz",
+      "midi": 50,
+      "time": 1.995,
+      "length": 0.7
+    },
+    {
+      "stem": "music",
+      "instrument": "pizz",
+      "midi": 57,
+      "time": 2.8325,
+      "length": 0.55
+    },
+    {
+      "stem": "music",
+      "instrument": "box",
+      "midi": 69,
+      "time": 2.3036,
+      "length": 1.55
+    },
+    {
+      "stem": "music",
+      "instrument": "box",
+      "midi": 72,
+      "time": 3.0923,
+      "length": 1.55
+    },
+    {
+      "stem": "music",
+      "instrument": "box",
+      "midi": 74,
+      "time": 3.5486,
+      "length": 1.55
+    },
+    {
+      "stem": "music",
+      "instrument": "reed",
+      "midi": 65,
+      "time": 2.735,
+      "length": 0.68
+    },
+    {
+      "stem": "music",
+      "instrument": "reed",
+      "midi": 62,
+      "time": 3.365,
+      "length": 0.43
+    },
+    {
+      "stem": "music",
+      "instrument": "pizz",
+      "midi": 46,
+      "time": 3.87,
+      "length": 0.7
+    },
+    {
+      "stem": "music",
+      "instrument": "bellows",
+      "midi": 58,
+      "time": 4.15,
+      "length": 1.18
+    },
+    {
+      "stem": "music",
+      "instrument": "bellows",
+      "midi": 62,
+      "time": 4.15,
+      "length": 1.18
+    },
+    {
+      "stem": "music",
+      "instrument": "box",
+      "midi": 77,
+      "time": 4.0177,
+      "length": 1.55
+    },
+    {
+      "stem": "music",
+      "instrument": "box",
+      "midi": 74,
+      "time": 4.6536,
+      "length": 1.55
+    },
+    {
+      "stem": "music",
+      "instrument": "box",
+      "midi": 69,
+      "time": 5.4309,
+      "length": 1.55
+    },
+    {
+      "stem": "music",
+      "instrument": "pizz",
+      "midi": 45,
+      "time": 5.745,
+      "length": 0.7
+    },
+    {
+      "stem": "music",
+      "instrument": "pizz",
+      "midi": 52,
+      "time": 6.5825,
+      "length": 0.55
+    },
+    {
+      "stem": "music",
+      "instrument": "box",
+      "midi": 76,
+      "time": 6.2213,
+      "length": 1.55
+    },
+    {
+      "stem": "music",
+      "instrument": "box",
+      "midi": 73,
+      "time": 6.6822,
+      "length": 1.55
+    },
+    {
+      "stem": "music",
+      "instrument": "box",
+      "midi": 69,
+      "time": 7.2991,
+      "length": 1.55
+    },
+    {
+      "stem": "music",
+      "instrument": "pizz",
+      "midi": 50,
+      "time": 7.62,
+      "length": 0.7
+    },
+    {
+      "stem": "music",
+      "instrument": "pizz",
+      "midi": 57,
+      "time": 8.4575,
+      "length": 0.55
+    },
+    {
+      "stem": "music",
+      "instrument": "bellows",
+      "midi": 62,
+      "time": 7.9,
+      "length": 1.18
+    },
+    {
+      "stem": "music",
+      "instrument": "bellows",
+      "midi": 65,
+      "time": 7.9,
+      "length": 1.18
+    },
+    {
+      "stem": "music",
+      "instrument": "box",
+      "midi": 74,
+      "time": 7.615,
+      "length": 1.55
+    },
+    {
+      "stem": "music",
+      "instrument": "box",
+      "midi": 81,
+      "time": 8.4021,
+      "length": 1.55
+    },
+    {
+      "stem": "music",
+      "instrument": "box",
+      "midi": 77,
+      "time": 9.0242,
+      "length": 1.55
+    },
+    {
+      "stem": "music",
+      "instrument": "pizz",
+      "midi": 41,
+      "time": 9.495,
+      "length": 0.7
+    },
+    {
+      "stem": "music",
+      "instrument": "box",
+      "midi": 76,
+      "time": 9.8145,
+      "length": 1.55
+    },
+    {
+      "stem": "music",
+      "instrument": "box",
+      "midi": 72,
+      "time": 10.5879,
+      "length": 1.55
+    },
+    {
+      "stem": "music",
+      "instrument": "reed",
+      "midi": 57,
+      "time": 10.235,
+      "length": 0.68
+    },
+    {
+      "stem": "music",
+      "instrument": "reed",
+      "midi": 53,
+      "time": 10.865,
+      "length": 0.43
+    },
+    {
+      "stem": "music",
+      "instrument": "pizz",
+      "midi": 48,
+      "time": 11.37,
+      "length": 0.7
+    },
+    {
+      "stem": "music",
+      "instrument": "pizz",
+      "midi": 55,
+      "time": 12.2075,
+      "length": 0.55
+    },
+    {
+      "stem": "music",
+      "instrument": "bellows",
+      "midi": 60,
+      "time": 11.65,
+      "length": 1.18
+    },
+    {
+      "stem": "music",
+      "instrument": "bellows",
+      "midi": 64,
+      "time": 11.65,
+      "length": 1.18
+    },
+    {
+      "stem": "music",
+      "instrument": "box",
+      "midi": 70,
+      "time": 11.5242,
+      "length": 1.55
+    },
+    {
+      "stem": "music",
+      "instrument": "box",
+      "midi": 74,
+      "time": 12.2997,
+      "length": 1.55
+    },
+    {
+      "stem": "music",
+      "instrument": "box",
+      "midi": 77,
+      "time": 12.7787,
+      "length": 1.55
+    },
+    {
+      "stem": "music",
+      "instrument": "pizz",
+      "midi": 45,
+      "time": 13.245,
+      "length": 0.7
+    },
+    {
+      "stem": "music",
+      "instrument": "pizz",
+      "midi": 52,
+      "time": 14.0825,
+      "length": 0.55
+    },
+    {
+      "stem": "music",
+      "instrument": "box",
+      "midi": 73,
+      "time": 13.7215,
+      "length": 1.55
+    },
+    {
+      "stem": "music",
+      "instrument": "box",
+      "midi": 76,
+      "time": 14.4992,
+      "length": 1.55
+    },
+    {
+      "stem": "music",
+      "instrument": "pizz",
+      "midi": 50,
+      "time": 15.12,
+      "length": 0.7
+    },
+    {
+      "stem": "music",
+      "instrument": "bellows",
+      "midi": 62,
+      "time": 15.4,
+      "length": 1.18
+    },
+    {
+      "stem": "music",
+      "instrument": "bellows",
+      "midi": 65,
+      "time": 15.4,
+      "length": 1.18
+    },
+    {
+      "stem": "music",
+      "instrument": "box",
+      "midi": 74,
+      "time": 15.1111,
+      "length": 1.55
+    },
+    {
+      "stem": "music",
+      "instrument": "box",
+      "midi": 77,
+      "time": 16.0601,
+      "length": 1.55
+    },
+    {
+      "stem": "music",
+      "instrument": "box",
+      "midi": 76,
+      "time": 16.3743,
+      "length": 1.55
+    },
+    {
+      "stem": "music",
+      "instrument": "reed",
+      "midi": 65,
+      "time": 15.86,
+      "length": 0.68
+    },
+    {
+      "stem": "music",
+      "instrument": "reed",
+      "midi": 62,
+      "time": 16.49,
+      "length": 0.43
+    },
+    {
+      "stem": "music",
+      "instrument": "pizz",
+      "midi": 46,
+      "time": 16.995,
+      "length": 0.7
+    },
+    {
+      "stem": "music",
+      "instrument": "pizz",
+      "midi": 53,
+      "time": 17.8325,
+      "length": 0.55
+    },
+    {
+      "stem": "music",
+      "instrument": "box",
+      "midi": 69,
+      "time": 17.3041,
+      "length": 1.55
+    },
+    {
+      "stem": "music",
+      "instrument": "box",
+      "midi": 72,
+      "time": 18.0921,
+      "length": 1.55
+    },
+    {
+      "stem": "music",
+      "instrument": "box",
+      "midi": 74,
+      "time": 18.5491,
+      "length": 1.55
+    },
+    {
+      "stem": "music",
+      "instrument": "pizz",
+      "midi": 43,
+      "time": 18.87,
+      "length": 0.7
+    },
+    {
+      "stem": "music",
+      "instrument": "pizz",
+      "midi": 50,
+      "time": 19.7075,
+      "length": 0.55
+    },
+    {
+      "stem": "music",
+      "instrument": "bellows",
+      "midi": 55,
+      "time": 19.15,
+      "length": 1.18
+    },
+    {
+      "stem": "music",
+      "instrument": "bellows",
+      "midi": 58,
+      "time": 19.15,
+      "length": 1.18
+    },
+    {
+      "stem": "music",
+      "instrument": "box",
+      "midi": 67,
+      "time": 19.0507,
+      "length": 1.55
+    },
+    {
+      "stem": "music",
+      "instrument": "box",
+      "midi": 70,
+      "time": 19.8927,
+      "length": 1.55
+    },
+    {
+      "stem": "music",
+      "instrument": "pizz",
+      "midi": 45,
+      "time": 20.745,
+      "length": 0.7
+    },
+    {
+      "stem": "music",
+      "instrument": "box",
+      "midi": 69,
+      "time": 20.9257,
+      "length": 1.55
+    },
+    {
+      "stem": "music",
+      "instrument": "box",
+      "midi": 73,
+      "time": 21.7827,
+      "length": 1.55
+    },
+    {
+      "stem": "music",
+      "instrument": "pizz",
+      "midi": 50,
+      "time": 22.62,
+      "length": 0.7
+    },
+    {
+      "stem": "music",
+      "instrument": "pizz",
+      "midi": 57,
+      "time": 23.4575,
+      "length": 0.55
+    },
+    {
+      "stem": "music",
+      "instrument": "bellows",
+      "midi": 62,
+      "time": 22.9,
+      "length": 1.18
+    },
+    {
+      "stem": "music",
+      "instrument": "bellows",
+      "midi": 65,
+      "time": 22.9,
+      "length": 1.18
+    },
+    {
+      "stem": "music",
+      "instrument": "box",
+      "midi": 74,
+      "time": 22.8051,
+      "length": 1.55
+    },
+    {
+      "stem": "music",
+      "instrument": "box",
+      "midi": 77,
+      "time": 23.6438,
+      "length": 1.55
+    },
+    {
+      "stem": "music",
+      "instrument": "pizz",
+      "midi": 50,
+      "time": 24.495,
+      "length": 0.7
+    },
+    {
+      "stem": "music",
+      "instrument": "pizz",
+      "midi": 57,
+      "time": 25.3325,
+      "length": 0.55
+    },
+    {
+      "stem": "music",
+      "instrument": "box",
+      "midi": 74,
+      "time": 24.6855,
+      "length": 1.55
+    },
+    {
+      "stem": "music",
+      "instrument": "box",
+      "midi": 77,
+      "time": 25.5229,
+      "length": 1.55
+    },
+    {
+      "stem": "music",
+      "instrument": "box",
+      "midi": 83,
+      "time": 26.0622,
+      "length": 1.55
+    },
+    {
+      "stem": "music",
+      "instrument": "pizz",
+      "midi": 46,
+      "time": 26.37,
+      "length": 0.7
+    },
+    {
+      "stem": "music",
+      "instrument": "bellows",
+      "midi": 58,
+      "time": 26.65,
+      "length": 1.18
+    },
+    {
+      "stem": "music",
+      "instrument": "bellows",
+      "midi": 62,
+      "time": 26.65,
+      "length": 1.18
+    },
+    {
+      "stem": "music",
+      "instrument": "box",
+      "midi": 70,
+      "time": 26.5526,
+      "length": 1.55
+    },
+    {
+      "stem": "music",
+      "instrument": "box",
+      "midi": 74,
+      "time": 27.3958,
+      "length": 1.55
+    },
+    {
+      "stem": "music",
+      "instrument": "box",
+      "midi": 81,
+      "time": 27.9299,
+      "length": 1.55
+    },
+    {
+      "stem": "music",
+      "instrument": "pizz",
+      "midi": 45,
+      "time": 28.245,
+      "length": 0.7
+    },
+    {
+      "stem": "music",
+      "instrument": "pizz",
+      "midi": 52,
+      "time": 29.0825,
+      "length": 0.55
+    },
+    {
+      "stem": "music",
+      "instrument": "box",
+      "midi": 69,
+      "time": 28.4263,
+      "length": 1.55
+    },
+    {
+      "stem": "music",
+      "instrument": "box",
+      "midi": 72,
+      "time": 29.2753,
+      "length": 1.55
+    },
+    {
+      "stem": "music",
+      "instrument": "box",
+      "midi": 76,
+      "time": 29.799,
+      "length": 1.55
+    },
+    {
+      "stem": "music",
+      "instrument": "pizz",
+      "midi": 43,
+      "time": 30.12,
+      "length": 0.7
+    },
+    {
+      "stem": "music",
+      "instrument": "pizz",
+      "midi": 50,
+      "time": 30.9575,
+      "length": 0.55
+    },
+    {
+      "stem": "music",
+      "instrument": "bellows",
+      "midi": 55,
+      "time": 30.4,
+      "length": 1.18
+    },
+    {
+      "stem": "music",
+      "instrument": "bellows",
+      "midi": 58,
+      "time": 30.4,
+      "length": 1.18
+    },
+    {
+      "stem": "music",
+      "instrument": "box",
+      "midi": 67,
+      "time": 30.3137,
+      "length": 1.55
+    },
+    {
+      "stem": "music",
+      "instrument": "pizz",
+      "midi": 45,
+      "time": 31.995,
+      "length": 0.7
+    },
+    {
+      "stem": "music",
+      "instrument": "box",
+      "midi": 74,
+      "time": 33.0274,
+      "length": 1.55
+    },
+    {
+      "stem": "music",
+      "instrument": "reed",
+      "midi": 62,
+      "time": 32.735,
+      "length": 0.68
+    },
+    {
+      "stem": "music",
+      "instrument": "reed",
+      "midi": 57,
+      "time": 33.365,
+      "length": 0.43
+    },
+    {
+      "stem": "music",
+      "instrument": "pizz",
+      "midi": 45,
+      "time": 33.87,
+      "length": 0.7
+    },
+    {
+      "stem": "music",
+      "instrument": "pizz",
+      "midi": 52,
+      "time": 34.7075,
+      "length": 0.55
+    },
+    {
+      "stem": "music",
+      "instrument": "bellows",
+      "midi": 57,
+      "time": 34.15,
+      "length": 1.18
+    },
+    {
+      "stem": "music",
+      "instrument": "bellows",
+      "midi": 60,
+      "time": 34.15,
+      "length": 1.18
+    },
+    {
+      "stem": "music",
+      "instrument": "box",
+      "midi": 69,
+      "time": 34.0637,
+      "length": 1.55
+    },
+    {
+      "stem": "music",
+      "instrument": "box",
+      "midi": 72,
+      "time": 34.898,
+      "length": 1.55
+    },
+    {
+      "stem": "music",
+      "instrument": "pizz",
+      "midi": 45,
+      "time": 35.745,
+      "length": 0.7
+    },
+    {
+      "stem": "music",
+      "instrument": "pizz",
+      "midi": 52,
+      "time": 36.5825,
+      "length": 0.55
+    },
+    {
+      "stem": "music",
+      "instrument": "box",
+      "midi": 76,
+      "time": 36.213,
+      "length": 1.55
+    },
+    {
+      "stem": "music",
+      "instrument": "box",
+      "midi": 73,
+      "time": 36.6907,
+      "length": 1.55
+    },
+    {
+      "stem": "music",
+      "instrument": "box",
+      "midi": 69,
+      "time": 37.3093,
+      "length": 1.55
+    },
+    {
+      "stem": "music",
+      "instrument": "pizz",
+      "midi": 50,
+      "time": 37.62,
+      "length": 0.7
+    },
+    {
+      "stem": "music",
+      "instrument": "bellows",
+      "midi": 62,
+      "time": 37.9,
+      "length": 1.18
+    },
+    {
+      "stem": "music",
+      "instrument": "bellows",
+      "midi": 65,
+      "time": 37.9,
+      "length": 1.18
+    },
+    {
+      "stem": "music",
+      "instrument": "box",
+      "midi": 74,
+      "time": 37.6185,
+      "length": 1.55
+    },
+    {
+      "stem": "music",
+      "instrument": "box",
+      "midi": 81,
+      "time": 38.4065,
+      "length": 1.55
+    },
+    {
+      "stem": "music",
+      "instrument": "pizz",
+      "midi": 43,
+      "time": 39.495,
+      "length": 0.7
+    },
+    {
+      "stem": "music",
+      "instrument": "pizz",
+      "midi": 50,
+      "time": 40.3325,
+      "length": 0.55
+    },
+    {
+      "stem": "music",
+      "instrument": "box",
+      "midi": 72,
+      "time": 40.5857,
+      "length": 1.55
+    },
+    {
+      "stem": "music",
+      "instrument": "pizz",
+      "midi": 55,
+      "time": 39.8075,
+      "length": 0.35
+    },
+    {
+      "stem": "music",
+      "instrument": "pizz",
+      "midi": 62,
+      "time": 40.4325,
+      "length": 0.35
+    },
+    {
+      "stem": "music",
+      "instrument": "pizz",
+      "midi": 55,
+      "time": 41.0575,
+      "length": 0.35
+    },
+    {
+      "stem": "music",
+      "instrument": "pizz",
+      "midi": 46,
+      "time": 41.37,
+      "length": 0.7
+    },
+    {
+      "stem": "music",
+      "instrument": "pizz",
+      "midi": 53,
+      "time": 42.2075,
+      "length": 0.55
+    },
+    {
+      "stem": "music",
+      "instrument": "bellows",
+      "midi": 58,
+      "time": 41.65,
+      "length": 1.18
+    },
+    {
+      "stem": "music",
+      "instrument": "bellows",
+      "midi": 62,
+      "time": 41.65,
+      "length": 1.18
+    },
+    {
+      "stem": "music",
+      "instrument": "box",
+      "midi": 70,
+      "time": 41.5335,
+      "length": 1.55
+    },
+    {
+      "stem": "music",
+      "instrument": "box",
+      "midi": 74,
+      "time": 42.3009,
+      "length": 1.55
+    },
+    {
+      "stem": "music",
+      "instrument": "box",
+      "midi": 77,
+      "time": 42.7747,
+      "length": 1.55
+    },
+    {
+      "stem": "music",
+      "instrument": "reed",
+      "midi": 62,
+      "time": 42.11,
+      "length": 0.68
+    },
+    {
+      "stem": "music",
+      "instrument": "reed",
+      "midi": 58,
+      "time": 42.74,
+      "length": 0.43
+    },
+    {
+      "stem": "music",
+      "instrument": "pizz",
+      "midi": 58,
+      "time": 41.6825,
+      "length": 0.35
+    },
+    {
+      "stem": "music",
+      "instrument": "pizz",
+      "midi": 65,
+      "time": 42.3075,
+      "length": 0.35
+    },
+    {
+      "stem": "music",
+      "instrument": "pizz",
+      "midi": 58,
+      "time": 42.9325,
+      "length": 0.35
+    },
+    {
+      "stem": "music",
+      "instrument": "pizz",
+      "midi": 45,
+      "time": 43.245,
+      "length": 0.7
+    },
+    {
+      "stem": "music",
+      "instrument": "box",
+      "midi": 73,
+      "time": 43.7156,
+      "length": 1.55
+    },
+    {
+      "stem": "music",
+      "instrument": "box",
+      "midi": 76,
+      "time": 44.4879,
+      "length": 1.55
+    },
+    {
+      "stem": "music",
+      "instrument": "pizz",
+      "midi": 57,
+      "time": 43.5575,
+      "length": 0.35
+    },
+    {
+      "stem": "music",
+      "instrument": "pizz",
+      "midi": 64,
+      "time": 44.1825,
+      "length": 0.35
+    },
+    {
+      "stem": "music",
+      "instrument": "pizz",
+      "midi": 57,
+      "time": 44.8075,
+      "length": 0.35
+    },
+    {
+      "stem": "music",
+      "instrument": "pizz",
+      "midi": 41,
+      "time": 45.12,
+      "length": 0.7
+    },
+    {
+      "stem": "music",
+      "instrument": "pizz",
+      "midi": 48,
+      "time": 45.9575,
+      "length": 0.55
+    },
+    {
+      "stem": "music",
+      "instrument": "bellows",
+      "midi": 53,
+      "time": 45.4,
+      "length": 1.18
+    },
+    {
+      "stem": "music",
+      "instrument": "bellows",
+      "midi": 57,
+      "time": 45.4,
+      "length": 1.18
+    },
+    {
+      "stem": "music",
+      "instrument": "box",
+      "midi": 69,
+      "time": 45.2119,
+      "length": 1.55
+    },
+    {
+      "stem": "music",
+      "instrument": "box",
+      "midi": 65,
+      "time": 46.2131,
+      "length": 1.55
+    },
+    {
+      "stem": "music",
+      "instrument": "reed",
+      "midi": 57,
+      "time": 45.86,
+      "length": 0.68
+    },
+    {
+      "stem": "music",
+      "instrument": "reed",
+      "midi": 53,
+      "time": 46.49,
+      "length": 0.43
+    },
+    {
+      "stem": "music",
+      "instrument": "pizz",
+      "midi": 48,
+      "time": 46.995,
+      "length": 0.7
+    },
+    {
+      "stem": "music",
+      "instrument": "pizz",
+      "midi": 55,
+      "time": 47.8325,
+      "length": 0.55
+    },
+    {
+      "stem": "music",
+      "instrument": "box",
+      "midi": 76,
+      "time": 47.081,
+      "length": 1.55
+    },
+    {
+      "stem": "music",
+      "instrument": "box",
+      "midi": 72,
+      "time": 48.0864,
+      "length": 1.55
+    },
+    {
+      "stem": "music",
+      "instrument": "reed",
+      "midi": 64,
+      "time": 47.735,
+      "length": 0.68
+    },
+    {
+      "stem": "music",
+      "instrument": "reed",
+      "midi": 60,
+      "time": 48.365,
+      "length": 0.43
+    },
+    {
+      "stem": "music",
+      "instrument": "pizz",
+      "midi": 41,
+      "time": 48.87,
+      "length": 0.7
+    },
+    {
+      "stem": "music",
+      "instrument": "bellows",
+      "midi": 53,
+      "time": 49.15,
+      "length": 1.18
+    },
+    {
+      "stem": "music",
+      "instrument": "bellows",
+      "midi": 57,
+      "time": 49.15,
+      "length": 1.18
+    },
+    {
+      "stem": "music",
+      "instrument": "box",
+      "midi": 69,
+      "time": 48.9573,
+      "length": 1.55
+    },
+    {
+      "stem": "music",
+      "instrument": "box",
+      "midi": 65,
+      "time": 49.9674,
+      "length": 1.55
+    },
+    {
+      "stem": "music",
+      "instrument": "pizz",
+      "midi": 45,
+      "time": 50.745,
+      "length": 0.7
+    },
+    {
+      "stem": "music",
+      "instrument": "pizz",
+      "midi": 52,
+      "time": 51.5825,
+      "length": 0.55
+    },
+    {
+      "stem": "music",
+      "instrument": "box",
+      "midi": 73,
+      "time": 50.842,
+      "length": 1.55
+    },
+    {
+      "stem": "music",
+      "instrument": "box",
+      "midi": 69,
+      "time": 51.8464,
+      "length": 1.55
+    },
+    {
+      "stem": "music",
+      "instrument": "box",
+      "midi": 73,
+      "time": 51.86,
+      "length": 0.7
+    },
+    {
+      "stem": "music",
+      "instrument": "box",
+      "midi": 70,
+      "time": 52.2,
+      "length": 0.7
+    },
+    {
+      "stem": "music",
+      "instrument": "box",
+      "midi": 69,
+      "time": 52.58,
+      "length": 0.7
+    },
+    {
+      "stem": "music",
+      "instrument": "pizz",
+      "midi": 50,
+      "time": 54.24,
+      "length": 0.9
+    },
+    {
+      "stem": "music",
+      "instrument": "pizz",
+      "midi": 57,
+      "time": 55.48,
+      "length": 0.55
+    },
+    {
+      "stem": "music",
+      "instrument": "bellows",
+      "midi": 62,
+      "time": 54.29,
+      "length": 1.43
+    },
+    {
+      "stem": "music",
+      "instrument": "bellows",
+      "midi": 66,
+      "time": 54.29,
+      "length": 1.43
+    },
+    {
+      "stem": "music",
+      "instrument": "pizz",
+      "midi": 43,
+      "time": 56.11,
+      "length": 0.9
+    },
+    {
+      "stem": "music",
+      "instrument": "pizz",
+      "midi": 50,
+      "time": 57.35,
+      "length": 0.55
+    },
+    {
+      "stem": "music",
+      "instrument": "bellows",
+      "midi": 55,
+      "time": 56.16,
+      "length": 1.43
+    },
+    {
+      "stem": "music",
+      "instrument": "bellows",
+      "midi": 59,
+      "time": 56.16,
+      "length": 1.43
+    },
+    {
+      "stem": "music",
+      "instrument": "pizz",
+      "midi": 50,
+      "time": 57.98,
+      "length": 0.9
+    },
+    {
+      "stem": "music",
+      "instrument": "pizz",
+      "midi": 57,
+      "time": 59.22,
+      "length": 0.55
+    },
+    {
+      "stem": "music",
+      "instrument": "bellows",
+      "midi": 62,
+      "time": 58.03,
+      "length": 1.43
+    },
+    {
+      "stem": "music",
+      "instrument": "bellows",
+      "midi": 66,
+      "time": 58.03,
+      "length": 1.43
+    },
+    {
+      "stem": "music",
+      "instrument": "pizz",
+      "midi": 45,
+      "time": 59.85,
+      "length": 0.9
+    },
+    {
+      "stem": "music",
+      "instrument": "pizz",
+      "midi": 52,
+      "time": 61.09,
+      "length": 0.55
+    },
+    {
+      "stem": "music",
+      "instrument": "bellows",
+      "midi": 57,
+      "time": 59.9,
+      "length": 1.43
+    },
+    {
+      "stem": "music",
+      "instrument": "bellows",
+      "midi": 62,
+      "time": 59.9,
+      "length": 1.43
+    },
+    {
+      "stem": "music",
+      "instrument": "pizz",
+      "midi": 50,
+      "time": 61.72,
+      "length": 0.9
+    },
+    {
+      "stem": "music",
+      "instrument": "pizz",
+      "midi": 57,
+      "time": 62.96,
+      "length": 0.55
+    },
+    {
+      "stem": "music",
+      "instrument": "bellows",
+      "midi": 62,
+      "time": 61.77,
+      "length": 1.43
+    },
+    {
+      "stem": "music",
+      "instrument": "bellows",
+      "midi": 66,
+      "time": 61.77,
+      "length": 1.43
+    },
+    {
+      "stem": "music",
+      "instrument": "box",
+      "midi": 74,
+      "time": 54.39,
+      "length": 1.5
+    },
+    {
+      "stem": "music",
+      "instrument": "box",
+      "midi": 78,
+      "time": 55.04,
+      "length": 1.5
+    },
+    {
+      "stem": "music",
+      "instrument": "box",
+      "midi": 81,
+      "time": 55.76,
+      "length": 1.5
+    },
+    {
+      "stem": "music",
+      "instrument": "box",
+      "midi": 79,
+      "time": 56.36,
+      "length": 1.5
+    },
+    {
+      "stem": "music",
+      "instrument": "box",
+      "midi": 76,
+      "time": 57.25,
+      "length": 1.5
+    },
+    {
+      "stem": "music",
+      "instrument": "box",
+      "midi": 78,
+      "time": 58.17,
+      "length": 1.5
+    },
+    {
+      "stem": "music",
+      "instrument": "box",
+      "midi": 76,
+      "time": 59.22,
+      "length": 1.5
+    },
+    {
+      "stem": "music",
+      "instrument": "box",
+      "midi": 74,
+      "time": 60.27,
+      "length": 1.5
+    },
+    {
+      "stem": "music",
+      "instrument": "box",
+      "midi": 69,
+      "time": 61.83,
+      "length": 1.5
+    },
+    {
+      "stem": "music",
+      "instrument": "box",
+      "midi": 73,
+      "time": 62.39,
+      "length": 1.5
+    },
+    {
+      "stem": "music",
+      "instrument": "reed",
+      "midi": 66,
+      "time": 60.52,
+      "length": 0.72
+    },
+    {
+      "stem": "music",
+      "instrument": "reed",
+      "midi": 62,
+      "time": 61.25,
+      "length": 0.77
+    },
+    {
+      "stem": "music",
+      "instrument": "pizz",
+      "midi": 50,
+      "time": 64.24,
+      "length": 2.85
+    },
+    {
+      "stem": "music",
+      "instrument": "pizz",
+      "midi": 57,
+      "time": 64.24,
+      "length": 2.85
+    },
+    {
+      "stem": "music",
+      "instrument": "bellows",
+      "midi": 66,
+      "time": 64.24,
+      "length": 2.85
+    },
+    {
+      "stem": "music",
+      "instrument": "box",
+      "midi": 74,
+      "time": 64.34,
+      "length": 2.75
+    },
+    {
+      "stem": "music",
+      "instrument": "box",
+      "midi": 81,
+      "time": 64.98,
+      "length": 2.2
+    },
+    {
+      "stem": "foley",
+      "effect": "tap",
+      "time": 3.74,
+      "length": 0.14
+    },
+    {
+      "stem": "foley",
+      "effect": "tap",
+      "time": 4.82,
+      "length": 0.14
+    },
+    {
+      "stem": "foley",
+      "effect": "tap",
+      "time": 5.84,
+      "length": 0.14
+    },
+    {
+      "stem": "foley",
+      "effect": "paper",
+      "time": 6.81,
+      "length": 0.48
+    },
+    {
+      "stem": "foley",
+      "effect": "tear",
+      "time": 9.14,
+      "length": 0.5
+    },
+    {
+      "stem": "foley",
+      "effect": "paper",
+      "time": 12.24,
+      "length": 0.38
+    },
+    {
+      "stem": "foley",
+      "effect": "paper",
+      "time": 15.43,
+      "length": 0.32
+    },
+    {
+      "stem": "foley",
+      "effect": "tick",
+      "time": 17.49,
+      "length": 0.07
+    },
+    {
+      "stem": "foley",
+      "effect": "tick",
+      "time": 17.67,
+      "length": 0.07
+    },
+    {
+      "stem": "foley",
+      "effect": "tick",
+      "time": 17.84,
+      "length": 0.07
+    },
+    {
+      "stem": "foley",
+      "effect": "tear",
+      "time": 19.45,
+      "length": 0.29
+    },
+    {
+      "stem": "foley",
+      "effect": "tick",
+      "time": 20.08,
+      "length": 0.07
+    },
+    {
+      "stem": "foley",
+      "effect": "tick",
+      "time": 20.705,
+      "length": 0.07
+    },
+    {
+      "stem": "foley",
+      "effect": "tick",
+      "time": 21.33,
+      "length": 0.07
+    },
+    {
+      "stem": "foley",
+      "effect": "tick",
+      "time": 21.955,
+      "length": 0.07
+    },
+    {
+      "stem": "foley",
+      "effect": "tick",
+      "time": 22.58,
+      "length": 0.07
+    },
+    {
+      "stem": "foley",
+      "effect": "tick",
+      "time": 23.205,
+      "length": 0.07
+    },
+    {
+      "stem": "foley",
+      "effect": "tick",
+      "time": 23.83,
+      "length": 0.07
+    },
+    {
+      "stem": "foley",
+      "effect": "tick",
+      "time": 24.455,
+      "length": 0.07
+    },
+    {
+      "stem": "foley",
+      "effect": "paper",
+      "time": 25.38,
+      "length": 0.1
+    },
+    {
+      "stem": "foley",
+      "effect": "paper",
+      "time": 25.63,
+      "length": 0.1
+    },
+    {
+      "stem": "foley",
+      "effect": "paper",
+      "time": 25.88,
+      "length": 0.1
+    },
+    {
+      "stem": "foley",
+      "effect": "paper",
+      "time": 26.1,
+      "length": 0.1
+    },
+    {
+      "stem": "foley",
+      "effect": "paper",
+      "time": 26.31,
+      "length": 0.1
+    },
+    {
+      "stem": "foley",
+      "effect": "tap",
+      "time": 26.7052,
+      "length": 0.065
+    },
+    {
+      "stem": "foley",
+      "effect": "tap",
+      "time": 26.9977,
+      "length": 0.065
+    },
+    {
+      "stem": "foley",
+      "effect": "tap",
+      "time": 27.3097,
+      "length": 0.065
+    },
+    {
+      "stem": "foley",
+      "effect": "tap",
+      "time": 27.5707,
+      "length": 0.065
+    },
+    {
+      "stem": "foley",
+      "effect": "tap",
+      "time": 27.8692,
+      "length": 0.065
+    },
+    {
+      "stem": "foley",
+      "effect": "tap",
+      "time": 28.1663,
+      "length": 0.065
+    },
+    {
+      "stem": "foley",
+      "effect": "tap",
+      "time": 28.4756,
+      "length": 0.065
+    },
+    {
+      "stem": "foley",
+      "effect": "tap",
+      "time": 28.7477,
+      "length": 0.065
+    },
+    {
+      "stem": "foley",
+      "effect": "tap",
+      "time": 29.0263,
+      "length": 0.065
+    },
+    {
+      "stem": "foley",
+      "effect": "tap",
+      "time": 29.3282,
+      "length": 0.065
+    },
+    {
+      "stem": "foley",
+      "effect": "tap",
+      "time": 29.6333,
+      "length": 0.065
+    },
+    {
+      "stem": "foley",
+      "effect": "tap",
+      "time": 29.9145,
+      "length": 0.065
+    },
+    {
+      "stem": "foley",
+      "effect": "tap",
+      "time": 30.2225,
+      "length": 0.065
+    },
+    {
+      "stem": "foley",
+      "effect": "paper",
+      "time": 30.84,
+      "length": 0.58
+    },
+    {
+      "stem": "foley",
+      "effect": "paper",
+      "time": 32.95,
+      "length": 0.28
+    },
+    {
+      "stem": "foley",
+      "effect": "scratch",
+      "time": 33.71,
+      "length": 0.12
+    },
+    {
+      "stem": "foley",
+      "effect": "scratch",
+      "time": 34.11,
+      "length": 0.19
+    },
+    {
+      "stem": "foley",
+      "effect": "scratch",
+      "time": 34.57,
+      "length": 0.15
+    },
+    {
+      "stem": "foley",
+      "effect": "scratch",
+      "time": 35.12,
+      "length": 0.18
+    },
+    {
+      "stem": "foley",
+      "effect": "tap",
+      "time": 36.57,
+      "length": 0.14
+    },
+    {
+      "stem": "foley",
+      "effect": "paper",
+      "time": 39.99,
+      "length": 0.45
+    },
+    {
+      "stem": "foley",
+      "effect": "tap",
+      "time": 41.47,
+      "length": 0.14
+    },
+    {
+      "stem": "foley",
+      "effect": "tap",
+      "time": 42.26,
+      "length": 0.14
+    },
+    {
+      "stem": "foley",
+      "effect": "tap",
+      "time": 43.78,
+      "length": 0.14
+    },
+    {
+      "stem": "foley",
+      "effect": "tap",
+      "time": 44.48,
+      "length": 0.14
+    },
+    {
+      "stem": "foley",
+      "effect": "paper",
+      "time": 44.98,
+      "length": 0.38
+    },
+    {
+      "stem": "foley",
+      "effect": "thunder",
+      "time": 46.51,
+      "length": 1.13
+    },
+    {
+      "stem": "foley",
+      "effect": "tick",
+      "time": 47.62,
+      "length": 0.07
+    },
+    {
+      "stem": "foley",
+      "effect": "thunder",
+      "time": 49.82,
+      "length": 1.37
+    },
+    {
+      "stem": "foley",
+      "effect": "paper",
+      "time": 50.32,
+      "length": 0.2
+    },
+    {
+      "stem": "foley",
+      "effect": "paper",
+      "time": 50.79,
+      "length": 0.2
+    },
+    {
+      "stem": "foley",
+      "effect": "paper",
+      "time": 51.23,
+      "length": 0.2
+    },
+    {
+      "stem": "foley",
+      "effect": "paper",
+      "time": 51.62,
+      "length": 0.2
+    },
+    {
+      "stem": "foley",
+      "effect": "paper",
+      "time": 52.04,
+      "length": 0.2
+    },
+    {
+      "stem": "foley",
+      "effect": "paper",
+      "time": 52.77,
+      "length": 0.18
+    },
+    {
+      "stem": "foley",
+      "effect": "tap",
+      "time": 53.06,
+      "length": 0.06
+    },
+    {
+      "stem": "foley",
+      "effect": "tap",
+      "time": 54.18,
+      "length": 0.14
+    },
+    {
+      "stem": "foley",
+      "effect": "tap",
+      "time": 55.5,
+      "length": 0.14
+    },
+    {
+      "stem": "foley",
+      "effect": "tap",
+      "time": 56.74,
+      "length": 0.14
+    },
+    {
+      "stem": "foley",
+      "effect": "scratch",
+      "time": 58.63,
+      "length": 0.42
+    },
+    {
+      "stem": "foley",
+      "effect": "paper",
+      "time": 60.73,
+      "length": 0.27
+    },
+    {
+      "stem": "foley",
+      "effect": "thunder",
+      "time": 62.39,
+      "length": 0.36
+    },
+    {
+      "stem": "foley",
+      "effect": "tap",
+      "time": 64.29,
+      "length": 0.14
+    }
+  ]
+}
