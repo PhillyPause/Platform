@@ -7,3 +7,5 @@
 *.mkv
 *.avi
 *.log
+
+production/proof/
