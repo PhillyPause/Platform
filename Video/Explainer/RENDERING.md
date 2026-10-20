@@ -46,6 +46,10 @@ recipe is a hash of `art.py`, `film.py`, the fonts and the texture scans, so an
 edit can never be hidden behind a stale cached picture. Editing a drawing
 without renaming it changes nothing on screen, because the frozen PNG wins.
 
+Approving new artwork means copying it from `build/artwork/<recipe>/` into
+`assets/render/`. R7's closing banner and on-card copyright
+(`endbanner_r7`, `endcopyright_r7`) are frozen that way.
+
 ## The crumple poses
 
 R5 keys its fold poses on an exact hash of the scene's pixels, which only the
@@ -55,6 +59,13 @@ matches R5's `source_snapshot.png` within 8/255 per channel and 0.25 on average.
 Machines differ by about 3/255; any real artwork edit differs by far more.
 Otherwise the sheet is folded afresh into `build/transitions/`. Editing
 `paper_crumple.py` therefore refolds both handoffs.
+
+Changing the outgoing scene refolds its handoff too. R7 took the loose gear
+out of scene 3, so `crumple_r5/landscape_03` holds poses refolded from the
+gearless scene. To freeze a refold, copy its folder from `build/transitions/`
+and set `renderer_sha256` in its `folds.json` to the line-ending-folded hash
+(`paths.text_sha256`) the baseline check compares. A fresh fold records the
+raw bytes, which differ on a CRLF checkout.
 
 Each proof writes `build/proof/<format>_provenance.json`. It records which
 artwork came from the baseline, the source folders or `build/`, and where each

@@ -25,7 +25,25 @@ final R7 project.
   successfully and is NOT recoverable from these archived files. Therefore
   treat R5 as the last complete recovered executable source, NOT as final R7.
 
-## Final creative requirements to implement before calling it final
+## Where the source stands
+
+The source in this repository implements every requirement below. R5 already
+met 1, 2, 6, 7, 9, 10, 12 and 13. R7 adds the rest:
+
+- **3:** the vertical ledger fits the frame, so both page titles show, and the
+  vertical burning town keeps its houses visible under the flames.
+- **4:** the closing card has one centred banner, SCAN TO JOIN ↔ SHARE THIS
+  VIDEO, with the arrow drawn as a shape, plus the logo, phillypause.org, the
+  QR, and © 2026 PhillyPause printed legibly on the card.
+- **5:** the QR sits directly on the parchment card with its quiet zone and no
+  white field. It is checked by decoding frames of the encoded film.
+- **8:** the three gears that floated free of any part are gone. The chest gear
+  stays with the robot's torso.
+- **11:** the SUPERINTELLIGENCE scene has no stray lines.
+- **14:** every export is rebuilt from this one source by `finish.py`
+  (RENDERING.md).
+
+## Final creative requirements
 
 1. Preserve the verbatim words and scene order of `01_Script_and_Original_Audio/PhillyPause_Animation_Brief.md`, timed to the attached voice track. Do not replace/revoice narration.
 2. Begin with one full second of **moving** lead-in before first word; captions and audio begin together afterward. Total video 76 seconds at 24 fps, final card completely motionless from 66 to 76 seconds.

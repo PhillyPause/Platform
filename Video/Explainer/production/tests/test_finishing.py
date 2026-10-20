@@ -118,6 +118,22 @@ class Timeline(unittest.TestCase):
         self.assertEqual(len(hold),1,'the closing card must be still from 66 s to the end')
 
 
+class ClosingCard(unittest.TestCase):
+    def test_one_banner_and_no_loose_gears(self):
+        import film
+        for fmt in ('landscape','square','vertical'):
+            f=film.Film(fmt,record=True)
+            # Scenes 2, 3 and 6 once had gears of their own; 66 s is the card.
+            for t in (11.0,17.0,31.0,66.0):f.frame(t,96)
+            assets={track['asset'] for track in f.tracks.values()}
+            gears=[k for k,v in f.tracks.items() if v['asset']=='gear']
+            with self.subTest(format=fmt):
+                self.assertTrue({'endbanner_r7','endcopyright_r7','brand_logo','brand_qr'}<=assets)
+                self.assertNotIn('cta',f.labels,'no separate boxed SHARE THIS VIDEO or SCAN TO JOIN')
+                self.assertTrue(gears,'the robots keep their chest gears')
+                for name in gears:self.assertTrue(name.endswith('.chestgear'),f'{name} floats free of any part')
+
+
 class AfterEffectsTrace(unittest.TestCase):
     def test_sound_is_on_the_film_clock(self):
         import film

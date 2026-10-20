@@ -82,8 +82,6 @@ class Film:
    ('safe','No superintelligence\nuntil we know it will be safe',1150,190,50,'serif',INK),
    ('us',"THIS TIME, IT’S US",1000,155,68,'wood',INK),
    ('url','phillypause.org',1040,156,91,'serif',INK),
-   ('cta','SHARE THIS VIDEO',646,104,47,'serif',INK),
-   ('scan','SCAN TO JOIN',520,104,47,'serif',INK),
   ]:
    self.labels[key]=b.label(txt,w,h,size,font,colour,('#423b2c' if key in ['1000','700','test'] else LIGHT))
   def table(a):
@@ -183,6 +181,30 @@ class Film:
   def copyright_notice(a):
    a.text('© 2026 PhillyPause',300,39,27,'serif',LIGHT)
   b.make('endcopyright_r3',600,60,copyright_notice,pad=0,shadow=False)
+  # R7 closing card: one centred banner, the two calls joined by a double-ended
+  # arrow drawn as a shape (no font is trusted with the glyph), and the notice
+  # printed on the card itself in ink, where it stays legible on a phone.
+  def end_banner(a):
+   w,h,size=1180,118,52
+   rng=random.Random('endbanner_r7');pts=[]
+   for x in range(0,w+1,30):pts.append((x,rng.uniform(0,5)))
+   pts+=[(w-2,h-3)]
+   for x in range(w,-1,-30):pts.append((x,h-rng.uniform(0,5)))
+   a.poly(pts,LIGHT,stroke='#604d35',sw=1)
+   a.line([(15,14),(w-16,14)],INK,1.4,.5);a.line([(15,h-16),(w-16,h-16)],INK,1.4,.5)
+   f=skia.Font(TYPEFACES['serif'],size);left,right='SCAN TO JOIN','SHARE THIS VIDEO'
+   arrow,gap=118,30;lw,rw=f.measureText(left),f.measureText(right)
+   x=(w-(lw+gap+arrow+gap+rw))/2;base=h/2+size*.33
+   a.text(left,x,base,size,'serif',INK,align='left')
+   ax0=x+lw+gap;ax1=ax0+arrow;ay=h/2-1;head=17
+   a.line([(ax0+6,ay),(ax1-6,ay)],INK,4)
+   a.poly([(ax0,ay),(ax0+head*1.5,ay-head*.75),(ax0+head*1.5,ay+head*.75)],INK,None,None,0)
+   a.poly([(ax1,ay),(ax1-head*1.5,ay-head*.75),(ax1-head*1.5,ay+head*.75)],INK,None,None,0)
+   a.text(right,ax1+gap,base,size,'serif',INK,align='left')
+  b.make('endbanner_r7',1180,118,end_banner)
+  def copyright_on_card(a):
+   a.text('© 2026 PhillyPause',320,44,36,'serif',INK)
+  b.make('endcopyright_r7',640,64,copyright_on_card,pad=0,shadow=False)
 
  @contextmanager
  def group(self,x=0,y=0,scale=1,angle=0,sx=None,sy=None,alpha=1,prefix=None):
@@ -378,7 +400,6 @@ class Film:
   self.puppet('worker','worker',cx-self.W*.15,self.H*.82-self.H*ease((t-9.4)/.55),1.13 if not self.P else 1.30,phase=.4)
   x=lerp(self.W*1.1,cx,ease((t-9.4)/1.1))
   self.puppet('replacement','auto',x,self.H*.85,1.25 if not self.P else 2.0,walk=1-ease((t-10.2)/.7))
-  self.draw('footlight','gear',self.W*.9,self.H*.97,.72,angle=t*18,alpha=.65)
  def scene03(self,t):
   sc=min(self.W/1890,self.H/1190)*.98
   if self.P:sc=self.W/1420
@@ -405,7 +426,6 @@ class Film:
     self.cord('control'+str(i),hand,target,sag=lerp(4,85,problem))
    label=self.bank.label('THE PROBLEM' if problem>.5 else 'THE PLAN',890,145,84)
    self.draw('pageheading',label,self.W*.5,self.H*.24,.94)
-  self.draw('front_gear','gear',self.W*.94,self.H*.91,.75,angle=-t*14,alpha=.7)
  def scene04(self,t):
   p=ease((t-19.41)/5.5);sc=lerp(1.06,.83,p) if not self.P else 1.0
   with self.group(self.W*.52,self.H*.55,sc,angle=-1):
@@ -454,7 +474,6 @@ class Film:
     xx=bx+(i-7)*54;yy=lerp(self.H*.83,self.H*.44,p)
    self.puppet('raider'+str(i),'auto',xx,yy,.44 if i<5 else .29,walk=1,pose='raise' if i>4 else 'idle',phase=i)
   self.label('700',self.W*.21 if not self.P else self.W*.50,self.H*.25,1.3 if not self.P else 1.17,-3)
-  self.draw('foreground_gear','gear',self.W*.04,self.H*.92,1.1,angle=-t*22,alpha=.66)
  def scene07(self,t):
   self.draw('worktable','worktable',self.W*.48,self.H*.84,1.25 if not self.P else 1.0)
   self.puppet('maker','maker',self.W*.19 if not self.P else self.W*.24,self.H*.89,1.35 if not self.P else 1.45,pose='shrug' if not self.P else 'idle',phase=2)
@@ -463,10 +482,12 @@ class Film:
   self.puppet('auto','auto',self.W*(.82 if self.P else .91),self.H*.9,.83 if not self.P else 1.05,walk=.05)
   self.draw('emptyline','scribble',self.W*.65,self.H*.60,.4,alpha=0)
  def scene08(self,t):
-  sc=min(self.W/1320,self.H/1130) if not self.P else 1.32
+  # Vertical fits the whole book to the width, so neither page title is cropped,
+  # and spaces its entries by the same fractions of the page as landscape.
+  sc=min(self.W/1320,self.H/1130) if not self.P else self.W/1300
   self.draw('ledger','ledger',self.W*.51,self.H*.53,sc,angle=-4)
   for i in range(6):
-   y=self.H*.34+i*self.H*.08;xx=self.W*(.34 if i%2==0 else .65)
+   y=self.H*.34+i*self.H*.08 if not self.P else self.H*.53+(i*.094-.223)*960*sc;xx=self.W*(.34 if i%2==0 else .65)
    self.draw('oldentry'+str(i),'scribble',xx,y,sc*.62,angle=-2)
    if t>33.3+i*.26:self.draw('crossout'+str(i),'crossout',xx,y,sc*.65,angle=-5)
   for i in range(5):
@@ -529,7 +550,7 @@ class Film:
  def scene12(self,t):
   self.town(t,self.H*.86,1.11,burning=True);self.ground(t,self.H*.93)
   for i in range(5):
-   self.draw('flame_fg'+str(i),'flame',self.W*(.15+i*.2),self.H*.95,(2.55 if self.P else 1.0)+(i%2)*.25,angle=math.sin(sample(t)*4+i)*11,anchor='base')
+   self.draw('flame_fg'+str(i),'flame',self.W*(.15+i*.2),self.H*.95,(1.30 if self.P else 1.0)+(i%2)*.25,angle=math.sin(sample(t)*4+i)*11,anchor='base')
   fl=math.exp(-((t-50.05)/.19)**2)
   self.draw('strike','lightning',self.W*.32,self.H*.21,1.1,alpha=fl)
   self.carriage('indifferent',self.W*(.00 if self.P else .18)+(t-49.7)*(70 if self.P else 170),self.H*(.91 if self.P else .93),1.30 if self.P else 1.02,phase=2)
@@ -539,7 +560,7 @@ class Film:
   self.pose_t=ft
   self.town(ft,self.H*.87,1.0,burning=True);self.ground(ft,self.H*.93)
   if self.P:
-   for i in range(3):self.draw('frozenfire'+str(i),'flame',self.W*(.14+i*.35),self.H*.95,2.25,angle=math.sin(sample(ft)*4+i)*11,anchor='base')
+   for i in range(3):self.draw('frozenfire'+str(i),'flame',self.W*(.14+i*.35),self.H*.95,1.20,angle=math.sin(sample(ft)*4+i)*11,anchor='base')
   self.carriage('frozen_racer',self.W*.13+(ft-52.32)*100,self.H*.84,.93,2)
   if previous_pose is None:del self.pose_t
   else:self.pose_t=previous_pose
@@ -583,15 +604,16 @@ class Film:
    self.draw('townending','historic_state_house_front',self.W*.5,self.H*1.08,self.W/2300,alpha=.24)
   self.draw('endpaper','endpaper_qr_'+self.format,self.W*.5,self.H*.5)
   if self.P:
-   logo=(540,380,1.00);qr=(540,1130,462);url=(540,735,.84);cta=(540,1580,.91);scan=(540,1430,.91)
+   logo=(540,380,1.00);qr=(540,1130,462);url=(540,735,.84);banner=(540,1470,.74);notice=(540,1785)
   elif self.Q:
-   logo=(440,405,.84);qr=(1005,410,576);url=(720,960,1.08);cta=(440,715,.70);scan=(1005,760,.70)
+   logo=(440,405,.84);qr=(1005,410,576);url=(720,1010,1.08);banner=(720,800,1.00);notice=(720,1318)
   else:
-   logo=(600,355,.97);qr=(1360,364,462);url=(960,835,1.14);cta=(600,660,.83);scan=(1360,660,.83)
+   logo=(600,355,.97);qr=(1360,364,462);url=(960,835,1.14);banner=(960,662,1.00);notice=(960,978)
   if 'brand_logo' in self.bank.items:self.draw('logo','brand_logo',*logo)
   if 'brand_qr' in self.bank.items:self.draw('qr','brand_qr',qr[0],qr[1],qr[2]/self.bank.get('brand_qr').width())
-  self.label('url',*url);self.label('cta',*cta);self.label('scan',*scan)
-  self.draw('copyright','endcopyright_r3',self.W*.5,self.H-31,1 if not self.P else 1.05)
+  self.label('url',*url)
+  self.draw('banner','endbanner_r7',*banner)
+  self.draw('copyright','endcopyright_r7',*notice)
 
  def scene_content(self,index,t):
   # Keep the accepted staging and the 24 fps camera breath within every shot.
