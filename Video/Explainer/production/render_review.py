@@ -13,13 +13,15 @@ import subprocess
 import time
 
 from film import Film, INTRO_SECONDS, END_HOLD_START, END_HOLD_SECONDS, DURATION, FPS, skia
+import paths
 
 ROOT = Path(__file__).resolve().parent
 
 
 def render(output, work, width=1280, preset='medium', crf=20):
-    work.mkdir(parents=True, exist_ok=True)
-    output.parent.mkdir(parents=True, exist_ok=True)
+    work = paths.writable(work)
+    work.mkdir(exist_ok=True)
+    output = paths.writable(output)
     audio = ROOT / 'audio/mix_revision4.wav'
     if not audio.is_file():
         raise FileNotFoundError('Run revision4_timing.py to prepare the 76-second mix first.')
@@ -85,7 +87,7 @@ def render(output, work, width=1280, preset='medium', crf=20):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--output', type=Path, required=True)
-    parser.add_argument('--work', type=Path, default=ROOT.parent/'analysis/revision5_render')
+    parser.add_argument('--work', type=Path, default=paths.BUILD/'review')
     parser.add_argument('--width', type=int, default=1280)
     parser.add_argument('--preset', default='medium')
     parser.add_argument('--crf', type=int, default=20)

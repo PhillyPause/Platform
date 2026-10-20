@@ -3,9 +3,17 @@ from __future__ import annotations
 import hashlib,json,math,random,sys
 from contextlib import contextmanager
 from pathlib import Path
+import numpy as np
 from PIL import Image,ImageDraw
-from art import ROOT,skia,skimg,rgba
+from art import skia,skimg,rgba
+import paper_crumple,paths
 from paper_crumple import prepare_fold_cache
+
+# How far a live scene snapshot may sit from R5's own and still be the same
+# picture. Rasterisers on different machines move edge pixels by a few levels
+# (here, at most 3/255, mean under .07); any real edit to the artwork moves
+# them by far more. The mean bound catches a faint all-over tint.
+FOLD_MATCH=dict(max_delta=8,mean_delta=.25)
 
 SPECS={
  1:dict(kind='tilted_slide',duration=.64,dx=1.15,dy=.66,angle=-13,label='Tilted slide from lower right'),
@@ -56,6 +64,29 @@ def scene_snapshot(film,index,t):
         for n,v in state.items():setattr(film,n,v)
         film.used=old_used
 
+def baseline_folds(snapshot,folder,si,frozen_t,format_name):
+    """R5's frozen fold poses, if they were folded from this same picture; else None.
+
+    The R5 manifest keys its poses on an exact pixel hash, which only the
+    machine that made them can reproduce. Here the folding code must match
+    exactly and the snapshot only within FOLD_MATCH.
+    """
+    manifest=folder/'folds.json'
+    if not (paths.USE_BASELINE and manifest.is_file()):return None
+    data=json.loads(manifest.read_text())
+    if (data.get('renderer_sha256')!=paths.text_sha256(paper_crumple.__file__)
+        or (data.get('source_scene'),data.get('format'))!=(si,format_name)
+        or abs(data.get('frozen_story_time',-1)-frozen_t)>1e-9
+        or not all((folder/pose['file']).is_file() for pose in data['poses'])):return None
+    frozen=np.asarray(Image.open(folder/'source_snapshot.png').convert('RGBA'),dtype=np.int16)
+    live=np.asarray(snapshot.convert('RGBA'),dtype=np.int16)
+    if frozen.shape!=live.shape:return None
+    delta=np.abs(frozen-live)
+    stats=dict(max_delta=int(delta.max()),mean_delta=round(float(delta.mean()),5))
+    if stats['max_delta']>FOLD_MATCH['max_delta'] or stats['mean_delta']>FOLD_MATCH['mean_delta']:return None
+    data['provenance']=dict(origin='baseline',**stats)
+    return data
+
 def prepare_fragments(film,starts):
     """Retained interface: prepare whole connected-sheet folds, never fragments."""
     results={}
@@ -63,8 +94,14 @@ def prepare_fragments(film,starts):
         if spec['kind']!='crumble':continue
         frozen_t=(math.ceil(starts[si]*24)-1)/24
         snapshot=scene_snapshot(film,si-1,frozen_t)
-        folder=ROOT/'assets/transitions/crumple_r5'/f'{film.format}_{si:02d}'
-        data=prepare_fold_cache(snapshot,folder,si,frozen_t,film.format)
+        name=f'{film.format}_{si:02d}'
+        folder=paths.BASELINE_FOLDS/name
+        data=baseline_folds(snapshot,folder,si,frozen_t,film.format)
+        if data is None:
+            # Folded afresh into BUILD, keyed there by this machine's exact snapshot.
+            folder=paths.output('transitions','crumple_r5',name)
+            data=prepare_fold_cache(snapshot,folder,si,frozen_t,film.format)
+            data['provenance']=dict(origin='generated')
         for i,pose in enumerate(data['poses']):
             asset=f'crumple_r5_{film.format}_{si}_{i}'
             film.bank.load(asset,folder/pose['file']);pose['asset']=asset

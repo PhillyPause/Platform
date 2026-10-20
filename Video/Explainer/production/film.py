@@ -1,14 +1,16 @@
 """A continuous 24 fps paper-theatre film with articulated motion on twos.
 
 Render: python3 film.py --format landscape --width 1920 --output picture.mp4
-Proofs: python3 film.py --proof
+Proofs: python3 film.py --proof   (written to build/proof/, with a provenance record)
 The same draw calls optionally record fully separated image layers for AE.
+Nothing here writes outside build/ inside production/; see paths.py.
 """
 from __future__ import annotations
 import sys, math, json, argparse, subprocess, time, random, heapq
 from contextlib import contextmanager
 from pathlib import Path
 from art import *
+import paths
 from transitions import SPECS as TRANSITIONS, prepare_fragments, handoff
 
 FPS=24
@@ -143,10 +145,10 @@ class Film:
    for k in range(12):a.line([(100+k*151,440),(50+k*145,50)],'#483d2c',2,.5)
   b.make('platform',2100,500,floor,pad=20)
   # A single original automaton template is repeated exactly 700 times, in four depth plates.
-  s=skia.Surface(180,350);c=s.getCanvas();c.clear(skia.ColorTRANSPARENT)
-  for name,x,y,w,h in [('auto_shin',38,257,32,89),('auto_shin',97,257,32,89),('auto_thigh',35,186,45,91),('auto_thigh',90,186,45,91),('auto_torso',23,79,137,179),('auto_head',47,0,89,94),('auto_upperarm',2,99,35,92),('auto_upperarm',140,99,35,92),('auto_forearm',5,183,31,84),('auto_forearm',138,183,31,84)]:
-   c.drawImageRect(b.get(name),skia.Rect.MakeXYWH(x,y,w,h),skia.SamplingOptions(skia.FilterMode.kLinear))
-  im=Image.fromarray(s.makeImageSnapshot().toarray(colorType=skia.ColorType.kRGBA_8888_ColorType));p=OUT/'auto_template.png';im.save(p);b.load('auto_template',p)
+  def template(a):
+   for name,x,y,w,h in [('auto_shin',38,257,32,89),('auto_shin',97,257,32,89),('auto_thigh',35,186,45,91),('auto_thigh',90,186,45,91),('auto_torso',23,79,137,179),('auto_head',47,0,89,94),('auto_upperarm',2,99,35,92),('auto_upperarm',140,99,35,92),('auto_forearm',5,183,31,84),('auto_forearm',138,183,31,84)]:
+    a.c.drawImageRect(b.get(name),skia.Rect.MakeXYWH(x,y,w,h),skia.SamplingOptions(skia.FilterMode.kLinear))
+  b.make('auto_template',180,350,template,pad=0,shadow=False)
   for depth in range(4):
    def crowd(a,depth=depth):
     rng=random.Random(91+depth)
@@ -633,14 +635,20 @@ class Film:
   # Preserve every displayed sample. AE uses HOLD interpolation, reproducing the
   # 24fps raster samples exactly while leaving all individual layers editable.
   self.order_trace_layers()
-  data={'width':self.W,'height':self.H,'fps':FPS,'duration':DURATION,'assets':{k:self.bank.meta[k] for k in self.used},'tracks':list(self.tracks.values()),'audio':[{'file':'audio/mix.wav','name':'Final mixed audio','gainDb':0},{'file':'audio/voice.wav','name':'Narration stem','gainDb':0,'enabled':False},{'file':'audio/music.wav','name':'Original score stem','gainDb':0,'enabled':False},{'file':'audio/foley.wav','name':'Foley stem','gainDb':0,'enabled':False}]}
-  p=ROOT/'master_timeline.json';p.write_text(json.dumps(data,separators=(',',':')));print('Saved',p,p.stat().st_size,flush=True)
+  data={'width':self.W,'height':self.H,'fps':FPS,'duration':DURATION,'assets':{k:self.bank.meta[k] for k in sorted(self.used)},'tracks':list(self.tracks.values()),'audio':[{'file':'audio/mix.wav','name':'Final mixed audio','gainDb':0},{'file':'audio/voice.wav','name':'Narration stem','gainDb':0,'enabled':False},{'file':'audio/music.wav','name':'Original score stem','gainDb':0,'enabled':False},{'file':'audio/foley.wav','name':'Foley stem','gainDb':0,'enabled':False}]}
+  p=paths.output('master_timeline.json');p.write_text(json.dumps(data,separators=(',',':')));print('Saved',p,p.stat().st_size,flush=True)
   return p
+ def provenance(self):
+  """Where every loaded picture came from. An R5 landscape proof uses no generated artwork."""
+  origin=self.bank.origin
+  return {'format':self.format,'baseline_enabled':paths.USE_BASELINE,
+   'artwork':{kind:sorted(n for n,o in origin.items() if o==kind and not n.startswith('crumple_')) for kind in ('baseline','source','generated')},
+   'crumples':{f'{si:02d}':data['provenance'] for si,data in sorted(self.fragments.items())}}
 
 def render(args):
  film=Film(args.format,record=args.trace)
  if args.proof:
-  out=ROOT/'proof';out.mkdir(exist_ok=True)
+  out=paths.output('proof');out.mkdir(exist_ok=True)
   times=[4.0,6.2,10.5,17.3,23.3,25.85,28.6,31.8,34.7,37.2,42.8,48.1,51.3,53.45,59.0,63.4,66.0]
   imgs=[]
   for k,t in enumerate(times):
@@ -653,12 +661,15 @@ def render(args):
   cols=4 if args.format=='landscape' else 5;rows=math.ceil(len(imgs)/cols)
   sheet=Image.new('RGB',(cols*500,rows*imgs[0].height),'#ded4bc')
   for i,im in enumerate(imgs):sheet.paste(im,((i%cols)*500,(i//cols)*im.height))
-  sheet.save(out/(args.format+'_contact.jpg'),quality=92);print('Proof saved',out/(args.format+'_contact.jpg'));return
+  sheet.save(out/(args.format+'_contact.jpg'),quality=92)
+  prov=film.provenance();(out/(args.format+'_provenance.json')).write_text(json.dumps(prov,indent=1,sort_keys=True)+'\n')
+  print('Proof saved',out/(args.format+'_contact.jpg'))
+  print('Artwork:',', '.join(f'{len(v)} {k}' for k,v in prov['artwork'].items()),'| crumples:',', '.join(f'{k} {v["origin"]}' for k,v in prov['crumples'].items()));return
  width=args.width or film.W;height=int(round(width*film.H/film.W/2)*2)
- out=Path(args.output);out.parent.mkdir(exist_ok=True,parents=True)
+ out=paths.writable(args.output)
  cmd=['ffmpeg','-y','-loglevel','error','-f','rawvideo','-pix_fmt','rgba','-s',f'{width}x{height}','-r','24','-i','-','-an','-c:v','libx264','-threads','4','-preset',args.preset,'-crf',str(args.crf),'-pix_fmt','yuv420p','-movflags','+faststart',str(out)]
  if args.prores:
-  pro=Path(args.prores);pro.parent.mkdir(exist_ok=True,parents=True)
+  pro=paths.writable(args.prores)
   cmd+=['-an','-c:v','prores_ks','-threads','4','-profile:v','2','-pix_fmt','yuv422p10le','-vendor','apl0',str(pro)]
  proc=subprocess.Popen(cmd,stdin=subprocess.PIPE)
  total=math.ceil(DURATION*24-1e-5);start=time.time()
@@ -673,5 +684,5 @@ def render(args):
  print(f'Rendered {out} in {time.time()-start:.1f}s',flush=True)
 
 if __name__=='__main__':
- p=argparse.ArgumentParser();p.add_argument('--format',choices=['landscape','square','vertical'],default='landscape');p.add_argument('--width',type=int);p.add_argument('--output',default=str(ROOT/'renders/picture.mp4'));p.add_argument('--proof',action='store_true');p.add_argument('--trace',action='store_true');p.add_argument('--crf',type=int,default=16);p.add_argument('--preset',default='fast');p.add_argument('--prores')
+ p=argparse.ArgumentParser();p.add_argument('--format',choices=['landscape','square','vertical'],default='landscape');p.add_argument('--width',type=int);p.add_argument('--output',default=str(paths.BUILD/'renders/picture.mp4'));p.add_argument('--proof',action='store_true');p.add_argument('--trace',action='store_true');p.add_argument('--crf',type=int,default=16);p.add_argument('--preset',default='fast');p.add_argument('--prores')
  render(p.parse_args())

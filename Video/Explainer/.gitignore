@@ -9,3 +9,5 @@
 *.log
 
 production/proof/
+# Everything the pipeline generates: artwork cache, crumple poses, proofs, renders.
+production/build/

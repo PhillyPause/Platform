@@ -12,8 +12,8 @@ sys.path.insert(0,str(ROOT/'python_libs'))
 import skia
 import numpy as np
 from PIL import Image, ImageOps, ImageFilter
+import paths
 
-OUT=ROOT/'assets/render';OUT.mkdir(parents=True,exist_ok=True)
 PAPER='#d1bc8d'; LIGHT='#e7d9b6'; INK='#29261f'; OXBLOOD='#652f2b'; OCHRE='#9b7842'; SOOT='#171b1b'; ELECTRIC='#f7edab'
 FONT_ROOT=ROOT/'assets/fonts'
 FONTS={
@@ -23,6 +23,23 @@ FONTS={
  'sans':FONT_ROOT/'DejaVuSans.ttf' if (FONT_ROOT/'DejaVuSans.ttf').exists() else Path('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf'),
 }
 TYPEFACES={k:skia.Typeface.MakeFromFile(str(v)) for k,v in FONTS.items()}
+TEXTURE_SOURCES=[ROOT/'assets/historical'/n for n in ('linen_18th_century.jpg','racknitz_1789.jpg','state_house_1787.jpg')]
+
+_RECIPE=None
+def recipe():
+ """Fingerprint of everything that draws generated artwork: the code and its inputs.
+
+ Generated artwork is cached under it, so editing a drawing can never be masked
+ by a stale cached picture: a cold build and a warm one always agree.
+ """
+ global _RECIPE
+ if _RECIPE is None:
+  h=hashlib.sha256()
+  for p in [ROOT/'art.py',ROOT/'film.py']:h.update(paths.text_bytes(p))
+  for p in [*FONTS.values(),*TEXTURE_SOURCES,ROOT/'assets/brand/logo.svg']:
+   if p.exists():h.update(p.name.encode());h.update(p.read_bytes())
+  _RECIPE=h.hexdigest()[:16]
+ return _RECIPE
 
 def rgba(c,alpha=1):
  if isinstance(c,tuple):r,g,b=c[:3]
@@ -107,10 +124,14 @@ class Art:
   self.line([(x-r*.35,y),(x+r*.35,y)],INK,1)
 
 class Bank:
- def __init__(self):self.items={};self.meta={}
+ def __init__(self):self.items={};self.meta={};self.origin={}
  def make(self,name,w,h,callback,pad=24,shadow=True):
   if name in self.items:return name
-  p=OUT/(name+'.png')
+  # The frozen R5 artwork is source: load it, never draw over it. A changed
+  # drawing takes a new name (jar_r5, curtain_leaf_r4) and is drawn into BUILD.
+  p=paths.BASELINE_ART/(name+'.png')
+  if paths.USE_BASELINE and p.is_file():return self.load(name,p,pad)
+  p=paths.output('artwork',recipe(),name+'.png')
   if not p.exists():
    s=skia.Surface(w+pad*2,h+pad*2);c=s.getCanvas();c.clear(skia.ColorTRANSPARENT);c.translate(pad,pad)
    callback(Art(c))
@@ -118,13 +139,15 @@ class Bank:
    if shadow:
     al=img.getchannel('A');sh=Image.new('RGBA',img.size,(14,11,8,0));shadow_alpha=al.filter(ImageFilter.GaussianBlur(5)).point(lambda n:int(n*.34));sh.putalpha(shadow_alpha)
     target=Image.new('RGBA',img.size);target.alpha_composite(sh,(7,10));target.alpha_composite(img);img=target
-   img.save(p)
-  self.load(name,p,pad)
-  return name
+   # Written aside and renamed, so an interrupted run never leaves half a PNG.
+   temporary=p.with_name(p.name+'.tmp');img.save(temporary,format='PNG');temporary.replace(p)
+  return self.load(name,p,pad)
  def load(self,name,p,pad=0):
   im=skia.Image.MakeFromEncoded(skia.Data.MakeFromFileName(str(p)))
-  self.items[name]=im;self.meta[name]={'file':str(p.relative_to(ROOT)),'width':im.width(),'height':im.height(),'pad':pad}
+  self.items[name]=im;self.meta[name]={'file':paths.portable(p),'width':im.width(),'height':im.height(),'pad':pad}
+  self.origin[name]='baseline' if paths.inside(p,paths.BASELINE_ART) or paths.inside(p,paths.BASELINE_FOLDS) else ('generated' if paths.inside(p,paths.BUILD) else 'source')
   return name
+ def file(self,name):return paths.ROOT/self.meta[name]['file']
  def get(self,name):return self.items[name]
  def label(self,text,width=700,height=140,size=58,font='wood',color=INK,paper=LIGHT):
   n='label_'+hashlib.sha1((text+str((width,height,size,font,color,paper))).encode()).hexdigest()[:12]
@@ -262,7 +285,7 @@ def build_bank():
   a.ellipse(1,267,220,32,'#4d4634','linen',INK,2)
   a.ellipse(88,0,45,25,'#a69064','paper',INK,2)
  b.make('jar_r5',224,307,jar,pad=15)
- b.load('jar',OUT/'jar_r5.png',pad=15)
+ b.load('jar',b.file('jar_r5'),pad=15)
  def cabinet(a):
   a.rect(0,0,1760,890,'#584837','linen',INK,5)
   a.rect(28,32,1704,820,'#8a7958','paper',INK,4)
@@ -505,5 +528,5 @@ def build_bank():
  return b
 
 if __name__=='__main__':
- b=build_bank();(ROOT/'asset_index.json').write_text(json.dumps(b.meta,indent=2))
+ b=build_bank();paths.output('asset_index.json').write_text(json.dumps(b.meta,indent=2))
  print(f'Created or loaded {len(b.items)} layered artwork assets.')
