@@ -23,36 +23,15 @@ public class ContentTests
         Store.Find("no-such-page").Should().BeNull();
 
     /// <summary>
-    /// The long first-draft pages are set aside under <c>_archive</c> while the
-    /// site is rebuilt around the explainer. They must not be reachable — a
-    /// route that still answers is a page nobody is maintaining.
+    /// A folder whose name starts with an underscore is set aside: its pages
+    /// are not reachable, because a route that answers is a page somebody has
+    /// to maintain. ManyHands' privacy page waits there until it is on.
     /// </summary>
     [Theory]
-    [InlineData("risk")]
-    [InlineData("risk/now")]
-    [InlineData("ask")]
-    [InlineData("act")]
-    [InlineData("about")]
-    [InlineData("learn")]
-    [InlineData("press")]
-    [InlineData("pennsylvania")]
-    [InlineData("_archive/about")]
+    [InlineData("_manyhands/privacy")]
+    [InlineData("manyhands/privacy")]
     public void Set_aside_pages_are_not_routable(string slug) =>
-        Store.Find(slug).Should().BeNull($"/{slug} is in _archive");
-
-    /// <summary>
-    /// Set aside is not abandoned: the archived drafts still have to parse, or
-    /// they quietly rot and cannot be brought back.
-    /// </summary>
-    [Fact]
-    public void Set_aside_pages_still_parse()
-    {
-        var archive = Path.Combine(TestPaths.ContentRoot, "_archive");
-        if (!Directory.Exists(archive)) return;
-
-        var store = new ContentStore(archive);
-        store.All.Should().NotBeEmpty();
-    }
+        Store.Find(slug).Should().BeNull($"/{slug} is set aside");
 
     /// <summary>
     /// Whenever a page cites an upstream source, CC BY 4.0 needs a working link

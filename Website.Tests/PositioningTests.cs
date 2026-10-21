@@ -68,28 +68,6 @@ public class PositioningTests
     private static string CollapseWhitespace(string text) =>
         System.Text.RegularExpressions.Regex.Replace(text, @"\s+", " ");
 
-    [Fact]
-    public void The_about_page_states_the_positioning_explicitly()
-    {
-        // Found rather than addressed: about.md is currently set aside under
-        // _archive while the site is rebuilt, and the claim has to stay correct
-        // wherever it sits, because it is coming back.
-        var path = Directory
-            .EnumerateFiles(TestPaths.ContentRoot, "about.md", SearchOption.AllDirectories)
-            .FirstOrDefault();
-
-        path.Should().NotBeNull("about.md should still exist somewhere under Content");
-
-        var about = CollapseWhitespace(File.ReadAllText(path!));
-
-        about.Should().Contain("independent", "the about page has to say what we are");
-        about.Should().Contain("PauseAI Global", "the loose affiliation is worth naming");
-        about.Should().Contain(
-            "not a local group of PauseAI US",
-            "the about page denies the relationship in so many words, because it is " +
-            "the thing readers and journalists get wrong");
-    }
-
     /// <summary>
     /// Every Markdown page and every Razor component whose text a reader sees.
     /// Enumerated rather than hard-coded so a new page is covered by default —

@@ -104,8 +104,8 @@ Then **Publish**, top right.
 3. **Sections**, in this order: **Shorts**, then **Videos**. The Short is
    the explainer's vertical film with captions burned in, since Shorts are
    mostly watched with the sound off:
-   `PhillyPause_Vertical_1080x1920_Captioned.mp4`, one of the explainer's
-   exports (see [EXPLAINER.md](EXPLAINER.md)).
+   `PhillyPause_Vertical_1080x1920_Captioned.mp4`, one of the explainer
+   video's exports.
 
 Then **Publish**.
 
