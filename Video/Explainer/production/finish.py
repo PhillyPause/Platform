@@ -42,7 +42,11 @@ EXPORTS = {
     'PhillyPause_Master_ProRes422.mov': ('landscape', 1920, None, 'prores'),
     'PhillyPause_Web_720p.mp4': ('landscape', 1280, None, 20),
     'PhillyPause_Web_720p_Captioned.mp4': ('landscape', 1280, 'web', 20),
-    'PhillyPause_Vertical_1080x1920.mp4': ('vertical', 1080, 'vertical', 18),
+    'PhillyPause_Vertical_1080x1920.mp4': ('vertical', 1080, None, 18),
+    'PhillyPause_Vertical_1080x1920_Captioned.mp4': ('vertical', 1080, 'vertical', 18),
+    # The LG StanbyME 2's panel turned upright. The caption layout scales with the picture.
+    'PhillyPause_Vertical_1440x2560.mp4': ('vertical', 1440, None, 18),
+    'PhillyPause_Vertical_1440x2560_Captioned.mp4': ('vertical', 1440, 'vertical', 18),
     'PhillyPause_Square_1080x1080.mp4': ('square', 1080, 'square', 18),
 }
 POSTER_SOURCE = 'PhillyPause_Web_720p.mp4'

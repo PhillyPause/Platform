@@ -121,7 +121,10 @@ with `film.py` into `build/renders/`, muxes, and checks every result:
 | `PhillyPause_Master_ProRes422.mov` | landscape 1920 × 1080, ProRes 422, PCM audio | — |
 | `PhillyPause_Web_720p.mp4` | landscape 1280 × 720 | — |
 | `PhillyPause_Web_720p_Captioned.mp4` | landscape 1280 × 720 | burned in |
-| `PhillyPause_Vertical_1080x1920.mp4` | vertical 1080 × 1920 | burned in |
+| `PhillyPause_Vertical_1080x1920.mp4` | vertical 1080 × 1920, for phones | — |
+| `PhillyPause_Vertical_1080x1920_Captioned.mp4` | vertical 1080 × 1920, for phones | burned in |
+| `PhillyPause_Vertical_1440x2560.mp4` | vertical 1440 × 2560, the LG StanbyME 2 upright | — |
+| `PhillyPause_Vertical_1440x2560_Captioned.mp4` | vertical 1440 × 2560, the LG StanbyME 2 upright | burned in |
 | `PhillyPause_Square_1080x1080.mp4` | square 1080 × 1080 | burned in |
 
 Alongside them go the SRT and VTT, `PhillyPause_Poster.jpg` (the closing card,
