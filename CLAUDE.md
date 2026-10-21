@@ -27,8 +27,8 @@ The full plan — architecture, content strategy, licensing, phases — is
 | `ManyHands/ManyHands.Tests/` | xunit against real Postgres (Testcontainers) |
 | `Platform/Platform.AppHost/` | .NET Aspire: local orchestration only, never deployed |
 | `Platform/Platform.ServiceDefaults/` | `AddServiceDefaults()`: OpenTelemetry and health checks, for every service |
-| `Docs/` | PLAN and INCIDENT_FACTS at the top, which everything cites; then a folder per area: `Platform/` HOSTING, `ManyHands/` MANYHANDS, `Website/` KIOSK (the table's screen, `/kiosk`) and PHOTO_SOURCES, `Outreach/` YOUTUBE (the channel's settings). DESIGN / CONTENT / MOTION join as they land |
-| `Brand/` | The master logo (`Logo/PhillyPause.svg`), the YouTube images, the print poster |
+| `Docs/` | PLAN and INCIDENT_FACTS at the top, which everything cites; then a folder per area: `Platform/` HOSTING, `ManyHands/` MANYHANDS, `Website/` KIOSK (the table's screen, `/kiosk`) and PHOTO_SOURCES, `Outreach/` BRAND (what `Brand/` holds and how its copies stay true) and YOUTUBE (the channel's settings). DESIGN / CONTENT / MOTION join as they land |
+| `Brand/` | The master logo (`Logo/PhillyPause.svg`), the YouTube images, the print poster; described in `Docs/Outreach/BRAND.md` |
 | `Video/Explainer/` | The explainer film's Python pipeline; artwork and audio in Git LFS. `RENDERING.md` builds every export, `CURRENT_APPROVED_STATE.md` is the approved spec. Not part of the solution or the deploy |
 
 Projects are `<Product>.<Role>` — product area first, job second. Folder,
@@ -44,7 +44,8 @@ needs it (HOSTING.md).
 
 Docs filenames: UPPERCASE, underscores not dashes, short. A doc about one
 area goes in that area's folder under `Docs/`; one everything cites stays at
-the top.
+the top. `README.md` is the root's alone: a folder that needs explaining gets
+a doc under `Docs/`, not a README of its own.
 
 ## Commands
 

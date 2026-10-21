@@ -156,7 +156,7 @@ Docs/                        PLAN.md, INCIDENT_FACTS.md
   Platform/                  HOSTING.md
   ManyHands/                 MANYHANDS.md
   Website/                   KIOSK.md, PHOTO_SOURCES.md
-  Outreach/                  YOUTUBE.md
+  Outreach/                  BRAND.md, YOUTUBE.md
 Deploy/digitalocean/         app spec + ingress rules
 Platform.slnx                at the root: the deploy buildpack requires it there
 ```
