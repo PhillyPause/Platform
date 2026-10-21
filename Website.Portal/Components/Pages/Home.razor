@@ -676,14 +676,14 @@
         ("/" + Navigation.ToBaseRelativePath(Navigation.Uri).Split('?', '#')[0])
             .Equals(path, StringComparison.OrdinalIgnoreCase);
 
-    // The Watch dialog's video. A stand-in until our own is cut; swapping it
-    // is these five lines. A new id also re-opens the dialog once for readers
-    // who saw the old one, because watch.js remembers by id.
-    private const string VideoId = "pYXy-A4siMw";
-    private const string VideoTitle = "Intro to AI Safety, Remastered";
-    private const string VideoCredit = "Rob Miles";
-    private const string VideoLength = "18 minutes";
+    // The Watch dialog's video: our own explainer (Video/Explainer). Swapping
+    // it is these five lines. A new id also re-opens the dialog once for
+    // readers who saw the old one, because watch.js remembers by id.
+    private const string VideoId = "K5LrqTjRKOs";
+    private const string VideoTitle = "700 AI Agents Hacked Hugging Face. Nobody Told Them To.";
+    private const string VideoCredit = "PhillyPause";
+    private const string VideoLength = "76 seconds";
     private const string VideoPitch =
-        "If you watch one thing about why the people who build AI are worried, make it this. "
-        + "It is the clearest first explainer there is, and everything else on this page makes more sense afterwards.";
+        "What OpenAI's own test agents did this July, in seventy-six seconds, and why we are asking Congress to hit pause. "
+        + "The primer goes deeper, starting with the clearest long explainer there is.";
 }
