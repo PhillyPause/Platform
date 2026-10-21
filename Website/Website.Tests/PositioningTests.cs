@@ -79,8 +79,8 @@ public class PositioningTests
 
         var roots = new[]
         {
-            Path.Combine(TestPaths.RepoRoot, "Website.Content", "Content"),
-            Path.Combine(TestPaths.RepoRoot, "Website.Portal", "Components")
+            Path.Combine(TestPaths.RepoRoot, "Website", "Website.Content", "Content"),
+            Path.Combine(TestPaths.RepoRoot, "Website", "Website.Portal", "Components")
         };
 
         var files = roots

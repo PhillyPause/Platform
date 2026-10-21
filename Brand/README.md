@@ -9,7 +9,7 @@ Everything made from the PhillyPause mark, outside the code that serves it.
 | `Print/` | The 24 × 36 single-sided poster |
 
 The site serves its own copy of the logo,
-`Website.Portal/wwwroot/phillypause-logo.svg`. It has to stay byte for byte
+`Website/Website.Portal/wwwroot/phillypause-logo.svg`. It has to stay byte for byte
 the same as `Logo/PhillyPause.svg`, and a test fails if they drift: change
 the master, then copy it over.
 

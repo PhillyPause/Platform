@@ -59,7 +59,7 @@ SDK and the publish. Two things it imposes:
   a path separator, so the buildpack cannot be aimed at a single project — it
   publishes the whole solution. That is why `Website.Client` and
   `Website.Tests` are marked `IsPublishable=false`; see the comment in
-  `Website.Client/Website.Client.csproj` for what happens otherwise.
+  `Website/Website.Client/Website.Client.csproj` for what happens otherwise.
 - **Kestrel does not read `$PORT`.** The spec sets
   `ASPNETCORE_URLS=http://*:${PORT}`. Without it the container listens on 5000,
   the health check never answers, and the deploy fails after a long wait rather

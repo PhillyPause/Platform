@@ -20,7 +20,7 @@
   <ItemGroup>
     <ProjectReference Include="..\ManyHands.Core\ManyHands.Core.csproj" />
     <ProjectReference Include="..\ManyHands.Data\ManyHands.Data.csproj" />
-    <ProjectReference Include="..\Website.Portal\Website.Portal.csproj" />
+    <ProjectReference Include="..\..\Website\Website.Portal\Website.Portal.csproj" />
   </ItemGroup>
 
   <ItemGroup>

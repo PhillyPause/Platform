@@ -113,11 +113,11 @@ if (-not $ghOk) {
 }
 
 if ($NoRun) {
-    Step "ready. Run everything with: dotnet run --project Platform.AppHost (needs Docker)"
+    Step "ready. Run everything with: dotnet run --project Platform/Platform.AppHost (needs Docker)"
     Write-Host ""
     exit 0
 }
 
 Write-Host "Starting the site. Ctrl+C to stop." -ForegroundColor Cyan
 Write-Host ""
-dotnet run --project Website.Portal
+dotnet run --project Website/Website.Portal

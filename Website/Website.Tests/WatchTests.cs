@@ -13,10 +13,10 @@ public class WatchTests
     private const string PrivacyEnhancedHost = "youtube-nocookie.com/embed/";
 
     private static readonly string Home = File.ReadAllText(Path.Combine(
-        TestPaths.RepoRoot, "Website.Portal", "Components", "Pages", "Home.razor"));
+        TestPaths.RepoRoot, "Website", "Website.Portal", "Components", "Pages", "Home.razor"));
 
     private static readonly string Script = File.ReadAllText(Path.Combine(
-        TestPaths.RepoRoot, "Website.Portal", "wwwroot", "watch.js"));
+        TestPaths.RepoRoot, "Website", "Website.Portal", "wwwroot", "watch.js"));
 
     private static readonly string Privacy = File.ReadAllText(Path.Combine(
         TestPaths.ContentRoot, "privacy.md"));

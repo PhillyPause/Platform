@@ -61,7 +61,7 @@ public class ContentTests
     public void ContentRoute_renders_the_source_credit()
     {
         var route = Path.Combine(
-            TestPaths.RepoRoot, "Website.Portal", "Components", "Pages", "ContentRoute.razor");
+            TestPaths.RepoRoot, "Website", "Website.Portal", "Components", "Pages", "ContentRoute.razor");
 
         File.ReadAllText(route).Should().Contain(
             "<SourceCredit",

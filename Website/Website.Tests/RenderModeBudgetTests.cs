@@ -20,7 +20,7 @@ public class RenderModeBudgetTests
         // Chooses per request: interactive on the server for the organizers'
         // app (TeamApp), static for every other page. Public pages are held to
         // static by StaticPublicPageTests.
-        "Website.Portal/Components/App.razor"
+        "Website/Website.Portal/Components/App.razor"
     ];
 
     [Fact]
@@ -48,7 +48,7 @@ public class RenderModeBudgetTests
 
     private static IEnumerable<string> RazorFiles() =>
         new[] { "Website.Portal", "Website.Client" }
-            .Select(project => Path.Combine(TestPaths.RepoRoot, project))
+            .Select(project => Path.Combine(TestPaths.RepoRoot, "Website", project))
             .Where(Directory.Exists)
             .SelectMany(dir => Directory.EnumerateFiles(dir, "*.razor", SearchOption.AllDirectories))
             .Where(path => !path.Contains($"{Path.DirectorySeparatorChar}obj{Path.DirectorySeparatorChar}"))

@@ -151,11 +151,11 @@ loads online; otherwise the last copy kept is shown.
 
 | File | Does |
 |---|---|
-| `Website.Portal/Components/Pages/Kiosk.razor` | The beats, the tickers, the menu, the framed site |
-| `Website.Portal/Components/Layout/KioskLayout.razor` | No site chrome |
-| `Website.Portal/wwwroot/kiosk.css` | All of the motion |
-| `Website.Portal/wwwroot/kiosk.js` | The loop, the connection check, the framed site, the menu, keeping awake |
-| `Website.Portal/wwwroot/kiosk-sw.js` | The offline copy |
-| `Website.Portal/wwwroot/kiosk-awake.mp4` | Silent video that keeps a TV's screen saver off |
-| `Website.Portal/wwwroot/kiosk.webmanifest` | Installs `/kiosk` as "PhillyPause Kiosk", full screen |
-| `Website.Portal/wwwroot/img/kiosk-*` | App icons, and the QR code for `https://phillypause.org` |
+| `Website/Website.Portal/Components/Pages/Kiosk.razor` | The beats, the tickers, the menu, the framed site |
+| `Website/Website.Portal/Components/Layout/KioskLayout.razor` | No site chrome |
+| `Website/Website.Portal/wwwroot/kiosk.css` | All of the motion |
+| `Website/Website.Portal/wwwroot/kiosk.js` | The loop, the connection check, the framed site, the menu, keeping awake |
+| `Website/Website.Portal/wwwroot/kiosk-sw.js` | The offline copy |
+| `Website/Website.Portal/wwwroot/kiosk-awake.mp4` | Silent video that keeps a TV's screen saver off |
+| `Website/Website.Portal/wwwroot/kiosk.webmanifest` | Installs `/kiosk` as "PhillyPause Kiosk", full screen |
+| `Website/Website.Portal/wwwroot/img/kiosk-*` | App icons, and the QR code for `https://phillypause.org` |

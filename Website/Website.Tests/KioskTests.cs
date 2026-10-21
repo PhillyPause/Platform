@@ -19,13 +19,13 @@ public class KioskTests(WebApplicationFactory<Program> factory)
     private const string AwakeVideoPath = "/kiosk-awake.mp4";
 
     private static readonly string Script = File.ReadAllText(Path.Combine(
-        TestPaths.RepoRoot, "Website.Portal", "wwwroot", "kiosk.js"));
+        TestPaths.RepoRoot, "Website", "Website.Portal", "wwwroot", "kiosk.js"));
 
     private static readonly string Styles = File.ReadAllText(Path.Combine(
-        TestPaths.RepoRoot, "Website.Portal", "wwwroot", "kiosk.css"));
+        TestPaths.RepoRoot, "Website", "Website.Portal", "wwwroot", "kiosk.css"));
 
     private static readonly string Home = File.ReadAllText(Path.Combine(
-        TestPaths.RepoRoot, "Website.Portal", "Components", "Pages", "Home.razor"));
+        TestPaths.RepoRoot, "Website", "Website.Portal", "Components", "Pages", "Home.razor"));
 
     [Fact]
     public async Task The_kiosk_is_unindexed_and_names_its_manifest()
