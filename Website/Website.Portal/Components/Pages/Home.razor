@@ -25,9 +25,16 @@
    The styling lives in wwwroot/broadsheet.css rather than a scoped stylesheet,
    because scoped CSS rewrites the sibling selectors the dialogs depend on. *@
 
-<PageMeta Title="Stop the AI death race"
-          Description="In July 2026, 700 AI agents broke out of their sandboxes to cheat on a test. PhillyPause is an independent, volunteer-run Philadelphia organisation working to stop the AI death race."
-          Canonical="@(JoinOpen || EventsOpen || ConfirmOpen || WelcomeOpen || RemoveOpen || CheckEmailOpen ? Navigation.BaseUri : null)" />
+@if (NotFound)
+{
+  <PageMeta Title="Page not found" Description="That page does not exist on the PhillyPause site." NoIndex="true" />
+}
+else
+{
+  <PageMeta Title="Stop the AI death race"
+            Description="In July 2026, 700 AI agents broke out of their sandboxes to cheat on a test. PhillyPause is an independent, volunteer-run Philadelphia organisation working to stop the AI death race."
+            Canonical="@(JoinOpen || EventsOpen || ConfirmOpen || WelcomeOpen || RemoveOpen || CheckEmailOpen ? Navigation.BaseUri : null)" />
+}
 
 
 <div class="broadsheet" style="background: #FBF8F1; color: #15110C; font-family: Archivo, sans-serif">
@@ -39,7 +46,7 @@
      /join and /events are the exceptions: each loads with its own dialog
      already open (/join is the address on posters), and closing it leaves the
      reader on the front page. *@
-  <input type="radio" name="dlg" id="dlg-none" class="dlgtoggle" checked="@(!JoinOpen && !EventsOpen && !ConfirmOpen && !WelcomeOpen && !RemoveOpen && !CheckEmailOpen)" aria-label="No panel open">
+  <input type="radio" name="dlg" id="dlg-none" class="dlgtoggle" checked="@(!NotFound && !JoinOpen && !EventsOpen && !ConfirmOpen && !WelcomeOpen && !RemoveOpen && !CheckEmailOpen)" aria-label="No panel open">
   <input type="radio" name="dlg" id="watch-open" class="dlgtoggle" aria-label="Watch">
   <input type="radio" name="dlg" id="panel-open" class="dlgtoggle" aria-label="Who is on the panel">
   <input type="radio" name="dlg" id="join-open" class="dlgtoggle" checked="@JoinOpen" aria-label="Join us">
@@ -48,6 +55,7 @@
   <input type="radio" name="dlg" id="educate-open" class="dlgtoggle" aria-label="Educate">
   <input type="radio" name="dlg" id="organize-open" class="dlgtoggle" aria-label="Organize">
   <input type="radio" name="dlg" id="notices-open" class="dlgtoggle" aria-label="Small Print">
+  <input type="radio" name="dlg" id="notfound-open" class="dlgtoggle" checked="@NotFound" aria-label="Page not found">
   @* Not one of the radios: What we keep opens on top of Join us rather
      than in its place, so closing it puts the reader back in the form. *@
   @if (ManyHandsOn)
@@ -358,6 +366,35 @@
       </div>
     </div>
   </div>
+
+  @* An address that leads nowhere: rendered by NotFound.razor, over the
+     front page, so the reader is still on the site they meant. *@
+  @if (NotFound)
+  {
+    <div class="paneldlg d-notfound">
+      <label class="paneldlg-scrim" for="dlg-none" aria-label="Close"></label>
+      <div class="paneldlg-box" role="dialog" aria-modal="true" aria-labelledby="notfounddlg-title">
+        <div class="paneldlg-head">
+          <span id="notfounddlg-title">Not found</span>
+          <label class="paneldlg-x" for="dlg-none" aria-label="Close">&times;</label>
+        </div>
+        <div class="paneldlg-body joinbody">
+          <h2>That page does not exist</h2>
+          <p class="joinlede">
+            The address may be mistyped, or the link may be out of date. Everything on this
+            site starts from the front page, which is right behind this box.
+          </p>
+          <div class="joinform">
+            <div class="signuprow">
+              <a class="signupbtn" href="/">Go to the front page</a>
+              <label class="signupalt confirm-alt" for="primer-open">Learn</label>
+              <label class="signupalt confirm-alt" for="join-open">Join us</label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
 
   <!-- Mailing list, same mechanism as the panel: shown while #join-open is
        checked, cleared by the scrim or the close button. -->
@@ -742,6 +779,9 @@
     // watch.js only opens the video when dlg-none is checked, so on /join and
     // /events the first-visit video never lands on top of the dialog.
     private bool JoinOpen => IsAt(ManyHandsPaths.Join);
+
+    // Set by NotFound.razor, which every 404 renders.
+    [Parameter] public bool NotFound { get; set; }
 
     private bool EventsOpen => ManyHandsOn && IsAt(ManyHandsPaths.Events);
 

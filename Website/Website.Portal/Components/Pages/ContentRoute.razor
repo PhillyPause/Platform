@@ -1,23 +1,13 @@
 @page "/{*Slug}"
 @inject ContentStore Content
 @inject IConfiguration Configuration
+@inject NavigationManager Navigation
 @using ManyHands.Data
 
 @* Every Markdown page routes through here. Static server rendering — no
    interactivity, so no WebAssembly download (PLAN.md 2.1). *@
 
-@if (_page is null)
-{
-    <PageMeta Title="Page not found" Description="That page does not exist on the PhillyPause site." />
-    <div class="wrap page-head">
-        <h1>That page does not exist</h1>
-        <p class="lead">
-            It may have moved. <a href="/">Start from the home page</a>,
-            or see <a href="/act">what you can do</a>.
-        </p>
-    </div>
-}
-else
+@if (_page is not null)
 {
     <PageMeta Title="@_page.Title" Description="@_page.Description" />
 
@@ -46,11 +36,10 @@ else
     {
         _page = Content.Find(Slug);
 
-        // Without this the catch-all answers an unknown URL with a 200 and a
-        // "not found" body — a soft 404, which search engines index as a real
-        // page. The status has to be set before anything is written, which on
-        // a static-SSR page means here.
+        // A real 404, not a 200 with a "not found" body (a soft 404, which
+        // search engines index as a page), rendered by NotFound.razor: the
+        // front page with its Not found dialog, like every other 404.
         if (_page is null && HttpContext is not null)
-            HttpContext.Response.StatusCode = StatusCodes.Status404NotFound;
+            Navigation.NotFound();
     }
 }
