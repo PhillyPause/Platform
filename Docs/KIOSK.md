@@ -58,7 +58,10 @@ The kiosk menu opens:
 
 - **Leave full screen** brings back the browser's own toolbar, and from
   there the screen's home and settings. The kiosk stops going full screen
-  until it is reloaded.
+  until it is reloaded. If the browser is keeping full screen itself (its
+  own full-screen button, or a TV browser that only runs full screen), a
+  page can't undo that, and the menu says so instead: press **Home** or
+  **Back** on the remote, or use the browser's own full-screen button.
 - **Keep going** closes the menu. It closes by itself after 20 seconds, in
   case a visitor finds it.
 

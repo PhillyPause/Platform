@@ -193,10 +193,11 @@ function start(root) {
   });
 
   // 5. The kiosk menu.
-  function openMenu() {
+  function openMenu(stuck = false) {
     menu.hidden = false;
     // An installed app is full screen for good: it is closed like any app.
-    root.querySelector('[data-kiosk-windowed]').hidden = installed();
+    root.querySelector('[data-kiosk-windowed]').hidden = installed() || stuck;
+    root.querySelector('[data-kiosk-stuck]').hidden = !stuck;
     clearTimeout(menuTimer);
     menuTimer = setTimeout(closeMenu, MENU_MS);
   }
@@ -226,10 +227,16 @@ function start(root) {
     else closeMenu();
   });
   root.querySelector('[data-kiosk-resume]').addEventListener('click', closeMenu);
+  // Full screen the page asked for, it can leave. Full screen the browser
+  // holds itself (its own button, or a TV browser that only ever runs full
+  // screen) it cannot, so the menu says how instead of doing nothing.
   root.querySelector('[data-kiosk-windowed]').addEventListener('click', () => {
     windowed = true;
-    closeMenu();
-    document.exitFullscreen?.().catch(() => {});
+    leaveFullScreen();
+    setTimeout(() => {
+      if (fullScreenElement() || fillsScreen()) openMenu(true);
+      else closeMenu();
+    }, 600);
   });
 
   addEventListener('online', probe);
@@ -296,12 +303,40 @@ async function stayAwake() {
   }
 }
 
+// Running as the installed app. A page the Fullscreen API has made full
+// screen matches display-mode: fullscreen too, so that alone is not enough.
 function installed() {
-  return matchMedia('(display-mode: fullscreen), (display-mode: standalone)').matches;
+  return matchMedia('(display-mode: fullscreen), (display-mode: standalone)').matches && !fullScreenElement();
+}
+
+// Standard first, then the webkit-prefixed forms older TV browsers have.
+function fullScreenElement() {
+  return document.fullscreenElement ?? document.webkitFullscreenElement ?? null;
 }
 
 function fullScreen() {
-  if (!installed() && !document.fullscreenElement) document.documentElement.requestFullscreen?.().catch(() => {});
+  if (installed() || fullScreenElement()) return;
+  const page = document.documentElement;
+  attempt(page.requestFullscreen ?? page.webkitRequestFullscreen, page);
+}
+
+function leaveFullScreen() {
+  attempt(document.exitFullscreen ?? document.webkitExitFullscreen, document);
+}
+
+// The prefixed forms return nothing rather than a promise, and either kind
+// may refuse; neither is worth more than trying.
+function attempt(method, target) {
+  try {
+    Promise.resolve(method?.call(target)).catch(() => {});
+  } catch {
+    // Refused outright.
+  }
+}
+
+// The whole screen with no browser toolbar showing.
+function fillsScreen() {
+  return innerWidth >= screen.width - 1 && innerHeight >= screen.height - 1;
 }
 
 // Escape on a keyboard, Back on a remote (461 is LG webOS's).
