@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging.Abstractions;
 namespace ManyHands.Tests;
 
 /// <summary>
-/// ManyHands serves one organisation and always will (Docs/MANYHANDS.md). The
+/// ManyHands serves one organisation and always will (Docs/ManyHands/MANYHANDS.md). The
 /// multi-chapter design it came from had a tenant column on every table and a
 /// row-level-security policy on each; these pin that none of it comes back.
 /// </summary>

@@ -33,7 +33,7 @@ builder.Services.AddSingleton(new ContentStore(
 
 // ManyHands, the volunteer system, is off unless ManyHands:Enabled is set.
 // Off, nothing of it is registered and the site needs no database; the home
-// page never touches one either way (Docs/MANYHANDS.md).
+// page never touches one either way (Docs/ManyHands/MANYHANDS.md).
 var manyHandsEnabled = builder.Configuration.IsManyHandsEnabled();
 if (manyHandsEnabled)
 {

@@ -1,6 +1,6 @@
 # The kiosk
 
-[phillypause.org/kiosk](https://phillypause.org/kiosk) is what the table's
+[phillypause.org/kiosk((https://phillypause.org/kiosk) is what the table's
 screen shows: a loop of bold, full-screen beats meant to be read from ten
 feet away, outdoors, by people who were not planning to stop. It is part of
 the site, not a second one, and installs as an app of its own. Unlisted and
@@ -133,7 +133,7 @@ and is closed like any app. Turn off the device's screen timeout and sleep.
 The greeting is "Hey, Philly!" until `?at=` sets it, and the device keeps
 the last one it was given, in the browser and in the installed app.
 
-Every claim on it is from [INCIDENT_FACTS.md](INCIDENT_FACTS.md) or the
+Every claim on it is from [INCIDENT_FACTS.md((INCIDENT_FACTS.md) or the
 explainer's script. Beats are edited in `Kiosk.razor`; each one's time on
 screen is its `data-seconds`.
 

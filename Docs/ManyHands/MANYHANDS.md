@@ -270,7 +270,7 @@ on. A supplement for a page that does not exist stops the site starting.
 ## 4. Data
 
 Postgres, one schema (`public`), defined by
-[`ManyHands/ManyHands.Data/Scripts/0001_schema.sql`](../ManyHands/ManyHands.Data/Scripts/0001_schema.sql).
+[`ManyHands/ManyHands.Data/Scripts/0001_schema.sql`](../../ManyHands/ManyHands.Data/Scripts/0001_schema.sql).
 
 | Table | Holds |
 |---|---|
@@ -394,4 +394,4 @@ so `dotnet test` needs Docker running too.
 
 All of it is built and tested, flag on and flag off. It is **off in
 production**; switching it on is a runbook, in
-[`HOSTING.md`](HOSTING.md) under "Switching it on".
+[`HOSTING.md`](../Platform/HOSTING.md) under "Switching it on".

@@ -9,7 +9,7 @@ Cloudflare.
 | Region | `nyc` |
 | Size | `apps-s-1vcpu-0.5gb` — 1 shared vCPU, 512 MiB, $5/month |
 | Default ingress | `phillypause-platform-ntkmt.ondigitalocean.app` |
-| Spec | [`Deploy/digitalocean/app.yaml`](../Deploy/digitalocean/app.yaml) |
+| Spec | [`Deploy/digitalocean/app.yaml`](../../Deploy/digitalocean/app.yaml) |
 
 ## The spec is the record
 
@@ -94,7 +94,7 @@ Two things to keep true:
 ManyHands is served by this same component, so the spec has one ingress rule
 and always will (PLAN.md §2.2). It is off in production: the spec sets no
 `ManyHands__Enabled`, and no database is attached. Every key is in
-[`MANYHANDS.md`](MANYHANDS.md) §5.
+[`MANYHANDS.md`](../ManyHands/MANYHANDS.md) §5.
 
 ### Switching it on
 
