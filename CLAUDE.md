@@ -27,7 +27,8 @@ The full plan — architecture, content strategy, licensing, phases — is
 | `ManyHands.Tests/` | xunit against real Postgres (Testcontainers) |
 | `Platform.AppHost/` | .NET Aspire: local orchestration only, never deployed |
 | `Platform.ServiceDefaults/` | `AddServiceDefaults()`: OpenTelemetry and health checks, for every service |
-| `Docs/` | PLAN, MANYHANDS, HOSTING, KIOSK (the table's screen, `/kiosk`), YOUTUBE (the channel's settings and images), and DESIGN / CONTENT / MOTION as they land |
+| `Docs/` | PLAN, MANYHANDS, HOSTING, KIOSK (the table's screen, `/kiosk`), YOUTUBE (the channel's settings), and DESIGN / CONTENT / MOTION as they land |
+| `Brand/` | The master logo (`Logo/PhillyPause.svg`), the YouTube images, the print poster |
 
 Projects are `<Product>.<Role>` — product area first, job second. Folder,
 project file, assembly and root namespace are all the same string, with no

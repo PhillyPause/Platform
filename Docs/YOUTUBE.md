@@ -5,8 +5,8 @@ explainer and what follows it. This is every setting the channel has, in the
 order YouTube Studio shows them, so it can be set up again or checked.
 Studio is [studio.youtube.com](https://studio.youtube.com).
 
-The images are in [`Docs/YouTube/`](YouTube/). All three are made from the
-cleared PhillyPause mark (`Website.Portal/wwwroot/phillypause-logo.svg`): the
+The images are in [`Brand/YouTube/`](../Brand/YouTube/). All three are made from the
+cleared PhillyPause mark ([`Brand/Logo/PhillyPause.svg`](../Brand/Logo/PhillyPause.svg)): the
 navy Liberty Bell with its pause bars, without the wordmark, which would be
 unreadable at the sizes YouTube shows.
 
@@ -18,18 +18,18 @@ anyone's chapter.
 
 ### Picture
 
-**Change** → [`Docs/YouTube/PhillyPause_YouTube_Picture_800.png`](YouTube/PhillyPause_YouTube_Picture_800.png)
+**Change** → [`Brand/YouTube/PhillyPause_YouTube_Picture_800.png`](../Brand/YouTube/PhillyPause_YouTube_Picture_800.png)
 
-<img src="YouTube/PhillyPause_YouTube_Picture_800.png" alt="The navy bell on ivory" width="160">
+<img src="../Brand/YouTube/PhillyPause_YouTube_Picture_800.png" alt="The navy bell on ivory" width="160">
 
 The bell on ivory, 800 × 800. YouTube cuts it to a circle and shows it as
 small as 98 × 98, so the bell sits well inside the circle.
 
 ### Banner image
 
-**Change** → [`Docs/YouTube/PhillyPause_YouTube_Banner_2560x1440.png`](YouTube/PhillyPause_YouTube_Banner_2560x1440.png)
+**Change** → [`Brand/YouTube/PhillyPause_YouTube_Banner_2560x1440.png`](../Brand/YouTube/PhillyPause_YouTube_Banner_2560x1440.png)
 
-<img src="YouTube/PhillyPause_YouTube_Banner_2560x1440.png" alt="STOP THE AI DEATH RACE on dark rays" width="480">
+<img src="../Brand/YouTube/PhillyPause_YouTube_Banner_2560x1440.png" alt="STOP THE AI DEATH RACE on dark rays" width="480">
 
 "Stop the AI death race", in the kiosk's condensed Archivo and colours, on
 dark rays. 2560 × 1440. Every word sits inside the centre 1546 × 423, the
@@ -37,9 +37,9 @@ strip every device shows, so accept the crop Studio offers as it is.
 
 ### Video watermark
 
-**Change** → [`Docs/YouTube/PhillyPause_YouTube_Watermark_150.png`](YouTube/PhillyPause_YouTube_Watermark_150.png)
+**Change** → [`Brand/YouTube/PhillyPause_YouTube_Watermark_150.png`](../Brand/YouTube/PhillyPause_YouTube_Watermark_150.png)
 
-<img src="YouTube/PhillyPause_YouTube_Watermark_150.png" alt="The bell on an ivory disc" width="75">
+<img src="../Brand/YouTube/PhillyPause_YouTube_Watermark_150.png" alt="The bell on an ivory disc" width="75">
 
 The bell on an ivory disc, transparent around it, so it shows on dark and
 light video alike. 150 × 150. **Display time: Entire video.** It is a
