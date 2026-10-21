@@ -41,10 +41,17 @@ public static class ManyHandsPaths
     public static string AcceptInvite(string token) => $"/volunteer/join/{token}";
 
     /// <summary>
-    /// The link in a joining email that says "this address is mine". A page
-    /// with a button, like sign-in, so a mail scanner cannot confirm anyone.
+    /// The link in a joining email that says "this address is mine": the
+    /// front page with a dialog whose button, not the visit, confirms, so a
+    /// mail scanner cannot confirm anyone.
     /// </summary>
     public static string ConfirmJoin(string token) => $"/volunteer/confirm/{token}";
+
+    /// <summary>
+    /// Where confirming lands: the front page with the welcome open, after a
+    /// redirect, so the account bar already shows them signed in.
+    /// </summary>
+    public const string Welcome = "/volunteer/welcome";
 
     /// <summary>"Not you, or changed your mind?": asks, then deletes the person outright.</summary>
     public static string Remove(Guid commsKey) => $"/volunteer/remove/{commsKey}";

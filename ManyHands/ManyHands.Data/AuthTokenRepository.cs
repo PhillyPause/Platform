@@ -71,6 +71,31 @@ public sealed class AuthTokenRepository(NpgsqlDataSource db)
             cancellationToken: ct));
 
     /// <summary>
+    /// Who a confirmation link is for, without spending it: the page that
+    /// asks "is this you?" greets them by name and offers "that's not me".
+    /// Null for a link that would not confirm anyone.
+    /// </summary>
+    public async Task<PendingConfirmation?> PeekConfirmationAsync(string rawToken, CancellationToken ct = default)
+    {
+        if (string.IsNullOrWhiteSpace(rawToken)) return null;
+
+        await using var conn = await db.OpenConnectionAsync(ct);
+        return await conn.QuerySingleOrDefaultAsync<PendingConfirmation>(new CommandDefinition(
+            """
+            SELECT v.id AS volunteer_id, v.display_name, v.comms_key
+            FROM auth_tokens t
+            JOIN volunteers v ON v.id = t.volunteer_id
+            WHERE t.token_hash = @hash
+              AND t.purpose = @purpose
+              AND t.consumed_at IS NULL
+              AND t.expires_at > now()
+              AND v.email_verified_at IS NULL
+              AND NOT v.is_deleted
+            """,
+            new { hash = Tokens.Hash(rawToken), purpose = ConfirmPurpose }, cancellationToken: ct));
+    }
+
+    /// <summary>
     /// Confirms the address a confirmation link went to, once. It works only
     /// while the address is unconfirmed, and spends every confirmation link
     /// the person holds, so a month-old email cannot sign anyone in later.
@@ -165,6 +190,9 @@ public sealed class AuthTokenRepository(NpgsqlDataSource db)
             cancellationToken: ct));
     }
 }
+
+/// <summary>The person an unspent confirmation link is for.</summary>
+public sealed record PendingConfirmation(Guid VolunteerId, string DisplayName, Guid CommsKey);
 
 /// <summary>Random, URL-safe, single-purpose secrets, stored only as hashes.</summary>
 internal static class Tokens

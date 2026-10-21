@@ -140,18 +140,29 @@ public sealed class VolunteerPagesTests(DatabaseFixture db) : IAsyncLifetime
         var joined = Assert.IsType<JoinResult.Ok>(await volunteers.JoinAsync("Confirmer", TestData.NewEmail(), []));
         var link = ManyHandsPaths.ConfirmJoin(await new AuthTokenRepository(db.DataSource).IssueConfirmationAsync(joined.VolunteerId));
 
-        await _portal.Browser().GetAsync(link);
+        var opened = await _portal.Browser().GetStringAsync(link);
         Assert.Null((await volunteers.GetByIdAsync(joined.VolunteerId))!.EmailVerifiedAt);
+        var key = (await volunteers.GetByIdAsync(joined.VolunteerId))!.CommsKey;
+
+        // The front page, with the question in a dialog: the button, and the
+        // way out as a link beside it.
+        Assert.Contains("id=\"confirm-open\" class=\"dlgtoggle\" checked", opened);
+        Assert.Contains("Is this you, Confirmer?", opened);
+        Assert.Contains($"href=\"{ManyHandsPaths.Remove(key)}\"", opened);
 
         var person = _portal.Browser();
         var answer = await Forms.SubmitAsync(person, link, "confirm");
 
-        Assert.Contains("You are in, Confirmer", await answer.Content.ReadAsStringAsync());
+        Assert.Equal(HttpStatusCode.Redirect, answer.StatusCode);
+        Assert.Equal(ManyHandsPaths.Welcome, answer.Headers.Location?.PathAndQuery);
         Assert.NotNull((await volunteers.GetByIdAsync(joined.VolunteerId))!.EmailVerifiedAt);
-        Assert.Contains("Hello, Confirmer", await person.GetStringAsync(ManyHandsPaths.Me));
 
-        var again = await Forms.SubmitAsync(_portal.Browser(), link, "confirm");
-        Assert.Contains("This link has done its job", await again.Content.ReadAsStringAsync());
+        var welcome = await person.GetStringAsync(ManyHandsPaths.Welcome);
+        Assert.Contains("id=\"welcome-open\" class=\"dlgtoggle\" checked", welcome);
+        Assert.Contains("You are in, Confirmer", welcome);
+        Assert.Contains("Signed in as <strong>Confirmer</strong>", welcome);
+
+        Assert.Contains("This link has done its job", await _portal.Browser().GetStringAsync(link));
     }
 
     [Fact]
@@ -161,12 +172,18 @@ public sealed class VolunteerPagesTests(DatabaseFixture db) : IAsyncLifetime
         var joined = Assert.IsType<JoinResult.Ok>(await volunteers.JoinAsync("Mistaken", TestData.NewEmail(), []));
         var link = ManyHandsPaths.Remove((await volunteers.GetByIdAsync(joined.VolunteerId))!.CommsKey);
 
-        await _portal.Browser().GetAsync(link);
+        var opened = await _portal.Browser().GetStringAsync(link);
         Assert.False((await volunteers.GetByIdAsync(joined.VolunteerId))!.IsDeleted);
+        Assert.Contains("id=\"remove-open\" class=\"dlgtoggle\" checked", opened);
 
-        var answer = await Forms.SubmitAsync(_portal.Browser(), link, "remove");
+        var person = _portal.Browser();
+        await Forms.SignInAsync(person, db.DataSource, joined.VolunteerId);
+        var answer = await Forms.SubmitAsync(person, link, "remove");
 
-        Assert.Contains("you are off our list", await answer.Content.ReadAsStringAsync());
+        Assert.Equal($"{link}?removed=true", answer.Headers.Location?.PathAndQuery);
+        var done = await person.GetStringAsync(answer.Headers.Location!.PathAndQuery);
+        Assert.Contains("you are off our list", done);
+        Assert.DoesNotContain("Signed in as", done);
         Assert.True((await volunteers.GetByIdAsync(joined.VolunteerId))!.IsDeleted);
     }
 

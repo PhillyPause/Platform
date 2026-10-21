@@ -1,0 +1,78 @@
+@inject VolunteerRepository Volunteers
+@inject ActivityTypeRepository Types
+@inject ILogger<WelcomeDialog> Logger
+
+@* Where confirming lands, in a front-page dialog: they are in, what that
+   means, and where to go next. It reads the person from the sign-in cookie
+   that confirming just set; anyone else who opens the address gets the same
+   welcome without a name, which says nothing about anybody. *@
+
+<h2>@(_name is null ? "You are in" : $"You are in, {_name}")</h2>
+<p class="joinlede">
+    Thank you. Your address is confirmed and you are signed in on this device.
+    Here is what happens now.
+</p>
+
+<div class="joinways">
+    <div class="joinway">
+        <div class="joinway-k">We tell you what is on</div>
+        <p>
+            @if (_interests.Count > 0)
+            {
+                @:When something comes up that matches what you ticked (@string.Join(", ", _interests)), we email you.
+            }
+            else
+            {
+                @:When something comes up that matches what you like doing, we email you. Tick a few things on your page so we know.
+            }
+            One or two emails a month at most.
+        </p>
+    </div>
+    <div class="joinway">
+        <div class="joinway-k">You come to one thing</div>
+        <p>Our next event is always in the box at the top of the front page. Come to that one, or pick anything from Events, and decide afterwards.</p>
+    </div>
+    <div class="joinway">
+        <div class="joinway-k">Your page</div>
+        <p>Your signups and interests live on your page, changeable any time. It also downloads everything we hold about you, and deletes you with one button.</p>
+    </div>
+    <div class="joinway">
+        <div class="joinway-k">No strings</div>
+        <p>Nobody is counting your hours and nobody will chase you if a month goes by. Every email has a one-click way out.</p>
+    </div>
+</div>
+
+<div class="joinform">
+    <div class="signuprow">
+        <label class="signupbtn" for="events-open">See events</label>
+        <a class="signupalt confirm-alt" href="@ManyHandsPaths.Me">Your page</a>
+        <label class="signupalt confirm-alt" for="dlg-none">Back to the front page</label>
+    </div>
+</div>
+
+@code {
+    [CascadingParameter] private HttpContext HttpContext { get; set; } = default!;
+
+    private string? _name;
+    private IReadOnlyList<string> _interests = [];
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (HttpContext.User.VolunteerId() is not Guid id) return;
+        _name = HttpContext.User.DisplayName();
+
+        try
+        {
+            var ticked = await Volunteers.GetInterestIdsAsync(id);
+            _interests = (await Types.GetActiveAsync())
+                .Where(t => ticked.Contains(t.Id))
+                .Select(t => t.Label)
+                .ToList();
+        }
+        catch (Exception e) when (e is Npgsql.NpgsqlException or TimeoutException)
+        {
+            // The welcome still stands without the list.
+            Logger.LogWarning(e, "The welcome could not read interests: the database is unreachable");
+        }
+    }
+}

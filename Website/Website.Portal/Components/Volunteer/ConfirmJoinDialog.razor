@@ -1,0 +1,130 @@
+@inject AuthTokenRepository Tokens
+@inject AdminBootstrap Admins
+@inject VolunteerRepository Volunteers
+@inject ActivityTypeRepository Types
+@inject NavigationManager Navigation
+@inject ILogger<ConfirmJoinDialog> Logger
+
+@* What the link in a joining email opens: the front page, with this in a
+   dialog. Opening it spends nothing, because mail scanners open every link
+   in a message; the button does. Pressing it confirms the address, signs
+   the person in (it proves they read mail there, as a sign-in link does)
+   and hands them to the welcome. "That's not me" is a link, not a second
+   button: it is the way out, and should read as one. *@
+
+@if (_unavailable)
+{
+    <h2>Not this minute</h2>
+    <p class="joinlede">We cannot reach our records just now. Your link still works: try it again in a few minutes.</p>
+}
+else if (_pending is null)
+{
+    <h2>This link has done its job</h2>
+    <p class="joinlede">
+        It has been used already, or it is more than a month old. If you have clicked one
+        of these before, you are all set and there is nothing more to do.
+    </p>
+    <div class="joinform">
+        <p class="joinform-ask">Signing in confirms your address too, any time.</p>
+        <div class="signuprow">
+            <a class="signupbtn" href="@ManyHandsPaths.SignIn">Sign in</a>
+            <label class="signupalt confirm-alt" for="dlg-none">Back to the front page</label>
+        </div>
+    </div>
+}
+else
+{
+    <h2>Is this you, @_pending.DisplayName?</h2>
+    <p class="joinlede">
+        Someone joined PhillyPause with this email address. If it was you, one click tells
+        us the address is really yours, and you are in.
+    </p>
+
+    <div class="joinway">
+        <div class="joinway-k">What you will hear about</div>
+        <p>
+            @if (_interests.Count > 0)
+            {
+                @:Only things that match what you ticked: @string.Join(", ", _interests).
+            }
+            else
+            {
+                @:Nothing you did not ask for. You can tick what you like doing on your page afterwards.
+            }
+            One or two emails a month, and every one has a one-click way out.
+        </p>
+    </div>
+
+    <div class="joinform">
+        <EditForm Model="Input" FormName="confirm" OnSubmit="ConfirmAsync" class="signup">
+            <div class="signuprow">
+                <button type="submit">Yes, that's me</button>
+                <a class="signupalt confirm-alt" href="@ManyHandsPaths.Remove(_pending.CommsKey)" data-enhance-nav="false">That's not me</a>
+            </div>
+        </EditForm>
+    </div>
+}
+
+@code {
+    [Parameter, EditorRequired] public required string Token { get; set; }
+
+    [CascadingParameter] private HttpContext HttpContext { get; set; } = default!;
+
+    // The button carries nothing; the token is in the address.
+    [SupplyParameterFromForm(FormName = "confirm")] private ConfirmInput? Input { get; set; }
+
+    private PendingConfirmation? _pending;
+    private IReadOnlyList<string> _interests = [];
+    private bool _unavailable;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Input ??= new();
+
+        // The token is in this page's address; nothing it links to needs to see it.
+        HttpContext.Response.Headers["Referrer-Policy"] = "no-referrer";
+
+        try
+        {
+            _pending = await Tokens.PeekConfirmationAsync(Token);
+            if (_pending is null) return;
+
+            var ticked = await Volunteers.GetInterestIdsAsync(_pending.VolunteerId);
+            _interests = (await Types.GetActiveAsync())
+                .Where(t => ticked.Contains(t.Id))
+                .Select(t => t.Label)
+                .ToList();
+        }
+        catch (Exception e) when (e is Npgsql.NpgsqlException or TimeoutException)
+        {
+            // The front page never fails for want of ManyHands (CLAUDE.md).
+            Logger.LogWarning(e, "The confirmation dialog could not reach the database");
+            _unavailable = true;
+        }
+    }
+
+    private async Task ConfirmAsync()
+    {
+        if (_unavailable) return;
+
+        if (await Tokens.ConfirmAsync(Token) is MagicLinkResult.Ok ok)
+        {
+            await Admins.ApplyAsync(ok.VolunteerId);
+
+            // Read after the bootstrap, so a new admin's first cookie says so.
+            if (await Volunteers.GetByIdAsync(ok.VolunteerId) is { IsDeleted: false } volunteer)
+            {
+                await VolunteerSession.SignInAsync(HttpContext, volunteer);
+
+                // Redirected, so the welcome loads with the account bar
+                // already showing them signed in.
+                Navigation.NavigateTo(ManyHandsPaths.Welcome);
+                return;
+            }
+        }
+
+        _pending = null;
+    }
+
+    private sealed class ConfirmInput;
+}
