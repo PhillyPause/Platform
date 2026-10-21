@@ -1,32 +1,23 @@
 @inject ActivityTypeRepository Types
 @inject VolunteerRepository Volunteers
 @inject FormThrottle Throttle
+@inject NavigationManager Navigation
 @inject ILogger<JoinForm> Logger
 
 @* Joining: name, email and interests, inside the front page's Join us dialog
    rather than on a page of its own. A plain static form: it posts to /join,
    which is the front page with the dialog open, so the answer lands where
    the question was: the anchor scrolls the dialog to the reply, or to what
-   needs fixing. Only rendered with ManyHands on. *@
+   needs fixing. Someone new is redirected to the Check your email dialog
+   instead, since opening that email is the one thing left to do. Only
+   rendered with ManyHands on. *@
 
 <div id="@Anchor">
 @if (_joined is not null)
 {
     <div class="joindone" role="status">
-        @if (_joined.Confirmed)
-        {
-            <p class="joindone-head">You are already one of us</p>
-            <p>We have saved what you ticked alongside what you told us before.</p>
-        }
-        else
-        {
-            <p class="joindone-head">Nearly there: check your email</p>
-            <p>
-                @(_joined.AlreadyMember ? "We have sent it again." : "We have sent you one email.")
-                Click the link in it, so we know the address is yours, and you are in.
-                Until you do, we send nothing else.
-            </p>
-        }
+        <p class="joindone-head">You are already one of us</p>
+        <p>We have saved what you ticked alongside what you told us before.</p>
         <label class="signupbtn" for="events-open">See events</label>
     </div>
 }
@@ -106,7 +97,9 @@ else
         var result = await Volunteers.JoinAsync(
             Input!.DisplayName, Input.Email, InterestChoices.Read(HttpContext));
 
-        if (result is JoinResult.Ok ok) _joined = ok;
+        if (result is JoinResult.Ok { Confirmed: false } pending)
+            Navigation.NavigateTo(pending.AlreadyMember ? $"{ManyHandsPaths.CheckEmail}?again=true" : ManyHandsPaths.CheckEmail);
+        else if (result is JoinResult.Ok ok) _joined = ok;
         else _refused = "That does not look like an email address.";
     }
 

@@ -20,6 +20,7 @@ public class ManyHandsGateTests(WebApplicationFactory<Program> factory)
     [InlineData("/volunteer/calendar.ics")]
     [InlineData("/volunteer/confirm/abc")]
     [InlineData("/volunteer/welcome")]
+    [InlineData("/volunteer/check-email")]
     [InlineData("/volunteer/remove/00000000-0000-0000-0000-000000000001")]
     [InlineData("/team")]
     public async Task ManyHands_paths_are_not_found_while_it_is_off(string path)

@@ -3,6 +3,7 @@
 @page "/events"
 @page "/volunteer/confirm/{ConfirmToken}"
 @page "/volunteer/welcome"
+@page "/volunteer/check-email"
 @page "/volunteer/remove/{RemoveKey:guid}"
 @layout BroadsheetLayout
 @using ManyHands.Core
@@ -26,7 +27,7 @@
 
 <PageMeta Title="Stop the AI death race"
           Description="In July 2026, 700 AI agents broke out of their sandboxes to cheat on a test. PhillyPause is an independent, volunteer-run Philadelphia organisation working to stop the AI death race."
-          Canonical="@(JoinOpen || EventsOpen || ConfirmOpen || WelcomeOpen || RemoveOpen ? Navigation.BaseUri : null)" />
+          Canonical="@(JoinOpen || EventsOpen || ConfirmOpen || WelcomeOpen || RemoveOpen || CheckEmailOpen ? Navigation.BaseUri : null)" />
 
 
 <div class="broadsheet" style="background: #FBF8F1; color: #15110C; font-family: Archivo, sans-serif">
@@ -38,7 +39,7 @@
      /join and /events are the exceptions: each loads with its own dialog
      already open (/join is the address on posters), and closing it leaves the
      reader on the front page. *@
-  <input type="radio" name="dlg" id="dlg-none" class="dlgtoggle" checked="@(!JoinOpen && !EventsOpen && !ConfirmOpen && !WelcomeOpen && !RemoveOpen)" aria-label="No panel open">
+  <input type="radio" name="dlg" id="dlg-none" class="dlgtoggle" checked="@(!JoinOpen && !EventsOpen && !ConfirmOpen && !WelcomeOpen && !RemoveOpen && !CheckEmailOpen)" aria-label="No panel open">
   <input type="radio" name="dlg" id="watch-open" class="dlgtoggle" aria-label="Watch">
   <input type="radio" name="dlg" id="panel-open" class="dlgtoggle" aria-label="Who is on the panel">
   <input type="radio" name="dlg" id="join-open" class="dlgtoggle" checked="@JoinOpen" aria-label="Join us">
@@ -57,6 +58,7 @@
        with its dialog already open, as /join does. *@
     <input type="radio" name="dlg" id="confirm-open" class="dlgtoggle" checked="@ConfirmOpen" aria-label="Finish joining">
     <input type="radio" name="dlg" id="welcome-open" class="dlgtoggle" checked="@WelcomeOpen" aria-label="Welcome">
+    <input type="radio" name="dlg" id="check-open" class="dlgtoggle" checked="@CheckEmailOpen" aria-label="Check your email">
     <input type="radio" name="dlg" id="remove-open" class="dlgtoggle" checked="@RemoveOpen" aria-label="Leave the list">
   }
 
@@ -474,6 +476,21 @@
         </div>
       </div>
     }
+    @if (CheckEmailOpen)
+    {
+      <div class="paneldlg d-check">
+        <label class="paneldlg-scrim" for="dlg-none" aria-label="Close"></label>
+        <div class="paneldlg-box" role="dialog" aria-modal="true" aria-labelledby="checkdlg-title">
+          <div class="paneldlg-head">
+            <span id="checkdlg-title">Nearly there</span>
+            <label class="paneldlg-x" for="dlg-none" aria-label="Close">&times;</label>
+          </div>
+          <div class="paneldlg-body joinbody">
+            <Website.Portal.Components.Volunteer.CheckEmailDialog />
+          </div>
+        </div>
+      </div>
+    }
     @if (RemoveOpen)
     {
       <div class="paneldlg d-remove">
@@ -739,6 +756,8 @@
     private bool WelcomeOpen => ManyHandsOn && IsAt(ManyHandsPaths.Welcome);
 
     private bool RemoveOpen => ManyHandsOn && RemoveKey is not null;
+
+    private bool CheckEmailOpen => ManyHandsOn && IsAt(ManyHandsPaths.CheckEmail);
 
     private bool IsAt(string path) =>
         ("/" + Navigation.ToBaseRelativePath(Navigation.Uri).Split('?', '#')[0])

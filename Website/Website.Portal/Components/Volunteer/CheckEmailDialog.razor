@@ -1,0 +1,54 @@
+@using ManyHands.Data.Email
+@using Microsoft.Extensions.Options
+@inject IOptions<EmailOptions> EmailSettings
+
+@* Where joining lands, in a front-page dialog of its own: the one thing left
+   to do is open an email, so that is all this says, with what to look for
+   and what to do if it does not come. A redirect rather than a reply inside
+   Join us, so the answer is not tucked under the form, and a reload does not
+   join again. It names nobody: the address is not in the URL. *@
+
+<h2>Check your email</h2>
+<p class="joinlede">
+    @(Again ? "We have sent it again" : "We have sent one email") to the address you gave.
+    Click the link in it, so we know the address is yours, and you are in. Until you
+    do, we send nothing else.
+</p>
+
+<div class="joinways">
+    <div class="joinway">
+        <div class="joinway-k">What to look for</div>
+        <p>
+            From <strong>@EmailSettings.Value.FromAddress</strong>, titled
+            &ldquo;@EmailTemplates.ConfirmJoinSubject&rdquo;. Its link works for a month.
+        </p>
+    </div>
+    <div class="joinway">
+        <div class="joinway-k">Not there?</div>
+        <p>
+            Give it a few minutes, then look in spam or, in Gmail, the Promotions tab.
+            Still nothing? Join again with the same address and we send it again.
+        </p>
+    </div>
+    <div class="joinway">
+        <div class="joinway-k">Wrong address?</div>
+        <p>Join again with the right one. The wrong one gets a single reminder in a few days, then nothing.</p>
+    </div>
+    <div class="joinway">
+        <div class="joinway-k">Changed your mind?</div>
+        <p>The email has a link that takes your details off our list, no questions asked.</p>
+    </div>
+</div>
+
+<div class="joinform">
+    <div class="signuprow">
+        <label class="signupbtn" for="dlg-none">Back to the front page</label>
+        <label class="signupalt confirm-alt" for="join-open">Join with another address</label>
+    </div>
+</div>
+
+@code {
+    // Set by the redirect from joining. Anyone can add it to the address,
+    // and all it changes is "sent" to "sent again".
+    [SupplyParameterFromQuery(Name = "again")] private bool Again { get; set; }
+}
