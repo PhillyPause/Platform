@@ -366,6 +366,8 @@ body:has(.kiosk) { margin: 0; overflow: hidden; background: #15110C; }
 .kmenu[hidden] { display: none; }
 .kmenu .kback { min-width: 320px; min-height: 72px; font-size: 26px; }
 .kmenu .kquiet { background: transparent; }
+.kmenu .kstuck { max-width: 640px; margin: 0; padding: 0 24px; text-align: center; }
+.kmenu .kstuck[hidden] { display: none; }
 
 /* The site, framed under a bar that always leads back. Close up, so the
    reading sizes of the site itself. */
