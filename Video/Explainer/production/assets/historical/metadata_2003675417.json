@@ -1,0 +1,1644 @@
+{
+  "articles_and_essays": [
+    {
+      "score": 6.479453,
+      "title": "Treaty of Alliance with France: Primary Documents in American History",
+      "url": "https://guides.loc.gov/treaty-of-alliance-with-france"
+    }
+  ],
+  "cite_this": {
+    "apa": "(1780) <cite>Benjamin Franklin L.L.D. - envoy from the American Congress to the French Court</cite>. , 1780. [Photograph] Retrieved from the Library of Congress, https://www.loc.gov/item/2003675417/.",
+    "chicago": "<cite>Benjamin Franklin L.L.D. - envoy from the American Congress to the French Court</cite>. , 1780. Photograph. https://www.loc.gov/item/2003675417/.",
+    "mla": "<cite>Benjamin Franklin L.L.D. - envoy from the American Congress to the French Court</cite>. Photograph. Retrieved from the Library of Congress, &lt;www.loc.gov/item/2003675417/&gt;."
+  },
+  "item": {
+    "_version_": 1731660989792780288,
+    "access_restricted": false,
+    "aka": [
+      "https://www.loc.gov/pictures/item/2003675417/",
+      "http://www.loc.gov/item/2003675417/",
+      "http://www.loc.gov/pictures/item/2003675417/",
+      "https://www.loc.gov/pictures/collection/cph/item/2003675417/",
+      "http://www.loc.gov/pictures/collection/cph/item/2003675417/",
+      "http://www.loc.gov/resource/cph.3a45459/",
+      "https://hdl.loc.gov/loc.pnp/cph.3a45459",
+      "http://lccn.loc.gov/2003675417"
+    ],
+    "call_number": "Illus. in E208 .I341 [Rare Book RR]",
+    "campaigns": [],
+    "control_number": "",
+    "created": "2016-04-21T03:12:37Z",
+    "created_published": [
+      "[1780]"
+    ],
+    "created_published_date": "[1780]",
+    "date": "1780-01-01",
+    "dates": [
+      {
+        "1780": "https://www.loc.gov/search/?dates=1780/1780&fo=json"
+      }
+    ],
+    "description": [
+      "1 print : engraving. | Print shows Benjamin Franklin, three-quarter length portrait, seated at desk, facing right with left arm resting on arm of chair."
+    ],
+    "digital_id": [
+      "cph 3a45459 //hdl.loc.gov/loc.pnp/cph.3a45459"
+    ],
+    "digitized": true,
+    "display_offsite": true,
+    "extract_timestamp": "2021-08-25T06:52:31.439Z",
+    "extract_urls": [
+      "http://www.loc.gov/pictures/collection/cph/item/2003675417/#cph",
+      "http://lccn.loc.gov/2003675417#catalog-split-03"
+    ],
+    "format": [
+      {
+        "photo, print, drawing": "https://www.loc.gov/search/?fa=original_format:photo,+print,+drawing&fo=json"
+      }
+    ],
+    "format_headings": [
+      "Book illustrations--1780.",
+      "Engravings--1780.",
+      "Portrait prints--1780."
+    ],
+    "genre": [
+      "Portrait prints--1780",
+      "Book illustrations--1780",
+      "Engravings--1780"
+    ],
+    "group": [
+      "cph",
+      "catalog-split-03",
+      "catalog",
+      "miscellaneous-items-high-demand",
+      "main-catalog-split-03",
+      "main-catalog"
+    ],
+    "hassegments": false,
+    "id": "http://www.loc.gov/item/2003675417/",
+    "image_url": [
+      "https://tile.loc.gov/storage-services/service/pnp/cph/3a40000/3a45000/3a45400/3a45459_150px.jpg#h=150&w=96",
+      "https://tile.loc.gov/storage-services/service/pnp/cph/3a40000/3a45000/3a45400/3a45459t.gif#h=150&w=96",
+      "https://tile.loc.gov/storage-services/service/pnp/cph/3a40000/3a45000/3a45400/3a45459r.jpg#h=640&w=410"
+    ],
+    "index": 1,
+    "item": {
+      "call_number": "Illus. in E208 .I341 [Rare Book RR]",
+      "control_number": "2003675417",
+      "created": "2016-04-21T03:12:37Z",
+      "created_published": "[1780]",
+      "created_published_date": "[1780]",
+      "date": "[1780]",
+      "digital_id": [
+        "cph 3a45459 //hdl.loc.gov/loc.pnp/cph.3a45459"
+      ],
+      "display_offsite": true,
+      "format": [
+        "still image"
+      ],
+      "formats": [
+        {
+          "link": "https://www.loc.gov/pictures/related/?fi=format&q=Book%20illustrations--1780.&co=cph",
+          "title": "Book illustrations--1780."
+        },
+        {
+          "link": "https://www.loc.gov/pictures/related/?fi=format&q=Engravings--1780.&co=cph",
+          "title": "Engravings--1780."
+        },
+        {
+          "link": "https://www.loc.gov/pictures/related/?fi=format&q=Portrait%20prints--1780.&co=cph",
+          "title": "Portrait prints--1780."
+        }
+      ],
+      "genre": [
+        "Portrait prints--1780",
+        "Book illustrations--1780",
+        "Engravings--1780"
+      ],
+      "id": "2003675417",
+      "language": [
+        "eng"
+      ],
+      "link": "https://www.loc.gov/pictures/item/2003675417/",
+      "marc": "https://www.loc.gov/pictures/item/2003675417/marc/",
+      "medium": [
+        "1 print : engraving."
+      ],
+      "medium_brief": "1 print :",
+      "mediums": [
+        "1 print : engraving."
+      ],
+      "modified": "2016-04-21T03:12:37Z",
+      "notes": [
+        "Title from item.",
+        "Illus. in: An impartial history of the war in America, between Great Britain and her colonies, from its commencement to the end of the year 1779 [...]. London & Carlisle : Printed for R. Faulder, bookseller, [etc.], 1780, p. 345.",
+        "Published in: The American Revolution in drawings and prints; a checklist of 1765-1790 graphics in the Library of Congress / Compiled by Donald H. Cresswell, with a foreword by Sinclair H. Hitchings. Washington : [For sale by the Supt. of Docs., U.S. Govt. Print. Off.], 1975, no. 65."
+      ],
+      "other_control_numbers": [
+        "13328464"
+      ],
+      "repository": "Library of Congress Rare Book and Special Collections Division Washington, D.C. 20540 USA",
+      "reproduction_number": "LC-USZ62-45256 (b&w film copy neg.)",
+      "resource_links": [
+        "//hdl.loc.gov/loc.pnp/cph.3a45459"
+      ],
+      "rights_advisory": "No known restrictions on publication in the U.S. Use elsewhere may be restricted by other countries' laws. For general information see \"Copyright and Other Restrictions...\" (http://lcweb.loc.gov/rr/print/195_copr.html)",
+      "rights_information": "No known restrictions on publication in the U.S. Use elsewhere may be restricted by other countries' laws. For general information see \"Copyright and Other Restrictions...\" (http://lcweb.loc.gov/rr/print/195_copr.html)",
+      "service_low": "https://tile.loc.gov/storage-services/service/pnp/cph/3a40000/3a45000/3a45400/3a45459_150px.jpg",
+      "service_medium": "https://tile.loc.gov/storage-services/service/pnp/cph/3a40000/3a45000/3a45400/3a45459r.jpg",
+      "sort_date": "1780",
+      "source_created": "2003-08-29T00:00:00Z",
+      "source_modified": "2003-12-11T15:19:57Z",
+      "subject_headings": [
+        "Franklin, Benjamin,--1706-1790."
+      ],
+      "subjects": [
+        "Franklin, Benjamin,--1706-1790"
+      ],
+      "summary": "Print shows Benjamin Franklin, three-quarter length portrait, seated at desk, facing right with left arm resting on arm of chair.",
+      "thumb_gallery": "https://tile.loc.gov/storage-services/service/pnp/cph/3a40000/3a45000/3a45400/3a45459_150px.jpg",
+      "title": "Benjamin Franklin L.L.D. - envoy from the American Congress to the French Court"
+    },
+    "language": [
+      "english"
+    ],
+    "languages": [
+      {
+        "english": "https://www.loc.gov/search/?fa=language:english&fo=json"
+      }
+    ],
+    "library_of_congress_control_number": "2003675417",
+    "link": "https://www.loc.gov/pictures/item/2003675417/",
+    "marc": "https://www.loc.gov/pictures/item/2003675417/marc/",
+    "medium": [
+      "1 print : engraving."
+    ],
+    "medium_brief": "1 print :",
+    "mime_type": [
+      "image/gif",
+      "image/jpg",
+      "image/tif"
+    ],
+    "modified": "2016-04-21T03:12:37Z",
+    "notes": [
+      "Title from item.",
+      "Illus. in: An impartial history of the war in America, between Great Britain and her colonies, from its commencement to the end of the year 1779 [...]. London & Carlisle : Printed for R. Faulder, bookseller, [etc.], 1780, p. 345.",
+      "Published in: The American Revolution in drawings and prints; a checklist of 1765-1790 graphics in the Library of Congress / Compiled by Donald H. Cresswell, with a foreword by Sinclair H. Hitchings. Washington : [For sale by the Supt. of Docs., U.S. Govt. Print. Off.], 1975, no. 65."
+    ],
+    "number": [
+      "2003675417",
+      "2003-12-11t15:19:57",
+      "http://www.loc.gov/item/13328464"
+    ],
+    "number_former_id": [
+      "http://www.loc.gov/item/13328464"
+    ],
+    "number_lccn": [
+      "2003675417"
+    ],
+    "number_source_modified": [
+      "2003-12-11t15:19:57"
+    ],
+    "online_format": [
+      "image"
+    ],
+    "original_format": [
+      "photo, print, drawing"
+    ],
+    "other_control_numbers": [
+      "13328464"
+    ],
+    "other_formats": [
+      {
+        "label": "MARCXML Record",
+        "link": "https://lccn.loc.gov/2003675417/marcxml"
+      },
+      {
+        "label": "MODS Record",
+        "link": "https://lccn.loc.gov/2003675417/mods"
+      },
+      {
+        "label": "Dublin Core Record",
+        "link": "https://lccn.loc.gov/2003675417/dc"
+      }
+    ],
+    "partof": [
+      {
+        "count": 29790,
+        "title": "rare book and special collections division",
+        "url": "https://www.loc.gov/search/?fa=partof:rare+book+and+special+collections+division&fo=json"
+      },
+      {
+        "count": 110680,
+        "title": "miscellaneous items in high demand",
+        "url": "https://www.loc.gov/search/?fa=partof:miscellaneous+items+in+high+demand&fo=json"
+      },
+      {
+        "count": 910805,
+        "title": "prints & photographs online catalog (library of congress)",
+        "url": "https://www.loc.gov/search/?fa=partof:prints+%26+photographs+online+catalog+%28library+of+congress%29&fo=json"
+      },
+      {
+        "count": 1162287,
+        "title": "prints and photographs division",
+        "url": "https://www.loc.gov/search/?fa=partof:prints+and+photographs+division&fo=json"
+      },
+      {
+        "count": 1910564,
+        "title": "catalog",
+        "url": "https://www.loc.gov/search/?fa=partof:catalog&fo=json"
+      }
+    ],
+    "related": {
+      "neighbors": "https://www.loc.gov/pictures/related/?&co=cph&pk=2003675417&st=gallery&sb=call_number#focus"
+    },
+    "repository": [
+      "Library of Congress Rare Book and Special Collections Division Washington, D.C. 20540 USA"
+    ],
+    "reproduction_number": "LC-USZ62-45256 (b&w film copy neg.)",
+    "reproductions": [],
+    "resource_links": [
+      "//hdl.loc.gov/loc.pnp/cph.3a45459"
+    ],
+    "resources": [
+      {
+        "caption": "b&w film copy neg.",
+        "files": 1,
+        "image": "https://tile.loc.gov/storage-services/service/pnp/cph/3a40000/3a45000/3a45400/3a45459_150px.jpg",
+        "url": "https://www.loc.gov/resource/cph.3a45459/"
+      }
+    ],
+    "rights": [],
+    "rights_advisory": "No known restrictions on publication in the U.S. Use elsewhere may be restricted by other countries' laws. For general information see \"Copyright and Other Restrictions...\" (http://lcweb.loc.gov/rr/print/195_copr.html)",
+    "rights_information": "No known restrictions on publication in the U.S. Use elsewhere may be restricted by other countries' laws. For general information see \"Copyright and Other Restrictions...\" (http://lcweb.loc.gov/rr/print/195_copr.html)",
+    "score": 19.45949,
+    "shard": "00",
+    "shelf_id": "Illus. in E208 .I341 [Rare Book RR]",
+    "site": [
+      "pictures",
+      "catalog"
+    ],
+    "sort_date": "1780",
+    "source_created": "2003-08-29T00:00:00Z",
+    "source_modified": "2003-12-11T15:19:57Z",
+    "subject": [
+      "book illustrations",
+      "portrait prints",
+      "engravings",
+      "franklin, benjamin"
+    ],
+    "subject_headings": [
+      "Franklin, Benjamin,--1706-1790"
+    ],
+    "subjects": [
+      {
+        "book illustrations": "https://www.loc.gov/search/?fa=subject:book+illustrations&fo=json"
+      },
+      {
+        "engravings": "https://www.loc.gov/search/?fa=subject:engravings&fo=json"
+      },
+      {
+        "franklin, benjamin": "https://www.loc.gov/search/?fa=subject:franklin,+benjamin&fo=json"
+      },
+      {
+        "portrait prints": "https://www.loc.gov/search/?fa=subject:portrait+prints&fo=json"
+      }
+    ],
+    "summary": "Print shows Benjamin Franklin, three-quarter length portrait, seated at desk, facing right with left arm resting on arm of chair.",
+    "thumb_gallery": "https://tile.loc.gov/storage-services/service/pnp/cph/3a40000/3a45000/3a45400/3a45459_150px.jpg",
+    "timestamp": "2022-05-01T21:30:10.481Z",
+    "title": "Benjamin Franklin L.L.D. - envoy from the American Congress to the French Court",
+    "unrestricted": true,
+    "url": "https://www.loc.gov/item/2003675417/"
+  },
+  "more_like_this": [
+    {
+      "access_restricted": false,
+      "aka": [
+        "http://www.loc.gov/resource/cph.3g05316/",
+        "https://hdl.loc.gov/loc.pnp/ppmsca.02947",
+        "http://www.loc.gov/resource/cph.3a40394/",
+        "http://www.loc.gov/item/2002712199/",
+        "https://hdl.loc.gov/loc.pnp/cph.3a14895",
+        "https://hdl.loc.gov/loc.pnp/cph.3g05316",
+        "http://lccn.loc.gov/2002712199",
+        "http://www.loc.gov/resource/cph.3a14895/",
+        "http://www.loc.gov/resource/ppmsca.02947/",
+        "https://hdl.loc.gov/loc.pnp/cph.3a40394",
+        "https://www.loc.gov/pictures/item/2002712199/",
+        "http://www.loc.gov/pictures/item/2002712199/",
+        "https://www.loc.gov/pictures/collection/cph/item/2002712199/",
+        "http://www.loc.gov/pictures/collection/cph/item/2002712199/"
+      ],
+      "campaigns": [],
+      "contributor": [
+        "moorhead, scipio, active",
+        "moorhead, scipio"
+      ],
+      "date": "1773-01-01",
+      "dates": [
+        "1773"
+      ],
+      "description": [
+        "Phillis Wheatley, half-length portrait, seated at desk with pen and paper, facing left."
+      ],
+      "digitized": true,
+      "extract_timestamp": "2020-09-19T11:18:37.162Z",
+      "group": [
+        "awhbib",
+        "catalog-split-01",
+        "catalog",
+        "cph",
+        "american-womens-history",
+        "main-catalog-split-01",
+        "main-catalog",
+        "miscellaneous-items-high-demand"
+      ],
+      "hassegments": false,
+      "id": "http://www.loc.gov/item/2002712199/",
+      "image_url": [
+        "https://tile.loc.gov/storage-services/service/pnp/cph/3g00000/3g05000/3g05300/3g05316_150px.jpg#h=150&w=117",
+        "https://tile.loc.gov/storage-services/service/pnp/cph/3g00000/3g05000/3g05300/3g05316t.gif#h=150&w=117",
+        "https://tile.loc.gov/storage-services/service/pnp/cph/3g00000/3g05000/3g05300/3g05316r.jpg#h=640&w=499",
+        "https://tile.loc.gov/storage-services/service/pnp/cph/3g00000/3g05000/3g05300/3g05316v.jpg#h=1024&w=798"
+      ],
+      "index": 1,
+      "language": [
+        "english"
+      ],
+      "mime_type": [
+        "image/gif",
+        "image/jpg",
+        "image/tif"
+      ],
+      "number": [
+        "2002712199",
+        "http://www.loc.gov/item/2002712199",
+        "http://www.loc.gov/item/12847770",
+        "2018-07-26t09:51:00"
+      ],
+      "online_format": [
+        "image"
+      ],
+      "original_format": [
+        "photo, print, drawing"
+      ],
+      "partof": [
+        "miscellaneous items in high demand",
+        "american women: a gateway to library of congress resources for the study of women's history and culture in the united states",
+        "rare book and special collections division",
+        "prints and photographs division",
+        "catalog",
+        "prints & photographs online catalog (library of congress)"
+      ],
+      "score": 48.22087,
+      "shelf_id": "Illus. in PS866 .W5 1773",
+      "site": [
+        "catalog",
+        "pictures"
+      ],
+      "subject": [
+        "book illustrations",
+        "engravings",
+        "poets",
+        "wheatley, phillis",
+        "african americans",
+        "portrait prints",
+        "women",
+        "frontispieces"
+      ],
+      "timestamp": "2022-12-10T04:46:15.761Z",
+      "title": "Phillis Wheatley, Negro servant to Mr. John Wheatley, of Boston",
+      "type": [
+        "still image"
+      ],
+      "url": "https://www.loc.gov/item/2002712199/"
+    },
+    {
+      "access_restricted": false,
+      "aka": [
+        "https://hdl.loc.gov/loc.pnp/ppmsca.02878",
+        "http://www.loc.gov/resource/ppmsca.02878/",
+        "http://www.loc.gov/item/2002716766/",
+        "http://lccn.loc.gov/2002716766",
+        "https://www.loc.gov/pictures/item/2002716766/",
+        "http://www.loc.gov/pictures/item/2002716766/",
+        "https://www.loc.gov/pictures/collection/cph/item/2002716766/",
+        "http://www.loc.gov/pictures/collection/cph/item/2002716766/"
+      ],
+      "campaigns": [],
+      "contributor": [
+        "chapman, j. g. (john gadsby)",
+        "rawdon, wright & hatch"
+      ],
+      "date": "1847-01-01",
+      "dates": [
+        "1847"
+      ],
+      "description": [
+        "Native woman standing in stream, clutching her clothes to her breast."
+      ],
+      "digitized": true,
+      "extract_timestamp": "2020-09-19T11:19:55.674Z",
+      "group": [
+        "awhbib",
+        "cph",
+        "catalog-split-05",
+        "catalog",
+        "american-womens-history",
+        "miscellaneous-items-high-demand",
+        "main-catalog-split-05",
+        "main-catalog"
+      ],
+      "hassegments": false,
+      "id": "http://www.loc.gov/item/2002716766/",
+      "image_url": [
+        "https://tile.loc.gov/storage-services/service/pnp/ppmsca/02800/02878_150px.jpg#h=150&w=92",
+        "https://tile.loc.gov/storage-services/service/pnp/ppmsca/02800/02878t.gif#h=150&w=92",
+        "https://tile.loc.gov/storage-services/service/pnp/ppmsca/02800/02878r.jpg#h=640&w=391",
+        "https://tile.loc.gov/storage-services/service/pnp/ppmsca/02800/02878v.jpg#h=1024&w=625"
+      ],
+      "index": 2,
+      "language": [
+        "english"
+      ],
+      "mime_type": [
+        "image/gif",
+        "image/jpg",
+        "image/tif"
+      ],
+      "number": [
+        "http://www.loc.gov/item/12880151",
+        "2004-02-10t16:27:32",
+        "2002716766"
+      ],
+      "online_format": [
+        "image"
+      ],
+      "original_format": [
+        "photo, print, drawing"
+      ],
+      "partof": [
+        "miscellaneous items in high demand",
+        "american women: a gateway to library of congress resources for the study of women's history and culture in the united states",
+        "prints and photographs division",
+        "catalog",
+        "prints & photographs online catalog (library of congress)"
+      ],
+      "score": 44.43522,
+      "shelf_id": "Illus. in AY11 .E7",
+      "site": [
+        "catalog",
+        "pictures"
+      ],
+      "subject": [
+        "book illustrations",
+        "engravings",
+        "indians of north america",
+        "portrait prints",
+        "women",
+        "title pages"
+      ],
+      "timestamp": "2022-12-10T04:46:15.761Z",
+      "title": "[The chief's daughter]",
+      "type": [
+        "still image"
+      ],
+      "url": "https://www.loc.gov/item/2002716766/"
+    },
+    {
+      "access_restricted": false,
+      "aka": [
+        "http://www.loc.gov/resource/ppmsca.02895/",
+        "http://www.loc.gov/resource/ppmsca.02894/",
+        "https://hdl.loc.gov/loc.pnp/ppmsca.02894",
+        "https://hdl.loc.gov/loc.pnp/ppmsca.02895",
+        "http://lccn.loc.gov/2002716783",
+        "http://www.loc.gov/item/2002716783/",
+        "https://www.loc.gov/pictures/item/2002716783/",
+        "http://www.loc.gov/pictures/item/2002716783/",
+        "https://www.loc.gov/pictures/collection/cph/item/2002716783/",
+        "http://www.loc.gov/pictures/collection/cph/item/2002716783/"
+      ],
+      "campaigns": [],
+      "date": "1910-01-01",
+      "dates": [
+        "1910"
+      ],
+      "description": [
+        "Illus. in: Anarchism and other essays / Emma Goldman, with biographic sketch by Hippolyte Havel. New York : Mother Earth publishing association, 1910, frontispiece and title page. Paul Avrich Collection (Library of Congress). Copyright by T. Kajiwara. Published in: American women : a Library of Congress guide for the study of women's history and culture in the United States / edited by Sheridan Harvey ... [et al.]. Washington : Library of Congress, 2001, p. 115."
+      ],
+      "digitized": true,
+      "extract_timestamp": "2020-09-19T11:19:55.674Z",
+      "group": [
+        "awhbib",
+        "cph",
+        "catalog-split-04",
+        "catalog",
+        "american-womens-history",
+        "miscellaneous-items-high-demand",
+        "main-catalog-split-04",
+        "main-catalog"
+      ],
+      "hassegments": false,
+      "id": "http://www.loc.gov/item/2002716783/",
+      "image_url": [
+        "https://tile.loc.gov/storage-services/service/pnp/ppmsca/02800/02894_150px.jpg#h=150&w=95",
+        "https://tile.loc.gov/storage-services/service/pnp/ppmsca/02800/02894t.gif#h=150&w=95",
+        "https://tile.loc.gov/storage-services/service/pnp/ppmsca/02800/02894r.jpg#h=640&w=405",
+        "https://tile.loc.gov/storage-services/service/pnp/ppmsca/02800/02894v.jpg#h=1024&w=647"
+      ],
+      "index": 3,
+      "language": [
+        "english"
+      ],
+      "mime_type": [
+        "image/gif",
+        "image/jpg",
+        "image/tif"
+      ],
+      "number": [
+        "http://www.loc.gov/item/12892574",
+        "2003-12-15t17:30:21",
+        "2002716783"
+      ],
+      "online_format": [
+        "image"
+      ],
+      "original_format": [
+        "photo, print, drawing"
+      ],
+      "partof": [
+        "miscellaneous items in high demand",
+        "american women: a gateway to library of congress resources for the study of women's history and culture in the united states",
+        "rare book and special collections division",
+        "prints and photographs division",
+        "catalog",
+        "prints & photographs online catalog (library of congress)"
+      ],
+      "score": 40.324642,
+      "shelf_id": "Illus. in  HX844 .G6 1910",
+      "site": [
+        "catalog",
+        "pictures"
+      ],
+      "subject": [
+        "book illustrations",
+        "anarchism",
+        "halftone photomechanical prints",
+        "portrait prints",
+        "women",
+        "frontispieces",
+        "title pages"
+      ],
+      "timestamp": "2022-12-10T04:46:15.761Z",
+      "title": "[Frontispiece and title page from \"Anarchism and other essays\" with bust portrait of Emma Goldman, facing front]",
+      "type": [
+        "still image"
+      ],
+      "url": "https://www.loc.gov/item/2002716783/"
+    },
+    {
+      "access_restricted": false,
+      "aka": [
+        "https://hdl.loc.gov/loc.pnp/ppmsca.02936",
+        "http://www.loc.gov/resource/ppmsca.02936/",
+        "https://hdl.loc.gov/loc.pnp/cph.3g05347",
+        "http://lccn.loc.gov/2002712175",
+        "http://www.loc.gov/item/2002712175/",
+        "http://www.loc.gov/resource/cph.3g05347/",
+        "https://www.loc.gov/pictures/item/2002712175/",
+        "http://www.loc.gov/pictures/item/2002712175/",
+        "https://www.loc.gov/pictures/collection/cph/item/2002712175/",
+        "http://www.loc.gov/pictures/collection/cph/item/2002712175/"
+      ],
+      "campaigns": [],
+      "contributor": [
+        "bry, theodor de"
+      ],
+      "date": "1590-01-01",
+      "dates": [
+        "1590"
+      ],
+      "description": [
+        "Allegorical print showing Adam standing, looking up, as Eve reaches for apple from the tree of knowledge. Serpent with head and upper body of a woman, entwined around the tree."
+      ],
+      "digitized": true,
+      "extract_timestamp": "2020-09-19T11:18:37.162Z",
+      "group": [
+        "awhbib",
+        "cph",
+        "catalog-split-11",
+        "catalog",
+        "american-womens-history",
+        "miscellaneous-items-high-demand",
+        "main-catalog-split-11",
+        "main-catalog"
+      ],
+      "hassegments": false,
+      "id": "http://www.loc.gov/item/2002712175/",
+      "image_url": [
+        "https://tile.loc.gov/storage-services/service/pnp/cph/3g00000/3g05000/3g05300/3g05347_150px.jpg#h=150&w=119",
+        "https://tile.loc.gov/storage-services/service/pnp/cph/3g00000/3g05000/3g05300/3g05347t.gif#h=150&w=119",
+        "https://tile.loc.gov/storage-services/service/pnp/cph/3g00000/3g05000/3g05300/3g05347r.jpg#h=640&w=506",
+        "https://tile.loc.gov/storage-services/service/pnp/cph/3g00000/3g05000/3g05300/3g05347v.jpg#h=1024&w=810"
+      ],
+      "index": 4,
+      "language": [
+        "english"
+      ],
+      "mime_type": [
+        "image/gif",
+        "image/jpg",
+        "image/tif"
+      ],
+      "number": [
+        "http://www.loc.gov/item/2002712175",
+        "2002712175",
+        "http://www.loc.gov/item/12861522",
+        "2004-01-14t16:40:18"
+      ],
+      "online_format": [
+        "image"
+      ],
+      "original_format": [
+        "photo, print, drawing"
+      ],
+      "partof": [
+        "miscellaneous items in high demand",
+        "american women: a gateway to library of congress resources for the study of women's history and culture in the united states",
+        "rare book and special collections division",
+        "prints and photographs division",
+        "catalog",
+        "prints & photographs online catalog (library of congress)"
+      ],
+      "score": 39.42939,
+      "shelf_id": "Illus. in F229 .H27",
+      "site": [
+        "catalog",
+        "pictures"
+      ],
+      "subject": [
+        "book illustrations",
+        "temptation",
+        "engravings",
+        "allegorical prints",
+        "eve",
+        "adam",
+        "biblical figure)",
+        "women"
+      ],
+      "timestamp": "2022-12-10T04:46:15.761Z",
+      "title": "[Adam and Eve in America]",
+      "type": [
+        "still image"
+      ],
+      "url": "https://www.loc.gov/item/2002712175/"
+    },
+    {
+      "access_restricted": false,
+      "aka": [
+        "https://hdl.loc.gov/loc.pnp/ppmsca.02971",
+        "http://www.loc.gov/resource/ppmsca.02971/",
+        "http://www.loc.gov/item/2002716771/",
+        "http://lccn.loc.gov/2002716771",
+        "https://www.loc.gov/pictures/item/2002716771/",
+        "http://www.loc.gov/pictures/item/2002716771/",
+        "https://www.loc.gov/pictures/collection/cph/item/2002716771/",
+        "http://www.loc.gov/pictures/collection/cph/item/2002716771/"
+      ],
+      "campaigns": [],
+      "contributor": [
+        "norman, john"
+      ],
+      "date": "1786-01-01",
+      "dates": [
+        "1786"
+      ],
+      "description": [
+        "Two images of childbirth: plate 23 (left) shows child in womb with umbilical cord and plate 24 (right) shows forceps being used to deliver child."
+      ],
+      "digitized": true,
+      "extract_timestamp": "2020-09-19T11:19:55.674Z",
+      "group": [
+        "awhbib",
+        "cph",
+        "catalog-split-01",
+        "catalog",
+        "american-womens-history",
+        "miscellaneous-items-high-demand",
+        "main-catalog-split-01",
+        "main-catalog"
+      ],
+      "hassegments": false,
+      "id": "http://www.loc.gov/item/2002716771/",
+      "image_url": [
+        "https://tile.loc.gov/storage-services/service/pnp/ppmsca/02900/02971_150px.jpg#h=134&w=150",
+        "https://tile.loc.gov/storage-services/service/pnp/ppmsca/02900/02971t.gif#h=134&w=150",
+        "https://tile.loc.gov/storage-services/service/pnp/ppmsca/02900/02971r.jpg#h=573&w=640",
+        "https://tile.loc.gov/storage-services/service/pnp/ppmsca/02900/02971v.jpg#h=916&w=1024"
+      ],
+      "index": 5,
+      "language": [
+        "english"
+      ],
+      "mime_type": [
+        "image/gif",
+        "image/jpg",
+        "image/tif"
+      ],
+      "number": [
+        "2002716771",
+        "http://www.loc.gov/item/12891908",
+        "2004-02-10t16:13:14"
+      ],
+      "online_format": [
+        "image"
+      ],
+      "original_format": [
+        "photo, print, drawing"
+      ],
+      "partof": [
+        "miscellaneous items in high demand",
+        "american women: a gateway to library of congress resources for the study of women's history and culture in the united states",
+        "rare book and special collections division",
+        "prints and photographs division",
+        "catalog",
+        "prints & photographs online catalog (library of congress)"
+      ],
+      "score": 39.42939,
+      "shelf_id": "Illus. in RG93 .S63",
+      "site": [
+        "catalog",
+        "pictures"
+      ],
+      "subject": [
+        "book illustrations",
+        "engravings",
+        "birth",
+        "women",
+        "pregnancy",
+        "medical illustrations"
+      ],
+      "timestamp": "2022-12-10T04:46:15.761Z",
+      "title": "[Child birth]",
+      "type": [
+        "still image"
+      ],
+      "url": "https://www.loc.gov/item/2002716771/"
+    },
+    {
+      "access_restricted": false,
+      "aka": [
+        "http://www.loc.gov/resource/ppmsca.02888/",
+        "https://hdl.loc.gov/loc.pnp/ppmsca.02888",
+        "http://lccn.loc.gov/2002716773",
+        "http://www.loc.gov/item/2002716773/",
+        "https://www.loc.gov/pictures/item/2002716773/",
+        "http://www.loc.gov/pictures/item/2002716773/",
+        "https://www.loc.gov/pictures/collection/cph/item/2002716773/",
+        "http://www.loc.gov/pictures/collection/cph/item/2002716773/"
+      ],
+      "campaigns": [],
+      "contributor": [
+        "ryan, william redmond"
+      ],
+      "date": "1850-01-01",
+      "dates": [
+        "1850"
+      ],
+      "description": [
+        "Mexican mestizo women and men listening to man play a stringed instrument next to door of a house, California."
+      ],
+      "digitized": true,
+      "extract_timestamp": "2020-09-19T11:19:55.674Z",
+      "group": [
+        "awhbib",
+        "cph",
+        "catalog-split-03",
+        "catalog",
+        "american-womens-history",
+        "miscellaneous-items-high-demand",
+        "main-catalog-split-03",
+        "main-catalog"
+      ],
+      "hassegments": false,
+      "id": "http://www.loc.gov/item/2002716773/",
+      "image_url": [
+        "https://tile.loc.gov/storage-services/service/pnp/ppmsca/02800/02888_150px.jpg#h=122&w=150",
+        "https://tile.loc.gov/storage-services/service/pnp/ppmsca/02800/02888t.gif#h=122&w=150",
+        "https://tile.loc.gov/storage-services/service/pnp/ppmsca/02800/02888r.jpg#h=521&w=640",
+        "https://tile.loc.gov/storage-services/service/pnp/ppmsca/02800/02888v.jpg#h=833&w=1024"
+      ],
+      "index": 6,
+      "language": [
+        "english",
+        "flemish",
+        "dutch"
+      ],
+      "location": [
+        "california"
+      ],
+      "mime_type": [
+        "image/gif",
+        "image/jpg",
+        "image/tif"
+      ],
+      "number": [
+        "2003-12-15t16:58:52",
+        "2002716773",
+        "http://www.loc.gov/item/12889189"
+      ],
+      "online_format": [
+        "image"
+      ],
+      "original_format": [
+        "photo, print, drawing"
+      ],
+      "partof": [
+        "miscellaneous items in high demand",
+        "american women: a gateway to library of congress resources for the study of women's history and culture in the united states",
+        "rare book and special collections division",
+        "prints and photographs division",
+        "catalog",
+        "prints & photographs online catalog (library of congress)"
+      ],
+      "score": 39.42939,
+      "shelf_id": "Illus. in F865 .R97",
+      "site": [
+        "catalog",
+        "pictures"
+      ],
+      "subject": [
+        "book illustrations",
+        "mestizos",
+        "social life",
+        "engravings",
+        "doors & doorways",
+        "stringed instruments",
+        "women",
+        "california"
+      ],
+      "timestamp": "2022-12-10T04:46:15.761Z",
+      "title": "Een serenade in Uppen Californie",
+      "type": [
+        "still image"
+      ],
+      "url": "https://www.loc.gov/item/2002716773/"
+    }
+  ],
+  "options": {
+    "access_group": [
+      ""
+    ],
+    "access_group_raw": "",
+    "all": null,
+    "api_version": "1",
+    "app_context": null,
+    "application_shim": null,
+    "application_version": "$Revision$",
+    "attribute": null,
+    "attribute!": null,
+    "attribute_map": null,
+    "cache_tags": [
+      "cph",
+      "catalog-split-03",
+      "catalog",
+      "miscellaneous-items-high-demand",
+      "main-catalog-split-03",
+      "main-catalog",
+      "awhbib",
+      "catalog-split-01",
+      "american-womens-history",
+      "main-catalog-split-01",
+      "catalog-split-05",
+      "main-catalog-split-05",
+      "catalog-split-04",
+      "main-catalog-split-04",
+      "catalog-split-11",
+      "main-catalog-split-11",
+      "paprika-gdc",
+      "catalog-split-10",
+      "main-catalog-split-10",
+      "paprika-rbc",
+      "wdlpartner",
+      "catalog-split-15",
+      "world-digital-library-partners",
+      "main-catalog-split-15",
+      "catalog-split-07",
+      "main-catalog-split-07",
+      "catalog-split-13",
+      "main-catalog-split-13"
+    ],
+    "callback": null,
+    "clip": null,
+    "clip_image_width": null,
+    "clip_rotation": null,
+    "content_filter": null,
+    "content_replacement": "",
+    "count": null,
+    "dates": null,
+    "default_count": 25,
+    "delimiter": null,
+    "digital_id": null,
+    "display_level": null,
+    "distance": null,
+    "downloadOption": null,
+    "duration": 5.456092596054077,
+    "embed": [],
+    "embed!": [],
+    "error_response_status": null,
+    "excludeTerms": null,
+    "facetLimits": "",
+    "facetPrefix": null,
+    "facet_count": null,
+    "facet_style": null,
+    "field": null,
+    "format": "json",
+    "host": "www.loc.gov",
+    "ical": false,
+    "id": "2003675417/",
+    "iiif": false,
+    "index": null,
+    "inputEncoding": "UTF-8",
+    "item": null,
+    "items": null,
+    "keys": null,
+    "language": null,
+    "latlong": null,
+    "method": "GET",
+    "newSearch": null,
+    "new_clip_url": false,
+    "onsite": false,
+    "operator": null,
+    "outputEncoding": "UTF-8",
+    "page_campaigns": [],
+    "path_info": "/item/2003675417/",
+    "port": "443",
+    "proxypath": null,
+    "query_string": "fo=json",
+    "redirect_proxy": false,
+    "redirect_to_item": null,
+    "referer": "",
+    "region": "",
+    "release_id": 123456789,
+    "request_host": "www.loc.gov",
+    "request_params": {
+      "fo": [
+        "json"
+      ]
+    },
+    "request_url": "https://www.loc.gov/item/2003675417/?fo=json",
+    "resource": "",
+    "resource_sequence": null,
+    "scheme": "https",
+    "searchIn": null,
+    "searchTerms": "",
+    "segments": null,
+    "shards": [
+      "00"
+    ],
+    "site_id": null,
+    "site_type": null,
+    "solrQuery": "",
+    "sortBy": null,
+    "sortOrder": null,
+    "startPage": null,
+    "style": null,
+    "suggested": null,
+    "target": null,
+    "template": "layouts/item/layout",
+    "timestamp": 1792443257.480984,
+    "tz_aware": null,
+    "unionFacets": "",
+    "webcast_permalink": null
+  },
+  "related": {
+    "group_record": null,
+    "lot_link": null,
+    "neighbors": "https://www.loc.gov/pictures/related/?&co=cph&pk=2003675417&st=gallery&sb=call_number#focus",
+    "survey_link": null
+  },
+  "related_items": [
+    {
+      "access_restricted": false,
+      "aka": [
+        "http://lccn.loc.gov/41038712",
+        "http://www.loc.gov/item/41038712/",
+        "https://search.catalog.loc.gov/instances/e4aaa1e5-2b15-53d6-b918-c70e05adc0c8",
+        "http://www.loc.gov/resource/gdc.00117699584/"
+      ],
+      "campaigns": [],
+      "contributor": [
+        "american antiquarian society",
+        "benjamin franklin collection (library of congress)",
+        "eddy, george simpson"
+      ],
+      "date": "1925",
+      "dates": [
+        "1925"
+      ],
+      "description": [
+        "At head of title: American Antiquarian Society. \"Reprinted from the Proceedings of the American Antiquarian Society for October, 1924.\" LC copy: Source: Gift of the American Antiquarian Society, Feb. 4, 1928. LAC ecr 2019-04-19 no edits (1 card)"
+      ],
+      "digitized": true,
+      "extract_timestamp": "2026-06-27T07:10:43.637Z",
+      "group": [
+        "paprika-gdc",
+        "catalog-split-10",
+        "catalog",
+        "main-catalog-split-10"
+      ],
+      "hassegments": true,
+      "id": "http://www.loc.gov/item/41038712/",
+      "image_url": [
+        "https://tile.loc.gov/image-services/iiif/public:gdc:00117699584:0001/full/pct:12.5/0/default.jpg",
+        "https://tile.loc.gov/image-services/iiif/public:gdc:00117699584:0001/full/pct:12.5/0/default.jpg#h=376&w=252",
+        "https://tile.loc.gov/image-services/iiif/public:gdc:00117699584:0001/full/pct:25.0/0/default.jpg#h=753&w=504",
+        "https://tile.loc.gov/image-services/iiif/public:gdc:00117699584:0001/full/pct:50.0/0/default.jpg#h=1507&w=1009",
+        "https://tile.loc.gov/image-services/iiif/public:gdc:00117699584:0001/full/pct:100.0/0/default.jpg#h=3015&w=2019"
+      ],
+      "index": 1,
+      "language": [
+        "english"
+      ],
+      "location": [
+        "massachusetts",
+        "pennsylvania",
+        "worcester"
+      ],
+      "mime_type": [
+        "text/xml",
+        "image/jpeg",
+        "image/jp2",
+        "text/plain",
+        "application/json",
+        "application/pdf"
+      ],
+      "number": [
+        "41038712",
+        "2020-06-15t08:26:02"
+      ],
+      "online_format": [
+        "online text",
+        "image",
+        "pdf"
+      ],
+      "original_format": [
+        "book"
+      ],
+      "partof": [
+        "general collections",
+        "catalog",
+        "rare book and special collections division",
+        "selected digitized books"
+      ],
+      "score": 10.23344,
+      "shelf_id": "E302.6.F8 E3 E302.6.F8 E3 Copy 2",
+      "site": [
+        "catalog"
+      ],
+      "subject": [
+        "books and reading",
+        "pennsylvania",
+        "private libraries",
+        "worcester",
+        "franklin, benjamin",
+        "history",
+        "massachusetts",
+        "18th century"
+      ],
+      "timestamp": "2026-06-27T07:18:10.004Z",
+      "title": "Dr. Benjamin Franklin's library",
+      "type": [
+        "text"
+      ],
+      "url": "https://www.loc.gov/item/41038712/"
+    },
+    {
+      "access_restricted": false,
+      "aka": [
+        "http://lccn.loc.gov/17003411",
+        "http://www.loc.gov/item/17003411/",
+        "https://search.catalog.loc.gov/instances/9b575c3d-fc38-50af-a52f-ba13902de756",
+        "http://www.loc.gov/resource/rbc.2024rosen17003411/"
+      ],
+      "campaigns": [],
+      "contributor": [
+        "tiffin, walter f.",
+        "levis, howard coppuck",
+        "lessing j. rosenwald reference collection (library of congress)"
+      ],
+      "date": "1883",
+      "dates": [
+        "1883"
+      ],
+      "description": [
+        "Half title: A collection of portraits in mezzotint. \"Only a few copies printed for private circulation.\" Gift of Lessing J. Rosenwald, 1943-1975. Author's autograph presentation copy to W. G. [?] Rawlinson. Form AACR 2; vj51 8-16-83. LAC knj 2019-09-17 no edits (2 cards) LAC ecr 2019-09-26 review LAC ael 2021-08-05 update (1 card)"
+      ],
+      "digitized": true,
+      "extract_timestamp": "2026-09-16T13:16:15.289Z",
+      "group": [
+        "paprika-rbc",
+        "catalog-split-01",
+        "catalog",
+        "main-catalog-split-01"
+      ],
+      "hassegments": true,
+      "id": "http://www.loc.gov/item/17003411/",
+      "image_url": [
+        "https://tile.loc.gov/image-services/iiif/public:rbc:2024rosen17003411:0010/full/pct:6.25/0/default.jpg",
+        "https://tile.loc.gov/image-services/iiif/public:rbc:2024rosen17003411:0010/full/pct:6.25/0/default.jpg#h=264&w=178",
+        "https://tile.loc.gov/image-services/iiif/public:rbc:2024rosen17003411:0010/full/pct:12.5/0/default.jpg#h=529&w=356",
+        "https://tile.loc.gov/image-services/iiif/public:rbc:2024rosen17003411:0010/full/pct:25.0/0/default.jpg#h=1058&w=713",
+        "https://tile.loc.gov/image-services/iiif/public:rbc:2024rosen17003411:0010/full/pct:50.0/0/default.jpg#h=2116&w=1426",
+        "https://tile.loc.gov/image-services/iiif/public:rbc:2024rosen17003411:0010/full/pct:100.0/0/default.jpg#h=4233&w=2853"
+      ],
+      "index": 2,
+      "language": [
+        "english"
+      ],
+      "location": [
+        "great britain"
+      ],
+      "mime_type": [
+        "image/jpeg",
+        "application/pdf",
+        "image/jp2"
+      ],
+      "number": [
+        "http://www.loc.gov/resource/rbc0001.2024rosen17003411",
+        "17003411",
+        "2021-08-05t12:52:41"
+      ],
+      "online_format": [
+        "image",
+        "pdf"
+      ],
+      "original_format": [
+        "book"
+      ],
+      "partof": [
+        "catalog",
+        "lessing j. rosenwald collection",
+        "rare book selections",
+        "rare book and special collections division"
+      ],
+      "score": 9.119667,
+      "shelf_id": "NE265 .T5 Rosenwald Ref Coll Microfilm 12793 NE",
+      "site": [
+        "catalog"
+      ],
+      "subject": [
+        "portrait prints, british",
+        "great britain",
+        "authors' autographs (provenance)",
+        "tiffin, walter f.",
+        "dlc",
+        "art collections",
+        "mezzotint engraving, british",
+        "portrait prints",
+        "private collections",
+        "catalogs",
+        "authors' presentation copies (provenance)"
+      ],
+      "timestamp": "2026-09-16T13:27:15.075Z",
+      "title": "Catalogue of a collection of English portraits in mezzotint (from the origin of that style of engraving to the end of the eighteenth century), selected for their interest of subject, beauty of impression, rarity, curiosity, or excellence as works of art;",
+      "type": [
+        "text"
+      ],
+      "url": "https://www.loc.gov/item/17003411/"
+    },
+    {
+      "access_restricted": false,
+      "aka": [
+        "http://lccn.loc.gov/2021668132",
+        "http://www.loc.gov/item/2021668132/",
+        "http://www.loc.gov/resource/gdcwdl.wdl_15503/",
+        "https://hdl.loc.gov/loc.wdl/wdl.15503",
+        "http://www.loc.gov/resource/wdl.15503/"
+      ],
+      "campaigns": [],
+      "contributor": [
+        "langlois, jean",
+        "hubert, jean, active 18th century"
+      ],
+      "date": "1719-01-01",
+      "dates": [
+        "1719"
+      ],
+      "description": [
+        "John Law was a Scottish financier and adventurer who was also an authority on banking and the circulation of money. He convinced the regent of France, Philippe d'Orléans, that he could liquidate the French government's debt by a system of credit based on paper money. In 1716 he launched the Banque générale, which had the authority to issue notes. The following year he founded the Compagnie d'Occident (Company of the West), the capital for which was raised by the sale of 500-livre shares, payable only in government notes. The first shares were called \"mothers,\" then, aided by the initial success, came the \"daughters\" and the \"granddaughters.\" Using advertisements and public relations in which he presented the Mississippi as a land of plenty, Law generated extraordinary enthusiasm for his scheme. In exchange for obtaining the trade monopoly for Louisiana, the Company of the West had to provide for the colony's defense-the upkeep of fortifications and troops and gifts to the Indians. It also had to transport to the colony, over the next 25 years, 6,000 colonists and 3,000 African slaves. In 1719, the Company of the West acquired several other overseas companies (including the Senegal, East Indies, and China companies) to form the Compagnie des Indes (Company of the Indies). The issue of excessive quantities of bank notes weakened confidence, however, and Law's system collapsed. Law was ruined and fled to Brussels in December 1720. This portrait dates from 1719--20 and presents Law at the height of his glory and power. By this time, he had accumulated the titles and functions of conseiller du roi (King's counsel), controller general of finances, and inspector general of the two institutions created at his initiative, the Banque générale and the Company of the Indies."
+      ],
+      "digitized": true,
+      "extract_timestamp": "2021-07-24T12:13:14.516Z",
+      "group": [
+        "wdlpartner",
+        "catalog-split-15",
+        "catalog",
+        "world-digital-library-partners",
+        "main-catalog-split-15",
+        "main-catalog"
+      ],
+      "hassegments": false,
+      "id": "http://www.loc.gov/item/2021668132/",
+      "image_url": [
+        "https://tile.loc.gov/image-services/iiif/service:gdc:gdcwdl:wd:l_:15:50:3:wdl_15503:F0000001/full/pct:12.5/0/default.jpg",
+        "https://tile.loc.gov/image-services/iiif/service:gdc:gdcwdl:wd:l_:15:50:3:wdl_15503:F0000001/full/pct:12.5/0/default.jpg#h=377&w=298",
+        "https://tile.loc.gov/image-services/iiif/service:gdc:gdcwdl:wd:l_:15:50:3:wdl_15503:F0000001/full/pct:25/0/default.jpg#h=755&w=596",
+        "https://tile.loc.gov/image-services/iiif/service:gdc:gdcwdl:wd:l_:15:50:3:wdl_15503:F0000001/full/pct:50/0/default.jpg#h=1510&w=1193",
+        "https://tile.loc.gov/image-services/iiif/service:gdc:gdcwdl:wd:l_:15:50:3:wdl_15503:F0000001/full/pct:100/0/default.jpg#h=3020&w=2387"
+      ],
+      "index": 3,
+      "language": [
+        "french"
+      ],
+      "location": [
+        "france",
+        "united kingdom of great britain and northern ireland",
+        "louisiana",
+        "united states of america",
+        "scotland"
+      ],
+      "mime_type": [
+        "application/zip",
+        "image/jpeg",
+        "image/jp2"
+      ],
+      "number": [
+        "2021-06-01t15:59:16",
+        "2021668132"
+      ],
+      "online_format": [
+        "compressed data",
+        "image"
+      ],
+      "original_format": [
+        "book"
+      ],
+      "other_title": [
+        "Monsieur Law Conseiller du Roy en tous ses Conseils, Controlleur Général des Finances, Inspecteur Général de la Banque et de la Compagnie des Indes"
+      ],
+      "partof": [
+        "national library of france",
+        "world digital library",
+        "catalog",
+        "world digital library - partner items"
+      ],
+      "score": 8.791483,
+      "shelf_id": "http://lccn.loc.gov/2021668132",
+      "site": [
+        "catalog"
+      ],
+      "subject": [
+        "france",
+        "united kingdom of great britain and northern ireland",
+        "banks and banking",
+        "company of the west",
+        "economists",
+        "france in america",
+        "1719 to 1720",
+        "portrait prints",
+        "louisiana",
+        "united states of america",
+        "company of the indies",
+        "law, john",
+        "portraits",
+        "economics",
+        "scotland"
+      ],
+      "timestamp": "2022-09-11T21:41:36.618Z",
+      "title": "Mr. Law, King's Counsel, Controller General of Finances, Inspector General of the Bank and the Company of the Indies.",
+      "type": [
+        "text"
+      ],
+      "url": "https://www.loc.gov/item/2021668132/"
+    },
+    {
+      "access_restricted": false,
+      "aka": [
+        "https://hdl.loc.gov/loc.wdl/wdl.3431",
+        "http://www.loc.gov/item/2021667627/",
+        "http://lccn.loc.gov/2021667627",
+        "http://www.loc.gov/resource/gdcwdl.wdl_03431/",
+        "http://www.loc.gov/resource/wdl.3431/"
+      ],
+      "campaigns": [],
+      "contributor": [
+        "roscoe, william"
+      ],
+      "date": "1796-01-01",
+      "dates": [
+        "1796"
+      ],
+      "description": [
+        "Robert Burns (1759-96) is best known for his poems and songs that reflect Scotland's cultural heritage. He was born in Alloway, Ayrshire, Scotland, the first of seven children belonging to William Burnes, a tenant farmer, and his wife Agnes Broun. Burns had little formal education, but he read English literature and absorbed the traditional, largely oral Scots-language folk songs and tales of his rural environment. He began to compose songs in 1774, and published his first book, Poems, Chiefly in the Scottish Dialect, in 1786. The work was a critical success, and its poems in both Scots and English, on a range of topics, established Burns's broad appeal. While building his literary reputation, Burns worked as a farmer, and in 1788 he was appointed an excise officer in Ellisland. He spent the final 12 years of his life collecting and editing traditional Scottish folk songs for collections including The Scots Musical Museum and A Select Collection of Original Scotish [sic] Airs for the Voice. Burns contributed hundreds of Scottish songs to these anthologies, sometimes rewriting traditional lyrics and setting them to new or revised music. This poem was written by William Roscoe, \"dedicated to the memory of the poet Robert Burns.\" It was originally published without a title in 1800 in Dr. James Currie's The Works of Robert Burns. The manuscript is accompanied by an engraved portrait of the historian, dated 1813. Roscoe lead a professional life as an attorney in Liverpool, while delving into literature and art, collecting works as well as writing biographies. He took Robert Burns and his works in high regard, later corresponding with Currie regarding the publication of his manuscripts. His suggestions were accepted by Currie, and fully incorporated into the biography."
+      ],
+      "digitized": true,
+      "extract_timestamp": "2021-07-24T02:54:54.075Z",
+      "group": [
+        "wdlpartner",
+        "catalog-split-07",
+        "catalog",
+        "world-digital-library-partners",
+        "main-catalog-split-07",
+        "main-catalog"
+      ],
+      "hassegments": true,
+      "id": "http://www.loc.gov/item/2021667627/",
+      "image_url": [
+        "https://tile.loc.gov/image-services/iiif/service:gdc:gdcwdl:wd:l_:03:43:1:wdl_03431:page0001_roscoe1796/full/pct:12.5/0/default.jpg",
+        "https://tile.loc.gov/image-services/iiif/service:gdc:gdcwdl:wd:l_:03:43:1:wdl_03431:page0001_roscoe1796/full/pct:12.5/0/default.jpg#h=449&w=367",
+        "https://tile.loc.gov/image-services/iiif/service:gdc:gdcwdl:wd:l_:03:43:1:wdl_03431:page0001_roscoe1796/full/pct:25/0/default.jpg#h=898&w=735",
+        "https://tile.loc.gov/image-services/iiif/service:gdc:gdcwdl:wd:l_:03:43:1:wdl_03431:page0001_roscoe1796/full/pct:50/0/default.jpg#h=1797&w=1470",
+        "https://tile.loc.gov/image-services/iiif/service:gdc:gdcwdl:wd:l_:03:43:1:wdl_03431:page0001_roscoe1796/full/pct:100/0/default.jpg#h=3594&w=2940"
+      ],
+      "index": 4,
+      "language": [
+        "scots"
+      ],
+      "location": [
+        "united kingdom of great britain and northern ireland"
+      ],
+      "mime_type": [
+        "application/zip",
+        "application/pdf",
+        "image/jpeg",
+        "image/jp2"
+      ],
+      "number": [
+        "2021-06-01t15:55:50",
+        "2021667627"
+      ],
+      "online_format": [
+        "compressed data",
+        "pdf",
+        "image"
+      ],
+      "original_format": [
+        "book"
+      ],
+      "partof": [
+        "university of south carolina",
+        "catalog",
+        "world digital library",
+        "world digital library - partner items"
+      ],
+      "score": 8.791483,
+      "shelf_id": "http://lccn.loc.gov/2021667627",
+      "site": [
+        "catalog"
+      ],
+      "subject": [
+        "1750 to 1796",
+        "united kingdom of great britain and northern ireland",
+        "burns, robert",
+        "portrait prints",
+        "roscoe, william",
+        "dialect poetry, scottish"
+      ],
+      "timestamp": "2022-09-11T21:32:34.335Z",
+      "title": "Rear High thy Bleak Majestic Hills.",
+      "type": [
+        "text"
+      ],
+      "url": "https://www.loc.gov/item/2021667627/"
+    },
+    {
+      "access_restricted": false,
+      "aka": [
+        "http://lccn.loc.gov/06003893",
+        "http://www.loc.gov/item/06003893/",
+        "https://search.catalog.loc.gov/instances/e17ed6fe-56a8-59da-9017-6f63df232241",
+        "http://www.loc.gov/resource/rbc.2017preimp03893v2/",
+        "http://www.loc.gov/resource/rbc.2017preimp03893v1/",
+        "https://hdl.loc.gov/loc.rbc/Pre1801.03893v2.1",
+        "https://hdl.loc.gov/loc.rbc/Pre1801.03893v1.1"
+      ],
+      "campaigns": [],
+      "contributor": [
+        "tournefort, joseph pitton de",
+        "pre- imprint collection (library of congress)"
+      ],
+      "date": "1694",
+      "dates": [
+        "1694"
+      ],
+      "description": [
+        "Each volume has added t.-p., engraved. Engraved initials and vignettes. LC copy incomplete: Vol. 3 wanting. \"Auteurs citez\" v. 1, prelim. leaves 8-10."
+      ],
+      "digitized": true,
+      "extract_timestamp": "2026-08-14T07:50:04.086Z",
+      "group": [
+        "paprika-rbc",
+        "catalog-split-13",
+        "catalog",
+        "main-catalog-split-13"
+      ],
+      "hassegments": true,
+      "id": "http://www.loc.gov/item/06003893/",
+      "image_url": [
+        "https://tile.loc.gov/image-services/iiif/public:rbc:2017preimp03893v1:0009/full/pct:12.5/0/default.jpg",
+        "https://tile.loc.gov/image-services/iiif/public:rbc:2017preimp03893v1:0009/full/pct:12.5/0/default.jpg#h=425&w=295",
+        "https://tile.loc.gov/image-services/iiif/public:rbc:2017preimp03893v1:0009/full/pct:25.0/0/default.jpg#h=851&w=590",
+        "https://tile.loc.gov/image-services/iiif/public:rbc:2017preimp03893v1:0009/full/pct:50.0/0/default.jpg#h=1703&w=1180",
+        "https://tile.loc.gov/image-services/iiif/public:rbc:2017preimp03893v1:0009/full/pct:100.0/0/default.jpg#h=3406&w=2361"
+      ],
+      "index": 5,
+      "language": [
+        "french"
+      ],
+      "mime_type": [
+        "image/jpeg",
+        "application/pdf",
+        "image/jp2"
+      ],
+      "number": [
+        "http://www.loc.gov/resource/rbctos.2017preimp03893v2",
+        "online resource",
+        "2026-02-09t16:14:28.500000",
+        "http://www.loc.gov/resource/rbctos.2017preimp03893v1",
+        "06003893",
+        "4583689"
+      ],
+      "online_format": [
+        "image",
+        "pdf"
+      ],
+      "original_format": [
+        "book"
+      ],
+      "other_title": [
+        "Élémens de botanique,",
+        "Méthode pour connoître les plantes"
+      ],
+      "partof": [
+        "catalog",
+        "rare book selections",
+        "rare book and special collections division",
+        "tradition of science"
+      ],
+      "score": 8.568775,
+      "shelf_id": "QK41 .T7",
+      "site": [
+        "catalog"
+      ],
+      "subject": [
+        "pre-linnean works",
+        "botanical surveys",
+        "engravings",
+        "botany"
+      ],
+      "timestamp": "2026-08-14T10:23:59.932Z",
+      "title": "Élémens de botanique, ou, Méthode pour connoître les plantes",
+      "type": [
+        "text"
+      ],
+      "url": "https://www.loc.gov/item/06003893/"
+    },
+    {
+      "access_restricted": false,
+      "aka": [
+        "http://lccn.loc.gov/55047835",
+        "http://www.loc.gov/item/55047835/",
+        "https://search.catalog.loc.gov/instances/724fd231-6462-5bf8-8b17-8ee2cc55d098",
+        "http://www.loc.gov/resource/rbc.2010Yudin47835/",
+        "https://hdl.loc.gov/loc.rbc/yudin.47835"
+      ],
+      "campaigns": [],
+      "contributor": [
+        "ri︠e︡shetnikovʺ, ivan",
+        "ri︠e︡shetnikovʺ, a. (andreĭ)",
+        "yudin collection (library of congress)",
+        "safonova, aleksandra"
+      ],
+      "date": "1787",
+      "dates": [
+        "1787"
+      ],
+      "description": [
+        "Cover title. Signed on plate i: Andreĭ i Ivanʺ Reshetnikovy. Dedicated to the children of Vasiliĭ Petrovich Saltykov, Sergei ̆and Mikhaĭl -- Preliminary leaf [2]. Etched/engraved throughout; printed on blue paper. Issued in printed paper wrappers. Sopikov refers to LC copy incomplete?: leaves ix, x, xi wanting. Has child's inscription facing leaf xxi: Sīi︠a︡ azbuka Aleksandry Safonovoĭ. Has LC and GPO bookplates for the Yudin Collection. May have been part of the library of G.V. Yudin. Has penciled [accession?] number on paper cover: 235/909. Eighteenth century Russian publications in the Library of Congress (Fessenko), 897 Sopikov, V.S. Opytʺ rossīĭskoĭ biblīografīi (Izd. 2), 1845 (a general mention of Ri︠e︡shetnikov's alphabet-penmanship books) Also available in digital form on the Library of Congress Web site. Did not find in Svodnyĭ katalog XVIII. Russian National Library has editions for 1795/1799 and 1796. he07 2024-01-08 Signed on plate i: Андрей и Иванъ Решетниковы. LC copy has child's inscription facing leaf xxi: Сія азбука Александры Сафоновой. DLC"
+      ],
+      "digitized": true,
+      "extract_timestamp": "2026-08-19T09:14:45.415Z",
+      "group": [
+        "paprika-rbc",
+        "catalog-split-05",
+        "catalog",
+        "main-catalog-split-05"
+      ],
+      "hassegments": true,
+      "id": "http://www.loc.gov/item/55047835/",
+      "image_url": [
+        "https://tile.loc.gov/image-services/iiif/public:rbc:2010Yudin47835:0008/full/pct:12.5/0/default.jpg",
+        "https://tile.loc.gov/image-services/iiif/public:rbc:2010Yudin47835:0008/full/pct:12.5/0/default.jpg#h=331&w=481",
+        "https://tile.loc.gov/image-services/iiif/public:rbc:2010Yudin47835:0008/full/pct:25.0/0/default.jpg#h=662&w=962",
+        "https://tile.loc.gov/image-services/iiif/public:rbc:2010Yudin47835:0008/full/pct:50.0/0/default.jpg#h=1325&w=1924",
+        "https://tile.loc.gov/image-services/iiif/public:rbc:2010Yudin47835:0008/full/pct:100.0/0/default.jpg#h=2651&w=3848"
+      ],
+      "index": 6,
+      "language": [
+        "russian"
+      ],
+      "location": [
+        "moscow",
+        "russia"
+      ],
+      "mime_type": [
+        "image/jpeg",
+        "application/pdf",
+        "image/jp2"
+      ],
+      "number": [
+        "http://www.loc.gov/resource/rbc0001.2010yudin47835",
+        "2026-08-17t15:04:19.400000",
+        "55047835"
+      ],
+      "online_format": [
+        "image",
+        "pdf"
+      ],
+      "original_format": [
+        "book"
+      ],
+      "other_title": [
+        "Россійскія прописи, служащія для наученія дѣтей, правильному и основательному чистописанію /",
+        "Rossiĭskii︠a︡ propisi, sluzhashchii︠a︡ dli︠a︡ nauchenii︠a︡ deteĭ, pravilʹnomu i osnovatelʹnomu chistopisanii︠u︡",
+        "Engraved title page has title: Propisʹ, pokazyvai︠u︡shchai︠a︡ krasotu rossīĭskago pisʹma. Izdannai︠a︡ vʺ Moskvi︠e︡, 1787 goda"
+      ],
+      "partof": [
+        "catalog",
+        "rare book selections",
+        "rare book and special collections division"
+      ],
+      "score": 8.568775,
+      "shelf_id": "Z44 .R4 1787",
+      "site": [
+        "catalog"
+      ],
+      "subject": [
+        "early works to 1800",
+        "etchings",
+        "penmanship, russian",
+        "russia",
+        "engravings",
+        "moscow",
+        "cyrillic alphabet",
+        "penmanship specimen books"
+      ],
+      "timestamp": "2026-08-19T09:24:38.588Z",
+      "title": "Rossīĭskīi︠a︡ propisi, sluzhashchīi︠a︡ dli︠a︡ nauchenīi︠a︡ di︠e︡teĭ, pravilʹnomu i osnovatelʹnomu chistopisanīi︠u︡",
+      "type": [
+        "text"
+      ],
+      "url": "https://www.loc.gov/item/55047835/"
+    }
+  ],
+  "reproductions": "<p>If an image is displaying, you can download it yourself. (Some images \ndisplay only as thumbnails outside the Library of Congress because of rights \nconsiderations, but you have access to larger size images on site.)\n</p>\n\n<p>  \nAlternatively, you can purchase copies of various types through Library \nof Congress Duplication Services</a>.\n</p>\n\n<p> \n<ol>\n<p>\n<li><strong>If a digital image is displaying:</strong> The qualities of the digital image \npartially depend on whether it was made from the original or an \nintermediate such as a copy negative or transparency. If the Reproduction \nNumber field above includes a reproduction number that starts with \nLC-DIG..., then there is a digital image that was made directly \nfrom the original and is of sufficient resolution for most publication\n purposes.\n</li> \n</p>\n\n<li><strong>If there is information listed in the Reproduction Number field above:</strong> \nYou can use the reproduction number to purchase a copy from Duplication \nServices.  It will be made from the source listed in the parentheses after\n the number.  \n<p> \nIf only black-and-white (&quot;b&w&quot;) sources are listed and you \n desire a copy showing color or tint (assuming the original has any), \n you can generally purchase a quality copy of the original in color by \n citing the Call Number listed above and including the catalog record \n (&quot;About This Item&quot;) with your request.\n </p>\n</li>\n\n<li><strong>If there is no information listed in the Reproduction Number field \nabove:</strong> You can generally purchase a quality copy through \nDuplication Services. Cite the Call Number listed above and include the catalog record (&quot;About This Item&quot;) with \n your request.\n</li>\n</ol>\n</p>\n\n<p> \nPrice lists, contact information, and order forms are available on the\n <a href=\"//www.loc.gov/duplicationservices/\">Duplication Services Web site</a>.  \n</p>\n\n\n\n",
+  "resources": [
+    {
+      "caption": "b&w film copy neg.",
+      "files": [
+        [
+          {
+            "height": 0,
+            "levels": 1,
+            "mimetype": "image/tiff",
+            "size": 1513410,
+            "url": "https://tile.loc.gov/storage-services/master/pnp/cph/3a40000/3a45000/3a45400/3a45459u.tif",
+            "width": 0
+          },
+          {
+            "height": 150,
+            "levels": 1,
+            "mimetype": "image/jpeg",
+            "size": 3582,
+            "url": "https://tile.loc.gov/storage-services/service/pnp/cph/3a40000/3a45000/3a45400/3a45459_150px.jpg",
+            "width": 96
+          },
+          {
+            "height": 150,
+            "levels": 1,
+            "mimetype": "image/gif",
+            "size": 16013,
+            "url": "https://tile.loc.gov/storage-services/service/pnp/cph/3a40000/3a45000/3a45400/3a45459t.gif",
+            "width": 96
+          },
+          {
+            "height": 640,
+            "levels": 1,
+            "mimetype": "image/jpeg",
+            "size": 55774,
+            "url": "https://tile.loc.gov/storage-services/service/pnp/cph/3a40000/3a45000/3a45400/3a45459r.jpg",
+            "width": 410
+          }
+        ]
+      ],
+      "image": "https://tile.loc.gov/storage-services/service/pnp/cph/3a40000/3a45000/3a45400/3a45459_150px.jpg",
+      "url": "https://www.loc.gov/resource/cph.3a45459/"
+    }
+  ],
+  "thesaurus_entry": null,
+  "timestamp": 1792443262938,
+  "unrestricted": true
+}

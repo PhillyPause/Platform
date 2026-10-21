@@ -1,0 +1,16 @@
+{
+  "payload": "https://phillypause.org",
+  "source_matrix": "phillypause_qr.png",
+  "source_sha256": "3bd22c9341c7d50df5c495c43f95db382bab4a3adc6ef8741d47b0cb33d7724e",
+  "image_sha256": "3b103ee8e04905a9a2f8b47d65fdffac5128d75d222e40d069c3f514e4a3d6f8",
+  "image": "phillypause_qr_parchment.png",
+  "width": 660,
+  "height": 660,
+  "mode": "RGBA",
+  "ink": "#29261f",
+  "background": "transparent; the closing-card parchment shows through",
+  "symbol_modules": 25,
+  "quiet_zone_modules": 4,
+  "pixels_per_module": 20,
+  "module_matrix_unchanged": true
+}

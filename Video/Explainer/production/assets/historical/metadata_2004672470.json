@@ -1,0 +1,1999 @@
+{
+  "articles_and_essays": [
+    {
+      "score": 6.6575613,
+      "title": "Revolution of the Mind - Creating the United States",
+      "url": "https://www.loc.gov/exhibits/creating-the-united-states/revolution-of-the-mind.html"
+    },
+    {
+      "score": 6.6575613,
+      "title": "Memory Gallery A - American Treasures of the Library of Congress",
+      "url": "https://www.loc.gov/exhibits/treasures/tr11a.html"
+    },
+    {
+      "score": 6.6575613,
+      "title": "Geography and Its Impact on Colonial Life",
+      "url": "https://www.loc.gov/classroom-materials/geography-and-its-impact-on-colonial-life/"
+    }
+  ],
+  "cite_this": {
+    "apa": "Jefferys, T. &amp; Heap, G. (1768) <cite>An east prospect of the city of Philadelphia; taken by George Heap from the Jersey shore, under the direction of Nicholas Scull surveyor general of the Province of Pennsylvania / engrav'd by T. Jefferys</cite>. Pennsylvania Philadelphia United States, 1768. [London: Publish'd according to Act of Parliament by T. Jefferys near Charing Cross] [Photograph] Retrieved from the Library of Congress, https://www.loc.gov/item/2004672470/.",
+    "chicago": "Jefferys, Thomas, -1771, Engraver, and George Heap. <cite>An east prospect of the city of Philadelphia; taken by George Heap from the Jersey shore, under the direction of Nicholas Scull surveyor general of the Province of Pennsylvania / engrav'd by T. Jefferys</cite>. Pennsylvania Philadelphia United States, 1768. [London: Publish'd according to Act of Parliament by T. Jefferys near Charing Cross] Photograph. https://www.loc.gov/item/2004672470/.",
+    "mla": "Jefferys, Thomas, -1771, Engraver, and George Heap. <cite>An east prospect of the city of Philadelphia; taken by George Heap from the Jersey shore, under the direction of Nicholas Scull surveyor general of the Province of Pennsylvania / engrav'd by T. Jefferys</cite>. [London: Publish'd according to Act of Parliament by T. Jefferys near Charing Cross] Photograph. Retrieved from the Library of Congress, &lt;www.loc.gov/item/2004672470/&gt;."
+  },
+  "item": {
+    "_version_": 1851625632917618688,
+    "access_restricted": false,
+    "aka": [
+      "https://www.loc.gov/pictures/item/2004672470/",
+      "http://www.loc.gov/item/2004672470/",
+      "http://www.loc.gov/pictures/item/2004672470/",
+      "https://www.loc.gov/pictures/collection/pga/item/2004672470/",
+      "http://www.loc.gov/pictures/collection/pga/item/2004672470/",
+      "https://hdl.loc.gov/loc.pnp/pga.01698",
+      "https://hdl.loc.gov/loc.pnp/pga.01698",
+      "https://hdl.loc.gov/loc.pnp/cph.3g12538",
+      "https://hdl.loc.gov/loc.pnp/cph.3g12538",
+      "https://hdl.loc.gov/loc.pnp/cph.3a06792",
+      "https://hdl.loc.gov/loc.pnp/cph.3a06792",
+      "http://www.loc.gov/resource/pga.01698/",
+      "http://www.loc.gov/resource/cph.3g12538/",
+      "http://www.loc.gov/resource/cph.3a06792/",
+      "http://lccn.loc.gov/2004672470",
+      "https://search.catalog.loc.gov/instances/ea8484af-636e-5757-8f83-ebe1b182a165"
+    ],
+    "call_number": "PGA - Jefferys--East prospect of the city ... (D size) [P&P]",
+    "campaigns": [],
+    "contributor_names": [
+      "Jefferys, Thomas, -1771, engraver",
+      "Heap, George, active 1715-1760."
+    ],
+    "contributors": [
+      {
+        "heap, george": "https://www.loc.gov/search/?fa=contributor:heap,+george&fo=json"
+      },
+      {
+        "heap, george, active": "https://www.loc.gov/search/?fa=contributor:heap,+george,+active&fo=json"
+      },
+      {
+        "jefferys, thomas": "https://www.loc.gov/search/?fa=contributor:jefferys,+thomas&fo=json"
+      }
+    ],
+    "control_number": "",
+    "created": "2025-12-12T15:28:07Z",
+    "created_published": [
+      "[London] : Publish'd according to Act of Parliament by T. Jefferys near Charing Cross, [1768]"
+    ],
+    "created_published_date": "[1768]",
+    "date": "1768",
+    "dates": [
+      {
+        "1768": "https://www.loc.gov/search/?dates=1768/1768&fo=json"
+      }
+    ],
+    "description": [
+      "1 print : etching. | Print shows a view of Philadelphia from across the Delaware River with many ships in the foreground; includes vignettes of the \"Battery\" and the \"State house,\" as well as a street plan between the Schuylkill and Delaware rivers, and \"A description of the situation, harbour &c of the city and port of Philadelphia\" with legend of prominent features identified on the print by number."
+    ],
+    "digital_id": [
+      "pga 01698 https://hdl.loc.gov/loc.pnp/pga.01698",
+      "cph 3g12538 https://hdl.loc.gov/loc.pnp/cph.3g12538",
+      "cph 3a06792 https://hdl.loc.gov/loc.pnp/cph.3a06792"
+    ],
+    "digitized": true,
+    "display_offsite": true,
+    "extract_timestamp": "2025-12-16T01:14:12.925Z",
+    "extract_urls": [
+      "http://www.loc.gov/pictures/collection/pga/item/2004672470/#pga",
+      "http://lccn.loc.gov/2004672470#catalog-split-00"
+    ],
+    "format": [
+      {
+        "photo, print, drawing": "https://www.loc.gov/search/?fa=original_format:photo,+print,+drawing&fo=json"
+      }
+    ],
+    "format_headings": [
+      "Book illustrations--1760-1770.",
+      "Cityscapes--1760-1770.",
+      "Etchings--1760-1770.",
+      "Plans--1760-1770."
+    ],
+    "genre": [
+      "Book illustrations--1760-1770",
+      "Plans--1760-1770",
+      "Cityscapes--1760-1770",
+      "Etchings--1760-1770"
+    ],
+    "group": [
+      "pga",
+      "catalog-split-00",
+      "catalog",
+      "popular-graphic-arts",
+      "main-catalog-split-00"
+    ],
+    "hassegments": false,
+    "id": "http://www.loc.gov/item/2004672470/",
+    "image_url": [
+      "https://tile.loc.gov/storage-services/service/pnp/pga/01600/01698_150px.jpg#h=84&w=150",
+      "https://tile.loc.gov/storage-services/service/pnp/pga/01600/01698t.gif#h=84&w=150",
+      "https://tile.loc.gov/storage-services/service/pnp/pga/01600/01698r.jpg#h=357&w=640",
+      "https://tile.loc.gov/storage-services/service/pnp/pga/01600/01698v.jpg#h=572&w=1024"
+    ],
+    "index": 1,
+    "item": {
+      "call_number": "PGA - Jefferys--East prospect of the city ... (D size) [P&P]",
+      "contributor_names": [
+        "Heap, George, active 1715-1760.,  "
+      ],
+      "contributors": [
+        "Jefferys, Thomas, -1771, engraver",
+        "Heap, George, active 1715-1760"
+      ],
+      "control_number": "2004672470",
+      "created": "2025-12-12T15:28:07Z",
+      "created_published": "[London] : Publish'd according to Act of Parliament by T. Jefferys near Charing Cross, [1768]",
+      "created_published_date": "[1768]",
+      "creators": [
+        {
+          "link": "https://www.loc.gov/pictures/related/?fi=name&q=Jefferys%2C%20Thomas%2C%20-1771&co=pga",
+          "role": "engraver",
+          "title": "Jefferys, Thomas, -1771"
+        },
+        {
+          "link": "https://www.loc.gov/pictures/related/?fi=name&q=Heap%2C%20George%2C%20active%201715-1760.&co=pga",
+          "role": "",
+          "title": "Heap, George, active 1715-1760."
+        }
+      ],
+      "date": "[1768]",
+      "digital_id": [
+        "pga 01698 https://hdl.loc.gov/loc.pnp/pga.01698",
+        "cph 3g12538 https://hdl.loc.gov/loc.pnp/cph.3g12538",
+        "cph 3a06792 https://hdl.loc.gov/loc.pnp/cph.3a06792"
+      ],
+      "display_offsite": true,
+      "format": [
+        "still image"
+      ],
+      "formats": [
+        {
+          "link": "https://www.loc.gov/pictures/related/?fi=format&q=Book%20illustrations--1760-1770.&co=pga",
+          "title": "Book illustrations--1760-1770."
+        },
+        {
+          "link": "https://www.loc.gov/pictures/related/?fi=format&q=Cityscapes--1760-1770.&co=pga",
+          "title": "Cityscapes--1760-1770."
+        },
+        {
+          "link": "https://www.loc.gov/pictures/related/?fi=format&q=Etchings--1760-1770.&co=pga",
+          "title": "Etchings--1760-1770."
+        },
+        {
+          "link": "https://www.loc.gov/pictures/related/?fi=format&q=Plans--1760-1770.&co=pga",
+          "title": "Plans--1760-1770."
+        }
+      ],
+      "genre": [
+        "Book illustrations--1760-1770",
+        "Plans--1760-1770",
+        "Cityscapes--1760-1770",
+        "Etchings--1760-1770"
+      ],
+      "id": "2004672470",
+      "language": [
+        "eng"
+      ],
+      "link": "https://www.loc.gov/pictures/item/2004672470/",
+      "location": [
+        "Pennsylvania--Philadelphia",
+        "United States",
+        "Philadelphia (Pa.)"
+      ],
+      "marc": "https://www.loc.gov/pictures/item/2004672470/marc/",
+      "medium": [
+        "1 print : etching."
+      ],
+      "medium_brief": "1 print :",
+      "mediums": [
+        "1 print : etching."
+      ],
+      "modified": "2025-12-12T15:28:10Z",
+      "notes": [
+        "Caption label from exhibit \"American Treasures Memory\": Early Engraving of Philadelphia. Philadelphia, site of both Continental Congresses, was one of the most urban, advanced cities in America in the eighteenth century. During the winter of 1777-78, it was occupied by the British under General William Howe. The British enjoyed their stay immensely, while Washington's army suffered near starvation at Valley Forge. This engraving is one of the few authentic portraits of an American city before the Revolution.",
+        "Title from item.",
+        "Another copy in: A general topography of North America and the West Indies : Being a collection of all the maps, charts, plans, and particular surveys, that have been published of that part of the world, either in Europe or America / engraved by Tho. Jefferys. London : R. Sayer, 1768, no. 44.",
+        "Published in: The American Revolution in drawings and prints; a checklist of 1765-1790 graphics in the Library of Congress / Compiled by Donald H. Cresswell, with a foreword by Sinclair H. Hitchings. Washington : [For sale by the Supt. of Docs., U.S. Govt. Print. Off.], 1975, no. 588 (another copy).",
+        "Conserved; 001998.38 1975 Library of Congress Conservation Division. For treatment information, contact the Preservation Directorate. https://ask.loc.gov/preservation pda",
+        "Exhibited in: \"Creating the United States\" at the Library of Congress, Washington, D.C., 2010."
+      ],
+      "place": [
+        {
+          "latitude": "",
+          "link": "https://www.loc.gov/pictures/related/?fi=place&q=Pennsylvania--Philadelphia&co=pga",
+          "longitude": "",
+          "title": "Pennsylvania--Philadelphia"
+        },
+        {
+          "latitude": "",
+          "link": "https://www.loc.gov/pictures/related/?fi=place&q=United%20States&co=pga",
+          "longitude": "",
+          "title": "United States"
+        },
+        {
+          "latitude": "",
+          "link": "https://www.loc.gov/pictures/related/?fi=place&q=Pennsylvania--Philadelphia&co=pga",
+          "longitude": "",
+          "title": "Pennsylvania--Philadelphia"
+        }
+      ],
+      "raw_collections": [
+        "00",
+        "002",
+        "03",
+        "7",
+        "diof",
+        "exh",
+        "l4637",
+        "pga",
+        "pp"
+      ],
+      "repository": "Library of Congress Prints and Photographs Division Washington, D.C. 20540 USA http://hdl.loc.gov/loc.pnp/pp.print",
+      "reproduction_number": "LC-DIG-pga-01698 (digital file from original print)\nLC-USZC4-12538 (color film copy transparency)\nLC-USZ62-3282 (b&w film copy neg. of another copy)",
+      "resource_links": [
+        "https://hdl.loc.gov/loc.pnp/pga.01698",
+        "https://hdl.loc.gov/loc.pnp/cph.3g12538",
+        "https://hdl.loc.gov/loc.pnp/cph.3a06792"
+      ],
+      "rights_advisory": "No known restrictions on publication.",
+      "rights_information": "No known restrictions on publication.",
+      "service_low": "https://tile.loc.gov/storage-services/service/pnp/pga/01600/01698_150px.jpg",
+      "service_medium": "https://tile.loc.gov/storage-services/service/pnp/pga/01600/01698r.jpg",
+      "sort_date": "1768",
+      "source_created": "2004-06-03T00:00:00Z",
+      "source_modified": "2025-07-02T13:50:22Z",
+      "stmt_of_responsibility": "engrav'd by T. Jefferys.",
+      "subject_headings": [
+        "Waterfronts--Pennsylvania--Philadelphia--1760-1770.",
+        "Capitols--Pennsylvania--Philadelphia--1760-1770.",
+        "Forts & fortifications--British--Pennsylvania--Philadelphia--1760-1770.",
+        "Ships--Pennsylvania--Philadelphia--1760-1770.",
+        "Rivers--Pennsylvania--Philadelphia--1760-1770.",
+        "United States--History--Revolution, 1775-1783.",
+        "Philadelphia (Pa.)--1760-1770.",
+        "Pennsylvania--Philadelphia",
+        "United States"
+      ],
+      "subjects": [
+        "Waterfronts--Pennsylvania--Philadelphia--1760-1770",
+        "Capitols--Pennsylvania--Philadelphia--1760-1770",
+        "Forts & fortifications--British--Pennsylvania--Philadelphia--1760-1770",
+        "Ships--Pennsylvania--Philadelphia--1760-1770",
+        "Rivers--Pennsylvania--Philadelphia--1760-1770",
+        "United States--History--Revolution, 1775-1783",
+        "Philadelphia (Pa.)--1760-1770"
+      ],
+      "summary": "Print shows a view of Philadelphia from across the Delaware River with many ships in the foreground; includes vignettes of the \"Battery\" and the \"State house,\" as well as a street plan between the Schuylkill and Delaware rivers, and \"A description of the situation, harbour &c of the city and port of Philadelphia\" with legend of prominent features identified on the print by number.",
+      "thumb_gallery": "https://tile.loc.gov/storage-services/service/pnp/pga/01600/01698_150px.jpg",
+      "title": "An east prospect of the city of Philadelphia; taken by George Heap from the Jersey shore, under the direction of Nicholas Scull surveyor general of the Province of Pennsylvania"
+    },
+    "language": [
+      "english"
+    ],
+    "languages": [
+      {
+        "english": "https://www.loc.gov/search/?fa=language:english&fo=json"
+      }
+    ],
+    "library_of_congress_control_number": "2004672470",
+    "link": "https://www.loc.gov/pictures/item/2004672470/",
+    "location": [
+      "pennsylvania",
+      "philadelphia",
+      "united states"
+    ],
+    "locations": [
+      {
+        "pennsylvania": "https://www.loc.gov/search/?fa=location:pennsylvania&fo=json"
+      },
+      {
+        "philadelphia": "https://www.loc.gov/search/?fa=location:philadelphia&fo=json"
+      },
+      {
+        "united states": "https://www.loc.gov/search/?fa=location:united+states&fo=json"
+      }
+    ],
+    "marc": "https://www.loc.gov/pictures/item/2004672470/marc/",
+    "medium": [
+      "1 print : etching."
+    ],
+    "medium_brief": "1 print :",
+    "mime_type": [
+      "image/gif",
+      "image/jpg",
+      "image/tif"
+    ],
+    "modified": "2025-12-12T15:28:10Z",
+    "notes": [
+      "Caption label from exhibit \"American Treasures Memory\": Early Engraving of Philadelphia. Philadelphia, site of both Continental Congresses, was one of the most urban, advanced cities in America in the eighteenth century. During the winter of 1777-78, it was occupied by the British under General William Howe. The British enjoyed their stay immensely, while Washington's army suffered near starvation at Valley Forge. This engraving is one of the few authentic portraits of an American city before the Revolution.",
+      "Title from item.",
+      "Another copy in: A general topography of North America and the West Indies : Being a collection of all the maps, charts, plans, and particular surveys, that have been published of that part of the world, either in Europe or America / engraved by Tho. Jefferys. London : R. Sayer, 1768, no. 44.",
+      "Published in: The American Revolution in drawings and prints; a checklist of 1765-1790 graphics in the Library of Congress / Compiled by Donald H. Cresswell, with a foreword by Sinclair H. Hitchings. Washington : [For sale by the Supt. of Docs., U.S. Govt. Print. Off.], 1975, no. 588 (another copy).",
+      "Conserved; 001998.38 1975 Library of Congress Conservation Division. For treatment information, contact the Preservation Directorate. https://ask.loc.gov/preservation pda",
+      "Exhibited in: \"Creating the United States\" at the Library of Congress, Washington, D.C., 2010."
+    ],
+    "number": [
+      "online resource",
+      "2025-07-02t13:50:22.700000",
+      "2004672470",
+      "sheet"
+    ],
+    "number_carrier_type": [
+      "sheet",
+      "online resource"
+    ],
+    "number_lccn": [
+      "2004672470"
+    ],
+    "number_source_modified": [
+      "2025-07-02t13:50:22.700000"
+    ],
+    "online_format": [
+      "image"
+    ],
+    "original_format": [
+      "photo, print, drawing"
+    ],
+    "other_formats": [
+      {
+        "label": "MARCXML Record",
+        "link": "https://lccn.loc.gov/2004672470/marcxml"
+      },
+      {
+        "label": "MODS Record",
+        "link": "https://lccn.loc.gov/2004672470/mods"
+      },
+      {
+        "label": "Dublin Core Record",
+        "link": "https://lccn.loc.gov/2004672470/dc"
+      }
+    ],
+    "partof": [
+      {
+        "count": 18959,
+        "title": "popular graphic arts",
+        "url": "https://www.loc.gov/collections/popular-graphic-arts/?fo=json"
+      },
+      {
+        "count": 1162287,
+        "title": "prints and photographs division",
+        "url": "https://www.loc.gov/search/?fa=partof:prints+and+photographs+division&fo=json"
+      },
+      {
+        "count": 1910564,
+        "title": "catalog",
+        "url": "https://www.loc.gov/search/?fa=partof:catalog&fo=json"
+      }
+    ],
+    "place": [
+      {
+        "latitude": "",
+        "link": "https://www.loc.gov/pictures/related/?fi=place&q=Pennsylvania--Philadelphia&co=pga",
+        "longitude": "",
+        "title": "Pennsylvania--Philadelphia"
+      },
+      {
+        "latitude": "",
+        "link": "https://www.loc.gov/pictures/related/?fi=place&q=United%20States&co=pga",
+        "longitude": "",
+        "title": "United States"
+      },
+      {
+        "latitude": "",
+        "link": "https://www.loc.gov/pictures/related/?fi=place&q=Pennsylvania--Philadelphia&co=pga",
+        "longitude": "",
+        "title": "Pennsylvania--Philadelphia"
+      }
+    ],
+    "raw_collections": [
+      "00",
+      "002",
+      "03",
+      "7",
+      "diof",
+      "exh",
+      "l4637",
+      "pga",
+      "pp"
+    ],
+    "related": {
+      "neighbors": "https://www.loc.gov/pictures/related/?&co=pga&pk=2004672470&st=gallery&sb=call_number#focus"
+    },
+    "repository": [
+      "Library of Congress Prints and Photographs Division Washington, D.C. 20540 USA http://hdl.loc.gov/loc.pnp/pp.print"
+    ],
+    "reproduction_number": "LC-DIG-pga-01698 (digital file from original print)\nLC-USZC4-12538 (color film copy transparency)\nLC-USZ62-3282 (b&w film copy neg. of another copy)",
+    "reproductions": [],
+    "resource_links": [
+      "https://hdl.loc.gov/loc.pnp/pga.01698",
+      "https://hdl.loc.gov/loc.pnp/cph.3g12538",
+      "https://hdl.loc.gov/loc.pnp/cph.3a06792"
+    ],
+    "resources": [
+      {
+        "caption": "digital file from original print",
+        "files": 1,
+        "image": "https://tile.loc.gov/storage-services/service/pnp/pga/01600/01698_150px.jpg",
+        "url": "https://www.loc.gov/resource/pga.01698/"
+      },
+      {
+        "caption": "digital file from color film copy transparency",
+        "files": 1,
+        "image": "https://tile.loc.gov/storage-services/service/pnp/cph/3g10000/3g12000/3g12500/3g12538_150px.jpg",
+        "url": "https://www.loc.gov/resource/cph.3g12538/"
+      },
+      {
+        "caption": "digital file from b&w film copy neg. of another copy",
+        "files": 1,
+        "image": "https://tile.loc.gov/storage-services/service/pnp/cph/3a00000/3a06000/3a06700/3a06792_150px.jpg",
+        "url": "https://www.loc.gov/resource/cph.3a06792/"
+      }
+    ],
+    "rights": [
+      "<p>The Library of Congress does not&nbsp;own rights to material  in its collections. Therefore, it does not license or charge permission fees  for use of such material and cannot grant or deny permission to publish or  otherwise distribute the material. </p>\n<p>Ultimately, it is the researcher's obligation to assess copyright or other use restrictions and  obtain permission from third parties when necessary before publishing or  otherwise distributing materials found in the Library's collections. </p>\n<p>For information about reproducing,  publishing, and citing material from this collection, as well as access to the  original items, see: <a href=\"https://www.loc.gov/rr/print/res/248_pga.html\">Popular Graphic Arts Collection - Rights and Restrictions Information</a> </p>\n\n"
+    ],
+    "rights_advisory": "No known restrictions on publication.",
+    "rights_information": "No known restrictions on publication.",
+    "score": 18.876368,
+    "shard": "00",
+    "shelf_id": "PGA - Jefferys--East prospect of the city ... (D size) [P&P]",
+    "site": [
+      "pictures",
+      "catalog"
+    ],
+    "sort_date": "1768",
+    "source_created": "2004-06-03T00:00:00Z",
+    "source_modified": "2000-01-01T12:00:00Z",
+    "stmt_of_responsibility": "engrav'd by T. Jefferys.",
+    "subject": [
+      "book illustrations",
+      "philadelphia",
+      "revolution",
+      "pennsylvania",
+      "capitols",
+      "british",
+      "ships",
+      "rivers",
+      "united states",
+      "cityscapes",
+      "etchings",
+      "forts & fortifications",
+      "philadelphia (pa.)",
+      "history",
+      "waterfronts",
+      "plans"
+    ],
+    "subject_headings": [
+      "Waterfronts--Pennsylvania--Philadelphia--1760-1770",
+      "Capitols--Pennsylvania--Philadelphia--1760-1770",
+      "Forts & fortifications--British--Pennsylvania--Philadelphia--1760-1770",
+      "Ships--Pennsylvania--Philadelphia--1760-1770",
+      "Rivers--Pennsylvania--Philadelphia--1760-1770",
+      "United States--History--Revolution, 1775-1783",
+      "Philadelphia (Pa.)--1760-1770"
+    ],
+    "subjects": [
+      {
+        "book illustrations": "https://www.loc.gov/search/?fa=subject:book+illustrations&fo=json"
+      },
+      {
+        "british": "https://www.loc.gov/search/?fa=subject:british&fo=json"
+      },
+      {
+        "capitols": "https://www.loc.gov/search/?fa=subject:capitols&fo=json"
+      },
+      {
+        "cityscapes": "https://www.loc.gov/search/?fa=subject:cityscapes&fo=json"
+      },
+      {
+        "etchings": "https://www.loc.gov/search/?fa=subject:etchings&fo=json"
+      },
+      {
+        "forts & fortifications": "https://www.loc.gov/search/?fa=subject:forts+%26+fortifications&fo=json"
+      },
+      {
+        "history": "https://www.loc.gov/search/?fa=subject:history&fo=json"
+      },
+      {
+        "pennsylvania": "https://www.loc.gov/search/?fa=subject:pennsylvania&fo=json"
+      },
+      {
+        "philadelphia": "https://www.loc.gov/search/?fa=subject:philadelphia&fo=json"
+      },
+      {
+        "philadelphia (pa.)": "https://www.loc.gov/search/?fa=subject:philadelphia+%28pa.%29&fo=json"
+      },
+      {
+        "plans": "https://www.loc.gov/search/?fa=subject:plans&fo=json"
+      },
+      {
+        "revolution": "https://www.loc.gov/search/?fa=subject:revolution&fo=json"
+      },
+      {
+        "rivers": "https://www.loc.gov/search/?fa=subject:rivers&fo=json"
+      },
+      {
+        "ships": "https://www.loc.gov/search/?fa=subject:ships&fo=json"
+      },
+      {
+        "united states": "https://www.loc.gov/search/?fa=subject:united+states&fo=json"
+      },
+      {
+        "waterfronts": "https://www.loc.gov/search/?fa=subject:waterfronts&fo=json"
+      }
+    ],
+    "summary": "Print shows a view of Philadelphia from across the Delaware River with many ships in the foreground; includes vignettes of the \"Battery\" and the \"State house,\" as well as a street plan between the Schuylkill and Delaware rivers, and \"A description of the situation, harbour &c of the city and port of Philadelphia\" with legend of prominent features identified on the print by number.",
+    "thumb_gallery": "https://tile.loc.gov/storage-services/service/pnp/pga/01600/01698_150px.jpg",
+    "timestamp": "2025-12-16T01:16:49.466Z",
+    "title": "An east prospect of the city of Philadelphia; taken by George Heap from the Jersey shore, under the direction of Nicholas Scull surveyor general of the Province of Pennsylvania / engrav'd by T. Jefferys.",
+    "type": [
+      "still image"
+    ],
+    "unrestricted": true,
+    "url": "https://www.loc.gov/item/2004672470/"
+  },
+  "more_like_this": [
+    {
+      "access_restricted": false,
+      "aka": [
+        "https://www.loc.gov/pictures/item/2004672469/",
+        "http://www.loc.gov/item/2004672469/",
+        "http://www.loc.gov/pictures/item/2004672469/",
+        "https://www.loc.gov/pictures/collection/pga/item/2004672469/",
+        "http://www.loc.gov/pictures/collection/pga/item/2004672469/",
+        "http://www.loc.gov/resource/pga.04345/",
+        "http://www.loc.gov/resource/cph.3a23475/",
+        "https://hdl.loc.gov/loc.pnp/pga.04345",
+        "https://hdl.loc.gov/loc.pnp/cph.3a23475",
+        "http://lccn.loc.gov/2004672469"
+      ],
+      "campaigns": [],
+      "contributor": [
+        "basset (firm)"
+      ],
+      "date": "1790-01-01",
+      "dates": [
+        "1790"
+      ],
+      "description": [
+        "1 print : etching, hand-colored. | Print shows men in boats and ships along the waterfront in Philadelphia, Pennsylvania."
+      ],
+      "digitized": true,
+      "extract_timestamp": "2021-06-28T21:53:20.932Z",
+      "group": [
+        "pga",
+        "catalog-split-08",
+        "catalog",
+        "popular-graphic-arts",
+        "main-catalog-split-08",
+        "main-catalog"
+      ],
+      "hassegments": false,
+      "id": "http://www.loc.gov/item/2004672469/",
+      "image_url": [
+        "https://tile.loc.gov/storage-services/service/pnp/pga/04300/04345_150px.jpg#h=103&w=150",
+        "https://tile.loc.gov/storage-services/service/pnp/pga/04300/04345t.gif#h=103&w=150",
+        "https://tile.loc.gov/storage-services/service/pnp/pga/04300/04345r.jpg#h=440&w=640",
+        "https://tile.loc.gov/storage-services/service/pnp/pga/04300/04345v.jpg#h=704&w=1024"
+      ],
+      "index": 1,
+      "language": [
+        "english",
+        "french"
+      ],
+      "location": [
+        "pennsylvania",
+        "philadelphia",
+        "united states"
+      ],
+      "mime_type": [
+        "image/gif",
+        "image/jpg",
+        "image/tif"
+      ],
+      "number": [
+        "2004672469",
+        "http://www.loc.gov/item/13611995",
+        "2015-04-03t09:24:09"
+      ],
+      "online_format": [
+        "image"
+      ],
+      "original_format": [
+        "photo, print, drawing"
+      ],
+      "partof": [
+        "popular graphic arts",
+        "prints and photographs division",
+        "catalog",
+        "prints & photographs online catalog (library of congress)"
+      ],
+      "score": 47.881096,
+      "shelf_id": "PGA - Basset--Philadelphie ... (B size) [P&P]",
+      "site": [
+        "pictures",
+        "catalog"
+      ],
+      "subject": [
+        "harbors",
+        "revolution",
+        "pennsylvania",
+        "ships",
+        "united states",
+        "etchings",
+        "philadelphia (pa.)",
+        "history",
+        "philadelphia",
+        "waterfronts",
+        "marine prints",
+        "vues d'optique",
+        "hand-colored"
+      ],
+      "timestamp": "2022-05-01T00:01:42.923Z",
+      "title": "Philadelphie - la ville capitale de Pensylvanie province Nord-Americaine William Penn, à qui Charles II Roi d'Angleterre donna cette province entiére la planta en 1682 ...",
+      "url": "https://www.loc.gov/item/2004672469/"
+    },
+    {
+      "access_restricted": false,
+      "aka": [
+        "https://www.loc.gov/pictures/item/96504512/",
+        "http://www.loc.gov/item/96504512/",
+        "http://www.loc.gov/pictures/item/96504512/",
+        "https://www.loc.gov/pictures/collection/pga/item/96504512/",
+        "http://www.loc.gov/pictures/collection/pga/item/96504512/",
+        "http://www.loc.gov/resource/ppmsca.31798/",
+        "http://www.loc.gov/resource/cph.3g04312/",
+        "http://www.loc.gov/resource/cph.3a41501/",
+        "https://hdl.loc.gov/loc.pnp/cph.3a41501",
+        "http://lccn.loc.gov/96504512",
+        "https://hdl.loc.gov/loc.pnp/ppmsca.31798",
+        "https://hdl.loc.gov/loc.pnp/cph.3g04312"
+      ],
+      "campaigns": [],
+      "contributor": [
+        "leizelt, balthasar friedrich"
+      ],
+      "date": "1770-01-01",
+      "dates": [
+        "1770"
+      ],
+      "description": [
+        "1 print : etching, hand-colored ; 32 x 43.1 cm (plate), 33.8 x 44.2 cm (sheet) | Print shows men in boats and ships along the waterfront in Philadelphia, Pennsylvania. The artist depicts it as a European port city with substantial structures."
+      ],
+      "digitized": true,
+      "extract_timestamp": "2021-06-28T22:01:57.256Z",
+      "group": [
+        "pga",
+        "catalog-split-00",
+        "catalog",
+        "popular-graphic-arts",
+        "main-catalog-split-00",
+        "main-catalog"
+      ],
+      "hassegments": false,
+      "id": "http://www.loc.gov/item/96504512/",
+      "image_url": [
+        "https://tile.loc.gov/storage-services/service/pnp/ppmsca/31700/31798_150px.jpg#h=118&w=150",
+        "https://tile.loc.gov/storage-services/service/pnp/ppmsca/31700/31798t.gif#h=118&w=150",
+        "https://tile.loc.gov/storage-services/service/pnp/ppmsca/31700/31798r.jpg#h=502&w=640",
+        "https://tile.loc.gov/storage-services/service/pnp/ppmsca/31700/31798v.jpg#h=803&w=1024"
+      ],
+      "index": 2,
+      "language": [
+        "english",
+        "french"
+      ],
+      "location": [
+        "pennsylvania",
+        "philadelphia"
+      ],
+      "mime_type": [
+        "image/gif",
+        "image/jpg",
+        "image/tif"
+      ],
+      "number": [
+        "http://www.loc.gov/item/11669939",
+        "http://www.loc.gov/item/96504512",
+        "96504512",
+        "2011-09-22t09:35:35"
+      ],
+      "online_format": [
+        "image"
+      ],
+      "original_format": [
+        "photo, print, drawing"
+      ],
+      "partof": [
+        "popular graphic arts",
+        "prints and photographs division",
+        "catalog",
+        "prints & photographs online catalog (library of congress)"
+      ],
+      "score": 41.397175,
+      "shelf_id": "PGA - Leizelt--Vuë de Philadelphie (B size) [P&P]",
+      "site": [
+        "pictures",
+        "catalog"
+      ],
+      "subject": [
+        "harbors",
+        "pennsylvania",
+        "ships",
+        "etchings",
+        "philadelphia (pa.)",
+        "philadelphia",
+        "waterfronts",
+        "vues d'optique",
+        "hand-colored"
+      ],
+      "timestamp": "2022-05-01T01:18:10.048Z",
+      "title": "Vuë de Philadelphie. Philadelphia - die haupt stadt in der Nord-Americanishcen provinz Pensylvanien, sie ist vom William Penn (dem Caroll II König in Engelland, ... Philadelphie - la ville capitale de Pensylvanie, province Nord-Americaine, William Penn, à qui Charles II Roi d'Angleterre ... /",
+      "url": "https://www.loc.gov/item/96504512/"
+    },
+    {
+      "access_restricted": false,
+      "aka": [
+        "https://www.loc.gov/pictures/item/2012649728/",
+        "http://www.loc.gov/item/2012649728/",
+        "http://www.loc.gov/pictures/item/2012649728/",
+        "https://www.loc.gov/pictures/collection/pga/item/2012649728/",
+        "http://www.loc.gov/pictures/collection/pga/item/2012649728/",
+        "http://www.loc.gov/resource/pga.02970/",
+        "http://www.loc.gov/resource/cph.3a05233/",
+        "https://hdl.loc.gov/loc.pnp/cph.3a05233",
+        "http://lccn.loc.gov/2012649728",
+        "https://hdl.loc.gov/loc.pnp/pga.02970"
+      ],
+      "campaigns": [],
+      "contributor": [
+        "wade, frederick j."
+      ],
+      "date": "1875-01-01",
+      "dates": [
+        "1875"
+      ],
+      "description": [
+        "1 print : lithograph, tinted ; 55.2 x 72.3 cm (sheet) | Print shows a bird's-eye view of Philadelphia from across the Delaware River, with pedestrians, carriages, horse-teams, and horseback riders in the foreground, as well as a horse-powered paddleboat taxi or ferry at river's edge, on the river are many small boats and ships, and the Philadelphia cityscape and waterfront in the background, with docks, buildings, and steeples. Includes three vignettes showing \"1700 The Prison at 3rd & High (Market) St.\", \"The State House as it was in 1735\", and \"Old Court House & Friends Meeting House 2nd & High (Market) Sts. 1707\"."
+      ],
+      "digitized": true,
+      "extract_timestamp": "2021-06-28T22:41:17.298Z",
+      "group": [
+        "pga",
+        "catalog-split-09",
+        "catalog",
+        "popular-graphic-arts",
+        "main-catalog-split-09",
+        "main-catalog"
+      ],
+      "hassegments": false,
+      "id": "http://www.loc.gov/item/2012649728/",
+      "image_url": [
+        "https://tile.loc.gov/storage-services/service/pnp/pga/02900/02970_150px.jpg#h=115&w=150",
+        "https://tile.loc.gov/storage-services/service/pnp/pga/02900/02970t.gif#h=115&w=150",
+        "https://tile.loc.gov/storage-services/service/pnp/pga/02900/02970r.jpg#h=491&w=640",
+        "https://tile.loc.gov/storage-services/service/pnp/pga/02900/02970v.jpg#h=785&w=1024"
+      ],
+      "index": 3,
+      "language": [
+        "english"
+      ],
+      "location": [
+        "pennsylvania",
+        "new jersey",
+        "delaware river",
+        "new york",
+        "philadelphia",
+        "delaware"
+      ],
+      "mime_type": [
+        "image/gif",
+        "image/jpg",
+        "image/tif"
+      ],
+      "number": [
+        "http://www.loc.gov/item/17530046",
+        "2015-06-15t14:01:02",
+        "2012649728"
+      ],
+      "online_format": [
+        "image"
+      ],
+      "original_format": [
+        "photo, print, drawing"
+      ],
+      "partof": [
+        "popular graphic arts",
+        "prints and photographs division",
+        "catalog",
+        "prints & photographs online catalog (library of congress)"
+      ],
+      "score": 41.15082,
+      "shelf_id": "PGA - Wade--Philadelphia in the olden time (D size) [P&P]",
+      "site": [
+        "pictures",
+        "catalog"
+      ],
+      "subject": [
+        "delaware river (n.y.-del. and n.j.)",
+        "carriages & coaches",
+        "color",
+        "paddleboats",
+        "pennsylvania",
+        "friends' meeting houses",
+        "prisons",
+        "capitols",
+        "independence hall (philadelphia, pa.)",
+        "rivers",
+        "sailing ships",
+        "city & town life",
+        "lithographs",
+        "philadelphia (pa.)",
+        "philadelphia",
+        "waterfronts",
+        "bird's-eye views"
+      ],
+      "timestamp": "2022-05-01T00:16:06.414Z",
+      "title": "Philadelphia in the olden time",
+      "url": "https://www.loc.gov/item/2012649728/"
+    },
+    {
+      "access_restricted": false,
+      "aka": [
+        "https://www.loc.gov/pictures/item/2012649729/",
+        "http://www.loc.gov/item/2012649729/",
+        "http://www.loc.gov/pictures/item/2012649729/",
+        "https://www.loc.gov/pictures/collection/pga/item/2012649729/",
+        "http://www.loc.gov/pictures/collection/pga/item/2012649729/",
+        "http://www.loc.gov/resource/pga.03368/",
+        "http://lccn.loc.gov/2012649729",
+        "https://hdl.loc.gov/loc.pnp/pga.03368"
+      ],
+      "campaigns": [],
+      "contributor": [
+        "wade, frederick j."
+      ],
+      "date": "1875-01-01",
+      "dates": [
+        "1875"
+      ],
+      "description": [
+        "1 print : lithograph, tinted ; 56.5 x 71.2 cm (sheet) | Print shows a bird's-eye view of Philadelphia from across the Delaware River, with pedestrians, carriages, horse-teams, and horseback riders in the foreground, as well as a horse-powered paddleboat taxi or ferry at river's edge, on the river are many small boats and ships, and the Philadelphia cityscape and waterfront in the background, with docks, buildings, and steeples. Includes three vignettes showing \"1700 The Prison at 3rd & High (Market) St.\", \"The State House as it was in 1735\", and \"Old Court House & Friends Meeting House 2nd & High (Market) Sts. 1707\"."
+      ],
+      "digitized": true,
+      "extract_timestamp": "2021-06-28T22:41:17.298Z",
+      "group": [
+        "pga",
+        "catalog-split-10",
+        "catalog",
+        "popular-graphic-arts",
+        "main-catalog-split-10",
+        "main-catalog"
+      ],
+      "hassegments": false,
+      "id": "http://www.loc.gov/item/2012649729/",
+      "image_url": [
+        "https://tile.loc.gov/storage-services/service/pnp/pga/03300/03368_150px.jpg#h=121&w=150",
+        "https://tile.loc.gov/storage-services/service/pnp/pga/03300/03368t.gif#h=120&w=150",
+        "https://tile.loc.gov/storage-services/service/pnp/pga/03300/03368r.jpg#h=514&w=640",
+        "https://tile.loc.gov/storage-services/service/pnp/pga/03300/03368v.jpg#h=823&w=1024"
+      ],
+      "index": 4,
+      "language": [
+        "english"
+      ],
+      "location": [
+        "pennsylvania",
+        "new jersey",
+        "delaware river",
+        "new york",
+        "philadelphia",
+        "delaware"
+      ],
+      "mime_type": [
+        "image/gif",
+        "image/jpg",
+        "image/tif"
+      ],
+      "number": [
+        "http://www.loc.gov/item/17530064",
+        "2012649729",
+        "2015-06-15t14:01:31"
+      ],
+      "online_format": [
+        "image"
+      ],
+      "original_format": [
+        "photo, print, drawing"
+      ],
+      "partof": [
+        "popular graphic arts",
+        "prints and photographs division",
+        "catalog",
+        "prints & photographs online catalog (library of congress)"
+      ],
+      "score": 41.15082,
+      "shelf_id": "PGA - Wade--Philadelphia in the olden time (D size) [P&P]",
+      "site": [
+        "pictures",
+        "catalog"
+      ],
+      "subject": [
+        "delaware river (n.y.-del. and n.j.)",
+        "carriages & coaches",
+        "color",
+        "paddleboats",
+        "proofs",
+        "pennsylvania",
+        "friends' meeting houses",
+        "prisons",
+        "capitols",
+        "independence hall (philadelphia, pa.)",
+        "rivers",
+        "sailing ships",
+        "city & town life",
+        "lithographs",
+        "philadelphia (pa.)",
+        "philadelphia",
+        "waterfronts",
+        "bird's-eye views"
+      ],
+      "timestamp": "2022-05-01T00:16:06.414Z",
+      "title": "Philadelphia in the olden time",
+      "url": "https://www.loc.gov/item/2012649729/"
+    },
+    {
+      "access_restricted": false,
+      "aka": [
+        "https://www.loc.gov/pictures/item/2004672418/",
+        "http://www.loc.gov/item/2004672418/",
+        "http://www.loc.gov/pictures/item/2004672418/",
+        "https://www.loc.gov/pictures/collection/cph/item/2004672418/",
+        "http://www.loc.gov/pictures/collection/cph/item/2004672418/",
+        "http://www.loc.gov/resource/cph.3a46277/",
+        "http://lccn.loc.gov/2004672418",
+        "https://hdl.loc.gov/loc.pnp/cph.3a46277"
+      ],
+      "campaigns": [],
+      "contributor": [
+        "jefferys, thomas",
+        "serres, dominic"
+      ],
+      "date": "1768-01-01",
+      "dates": [
+        "1768"
+      ],
+      "description": [
+        "1 print : etching. | Print shows view of Pensacola from aboard ship with boats in the foreground."
+      ],
+      "digitized": true,
+      "extract_timestamp": "2021-08-26T01:47:10.105Z",
+      "group": [
+        "cph",
+        "catalog-split-02",
+        "catalog",
+        "miscellaneous-items-high-demand",
+        "main-catalog-split-02",
+        "main-catalog"
+      ],
+      "hassegments": false,
+      "id": "http://www.loc.gov/item/2004672418/",
+      "image_url": [
+        "https://tile.loc.gov/storage-services/service/pnp/cph/3a40000/3a46000/3a46200/3a46277_150px.jpg#h=94&w=150",
+        "https://tile.loc.gov/storage-services/service/pnp/cph/3a40000/3a46000/3a46200/3a46277t.gif#h=94&w=150",
+        "https://tile.loc.gov/storage-services/service/pnp/cph/3a40000/3a46000/3a46200/3a46277r.jpg#h=400&w=640"
+      ],
+      "index": 5,
+      "language": [
+        "english"
+      ],
+      "location": [
+        "pensacola",
+        "united states",
+        "florida"
+      ],
+      "mime_type": [
+        "image/gif",
+        "image/jpg",
+        "image/tif"
+      ],
+      "number": [
+        "http://www.loc.gov/item/13606658",
+        "2004672418",
+        "2013-05-30t08:06:41"
+      ],
+      "online_format": [
+        "image"
+      ],
+      "original_format": [
+        "photo, print, drawing"
+      ],
+      "partof": [
+        "geography and map division",
+        "miscellaneous items in high demand",
+        "prints and photographs division",
+        "catalog",
+        "prints & photographs online catalog (library of congress)"
+      ],
+      "score": 39.46074,
+      "shelf_id": "Illus. in G1105 .J4 1768 [Geography & Map RR]",
+      "site": [
+        "pictures",
+        "catalog"
+      ],
+      "subject": [
+        "florida",
+        "book illustrations",
+        "revolution",
+        "united states",
+        "cityscapes",
+        "etchings",
+        "history",
+        "waterfronts",
+        "marines (visual works)",
+        "pensacola (fla.)"
+      ],
+      "timestamp": "2022-05-02T00:54:39.951Z",
+      "title": "A north view of Pensacola, on the Island of Santa Rosa",
+      "url": "https://www.loc.gov/item/2004672418/"
+    },
+    {
+      "access_restricted": false,
+      "aka": [
+        "https://www.loc.gov/pictures/item/2004671521/",
+        "http://www.loc.gov/item/2004671521/",
+        "http://www.loc.gov/pictures/item/2004671521/",
+        "https://www.loc.gov/pictures/collection/pga/item/2004671521/",
+        "http://www.loc.gov/pictures/collection/pga/item/2004671521/",
+        "https://hdl.loc.gov/loc.pnp/ppmsca.30579",
+        "https://hdl.loc.gov/loc.pnp/ppmsca.30579",
+        "https://hdl.loc.gov/loc.pnp/cph.3a11949",
+        "https://hdl.loc.gov/loc.pnp/cph.3a11949",
+        "http://www.loc.gov/resource/ppmsca.30579/",
+        "http://www.loc.gov/resource/cph.3a11949/",
+        "http://lccn.loc.gov/2004671521",
+        "https://search.catalog.loc.gov/instances/fe6d7ab7-0478-5237-b592-b59832f75b2f"
+      ],
+      "campaigns": [],
+      "contributor": [
+        "peale, charles willson",
+        "trenchard, james"
+      ],
+      "date": "1787",
+      "dates": [
+        "1787"
+      ],
+      "description": [
+        "1 print : etching."
+      ],
+      "digitized": true,
+      "extract_timestamp": "2025-12-16T01:14:12.925Z",
+      "group": [
+        "pga",
+        "catalog-split-12",
+        "catalog",
+        "popular-graphic-arts",
+        "main-catalog-split-12"
+      ],
+      "hassegments": false,
+      "id": "http://www.loc.gov/item/2004671521/",
+      "image_url": [
+        "https://tile.loc.gov/storage-services/service/pnp/ppmsca/30500/30579_150px.jpg#h=106&w=150",
+        "https://tile.loc.gov/storage-services/service/pnp/ppmsca/30500/30579t.gif#h=105&w=150",
+        "https://tile.loc.gov/storage-services/service/pnp/ppmsca/30500/30579r.jpg#h=453&w=640",
+        "https://tile.loc.gov/storage-services/service/pnp/ppmsca/30500/30579v.jpg#h=725&w=1024"
+      ],
+      "index": 6,
+      "language": [
+        "english"
+      ],
+      "location": [
+        "pennsylvania",
+        "philadelphia",
+        "united states"
+      ],
+      "mime_type": [
+        "image/gif",
+        "image/jpg",
+        "image/tif"
+      ],
+      "number": [
+        "online resource",
+        "2004671521",
+        "2025-07-02t13:50:51.400000",
+        "sheet"
+      ],
+      "online_format": [
+        "image"
+      ],
+      "original_format": [
+        "photo, print, drawing"
+      ],
+      "partof": [
+        "popular graphic arts",
+        "prints and photographs division",
+        "catalog"
+      ],
+      "score": 37.08267,
+      "shelf_id": "PGA - Trenchard--N.W. view of the state house ... (A size) [P&P]",
+      "site": [
+        "pictures",
+        "catalog"
+      ],
+      "subject": [
+        "revolution",
+        "pennsylvania",
+        "capitols",
+        "periodical illustrations",
+        "united states",
+        "etchings",
+        "history",
+        "philadelphia"
+      ],
+      "timestamp": "2025-12-16T01:16:49.466Z",
+      "title": "A N.W. view of the state house in Philadelphia taken 1778",
+      "type": [
+        "still image"
+      ],
+      "url": "https://www.loc.gov/item/2004671521/"
+    }
+  ],
+  "options": {
+    "access_group": [
+      ""
+    ],
+    "access_group_raw": "",
+    "all": null,
+    "api_version": "1",
+    "app_context": null,
+    "application_shim": null,
+    "application_version": "$Revision$",
+    "attribute": null,
+    "attribute!": null,
+    "attribute_map": null,
+    "cache_tags": [
+      "pga",
+      "catalog-split-00",
+      "catalog",
+      "popular-graphic-arts",
+      "main-catalog-split-00",
+      "catalog-split-08",
+      "main-catalog-split-08",
+      "main-catalog",
+      "catalog-split-09",
+      "main-catalog-split-09",
+      "catalog-split-10",
+      "main-catalog-split-10",
+      "cph",
+      "catalog-split-02",
+      "miscellaneous-items-high-demand",
+      "main-catalog-split-02",
+      "catalog-split-12",
+      "main-catalog-split-12",
+      "gmd.mar",
+      "catalog-split-07",
+      "general-maps",
+      "main-catalog-split-07",
+      "catalog-split-13",
+      "main-catalog-split-13",
+      "catalog-split-14",
+      "main-catalog-split-14",
+      "catalog-split-11",
+      "main-catalog-split-11"
+    ],
+    "callback": null,
+    "clip": null,
+    "clip_image_width": null,
+    "clip_rotation": null,
+    "content_filter": null,
+    "content_replacement": "",
+    "count": null,
+    "dates": null,
+    "default_count": 25,
+    "delimiter": null,
+    "digital_id": null,
+    "display_level": null,
+    "distance": null,
+    "downloadOption": null,
+    "duration": 2.271672248840332,
+    "embed": [],
+    "embed!": [],
+    "error_response_status": null,
+    "excludeTerms": null,
+    "facetLimits": "",
+    "facetPrefix": null,
+    "facet_count": null,
+    "facet_style": null,
+    "field": null,
+    "format": "json",
+    "host": "www.loc.gov",
+    "ical": false,
+    "id": "2004672470/",
+    "iiif": false,
+    "index": null,
+    "inputEncoding": "UTF-8",
+    "item": null,
+    "items": null,
+    "keys": null,
+    "language": null,
+    "latlong": null,
+    "method": "GET",
+    "newSearch": null,
+    "new_clip_url": false,
+    "onsite": false,
+    "operator": null,
+    "outputEncoding": "UTF-8",
+    "page_campaigns": [],
+    "path_info": "/item/2004672470/",
+    "port": "443",
+    "proxypath": null,
+    "query_string": "fo=json",
+    "redirect_proxy": false,
+    "redirect_to_item": null,
+    "referer": "",
+    "region": "",
+    "release_id": 123456789,
+    "request_host": "www.loc.gov",
+    "request_params": {
+      "fo": [
+        "json"
+      ]
+    },
+    "request_url": "https://www.loc.gov/item/2004672470/?fo=json",
+    "resource": "",
+    "resource_sequence": null,
+    "scheme": "https",
+    "searchIn": null,
+    "searchTerms": "",
+    "segments": null,
+    "shards": [
+      "00"
+    ],
+    "site_id": null,
+    "site_type": null,
+    "solrQuery": "",
+    "sortBy": null,
+    "sortOrder": null,
+    "startPage": null,
+    "style": null,
+    "suggested": null,
+    "target": null,
+    "template": "layouts/item/layout",
+    "timestamp": 1792431582.3198147,
+    "tz_aware": null,
+    "unionFacets": "",
+    "webcast_permalink": null
+  },
+  "related": {
+    "group_record": null,
+    "lot_link": null,
+    "neighbors": "https://www.loc.gov/pictures/related/?&co=pga&pk=2004672470&st=gallery&sb=call_number#focus",
+    "survey_link": null
+  },
+  "related_items": [
+    {
+      "access_restricted": false,
+      "aka": [
+        "http://lccn.loc.gov/78690450",
+        "http://www.loc.gov/item/78690450/",
+        "https://search.catalog.loc.gov/instances/ce1a7e66-bdbb-5c2b-9c82-b3d9bc84bee4",
+        "https://hdl.loc.gov/loc.gmd/g3824p.ct008339",
+        "http://www.loc.gov/resource/g3824p.ct008339/"
+      ],
+      "campaigns": [],
+      "contributor": [
+        "jefferys, thomas",
+        "scull, nicholas",
+        "heap, george"
+      ],
+      "date": "1900",
+      "dates": [
+        "1900"
+      ],
+      "description": [
+        "Facsim. reproduced from T. Jefferys' Topography of North America, 1768. Includes text, index to points of interest, \"A plan of the city of Philadelphia,\" and ill. of \"The Battery\" and \"The State House.\" Available also through the Library of Congress Web site as a raster image. AACR2"
+      ],
+      "digitized": true,
+      "extract_timestamp": "2026-04-29T15:39:42.206Z",
+      "group": [
+        "gmd.mar",
+        "catalog-split-07",
+        "catalog",
+        "general-maps",
+        "main-catalog-split-07"
+      ],
+      "hassegments": false,
+      "id": "http://www.loc.gov/item/78690450/",
+      "image_url": [
+        "https://tile.loc.gov/storage-services/service/gmd/gmd382/g3824/g3824p/ct008339.gif",
+        "https://tile.loc.gov/storage-services/service/gmd/gmd382/g3824/g3824p/ct008339.gif#h=110&w=150",
+        "https://tile.loc.gov/image-services/iiif/service:gmd:gmd382:g3824:g3824p:ct008339/full/pct:12.5/0/default.jpg#h=623&w=848",
+        "https://tile.loc.gov/image-services/iiif/service:gmd:gmd382:g3824:g3824p:ct008339/full/pct:25/0/default.jpg#h=1247&w=1696"
+      ],
+      "index": 1,
+      "language": [
+        "english"
+      ],
+      "location": [
+        "pennsylvania",
+        "philadelphia",
+        "united states"
+      ],
+      "mime_type": [
+        "image/gif",
+        "image/tiff",
+        "image/jpeg",
+        "image/jp2"
+      ],
+      "number": [
+        "2025-06-07t18:32:34.900000",
+        "2017-10-03t11:47:27",
+        "78690450"
+      ],
+      "online_format": [
+        "image"
+      ],
+      "original_format": [
+        "map"
+      ],
+      "partof": [
+        "cities and towns",
+        "geography and map division",
+        "catalog"
+      ],
+      "score": 35.92237,
+      "shelf_id": "G3824.P5A35 1754 .H4 19--",
+      "site": [
+        "catalog"
+      ],
+      "subject": [
+        "pennsylvania",
+        "maps",
+        "facsimiles",
+        "united states",
+        "early works to 1800",
+        "philadelphia (pa.)",
+        "aerial views",
+        "philadelphia"
+      ],
+      "timestamp": "2026-04-29T16:18:36.600Z",
+      "title": "An east prospect of the city of Philadelphia",
+      "type": [
+        "cartographic"
+      ],
+      "url": "https://www.loc.gov/item/78690450/"
+    },
+    {
+      "access_restricted": false,
+      "aka": [
+        "http://lccn.loc.gov/2010587015",
+        "http://www.loc.gov/item/2010587015/",
+        "https://search.catalog.loc.gov/instances/f07b8830-5aa9-5240-8d69-6524ba082b08",
+        "https://hdl.loc.gov/loc.gmd/g3824p.ar130600",
+        "http://www.loc.gov/resource/g3824p.ar130600/"
+      ],
+      "campaigns": [],
+      "contributor": [
+        "scull, nicholas",
+        "heap, george"
+      ],
+      "date": "1753",
+      "dates": [
+        "1753"
+      ],
+      "description": [
+        "From Gentleman's Magazine, vol. 23, 1753 p. 373. Includes table of distances \"The distances of particular places in this map, from the court house.\" Mounted on paper with linen backing. LC Maps of North America, 1750-1789, 1306 Available also through the Library of Congress Web site as a raster image."
+      ],
+      "digitized": true,
+      "extract_timestamp": "2026-04-29T15:39:35.101Z",
+      "group": [
+        "gmd.mar",
+        "catalog-split-13",
+        "catalog",
+        "general-maps",
+        "main-catalog-split-13"
+      ],
+      "hassegments": false,
+      "id": "http://www.loc.gov/item/2010587015/",
+      "image_url": [
+        "https://tile.loc.gov/storage-services/service/gmd/gmd382/g3824/g3824p/ar130600.gif",
+        "https://tile.loc.gov/storage-services/service/gmd/gmd382/g3824/g3824p/ar130600.gif#h=186&w=150",
+        "https://tile.loc.gov/image-services/iiif/service:gmd:gmd382:g3824:g3824p:ar130600/full/pct:12.5/0/default.jpg#h=845&w=679",
+        "https://tile.loc.gov/image-services/iiif/service:gmd:gmd382:g3824:g3824p:ar130600/full/pct:25/0/default.jpg#h=1690&w=1359"
+      ],
+      "index": 2,
+      "language": [
+        "english"
+      ],
+      "location": [
+        "pennsylvania",
+        "philadelphia region",
+        "philadelphia",
+        "united states"
+      ],
+      "mime_type": [
+        "image/gif",
+        "image/tiff",
+        "image/jpeg",
+        "image/jp2"
+      ],
+      "number": [
+        "2017-04-25t11:21:17",
+        "2025-06-07t04:01:48.900000",
+        "sheet",
+        "2010587015"
+      ],
+      "online_format": [
+        "image"
+      ],
+      "original_format": [
+        "map"
+      ],
+      "partof": [
+        "american revolution and its era: maps and charts of north america and the west indies, 1750-1789",
+        "geography and map division",
+        "catalog",
+        "military battles and campaigns"
+      ],
+      "score": 29.46739,
+      "shelf_id": "G3824.P5A1 1753 .S3",
+      "site": [
+        "catalog"
+      ],
+      "subject": [
+        "philadelphia region",
+        "philadelphia",
+        "pennsylvania",
+        "maps",
+        "united states",
+        "early works to 1800",
+        "philadelphia (pa.)",
+        "philadelphia region (pa.)"
+      ],
+      "timestamp": "2026-04-29T16:00:02.826Z",
+      "title": "A map of Philadelphia and parts adjacent,",
+      "type": [
+        "cartographic"
+      ],
+      "url": "https://www.loc.gov/item/2010587015/"
+    },
+    {
+      "access_restricted": false,
+      "aka": [
+        "http://lccn.loc.gov/2010587016",
+        "http://www.loc.gov/item/2010587016/",
+        "https://search.catalog.loc.gov/instances/ea947dc3-b5d8-51ce-806e-3b7e81d84eb4",
+        "https://hdl.loc.gov/loc.gmd/g3824p.ar130700",
+        "http://www.loc.gov/resource/g3824p.ar130700/",
+        "https://hdl.loc.gov/loc.gmd/g3824p.ar130701",
+        "http://www.loc.gov/resource/g3824p.ar130701/"
+      ],
+      "campaigns": [],
+      "contributor": [
+        "scull, nicholas",
+        "heap, george"
+      ],
+      "date": "1777",
+      "dates": [
+        "1777"
+      ],
+      "description": [
+        "From Gentleman's Magazine, [1777] Mounted on linen. LC Maps of North America, 1750-1789, 1307 Available also through the Library of Congress Web site as a raster image."
+      ],
+      "digitized": true,
+      "extract_timestamp": "2026-04-29T15:39:35.101Z",
+      "group": [
+        "gmd.mar",
+        "catalog-split-14",
+        "catalog",
+        "general-maps",
+        "main-catalog-split-14"
+      ],
+      "hassegments": false,
+      "id": "http://www.loc.gov/item/2010587016/",
+      "image_url": [
+        "https://tile.loc.gov/storage-services/service/gmd/gmd382/g3824/g3824p/ar130700.gif",
+        "https://tile.loc.gov/storage-services/service/gmd/gmd382/g3824/g3824p/ar130700.gif#h=175&w=150",
+        "https://tile.loc.gov/image-services/iiif/service:gmd:gmd382:g3824:g3824p:ar130700/full/pct:12.5/0/default.jpg#h=793&w=680",
+        "https://tile.loc.gov/image-services/iiif/service:gmd:gmd382:g3824:g3824p:ar130700/full/pct:25/0/default.jpg#h=1587&w=1360"
+      ],
+      "index": 3,
+      "language": [
+        "english"
+      ],
+      "location": [
+        "pennsylvania",
+        "philadelphia region",
+        "philadelphia",
+        "united states"
+      ],
+      "mime_type": [
+        "image/gif",
+        "image/tiff",
+        "image/jpeg",
+        "image/jp2"
+      ],
+      "number": [
+        "2025-06-07t04:01:49.100000",
+        "2017-04-25t11:20:19",
+        "2010587016",
+        "sheet"
+      ],
+      "online_format": [
+        "image"
+      ],
+      "original_format": [
+        "map"
+      ],
+      "partof": [
+        "american revolution and its era: maps and charts of north america and the west indies, 1750-1789",
+        "geography and map division",
+        "catalog",
+        "military battles and campaigns"
+      ],
+      "score": 29.46739,
+      "shelf_id": "G3824.P5A1 1777 .S3 G3824.P5A1 1777 .S3 Vault",
+      "site": [
+        "catalog"
+      ],
+      "subject": [
+        "philadelphia region",
+        "philadelphia",
+        "pennsylvania",
+        "maps",
+        "united states",
+        "early works to 1800",
+        "philadelphia (pa.)",
+        "philadelphia region (pa.)"
+      ],
+      "timestamp": "2026-04-29T16:00:02.826Z",
+      "title": "A map of Philadelphia and parts adjacent,",
+      "type": [
+        "cartographic"
+      ],
+      "url": "https://www.loc.gov/item/2010587016/"
+    },
+    {
+      "access_restricted": false,
+      "aka": [
+        "http://lccn.loc.gov/98690000",
+        "http://www.loc.gov/item/98690000/",
+        "https://search.catalog.loc.gov/instances/694069b8-5bd1-590a-a01c-822dbfed3a1b",
+        "https://hdl.loc.gov/loc.gmd/g3824p.ct000294",
+        "http://www.loc.gov/resource/g3824p.ct000294/"
+      ],
+      "campaigns": [],
+      "contributor": [
+        "scull, nicholas",
+        "hebert, l.",
+        "heap, george"
+      ],
+      "date": "1752",
+      "dates": [
+        "1752"
+      ],
+      "description": [
+        "Rural buildings shown pictorially with occupants' names. First state of the 1st ed. (without the name \"West Jersey\" at lower right). Signed in ink on cloth backing: Alex. Stuart. Includes text, distance table, and ground-level view of the Statehouse (later Independence Hall). Available also through the Library of Congress Web site as a raster image. Purchased with funding support from J. Thomas Touchton, Mr. & Mrs. Isadore M. Scott, the Madison Council, and the Philip Lee Phillips Society; Richard B. Arkway Inc.; Sept. 1998. Vault Acquisitions control no.: 98-42"
+      ],
+      "digitized": true,
+      "extract_timestamp": "2026-04-29T15:38:50.832Z",
+      "group": [
+        "gmd.mar",
+        "catalog-split-00",
+        "catalog",
+        "general-maps",
+        "main-catalog-split-00"
+      ],
+      "hassegments": false,
+      "id": "http://www.loc.gov/item/98690000/",
+      "image_url": [
+        "https://tile.loc.gov/storage-services/service/gmd/gmd382/g3824/g3824p/ct000294.gif",
+        "https://tile.loc.gov/storage-services/service/gmd/gmd382/g3824/g3824p/ct000294.gif#h=208&w=150",
+        "https://tile.loc.gov/image-services/iiif/service:gmd:gmd382:g3824:g3824p:ct000294/full/pct:12.5/0/default.jpg#h=804&w=579",
+        "https://tile.loc.gov/image-services/iiif/service:gmd:gmd382:g3824:g3824p:ct000294/full/pct:25/0/default.jpg#h=1609&w=1158"
+      ],
+      "index": 4,
+      "language": [
+        "english"
+      ],
+      "location": [
+        "philadelphia region",
+        "philadelphia",
+        "united states",
+        "pennsylvania"
+      ],
+      "mime_type": [
+        "image/gif",
+        "image/tiff",
+        "image/jpeg",
+        "image/jp2"
+      ],
+      "number": [
+        "2025-06-07t18:45:26.200000",
+        "2013-05-01t13:19:44",
+        "sheet",
+        "98690000"
+      ],
+      "online_format": [
+        "image"
+      ],
+      "original_format": [
+        "map"
+      ],
+      "other_title": [
+        "Perspective view of the State-House"
+      ],
+      "partof": [
+        "geography and map division",
+        "military battles and campaigns",
+        "cities and towns",
+        "american revolution and its era: maps and charts of north america and the west indies, 1750-1789",
+        "catalog"
+      ],
+      "score": 29.46739,
+      "shelf_id": "G3824.P5 1752 .S3",
+      "site": [
+        "catalog"
+      ],
+      "subject": [
+        "philadelphia region",
+        "landowners",
+        "philadelphia region (pa.)",
+        "pennsylvania",
+        "maps",
+        "united states",
+        "independence hall (philadelphia, pa.)",
+        "early works to 1800",
+        "philadelphia (pa.)",
+        "aerial views",
+        "philadelphia"
+      ],
+      "timestamp": "2026-04-29T16:32:41.045Z",
+      "title": "A map of Philadelphia and parts adjacent : with a perspective view of the State-House",
+      "type": [
+        "cartographic"
+      ],
+      "url": "https://www.loc.gov/item/98690000/"
+    },
+    {
+      "access_restricted": false,
+      "aka": [
+        "http://lccn.loc.gov/74692213",
+        "http://www.loc.gov/item/74692213/",
+        "https://search.catalog.loc.gov/instances/24a435c6-03a9-55a5-a111-0e6f8f4d2939",
+        "https://hdl.loc.gov/loc.gmd/g3824p.ar132700",
+        "http://www.loc.gov/resource/g3824p.ar132700/"
+      ],
+      "campaigns": [],
+      "contributor": [
+        "faden, william"
+      ],
+      "date": "1779",
+      "dates": [
+        "1779"
+      ],
+      "description": [
+        "Shows names of rural landholders. Indexed for public buildings. Scale ca. 1:21,000. LC Maps of North America, 1750-1789, 1327 Available also through the Library of Congress Web site as a raster image. Vault AACR2: 100; 651/1; 650/2"
+      ],
+      "digitized": true,
+      "extract_timestamp": "2026-04-29T15:40:09.708Z",
+      "group": [
+        "gmd.mar",
+        "catalog-split-02",
+        "catalog",
+        "general-maps",
+        "main-catalog-split-02"
+      ],
+      "hassegments": false,
+      "id": "http://www.loc.gov/item/74692213/",
+      "image_url": [
+        "https://tile.loc.gov/storage-services/service/gmd/gmd382/g3824/g3824p/ar132700.gif",
+        "https://tile.loc.gov/storage-services/service/gmd/gmd382/g3824/g3824p/ar132700.gif#h=202&w=150",
+        "https://tile.loc.gov/image-services/iiif/service:gmd:gmd382:g3824:g3824p:ar132700/full/pct:12.5/0/default.jpg#h=1062&w=790",
+        "https://tile.loc.gov/image-services/iiif/service:gmd:gmd382:g3824:g3824p:ar132700/full/pct:25/0/default.jpg#h=2125&w=1580"
+      ],
+      "index": 5,
+      "language": [
+        "english"
+      ],
+      "location": [
+        "pennsylvania",
+        "philadelphia",
+        "united states"
+      ],
+      "mime_type": [
+        "image/gif",
+        "image/tiff",
+        "image/jpeg",
+        "image/jp2"
+      ],
+      "number": [
+        "2025-06-07t18:30:13.700000",
+        "2012-01-03t13:01:27",
+        "74692213"
+      ],
+      "online_format": [
+        "image"
+      ],
+      "original_format": [
+        "map"
+      ],
+      "partof": [
+        "american revolution and its era: maps and charts of north america and the west indies, 1750-1789",
+        "geography and map division",
+        "catalog",
+        "military battles and campaigns"
+      ],
+      "score": 24.980076,
+      "shelf_id": "G3824.P5S3 1779 .F3",
+      "site": [
+        "catalog"
+      ],
+      "subject": [
+        "fortification",
+        "early maps",
+        "manuscript maps",
+        "revolution",
+        "pennsylvania",
+        "maps",
+        "united states",
+        "early works to 1800",
+        "philadelphia (pa.)",
+        "history",
+        "philadelphia"
+      ],
+      "timestamp": "2026-04-29T16:14:08.036Z",
+      "title": "A plan of the city and environs of Philadelphia : with the works and encampments of His Majesty's forces under the command of Lieutenant General Sir William Howe, K.B.",
+      "type": [
+        "cartographic"
+      ],
+      "url": "https://www.loc.gov/item/74692213/"
+    },
+    {
+      "access_restricted": false,
+      "aka": [
+        "http://lccn.loc.gov/gm71002319",
+        "http://www.loc.gov/item/gm71002319/",
+        "https://search.catalog.loc.gov/instances/4508aa56-70ce-58fd-8ede-ca71cbec11fd",
+        "https://hdl.loc.gov/loc.gmd/g3824p.ar132400",
+        "http://www.loc.gov/resource/g3824p.ar132400/"
+      ],
+      "campaigns": [],
+      "contributor": [
+        "nicole, pierre"
+      ],
+      "date": "1778",
+      "dates": [
+        "1778"
+      ],
+      "description": [
+        "Manuscript, pen-and-ink and watercolor. Relief shown by shading. \"To the Honble. Sir William Howe K.B. general and commander in chief of all His Majesty's forces within the colonies laying on the Atlantic Ocean from Nova Scotia to West Florida inclusive, &ca. &ca. [Signed:] John Montrésor, chief engineer in America.\" Imperfect: Fort Mifflin on Great Mud Island is almost entirely cut off. Scale ca. 1:14,400. LC Maps of North America, 1750-1789, 1324 Available also through the Library of Congress Web site as a raster image. Vault AACR2: 651/1; 651/2"
+      ],
+      "digitized": true,
+      "extract_timestamp": "2026-04-29T15:39:51.841Z",
+      "group": [
+        "gmd.mar",
+        "catalog-split-11",
+        "catalog",
+        "general-maps",
+        "main-catalog-split-11"
+      ],
+      "hassegments": false,
+      "id": "http://www.loc.gov/item/gm71002319/",
+      "image_url": [
+        "https://tile.loc.gov/storage-services/service/gmd/gmd382/g3824/g3824p/ar132400.gif",
+        "https://tile.loc.gov/storage-services/service/gmd/gmd382/g3824/g3824p/ar132400.gif#h=191&w=150",
+        "https://tile.loc.gov/image-services/iiif/service:gmd:gmd382:g3824:g3824p:ar132400/full/pct:12.5/0/default.jpg#h=1717&w=1347",
+        "https://tile.loc.gov/image-services/iiif/service:gmd:gmd382:g3824:g3824p:ar132400/full/pct:25/0/default.jpg#h=3435&w=2695"
+      ],
+      "index": 6,
+      "language": [
+        "english"
+      ],
+      "location": [
+        "pennsylvania",
+        "philadelphia",
+        "united states"
+      ],
+      "mime_type": [
+        "image/gif",
+        "image/tiff",
+        "image/jpeg",
+        "image/jp2"
+      ],
+      "number": [
+        "gm71002319",
+        "2013-05-01t10:19:08",
+        "2025-06-07t18:28:55.900000"
+      ],
+      "online_format": [
+        "image"
+      ],
+      "original_format": [
+        "map"
+      ],
+      "partof": [
+        "american revolution and its era: maps and charts of north america and the west indies, 1750-1789",
+        "geography and map division",
+        "catalog",
+        "military battles and campaigns"
+      ],
+      "score": 24.980076,
+      "shelf_id": "G3824.P5 1778 .N51",
+      "site": [
+        "catalog"
+      ],
+      "subject": [
+        "early maps",
+        "manuscript maps",
+        "revolution",
+        "pennsylvania",
+        "maps",
+        "united states",
+        "early works to 1800",
+        "philadelphia (pa.)",
+        "history",
+        "philadelphia"
+      ],
+      "timestamp": "2026-04-29T16:36:40.909Z",
+      "title": "Plan of the city of Philadelphia and its environs shewing its defences during the years 1777 & 1778, together with the siege of Mud Island on the River Delaware",
+      "type": [
+        "cartographic"
+      ],
+      "url": "https://www.loc.gov/item/gm71002319/"
+    }
+  ],
+  "reproductions": "<p>If an image is displaying, you can download it yourself. (Some images \ndisplay only as thumbnails outside the Library of Congress because of rights \nconsiderations, but you have access to larger size images on site.)\n</p>\n\n<p>  \nAlternatively, you can purchase copies of various types through Library \nof Congress Duplication Services</a>.\n</p>\n\n<p> \n<ol>\n<p>\n<li><strong>If a digital image is displaying:</strong> The qualities of the digital image \npartially depend on whether it was made from the original or an \nintermediate such as a copy negative or transparency. If the Reproduction \nNumber field above includes a reproduction number that starts with \nLC-DIG..., then there is a digital image that was made directly \nfrom the original and is of sufficient resolution for most publication\n purposes.\n</li> \n</p>\n\n<li><strong>If there is information listed in the Reproduction Number field above:</strong> \nYou can use the reproduction number to purchase a copy from Duplication \nServices.  It will be made from the source listed in the parentheses after\n the number.  \n<p> \nIf only black-and-white (&quot;b&w&quot;) sources are listed and you \n desire a copy showing color or tint (assuming the original has any), \n you can generally purchase a quality copy of the original in color by \n citing the Call Number listed above and including the catalog record \n (&quot;About This Item&quot;) with your request.\n </p>\n</li>\n\n<li><strong>If there is no information listed in the Reproduction Number field \nabove:</strong> You can generally purchase a quality copy through \nDuplication Services. Cite the Call Number listed above and include the catalog record (&quot;About This Item&quot;) with \n your request.\n</li>\n</ol>\n</p>\n\n<p> \nPrice lists, contact information, and order forms are available on the\n <a href=\"https://www.loc.gov/duplicationservices/\">Duplication Services Web site</a>.  \n</p>\n\n\n\n",
+  "resources": [
+    {
+      "caption": "digital file from original print",
+      "files": [
+        [
+          {
+            "height": 0,
+            "levels": 1,
+            "mimetype": "image/tiff",
+            "size": 175081908,
+            "url": "https://tile.loc.gov/storage-services/master/pnp/pga/01600/01698u.tif",
+            "width": 0
+          },
+          {
+            "height": 84,
+            "levels": 1,
+            "mimetype": "image/jpeg",
+            "size": 3429,
+            "url": "https://tile.loc.gov/storage-services/service/pnp/pga/01600/01698_150px.jpg",
+            "width": 150
+          },
+          {
+            "height": 84,
+            "levels": 1,
+            "mimetype": "image/gif",
+            "size": 10937,
+            "url": "https://tile.loc.gov/storage-services/service/pnp/pga/01600/01698t.gif",
+            "width": 150
+          },
+          {
+            "height": 357,
+            "levels": 1,
+            "mimetype": "image/jpeg",
+            "size": 43880,
+            "url": "https://tile.loc.gov/storage-services/service/pnp/pga/01600/01698r.jpg",
+            "width": 640
+          },
+          {
+            "height": 572,
+            "levels": 1,
+            "mimetype": "image/jpeg",
+            "size": 120009,
+            "url": "https://tile.loc.gov/storage-services/service/pnp/pga/01600/01698v.jpg",
+            "width": 1024
+          }
+        ]
+      ],
+      "image": "https://tile.loc.gov/storage-services/service/pnp/pga/01600/01698_150px.jpg",
+      "url": "https://www.loc.gov/resource/pga.01698/"
+    },
+    {
+      "caption": "digital file from color film copy transparency",
+      "files": [
+        [
+          {
+            "height": 0,
+            "levels": 1,
+            "mimetype": "image/tiff",
+            "size": 88711292,
+            "url": "https://tile.loc.gov/storage-services/master/pnp/cph/3g10000/3g12000/3g12500/3g12538u.tif",
+            "width": 0
+          },
+          {
+            "height": 120,
+            "levels": 1,
+            "mimetype": "image/jpeg",
+            "size": 5136,
+            "url": "https://tile.loc.gov/storage-services/service/pnp/cph/3g10000/3g12000/3g12500/3g12538_150px.jpg",
+            "width": 150
+          },
+          {
+            "height": 120,
+            "levels": 1,
+            "mimetype": "image/gif",
+            "size": 15151,
+            "url": "https://tile.loc.gov/storage-services/service/pnp/cph/3g10000/3g12000/3g12500/3g12538t.gif",
+            "width": 150
+          },
+          {
+            "height": 512,
+            "levels": 1,
+            "mimetype": "image/jpeg",
+            "size": 52450,
+            "url": "https://tile.loc.gov/storage-services/service/pnp/cph/3g10000/3g12000/3g12500/3g12538r.jpg",
+            "width": 640
+          },
+          {
+            "height": 819,
+            "levels": 1,
+            "mimetype": "image/jpeg",
+            "size": 134917,
+            "url": "https://tile.loc.gov/storage-services/service/pnp/cph/3g10000/3g12000/3g12500/3g12538v.jpg",
+            "width": 1024
+          }
+        ]
+      ],
+      "image": "https://tile.loc.gov/storage-services/service/pnp/cph/3g10000/3g12000/3g12500/3g12538_150px.jpg",
+      "url": "https://www.loc.gov/resource/cph.3g12538/"
+    },
+    {
+      "caption": "digital file from b&w film copy neg. of another copy",
+      "files": [
+        [
+          {
+            "height": 0,
+            "levels": 1,
+            "mimetype": "image/tiff",
+            "size": 1227458,
+            "url": "https://tile.loc.gov/storage-services/master/pnp/cph/3a00000/3a06000/3a06700/3a06792u.tif",
+            "width": 0
+          },
+          {
+            "height": 78,
+            "levels": 1,
+            "mimetype": "image/jpeg",
+            "size": 3589,
+            "url": "https://tile.loc.gov/storage-services/service/pnp/cph/3a00000/3a06000/3a06700/3a06792_150px.jpg",
+            "width": 150
+          },
+          {
+            "height": 78,
+            "levels": 1,
+            "mimetype": "image/gif",
+            "size": 14308,
+            "url": "https://tile.loc.gov/storage-services/service/pnp/cph/3a00000/3a06000/3a06700/3a06792t.gif",
+            "width": 150
+          },
+          {
+            "height": 333,
+            "levels": 1,
+            "mimetype": "image/jpeg",
+            "size": 52882,
+            "url": "https://tile.loc.gov/storage-services/service/pnp/cph/3a00000/3a06000/3a06700/3a06792r.jpg",
+            "width": 640
+          }
+        ]
+      ],
+      "image": "https://tile.loc.gov/storage-services/service/pnp/cph/3a00000/3a06000/3a06700/3a06792_150px.jpg",
+      "url": "https://www.loc.gov/resource/cph.3a06792/"
+    }
+  ],
+  "thesaurus_entry": null,
+  "timestamp": 1792431584591,
+  "unrestricted": true
+}

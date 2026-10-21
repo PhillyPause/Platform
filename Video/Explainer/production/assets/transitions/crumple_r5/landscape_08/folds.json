@@ -1,0 +1,186 @@
+{
+  "renderer": "connected-origami-v1",
+  "renderer_sha256": "009d573a64e0f29f188779d840db987b13871782e6f9831fb5fa6a52e780d52f",
+  "source_sha256": "9a571bcaa1c9e8c4a533c51486fefa56529a11eda153a75a6487d00e8bcf7e85",
+  "source_scene": 8,
+  "frozen_story_time": 35.875,
+  "format": "landscape",
+  "width": 1920,
+  "height": 1080,
+  "topology": {
+    "vertices": 63,
+    "facets": 96,
+    "connectedComponents": 1,
+    "independentFragmentTrajectories": 0
+  },
+  "poses": [
+    {
+      "file": "fold_00.png",
+      "progress": 0.0,
+      "anchor": [
+        960.0,
+        540.0
+      ],
+      "width": 1920,
+      "height": 1080,
+      "alphaConnectedSheet": true,
+      "facets": 96
+    },
+    {
+      "file": "fold_01.png",
+      "progress": 0.08333333333333333,
+      "anchor": [
+        960.0,
+        540.0
+      ],
+      "width": 1920,
+      "height": 1080,
+      "alphaConnectedSheet": true,
+      "facets": 96,
+      "backFacingFacets": 0
+    },
+    {
+      "file": "fold_02.png",
+      "progress": 0.16666666666666666,
+      "anchor": [
+        951.0,
+        540.0
+      ],
+      "width": 1911,
+      "height": 1080,
+      "alphaConnectedSheet": true,
+      "facets": 96,
+      "backFacingFacets": 0
+    },
+    {
+      "file": "fold_03.png",
+      "progress": 0.25,
+      "anchor": [
+        831.0,
+        540.0
+      ],
+      "width": 1791,
+      "height": 1080,
+      "alphaConnectedSheet": true,
+      "facets": 96,
+      "backFacingFacets": 0
+    },
+    {
+      "file": "fold_04.png",
+      "progress": 0.3333333333333333,
+      "anchor": [
+        547.0,
+        540.0
+      ],
+      "width": 1456,
+      "height": 1080,
+      "alphaConnectedSheet": true,
+      "facets": 96,
+      "backFacingFacets": 0
+    },
+    {
+      "file": "fold_05.png",
+      "progress": 0.4166666666666667,
+      "anchor": [
+        338.0,
+        540.0
+      ],
+      "width": 1012,
+      "height": 1080,
+      "alphaConnectedSheet": true,
+      "facets": 96,
+      "backFacingFacets": 36
+    },
+    {
+      "file": "fold_06.png",
+      "progress": 0.5,
+      "anchor": [
+        334.0,
+        540.0
+      ],
+      "width": 698,
+      "height": 1038,
+      "alphaConnectedSheet": true,
+      "facets": 96,
+      "backFacingFacets": 43
+    },
+    {
+      "file": "fold_07.png",
+      "progress": 0.5833333333333334,
+      "anchor": [
+        314.0,
+        433.0
+      ],
+      "width": 597,
+      "height": 818,
+      "alphaConnectedSheet": true,
+      "facets": 96,
+      "backFacingFacets": 72
+    },
+    {
+      "file": "fold_08.png",
+      "progress": 0.6666666666666666,
+      "anchor": [
+        274.0,
+        257.0
+      ],
+      "width": 533,
+      "height": 494,
+      "alphaConnectedSheet": true,
+      "facets": 96,
+      "backFacingFacets": 64
+    },
+    {
+      "file": "fold_09.png",
+      "progress": 0.75,
+      "anchor": [
+        238.0,
+        216.0
+      ],
+      "width": 476,
+      "height": 392,
+      "alphaConnectedSheet": true,
+      "facets": 96,
+      "backFacingFacets": 42
+    },
+    {
+      "file": "fold_10.png",
+      "progress": 0.8333333333333334,
+      "anchor": [
+        236.0,
+        216.0
+      ],
+      "width": 457,
+      "height": 380,
+      "alphaConnectedSheet": true,
+      "facets": 96,
+      "backFacingFacets": 42
+    },
+    {
+      "file": "fold_11.png",
+      "progress": 0.9166666666666666,
+      "anchor": [
+        230.0,
+        218.0
+      ],
+      "width": 438,
+      "height": 377,
+      "alphaConnectedSheet": true,
+      "facets": 96,
+      "backFacingFacets": 43
+    },
+    {
+      "file": "fold_12.png",
+      "progress": 1.0,
+      "anchor": [
+        232.0,
+        222.0
+      ],
+      "width": 437,
+      "height": 378,
+      "alphaConnectedSheet": true,
+      "facets": 96,
+      "backFacingFacets": 46
+    }
+  ]
+}

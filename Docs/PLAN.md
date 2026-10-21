@@ -151,6 +151,7 @@ Platform/
   Platform.AppHost/          .NET Aspire, local orchestration only
   Platform.ServiceDefaults/  OpenTelemetry and health checks, for every service
 Brand/                       the master logo, YouTube images, print poster
+Video/Explainer/             the explainer film's Python pipeline (Git LFS)
 Docs/                        PLAN.md, INCIDENT_FACTS.md
   Platform/                  HOSTING.md
   ManyHands/                 MANYHANDS.md
@@ -243,6 +244,12 @@ necessary rather than merely advisable: an independent organisation cannot wear
 a derivative of a national organisation's mark it has no affiliation with. The
 mark has to read as *Philly* at 16 px in a Discord member list, on its own
 terms — not as a national logo with a local decal.
+
+**The replacement mark is `Website.Portal/wwwroot/phillypause-logo.svg`**: a
+navy Liberty Bell with pause-bar cutouts over the PhillyPause wordmark, with no
+circle and no flag. It is cleared for use. The explainer's
+`Video/Explainer/production/assets/brand/logo.svg` is the same file, byte for
+byte, and stays that way.
 
 **The mark is produced separately, outside this plan.** What the site needs from
 it, as a spec:

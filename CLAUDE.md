@@ -29,6 +29,7 @@ The full plan — architecture, content strategy, licensing, phases — is
 | `Platform/Platform.ServiceDefaults/` | `AddServiceDefaults()`: OpenTelemetry and health checks, for every service |
 | `Docs/` | PLAN and INCIDENT_FACTS at the top, which everything cites; then a folder per area: `Platform/` HOSTING, `ManyHands/` MANYHANDS, `Website/` KIOSK (the table's screen, `/kiosk`) and PHOTO_SOURCES, `Outreach/` YOUTUBE (the channel's settings). DESIGN / CONTENT / MOTION join as they land |
 | `Brand/` | The master logo (`Logo/PhillyPause.svg`), the YouTube images, the print poster |
+| `Video/Explainer/` | The explainer film's Python pipeline; artwork and audio in Git LFS. `RENDERING.md` builds every export, `CURRENT_APPROVED_STATE.md` is the approved spec. Not part of the solution or the deploy |
 
 Projects are `<Product>.<Role>` — product area first, job second. Folder,
 project file, assembly and root namespace are all the same string, with no

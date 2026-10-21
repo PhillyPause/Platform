@@ -1,0 +1,13 @@
+﻿__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+*.mp4
+*.mov
+*.mkv
+*.avi
+*.log
+
+production/proof/
+# Everything the pipeline generates: artwork cache, crumple poses, proofs, renders.
+production/build/
