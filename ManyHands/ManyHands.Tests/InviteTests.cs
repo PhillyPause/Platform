@@ -44,7 +44,10 @@ public sealed class InviteTests(DatabaseFixture db)
         Assert.False(joined.AlreadyMember);
         var volunteer = await new VolunteerRepository(db.DataSource).GetByIdAsync(joined.VolunteerId);
         Assert.Equal(email, volunteer!.Email);
+        Assert.True(joined.Confirmed);
+        Assert.NotNull(volunteer.EmailVerifiedAt);
         Assert.Equal(1, await TestData.CountOutboxWelcomesAsync(db.DataSource, joined.VolunteerId));
+        Assert.Equal(0, await TestData.CountOutboxForVolunteerAsync(db.DataSource, OutboxKinds.MemberConfirm, joined.VolunteerId));
     }
 
     [Fact]

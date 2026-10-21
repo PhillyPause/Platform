@@ -14,6 +14,15 @@ public sealed class AuthTokenRepository(NpgsqlDataSource db)
 {
     public static readonly TimeSpan Lifetime = TimeSpan.FromMinutes(20);
 
+    /// <summary>
+    /// A confirmation link waits in an inbox for a volunteer to get round to
+    /// it, so it lasts a month rather than twenty minutes.
+    /// </summary>
+    public static readonly TimeSpan ConfirmationLifetime = TimeSpan.FromDays(30);
+
+    private const string SignInPurpose = "magic-link";
+    private const string ConfirmPurpose = "confirm";
+
     private sealed record RedeemedRow(Guid VolunteerId, string DisplayName);
 
     /// <summary>Issues a token and returns the raw value — it exists nowhere else.</summary>
@@ -28,19 +37,85 @@ public sealed class AuthTokenRepository(NpgsqlDataSource db)
         await conn.ExecuteAsync(new CommandDefinition(
             """
             UPDATE auth_tokens SET consumed_at = now()
-            WHERE volunteer_id = @volunteerId AND consumed_at IS NULL AND expires_at > now()
+            WHERE volunteer_id = @volunteerId AND purpose = @purpose
+              AND consumed_at IS NULL AND expires_at > now()
             """,
-            new { volunteerId }, cancellationToken: ct));
+            new { volunteerId, purpose = SignInPurpose }, cancellationToken: ct));
+
+        await InsertAsync(conn, volunteerId, raw, SignInPurpose, Lifetime, ct);
+        return raw;
+    }
+
+    /// <summary>
+    /// Issues the link in a joining email that says "this address is mine".
+    /// Unlike a sign-in link it leaves earlier ones working: whichever of
+    /// their emails a volunteer finds first should do.
+    /// </summary>
+    public async Task<string> IssueConfirmationAsync(Guid volunteerId, CancellationToken ct = default)
+    {
+        var raw = Tokens.Generate();
+
+        await using var conn = await db.OpenConnectionAsync(ct);
+        await InsertAsync(conn, volunteerId, raw, ConfirmPurpose, ConfirmationLifetime, ct);
+        return raw;
+    }
+
+    private static Task InsertAsync(
+        NpgsqlConnection conn, Guid volunteerId, string raw, string purpose, TimeSpan lifetime, CancellationToken ct) =>
+        conn.ExecuteAsync(new CommandDefinition(
+            """
+            INSERT INTO auth_tokens (volunteer_id, token_hash, purpose, expires_at)
+            VALUES (@volunteerId, @hash, @purpose, now() + @lifetime)
+            """,
+            new { volunteerId, hash = Tokens.Hash(raw), purpose, lifetime },
+            cancellationToken: ct));
+
+    /// <summary>
+    /// Confirms the address a confirmation link went to, once. It works only
+    /// while the address is unconfirmed, and spends every confirmation link
+    /// the person holds, so a month-old email cannot sign anyone in later.
+    /// </summary>
+    public async Task<MagicLinkResult> ConfirmAsync(string rawToken, CancellationToken ct = default)
+    {
+        if (string.IsNullOrWhiteSpace(rawToken))
+            return new MagicLinkResult.Invalid();
+
+        await using var conn = await db.OpenConnectionAsync(ct);
+        await using var tx = await conn.BeginTransactionAsync(ct);
+
+        // Setting email_verified_at is the claim: two presses cannot both see
+        // it empty.
+        var row = await conn.QuerySingleOrDefaultAsync<RedeemedRow>(new CommandDefinition(
+            """
+            UPDATE volunteers v
+            SET email_verified_at = now()
+            FROM auth_tokens t
+            WHERE t.token_hash = @hash
+              AND t.purpose = @purpose
+              AND t.consumed_at IS NULL
+              AND t.expires_at > now()
+              AND v.id = t.volunteer_id
+              AND v.email_verified_at IS NULL
+              AND NOT v.is_deleted
+            RETURNING v.id AS volunteer_id, v.display_name
+            """,
+            new { hash = Tokens.Hash(rawToken), purpose = ConfirmPurpose }, tx, cancellationToken: ct));
+
+        if (row is null)
+        {
+            await tx.RollbackAsync(ct);
+            return new MagicLinkResult.Invalid();
+        }
 
         await conn.ExecuteAsync(new CommandDefinition(
             """
-            INSERT INTO auth_tokens (volunteer_id, token_hash, expires_at)
-            VALUES (@volunteerId, @hash, now() + @lifetime)
+            UPDATE auth_tokens SET consumed_at = now()
+            WHERE volunteer_id = @volunteerId AND purpose = @purpose AND consumed_at IS NULL
             """,
-            new { volunteerId, hash = Tokens.Hash(raw), lifetime = Lifetime },
-            cancellationToken: ct));
+            new { volunteerId = row.VolunteerId, purpose = ConfirmPurpose }, tx, cancellationToken: ct));
 
-        return raw;
+        await tx.CommitAsync(ct);
+        return new MagicLinkResult.Ok(row.VolunteerId, row.DisplayName);
     }
 
     /// <summary>
@@ -61,13 +136,14 @@ public sealed class AuthTokenRepository(NpgsqlDataSource db)
             SET consumed_at = now()
             FROM volunteers v
             WHERE t.token_hash = @hash
+              AND t.purpose = @purpose
               AND t.consumed_at IS NULL
               AND t.expires_at > now()
               AND v.id = t.volunteer_id
               AND NOT v.is_deleted
             RETURNING t.volunteer_id, v.display_name
             """,
-            new { hash = Tokens.Hash(rawToken) }, cancellationToken: ct));
+            new { hash = Tokens.Hash(rawToken), purpose = SignInPurpose }, cancellationToken: ct));
 
         if (row is null)
             return new MagicLinkResult.Invalid();

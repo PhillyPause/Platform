@@ -13,12 +13,20 @@
 @if (_joined is not null)
 {
     <div class="joindone" role="status">
-        <p class="joindone-head">@(_joined.AlreadyMember ? "You are already one of us" : "Welcome")</p>
-        <p>
-            @(_joined.AlreadyMember
-                ? "We have saved what you ticked alongside what you told us before."
-                : "A welcome email is on its way. Until then, see what is coming up.")
-        </p>
+        @if (_joined.Confirmed)
+        {
+            <p class="joindone-head">You are already one of us</p>
+            <p>We have saved what you ticked alongside what you told us before.</p>
+        }
+        else
+        {
+            <p class="joindone-head">Nearly there: check your email</p>
+            <p>
+                @(_joined.AlreadyMember ? "We have sent it again." : "We have sent you one email.")
+                Click the link in it, so we know the address is yours, and you are in.
+                Until you do, we send nothing else.
+            </p>
+        }
         <label class="signupbtn" for="events-open">See events</label>
     </div>
 }

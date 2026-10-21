@@ -8,6 +8,8 @@
     <h1>Members</h1>
     <p class="lead">
         Everyone who has joined, signed up or been added at the door: @_members.Count people.
+        "Not confirmed yet" means they have not clicked the link in their joining email,
+        so they hear about nothing new until they do.
         @(_isAdmin ? "As an admin, you decide who else organizes." : "Admins decide who organizes.")
     </p>
 </div>
@@ -34,7 +36,7 @@
                         <td>
                             <strong>@member.DisplayName</strong>
                             <div class="vol-small">
-                                @(member.Email ?? "no email")@(member.Email is not null && !member.CanEmail ? " · unsubscribed" : "")
+                                @(member.Email ?? "no email")@(member.Email is not null && !member.CanEmail ? " · unsubscribed" : "")@(member.Email is not null && member.CanEmail && !member.Confirmed ? " · not confirmed yet" : "")
                             </div>
                         </td>
                         <td class="vol-small">@string.Join(", ", member.Interests)</td>

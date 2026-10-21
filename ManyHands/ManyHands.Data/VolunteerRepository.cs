@@ -49,13 +49,22 @@ public sealed class VolunteerRepository(NpgsqlDataSource db)
             new { name, email = email.Trim() }, cancellationToken: ct));
     }
 
-    private sealed record JoinedRow(Guid Id, bool Inserted);
+    private sealed record JoinedRow(Guid Id, bool Inserted, bool Confirmed);
+
+    /// <summary>
+    /// How long the one reminder waits for someone who has not clicked their
+    /// confirmation link: long enough to be past a busy week's inbox, soon
+    /// enough that they still remember joining.
+    /// </summary>
+    public static readonly TimeSpan NudgeAfter = TimeSpan.FromDays(3);
 
     /// <summary>
     /// Joining PhillyPause from the join page: the person, what they like doing,
-    /// and — the first time only — a welcome, queued in the same transaction so
-    /// a failed join welcomes nobody. Anyone with the URL may join, the same
-    /// trust as the public activity list they could already sign up from.
+    /// and an email asking them to confirm the address is theirs, queued in the
+    /// same transaction so a failed join mails nobody. Anyone with the URL may
+    /// join, the same trust as the public activity list they could already
+    /// sign up from; the confirmation is what keeps a stranger's typo from
+    /// putting someone else on the list.
     /// </summary>
     public async Task<JoinResult> JoinAsync(
         string displayName, string email, IReadOnlyCollection<short> interestIds,
@@ -69,7 +78,18 @@ public sealed class VolunteerRepository(NpgsqlDataSource db)
         await using var conn = await db.OpenConnectionAsync(ct);
         await using var tx = await conn.BeginTransactionAsync(ct);
 
-        var joined = await JoinCoreAsync(conn, tx, name, address, interestIds, ct);
+        var joined = await JoinCoreAsync(conn, tx, name, address, interestIds, addressProven: false, ct);
+
+        if (!joined.Confirmed)
+        {
+            // Joining again before confirming is how someone says the first
+            // email never came, so it goes again. The reminder is booked once,
+            // with the first join.
+            await Outbox.QueueAsync(conn, tx, OutboxKinds.MemberConfirm, new { volunteerId = joined.VolunteerId }, ct);
+            if (!joined.AlreadyMember)
+                await Outbox.QueueAsync(conn, tx, OutboxKinds.MemberNudge, new { volunteerId = joined.VolunteerId }, ct,
+                    delay: NudgeAfter);
+        }
 
         await tx.CommitAsync(ct);
         return joined;
@@ -77,23 +97,26 @@ public sealed class VolunteerRepository(NpgsqlDataSource db)
 
     /// <summary>
     /// What both doors share — the join page and an accepted invite: upsert the
-    /// person, record what they like doing, and welcome them the first time.
+    /// person and record what they like doing. An invite proves the address,
+    /// since it was mailed there, so it confirms the person and welcomes them
+    /// the first time; the join page leaves the asking to its caller.
     /// </summary>
     internal static async Task<JoinResult.Ok> JoinCoreAsync(
         NpgsqlConnection conn, NpgsqlTransaction tx, string name, string address,
-        IReadOnlyCollection<short> interestIds, CancellationToken ct)
+        IReadOnlyCollection<short> interestIds, bool addressProven, CancellationToken ct)
     {
         // xmax is zero only on a row this statement inserted, which is how the
         // upsert says whether the person is new.
         var joined = await conn.QuerySingleAsync<JoinedRow>(new CommandDefinition(
             """
-            INSERT INTO volunteers (display_name, email)
-            VALUES (@name, @address)
+            INSERT INTO volunteers (display_name, email, email_verified_at)
+            VALUES (@name, @address, CASE WHEN @addressProven THEN now() END)
             ON CONFLICT (lower(email)) WHERE email IS NOT NULL
-            DO UPDATE SET display_name = COALESCE(NULLIF(volunteers.display_name, ''), EXCLUDED.display_name)
-            RETURNING id, (xmax = 0) AS inserted
+            DO UPDATE SET display_name = COALESCE(NULLIF(volunteers.display_name, ''), EXCLUDED.display_name),
+                          email_verified_at = COALESCE(volunteers.email_verified_at, EXCLUDED.email_verified_at)
+            RETURNING id, (xmax = 0) AS inserted, email_verified_at IS NOT NULL AS confirmed
             """,
-            new { name, address }, tx, cancellationToken: ct));
+            new { name, address, addressProven }, tx, cancellationToken: ct));
 
         if (interestIds.Count > 0)
         {
@@ -107,10 +130,10 @@ public sealed class VolunteerRepository(NpgsqlDataSource db)
                 new { joined.Id, ids = interestIds.ToArray() }, tx, cancellationToken: ct));
         }
 
-        if (joined.Inserted)
+        if (joined.Inserted && addressProven)
             await Outbox.QueueAsync(conn, tx, OutboxKinds.MemberWelcome, new { volunteerId = joined.Id }, ct);
 
-        return new JoinResult.Ok(joined.Id, AlreadyMember: !joined.Inserted);
+        return new JoinResult.Ok(joined.Id, AlreadyMember: !joined.Inserted, joined.Confirmed);
     }
 
     /// <summary>Raises a role, never lowers it: how a configured admin becomes one on signing in.</summary>
@@ -188,6 +211,7 @@ public sealed class VolunteerRepository(NpgsqlDataSource db)
             """
             SELECT v.id, v.display_name, v.email, v.role, v.created_at,
                    (v.email_opt_in AND v.unsubscribed_at IS NULL) AS can_email,
+                   v.email_verified_at IS NOT NULL AS confirmed,
                    COALESCE((SELECT array_agg(a.label ORDER BY a.sort_order)
                                FROM volunteer_interests vi
                                JOIN activity_types a ON a.id = vi.activity_type_id

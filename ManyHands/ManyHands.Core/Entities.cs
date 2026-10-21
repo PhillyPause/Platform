@@ -70,6 +70,8 @@ public sealed record Member(
     VolunteerRole Role,
     DateTimeOffset CreatedAt,
     bool CanEmail,
+    /// <summary>Clicked the link in their joining email, signed in, or came by invite.</summary>
+    bool Confirmed,
     string[] Interests);
 
 /// <summary>What a volunteer sees on their own page.</summary>

@@ -123,6 +123,7 @@ public sealed class OrganizerTests(DatabaseFixture db)
         var other = await TestData.VolunteerAsync(db.DataSource, "Other", interests: TestData.Calling);
         var quiet = await TestData.VolunteerAsync(db.DataSource, "Quiet", interests: TestData.Flyering);
         await new VolunteerRepository(db.DataSource).SetEmailOptInAsync(quiet.Id, false);
+        var unsure = await TestData.VolunteerAsync(db.DataSource, "Unsure", confirmed: false, interests: TestData.Flyering);
 
         var id = await Admin.CreateAsync(Fields($"Flyering {Guid.NewGuid():N}", types: TestData.Flyering));
         await Admin.SetPublishedAsync(id, true);
@@ -136,5 +137,6 @@ public sealed class OrganizerTests(DatabaseFixture db)
         Assert.Single(await TestData.SubjectsSentToAsync(db.DataSource, keen.Email!));
         Assert.Empty(await TestData.SubjectsSentToAsync(db.DataSource, other.Email!));
         Assert.Empty(await TestData.SubjectsSentToAsync(db.DataSource, quiet.Email!));
+        Assert.Empty(await TestData.SubjectsSentToAsync(db.DataSource, unsure.Email!));
     }
 }

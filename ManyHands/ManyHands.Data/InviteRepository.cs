@@ -261,7 +261,7 @@ public sealed class InviteRepository(NpgsqlDataSource db)
         }
 
         var name = string.IsNullOrWhiteSpace(displayName) ? claimed.Email.Split('@')[0] : displayName.Trim();
-        var joined = await VolunteerRepository.JoinCoreAsync(conn, tx, name, claimed.Email, interestIds, ct);
+        var joined = await VolunteerRepository.JoinCoreAsync(conn, tx, name, claimed.Email, interestIds, addressProven: true, ct);
 
         await conn.ExecuteAsync(new CommandDefinition(
             "UPDATE invites SET accepted_by = @volunteerId WHERE id = @inviteId",

@@ -150,4 +150,36 @@ public sealed class VolunteerDataRepository(NpgsqlDataSource db)
         await tx.CommitAsync(ct);
         return true;
     }
+
+    private sealed record RemovableRow(Guid Id, int Role);
+
+    /// <summary>
+    /// The removal link in a joining email: the same deletion as the button on
+    /// their page, by the key in the link, with no sign-in. Organizers are left
+    /// alone: a link sitting in an old email must not be able to take away the
+    /// people who run things, and they have their page.
+    /// </summary>
+    public async Task<RemoveResult> RemoveByCommsKeyAsync(Guid commsKey, CancellationToken ct = default)
+    {
+        RemovableRow? row;
+        await using (var conn = await db.OpenConnectionAsync(ct))
+        {
+            row = await conn.QuerySingleOrDefaultAsync<RemovableRow>(new CommandDefinition(
+                "SELECT id, role FROM volunteers WHERE comms_key = @commsKey AND NOT is_deleted",
+                new { commsKey }, cancellationToken: ct));
+        }
+
+        if (row is null) return RemoveResult.NotFound;
+        if (row.Role != (int)Core.VolunteerRole.Member) return RemoveResult.Organizer;
+
+        return await DeleteAsync(row.Id, ct) ? RemoveResult.Removed : RemoveResult.NotFound;
+    }
+}
+
+public enum RemoveResult
+{
+    Removed,
+    /// <summary>No such key, or already removed: to the person, the same as removed.</summary>
+    NotFound,
+    Organizer,
 }
