@@ -1,0 +1,87 @@
+@inject VolunteerDataRepository Data
+@inject VolunteerRepository Volunteers
+@inject NavigationManager Navigation
+
+@* "Not you, or changed your mind?", from a joining email or the confirm
+   dialog's "That's not me": the front page, with this in a dialog. It asks
+   before it acts, as unsubscribing does, because mail scanners open links.
+   Removing is the same deletion as the button on someone's own page, and
+   signs them out if this device was signed in as them; the answer is then a
+   redirect, so the account bar no longer shows their name. *@
+
+@if (_result is RemoveResult.Organizer)
+{
+    <h2>You organize with us</h2>
+    <p class="joinlede">
+        So this link cannot remove you. Organizers leave from their own page, where the
+        delete button is.
+    </p>
+    <div class="joinform">
+        <div class="signuprow">
+            <a class="signupbtn" href="@ManyHandsPaths.Me">Your page</a>
+        </div>
+    </div>
+}
+else if (Removed)
+{
+    <h2>Done: you are off our list</h2>
+    <p class="joinlede">
+        Your name, email and interests are gone, and we will not write again. If someone
+        else put your address in, we are sorry for the bother.
+    </p>
+    <div class="joinform">
+        <p class="joinform-ask">You are welcome back any time.</p>
+        <div class="signuprow">
+            <label class="signupbtn" for="dlg-none">Back to the front page</label>
+        </div>
+    </div>
+}
+else
+{
+    <h2>Take your details off our list?</h2>
+    <p class="joinlede">
+        This deletes your name, your email and what you said you like doing. If you signed
+        up for something, it still counts that someone came, without you attached. There is
+        nothing else to do, and nobody will ask why.
+    </p>
+    <div class="joinform">
+        <EditForm Model="Input" FormName="remove" OnSubmit="RemoveAsync" class="signup">
+            <div class="signuprow">
+                <button type="submit">Remove me</button>
+                <label class="confirm-alt" for="dlg-none">No, keep me</label>
+            </div>
+        </EditForm>
+    </div>
+}
+
+@code {
+    [Parameter, EditorRequired] public required Guid CommsKey { get; set; }
+
+    [CascadingParameter] private HttpContext HttpContext { get; set; } = default!;
+
+    [SupplyParameterFromForm(FormName = "remove")] private RemoveInput? Input { get; set; }
+
+    // Set by the redirect after removing. Anyone can add it to the address,
+    // and all it shows is "done", which says nothing about anybody.
+    [SupplyParameterFromQuery(Name = "removed")] private bool Removed { get; set; }
+
+    private RemoveResult? _result;
+
+    protected override void OnInitialized() => Input ??= new();
+
+    // An unknown key reads as done: this must not tell a stranger whether an
+    // address is real.
+    private async Task RemoveAsync()
+    {
+        _result = await Data.RemoveByCommsKeyAsync(CommsKey);
+        if (_result is RemoveResult.Organizer) return;
+
+        if (HttpContext.User.VolunteerId() is Guid signedIn
+            && await Volunteers.GetByIdAsync(signedIn) is null or { IsDeleted: true })
+            await VolunteerSession.SignOutAsync(HttpContext);
+
+        Navigation.NavigateTo($"{ManyHandsPaths.Remove(CommsKey)}?removed=true");
+    }
+
+    private sealed class RemoveInput;
+}

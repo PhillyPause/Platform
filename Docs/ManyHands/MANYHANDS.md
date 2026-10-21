@@ -100,8 +100,9 @@ Static SSR Razor components in `Website/Website.Portal/Components/Volunteer`, on
 | `/volunteer/sign-in` | Ask for a sign-in link |
 | `/volunteer/sign-in/{token}` | Opening the link shows a button; **pressing it** spends the token |
 | `/volunteer/me` | Signups and cancelling, interests and email, Discord unlink, the personal calendar feed, export, delete, sign out |
-| `/volunteer/confirm/{token}` | The link in a joining email. Opening it shows a button; **pressing it** confirms the address and signs them in |
-| `/volunteer/remove/{key}` | "Not you, or changed your mind?" Asks, then deletes them, as the button on their page does. Never an organizer |
+| `/volunteer/confirm/{token}` | Not a page here: the front page with the Finish joining dialog, where the link in a joining email lands. It greets them by name; **pressing** "Yes, that's me" confirms the address and signs them in, and "That's not me" is a link to removal |
+| `/volunteer/welcome` | The front page with the Welcome dialog, where confirming redirects: what happens now, Events, their page |
+| `/volunteer/remove/{key}` | The front page with the Leave the list dialog: "Not you, or changed your mind?" Asks, then deletes them, as the button on their page does, and signs this device out if it was them. Never an organizer |
 | `/volunteer/unsubscribe/{key}` | Asks, then unsubscribes |
 | `/volunteer/link-discord/{token}` | Where `/link` in Discord sends someone: signed in, one press links the account |
 

@@ -265,6 +265,9 @@ html:has(.dlgtoggle:checked:not(#dlg-none)) { overflow: hidden; }
 #organize-open:checked ~ .paneldlg.d-organize { display: grid; }
 #notices-open:checked ~ .paneldlg.d-notices { display: grid; }
 #events-open:checked ~ .paneldlg.d-events { display: grid; }
+#confirm-open:checked ~ .paneldlg.d-confirm { display: grid; }
+#welcome-open:checked ~ .paneldlg.d-welcome { display: grid; }
+#remove-open:checked ~ .paneldlg.d-remove { display: grid; }
 /* What we keep is a checkbox, not one of the radios, so it opens over Join
    us and closing it leaves Join us where it was. Later in the DOM and one
    z-index up, so it is the one on top. */
@@ -321,6 +324,21 @@ html:has(.dlgtoggle:checked:not(#dlg-none)) { overflow: hidden; }
 /* Events (EventsList.razor): the kinds as small pills, then one event per
    row on the same hairlines as the four ways in Join us. */
 .d-events .paneldlg-box { width: min(760px, 100%); }
+/* Joining's three dialogs (ConfirmJoinDialog, WelcomeDialog, RemoveDialog):
+   one question each, so narrower than Join us. */
+.d-confirm .paneldlg-box,
+.d-remove .paneldlg-box { width: min(600px, 100%); }
+.d-welcome .paneldlg-box { width: min(760px, 100%); }
+.d-confirm .joinform, .d-welcome .joinform, .d-remove .joinform { margin-top: 18px; padding-top: 16px; border-top-color: #CFC7B6; }
+.d-confirm .joinway { margin-top: 14px; }
+/* The quiet way out beside the main button: a link, never a second button. */
+.confirm-alt, .signup .confirm-alt {
+  display: inline; margin: 0;
+  font-size: 13px; font-weight: 400; letter-spacing: 0; text-transform: none;
+  color: #4A443A; text-decoration: underline; text-underline-offset: 3px; cursor: pointer;
+}
+.confirm-alt:hover, .confirm-alt:focus-visible,
+.signup .confirm-alt:hover, .signup .confirm-alt:focus-visible { color: #AE2012; }
 .eventsbody .joinlede { margin: 0 0 14px; font-size: 14.5px; line-height: 1.6; color: #4A443A; }
 .evfilter { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
 .evfilter a {

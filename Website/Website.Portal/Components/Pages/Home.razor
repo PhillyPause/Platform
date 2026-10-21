@@ -1,6 +1,9 @@
 @page "/"
 @page "/join"
 @page "/events"
+@page "/volunteer/confirm/{ConfirmToken}"
+@page "/volunteer/welcome"
+@page "/volunteer/remove/{RemoveKey:guid}"
 @layout BroadsheetLayout
 @using ManyHands.Core
 @using ManyHands.Data
@@ -23,7 +26,7 @@
 
 <PageMeta Title="Stop the AI death race"
           Description="In July 2026, 700 AI agents broke out of their sandboxes to cheat on a test. PhillyPause is an independent, volunteer-run Philadelphia organisation working to stop the AI death race."
-          Canonical="@(JoinOpen || EventsOpen ? Navigation.BaseUri : null)" />
+          Canonical="@(JoinOpen || EventsOpen || ConfirmOpen || WelcomeOpen || RemoveOpen ? Navigation.BaseUri : null)" />
 
 
 <div class="broadsheet" style="background: #FBF8F1; color: #15110C; font-family: Archivo, sans-serif">
@@ -35,7 +38,7 @@
      /join and /events are the exceptions: each loads with its own dialog
      already open (/join is the address on posters), and closing it leaves the
      reader on the front page. *@
-  <input type="radio" name="dlg" id="dlg-none" class="dlgtoggle" checked="@(!JoinOpen && !EventsOpen)" aria-label="No panel open">
+  <input type="radio" name="dlg" id="dlg-none" class="dlgtoggle" checked="@(!JoinOpen && !EventsOpen && !ConfirmOpen && !WelcomeOpen && !RemoveOpen)" aria-label="No panel open">
   <input type="radio" name="dlg" id="watch-open" class="dlgtoggle" aria-label="Watch">
   <input type="radio" name="dlg" id="panel-open" class="dlgtoggle" aria-label="Who is on the panel">
   <input type="radio" name="dlg" id="join-open" class="dlgtoggle" checked="@JoinOpen" aria-label="Join us">
@@ -50,6 +53,11 @@
   {
     <input type="radio" name="dlg" id="events-open" class="dlgtoggle" checked="@EventsOpen" aria-label="Events">
     <input type="checkbox" id="privacy-open" class="dlgtoggle" aria-label="What we keep">
+    @* Where the links in a joining email land: each loads the front page
+       with its dialog already open, as /join does. *@
+    <input type="radio" name="dlg" id="confirm-open" class="dlgtoggle" checked="@ConfirmOpen" aria-label="Finish joining">
+    <input type="radio" name="dlg" id="welcome-open" class="dlgtoggle" checked="@WelcomeOpen" aria-label="Welcome">
+    <input type="radio" name="dlg" id="remove-open" class="dlgtoggle" checked="@RemoveOpen" aria-label="Leave the list">
   }
 
   @* Who is signed in, and the way into the volunteer and team pages, above
@@ -433,6 +441,54 @@
         </div>
       </div>
     </div>
+
+    @* Rendered only on their own addresses: each reads the database, and
+       the plain front page never does (MANYHANDS.md section 2). *@
+    @if (ConfirmOpen)
+    {
+      <div class="paneldlg d-confirm">
+        <label class="paneldlg-scrim" for="dlg-none" aria-label="Close"></label>
+        <div class="paneldlg-box" role="dialog" aria-modal="true" aria-labelledby="confirmdlg-title">
+          <div class="paneldlg-head">
+            <span id="confirmdlg-title">Finish joining</span>
+            <label class="paneldlg-x" for="dlg-none" aria-label="Close">&times;</label>
+          </div>
+          <div class="paneldlg-body joinbody">
+            <Website.Portal.Components.Volunteer.ConfirmJoinDialog Token="@(ConfirmToken!)" />
+          </div>
+        </div>
+      </div>
+    }
+    @if (WelcomeOpen)
+    {
+      <div class="paneldlg d-welcome">
+        <label class="paneldlg-scrim" for="dlg-none" aria-label="Close"></label>
+        <div class="paneldlg-box" role="dialog" aria-modal="true" aria-labelledby="welcomedlg-title">
+          <div class="paneldlg-head">
+            <span id="welcomedlg-title">Welcome</span>
+            <label class="paneldlg-x" for="dlg-none" aria-label="Close">&times;</label>
+          </div>
+          <div class="paneldlg-body joinbody">
+            <Website.Portal.Components.Volunteer.WelcomeDialog />
+          </div>
+        </div>
+      </div>
+    }
+    @if (RemoveOpen)
+    {
+      <div class="paneldlg d-remove">
+        <label class="paneldlg-scrim" for="dlg-none" aria-label="Close"></label>
+        <div class="paneldlg-box" role="dialog" aria-modal="true" aria-labelledby="removedlg-title">
+          <div class="paneldlg-head">
+            <span id="removedlg-title">Leave the list</span>
+            <label class="paneldlg-x" for="dlg-none" aria-label="Close">&times;</label>
+          </div>
+          <div class="paneldlg-body joinbody">
+            <Website.Portal.Components.Volunteer.RemoveDialog CommsKey="@(RemoveKey!.Value)" />
+          </div>
+        </div>
+      </div>
+    }
   }
   <!-- Primer. Same mechanism as the others. Every link opens in another window:
        people arrive here mid-read and should not lose the page.
@@ -671,6 +727,18 @@
     private bool JoinOpen => IsAt(ManyHandsPaths.Join);
 
     private bool EventsOpen => ManyHandsOn && IsAt(ManyHandsPaths.Events);
+
+    // The joining email's links. ManyHandsGate answers them with a 404 while
+    // ManyHands is off, so they never reach here without it.
+    [Parameter] public string? ConfirmToken { get; set; }
+
+    [Parameter] public Guid? RemoveKey { get; set; }
+
+    private bool ConfirmOpen => ManyHandsOn && ConfirmToken is not null;
+
+    private bool WelcomeOpen => ManyHandsOn && IsAt(ManyHandsPaths.Welcome);
+
+    private bool RemoveOpen => ManyHandsOn && RemoveKey is not null;
 
     private bool IsAt(string path) =>
         ("/" + Navigation.ToBaseRelativePath(Navigation.Uri).Split('?', '#')[0])
