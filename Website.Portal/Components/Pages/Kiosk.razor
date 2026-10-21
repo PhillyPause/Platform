@@ -1,0 +1,104 @@
+@page "/kiosk"
+@layout KioskLayout
+
+@* The kiosk: what the table's screen shows outdoors, to bring people over.
+   Unlisted and unindexed; nothing on the site links here. Docs/KIOSK.md has
+   how it is installed and run.
+
+   It loops a set of full-screen beats, each a <section>. kiosk.js only says
+   which beat is on and for how long (data-seconds); kiosk.css does all the
+   motion. A tap opens the site itself, framed under a Back bar, but only
+   while phillypause.org answers. Offline, a tap skips to the last beat,
+   which needs nothing: the QR code takes people to the site on their own
+   phones. kiosk-sw.js keeps a copy of the page so the loop runs with no
+   connection at all, and kiosk.webmanifest makes it installable as an app.
+
+   Every claim is from Docs/INCIDENT_FACTS.md or the explainer's script. *@
+
+<PageTitle>PhillyPause</PageTitle>
+
+@* Not PageMeta: the kiosk is never shared, so it needs none of the link
+   preview tags, and Blazor shows only one HeadContent per page. *@
+<HeadContent>
+    <meta name="robots" content="noindex" />
+    <meta name="description" content="PhillyPause's table screen." />
+    <link rel="manifest" href="/kiosk.webmanifest" />
+    <link rel="apple-touch-icon" href="/img/kiosk-icon-192.png" />
+    <link rel="stylesheet" href="@Assets["kiosk.css"]" />
+</HeadContent>
+
+<div class="kiosk" data-kiosk>
+
+  <div class="kticker" aria-hidden="true">
+    <div class="kticker-run">
+      @for (var copy = 0; copy < 2; copy++)
+      {
+        <span>Pause superintelligence</span><span>Come talk to us</span><span>phillypause.org</span><span>PhillyPause</span>
+      }
+    </div>
+  </div>
+
+  <div class="kstage">
+    <section class="kbeat kb-hey" data-seconds="4">
+      <p class="kmega kfit">Hey, <span data-kiosk-place>Philly</span>.</p>
+      <p class="kline">Got a minute?</p>
+    </section>
+
+    <section class="kbeat kb-race" data-seconds="5">
+      <p class="kline">The richest companies on Earth<br />are racing to build</p>
+      <p class="kmega kfit kslam">superintelligence.</p>
+    </section>
+
+    <section class="kbeat kb-control" data-seconds="5">
+      <p class="kbig">AI smarter than all of us.</p>
+      <p class="kbig kred">Nobody knows how to control it.</p>
+      <p class="kline">Not even its makers.</p>
+    </section>
+
+    <section class="kbeat kb-agents" data-seconds="6">
+      <p class="kcount" role="img" aria-label="700"></p>
+      <p class="kline">AI agents broke into Hugging Face in July 2026.</p>
+      <p class="kbig">Nobody told them to.</p>
+    </section>
+
+    <section class="kbeat kb-jobs" data-seconds="4">
+      <p class="kmega kstack"><span class="kfit">Your job.</span><span class="kfit">My job.</span><span class="kfit">Every job.</span></p>
+    </section>
+
+    <section class="kbeat kb-rod" data-seconds="5">
+      <div class="kflash" aria-hidden="true"></div>
+      <svg class="kbolt" viewBox="0 0 120 200" aria-hidden="true"><polygon points="70,0 18,112 54,112 34,200 104,74 66,74 92,0" /></svg>
+      <p class="kline">Franklin built a lightning rod.</p>
+      <p class="kmega kfit">This time, it's us.</p>
+    </section>
+
+    <section class="kbeat kb-come" data-seconds="9" data-kiosk-last>
+      <p class="kmega kfit">Come talk to us</p>
+      <svg class="karrow" viewBox="0 0 100 120" aria-hidden="true"><path d="M38 0h24v68h30L50 120 8 68h30z" /></svg>
+      <div class="kscan">
+        <img class="kqr" src="/img/kiosk-qr.svg" alt="QR code for phillypause.org" />
+        <p><strong>Scan to join</strong><br />phillypause.org</p>
+        <img class="klogo" src="/phillypause-logo.svg" alt="PhillyPause" />
+      </div>
+    </section>
+  </div>
+
+  <button class="kexplore" type="button" data-kiosk-explore hidden>Tap to explore our website</button>
+
+  <div class="ksite" data-kiosk-site hidden>
+    <div class="ksite-bar">
+      <button type="button" class="kback" data-kiosk-back>&larr; Back</button>
+      <span>phillypause.org</span>
+    </div>
+    @* kiosk.js puts the site's frame here when it opens, and removes it on
+       Back, so the next person never inherits the last one's page. *@
+    <div class="kleaving" data-kiosk-leaving hidden>
+      <img src="/img/kiosk-qr.svg" alt="QR code for phillypause.org" />
+      <p><strong>That link leaves this screen.</strong><br />Scan to carry on at phillypause.org on your own phone.</p>
+      <button type="button" class="kback" data-kiosk-stay>OK</button>
+    </div>
+  </div>
+
+</div>
+
+<script type="module" src="@Assets["kiosk.js"]"></script>
