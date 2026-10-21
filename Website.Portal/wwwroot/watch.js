@@ -19,7 +19,8 @@ const SEEN_PREFIX = 'pp-watch-seen:';
 function embed(poster) {
   const player = document.createElement('iframe');
   player.className = 'watchvideo';
-  player.src = `https://www.youtube-nocookie.com/embed/${encodeURIComponent(poster.dataset.video)}?autoplay=1&rel=0`;
+  // cc_load_policy=0 starts with captions off; the reader can still turn them on.
+  player.src = `https://www.youtube-nocookie.com/embed/${encodeURIComponent(poster.dataset.video)}?autoplay=1&rel=0&cc_load_policy=0`;
   player.title = poster.dataset.title ?? 'Video';
   player.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen';
   player.allowFullscreen = true;
