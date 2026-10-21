@@ -7,7 +7,7 @@ the platform rather than the site because it holds more than one product
 
 Public site for PhillyPause, at `/` on `phillypause.org`. Open source (MIT).
 ManyHands is served by the same host and is off unless `ManyHands:Enabled` is
-set; its design, rules and status are [`Docs/MANYHANDS.md`](Docs/MANYHANDS.md).
+set; its design, rules and status are [`Docs/ManyHands/MANYHANDS.md`](Docs/ManyHands/MANYHANDS.md).
 Present-tense docs only: this file and `Docs/` describe what IS; `git log` is
 the only history.
 
@@ -27,7 +27,7 @@ The full plan — architecture, content strategy, licensing, phases — is
 | `ManyHands/ManyHands.Tests/` | xunit against real Postgres (Testcontainers) |
 | `Platform/Platform.AppHost/` | .NET Aspire: local orchestration only, never deployed |
 | `Platform/Platform.ServiceDefaults/` | `AddServiceDefaults()`: OpenTelemetry and health checks, for every service |
-| `Docs/` | PLAN, MANYHANDS, HOSTING, KIOSK (the table's screen, `/kiosk`), YOUTUBE (the channel's settings), and DESIGN / CONTENT / MOTION as they land |
+| `Docs/` | PLAN and INCIDENT_FACTS at the top, which everything cites; then a folder per area: `Platform/` HOSTING, `ManyHands/` MANYHANDS, `Website/` KIOSK (the table's screen, `/kiosk`) and PHOTO_SOURCES, `Outreach/` YOUTUBE (the channel's settings). DESIGN / CONTENT / MOTION join as they land |
 | `Brand/` | The master logo (`Logo/PhillyPause.svg`), the YouTube images, the print poster |
 
 Projects are `<Product>.<Role>` — product area first, job second. Folder,
@@ -41,7 +41,9 @@ projects sit in a folder named for the product (`Website/`, `ManyHands/`,
 `Platform/`); `Platform.slnx` stays at the root, where the deploy buildpack
 needs it (HOSTING.md).
 
-Docs filenames: UPPERCASE, underscores not dashes, short.
+Docs filenames: UPPERCASE, underscores not dashes, short. A doc about one
+area goes in that area's folder under `Docs/`; one everything cites stays at
+the top.
 
 ## Commands
 
@@ -88,7 +90,7 @@ there and `doctl apps update`; never touch the control panel, or the two drift
 and the panel wins silently. This has already cost one failed deploy.
 
 Full detail, including the two constraints the .NET buildpack imposes and why
-`Website.Client` is `IsPublishable=false`: [`Docs/HOSTING.md`](Docs/HOSTING.md).
+`Website.Client` is `IsPublishable=false`: [`Docs/Platform/HOSTING.md`](Docs/Platform/HOSTING.md).
 
 ## Who PhillyPause is (get this right — it has been got wrong)
 
