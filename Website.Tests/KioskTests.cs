@@ -102,8 +102,9 @@ public class KioskTests(WebApplicationFactory<Program> factory)
     {
         var page = await factory.CreateClient().GetStringAsync(KioskPath);
 
-        page.Should().Contain("data-kiosk-menu").And.Contain("data-kiosk-windowed");
-        Script.Should().Contain("event.keyCode === 461");
+        page.Should().Contain("data-kiosk-menu").And.Contain("data-kiosk-windowed").And.Contain("data-kiosk-stuck");
+        Script.Should().Contain("event.keyCode === 461")
+            .And.Contain("document.exitFullscreen ?? document.webkitExitFullscreen");
     }
 
     [Fact]
