@@ -5,7 +5,9 @@
 @* Where confirming lands, in a front-page dialog: they are in, what that
    means, and where to go next. It reads the person from the sign-in cookie
    that confirming just set; anyone else who opens the address gets the same
-   welcome without a name, which says nothing about anybody. *@
+   welcome without a name, which says nothing about anybody. Everything it
+   leads to is on the front page: the volunteer pages are not ready for
+   readers yet. *@
 
 <h2>@(_name is null ? "You are in" : $"You are in, {_name}")</h2>
 <p class="joinlede">
@@ -23,7 +25,7 @@
             }
             else
             {
-                @:When something comes up that matches what you like doing, we email you. Tick a few things on your page so we know.
+                @:When something comes up that matches what you like doing, we email you. Join again with the same address and tick a few things, so we know what that is.
             }
             One or two emails a month at most.
         </p>
@@ -33,8 +35,8 @@
         <p>Our next event is always in the box at the top of the front page. Come to that one, or pick anything from Events, and decide afterwards.</p>
     </div>
     <div class="joinway">
-        <div class="joinway-k">Your page</div>
-        <p>Your signups and interests live on your page, changeable any time. It also downloads everything we hold about you, and deletes you with one button.</p>
+        <div class="joinway-k">Learn as you go</div>
+        <p>Nobody here started out knowing this. The primer is a short list of what to read and watch, in order, and we answer questions when it stops making sense.</p>
     </div>
     <div class="joinway">
         <div class="joinway-k">No strings</div>
@@ -44,9 +46,8 @@
 
 <div class="joinform">
     <div class="signuprow">
-        <label class="signupbtn" for="events-open">See events</label>
-        <a class="signupalt confirm-alt" href="@ManyHandsPaths.Me">Your page</a>
-        <label class="signupalt confirm-alt" for="dlg-none">Back to the front page</label>
+        <label class="signupbtn" for="dlg-none">Back to the front page</label>
+        <label class="signupalt confirm-alt" for="primer-open">Start the primer</label>
     </div>
 </div>
 

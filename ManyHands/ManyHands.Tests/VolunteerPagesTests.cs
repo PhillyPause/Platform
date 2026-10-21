@@ -84,7 +84,7 @@ public sealed class VolunteerPagesTests(DatabaseFixture db) : IAsyncLifetime
         var signedIn = await Forms.SubmitAsync(person, link, "redeem");
 
         Assert.Equal(HttpStatusCode.Redirect, signedIn.StatusCode);
-        Assert.Equal(ManyHandsPaths.Me, signedIn.Headers.Location?.PathAndQuery);
+        Assert.Equal("/", signedIn.Headers.Location?.PathAndQuery);
         Assert.Contains("Hello, Scanned", await person.GetStringAsync(ManyHandsPaths.Me));
     }
 
@@ -161,6 +161,7 @@ public sealed class VolunteerPagesTests(DatabaseFixture db) : IAsyncLifetime
         Assert.Contains("id=\"welcome-open\" class=\"dlgtoggle\" checked", welcome);
         Assert.Contains("You are in, Confirmer", welcome);
         Assert.Contains("Signed in as <strong>Confirmer</strong>", welcome);
+        Assert.Contains("<label class=\"signupbtn\" for=\"dlg-none\">Back to the front page</label>", welcome);
 
         Assert.Contains("This link has done its job", await _portal.Browser().GetStringAsync(link));
     }
