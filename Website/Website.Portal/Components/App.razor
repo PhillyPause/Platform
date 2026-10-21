@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <base href="/" />
+    <ResourcePreloader />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Playfair+Display:wght@700;800;900&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&display=swap" />
+
+    <link rel="stylesheet" href="@Assets["tokens.css"]" />
+    <link rel="stylesheet" href="@Assets["app.css"]" />
+    <link rel="stylesheet" href="@Assets["Website.Portal.styles.css"]" />
+
+    @* The broadsheet front. Loaded last so it wins wherever it overlaps the
+       older sheets, and kept unscoped because Blazor's scoped CSS rewrites the
+       sibling selectors its dialogs depend on. *@
+    <link rel="stylesheet" href="@Assets["broadsheet.css"]" />
+
+    <link rel="icon" href="@Assets["phillypause-logo.svg"]" type="image/svg+xml" />
+    <meta name="theme-color" content="#043464" />
+    <ImportMap />
+    @if (_renderMode is not null)
+    {
+        @* The organizers' app only: no public page pays for Syncfusion. *@
+        <link rel="stylesheet" href="_content/Syncfusion.Blazor.Themes/fluent2.css" />
+        <link rel="stylesheet" href="@Assets["team-app.css"]" />
+    }
+    <HeadOutlet @rendermode="_renderMode" />
+</head>
+
+<body>
+    <Routes @rendermode="_renderMode" />
+    <div id="blazor-error-ui" data-nosnippet>
+        Something went wrong.
+        <a href="." class="reload">Reload</a>
+    </div>
+
+    @if (_renderMode is not null)
+    {
+        <script src="_content/Syncfusion.Blazor.Core/scripts/syncfusion-blazor.min.js"></script>
+    }
+    <script src="@Assets["_framework/blazor.web.js"]"></script>
+
+    @* The Watch dialog's first-visit opening and click-to-play player. A
+       no-op on every page without the dialog. *@
+    <script type="module" src="@Assets["watch.js"]"></script>
+</body>
+
+</html>
+
+@code {
+    [CascadingParameter] private HttpContext? HttpContext { get; set; }
+
+    // Decided once, on the request that loads the page: interactive for the
+    // organizers' app (TeamApp), static for everything else.
+    private IComponentRenderMode? _renderMode;
+
+    protected override void OnInitialized() => _renderMode = Website.Portal.Volunteer.TeamApp.RenderModeFor(HttpContext);
+}

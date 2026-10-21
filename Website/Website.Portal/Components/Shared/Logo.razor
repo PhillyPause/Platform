@@ -1,0 +1,16 @@
+@* The logo is a single-path navy SVG (wwwroot/phillypause-logo.svg, the
+   served copy of Brand/Logo/PhillyPause.svg). Rendering it as a
+   CSS mask rather than an <img> lets it take any colour from --logo-ink, so the
+   same one file works on the bone page and on the navy ground.
+
+   It is a square stacked lockup — bell above, wordmark below — so it needs
+   room. Below about 64px the wordmark stops being legible; a horizontal
+   lockup and a mark-only variant are the two files still missing. *@
+
+<span class="logo @Class" style="--logo-size: @(Size)px" role="img" aria-label="PhillyPause"></span>
+
+@code {
+    [Parameter] public int Size { get; set; } = 72;
+
+    [Parameter] public string? Class { get; set; }
+}

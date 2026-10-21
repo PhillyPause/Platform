@@ -72,7 +72,7 @@ API, no service to stand up first.
 
 Only two things, neither a loss. `.claude/` holds local tool permissions and
 regenerates itself. The unused Wikimedia portrait candidates were never
-committed — `Docs/PHOTO_SOURCES.md` records every filename and licence, so any
+committed — `Docs/Website/PHOTO_SOURCES.md` records every filename and licence, so any
 of them is one download away.
 
 ## Tests
@@ -98,20 +98,20 @@ doctl apps update a21db074-3a86-449d-810f-edb0d48e45d6 \
   --spec Deploy/digitalocean/app.yaml
 ```
 
-[`Docs/HOSTING.md`](Docs/HOSTING.md) has the rest: DNS, TLS, build logs, how to
+[`Docs/Platform/HOSTING.md`](Docs/Platform/HOSTING.md) has the rest: DNS, TLS, build logs, how to
 undo a release, and the two constraints App Platform's .NET buildpack imposes.
 
 ## Solution layout
 
-| Project | Purpose |
+| Folder | Projects |
 |---|---|
-| `Website.Portal` | ASP.NET Core host — prerender, routing, OG tags, sitemap, RSS |
-| `Website.Client` | Blazor WASM — interactive islands only |
-| `Website.Content` | Markdown + the build-time pipeline that compiles it |
-| `Website.Tests` | xunit |
+| `Website/` | `Website.Portal` (the ASP.NET Core host), `Website.Client` (Blazor WASM islands), `Website.Content` (Markdown and the pipeline that compiles it), `Website.Tests` |
+| `ManyHands/` | `ManyHands.Core`, `ManyHands.Data`, `ManyHands.Tests`: the volunteer system ([`Docs/ManyHands/MANYHANDS.md`](Docs/ManyHands/MANYHANDS.md)) |
+| `Platform/` | `Platform.AppHost` (.NET Aspire, local only), `Platform.ServiceDefaults` |
+| `Brand/` | The master logo, the YouTube images, the print poster |
 
-Projects are named `<Product>.<Role>`, and folder, assembly and namespace are
-all that same string. The solution is `Platform.slnx` rather than
+Projects are named `<Product>.<Role>` and grouped in a folder per product;
+folder, assembly and namespace are all that same string. The solution is `Platform.slnx` rather than
 `Website.slnx` because other products join the solution later, each taking the
 same `<Product>.<Role>` shape — see `Docs/PLAN.md` §2.5.
 
@@ -126,5 +126,5 @@ Code is [MIT](LICENSE). Neither licence grants rights in any trademark or logo.
 
 ## Contributing
 
-Content lives in `Website.Content/Content/**/*.md` — Markdown with
+Content lives in `Website/Website.Content/Content/**/*.md` — Markdown with
 frontmatter. Writing a page needs no C#.

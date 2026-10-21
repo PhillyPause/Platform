@@ -7,7 +7,7 @@ the platform rather than the site because it holds more than one product
 
 Public site for PhillyPause, at `/` on `phillypause.org`. Open source (MIT).
 ManyHands is served by the same host and is off unless `ManyHands:Enabled` is
-set; its design, rules and status are [`Docs/MANYHANDS.md`](Docs/MANYHANDS.md).
+set; its design, rules and status are [`Docs/ManyHands/MANYHANDS.md`](Docs/ManyHands/MANYHANDS.md).
 Present-tense docs only: this file and `Docs/` describe what IS; `git log` is
 the only history.
 
@@ -18,16 +18,17 @@ The full plan — architecture, content strategy, licensing, phases — is
 
 | Folder | Holds |
 |---|---|
-| `Website.Portal/` | ASP.NET Core host; prerender, routing, OG tags, sitemap, RSS |
-| `Website.Client/` | Blazor WASM; interactive islands only |
-| `Website.Content/` | Markdown content + the build-time compile pipeline |
-| `Website.Tests/` | xunit |
-| `ManyHands.Core/` | ManyHands' domain: records, enums, results; no framework |
-| `ManyHands.Data/` | Dapper repositories, DbUp migrations, mail, Discord, background workers |
-| `ManyHands.Tests/` | xunit against real Postgres (Testcontainers) |
-| `Platform.AppHost/` | .NET Aspire: local orchestration only, never deployed |
-| `Platform.ServiceDefaults/` | `AddServiceDefaults()`: OpenTelemetry and health checks, for every service |
-| `Docs/` | PLAN, MANYHANDS, HOSTING, KIOSK (the table's screen, `/kiosk`), YOUTUBE (the channel's settings and images), and DESIGN / CONTENT / MOTION as they land |
+| `Website/Website.Portal/` | ASP.NET Core host; prerender, routing, OG tags, sitemap, RSS |
+| `Website/Website.Client/` | Blazor WASM; interactive islands only |
+| `Website/Website.Content/` | Markdown content + the build-time compile pipeline |
+| `Website/Website.Tests/` | xunit |
+| `ManyHands/ManyHands.Core/` | ManyHands' domain: records, enums, results; no framework |
+| `ManyHands/ManyHands.Data/` | Dapper repositories, DbUp migrations, mail, Discord, background workers |
+| `ManyHands/ManyHands.Tests/` | xunit against real Postgres (Testcontainers) |
+| `Platform/Platform.AppHost/` | .NET Aspire: local orchestration only, never deployed |
+| `Platform/Platform.ServiceDefaults/` | `AddServiceDefaults()`: OpenTelemetry and health checks, for every service |
+| `Docs/` | PLAN and INCIDENT_FACTS at the top, which everything cites; then a folder per area: `Platform/` HOSTING, `ManyHands/` MANYHANDS, `Website/` KIOSK (the table's screen, `/kiosk`) and PHOTO_SOURCES, `Outreach/` YOUTUBE (the channel's settings). DESIGN / CONTENT / MOTION join as they land |
+| `Brand/` | The master logo (`Logo/PhillyPause.svg`), the YouTube images, the print poster |
 
 Projects are `<Product>.<Role>` — product area first, job second. Folder,
 project file, assembly and root namespace are all the same string, with no
@@ -35,18 +36,23 @@ project file, assembly and root namespace are all the same string, with no
 `Platform.slnx` because other products join it later, each as
 `<Product>.<Role>` (PLAN.md §2.5). So never name a project just `Portal` or
 `Core` — the product segment is what keeps two products apart. `Shared.*` is
-earned by a third duplication, not assumed at the first.
+earned by a third duplication, not assumed at the first. Each product's
+projects sit in a folder named for the product (`Website/`, `ManyHands/`,
+`Platform/`); `Platform.slnx` stays at the root, where the deploy buildpack
+needs it (HOSTING.md).
 
-Docs filenames: UPPERCASE, underscores not dashes, short.
+Docs filenames: UPPERCASE, underscores not dashes, short. A doc about one
+area goes in that area's folder under `Docs/`; one everything cites stays at
+the top.
 
 ## Commands
 
 - Build: `dotnet build Platform.slnx`
-- Run everything: `dotnet run --project Platform.AppHost` — Aspire starts
+- Run everything: `dotnet run --project Platform/Platform.AppHost` — Aspire starts
   Postgres and the site with ManyHands on and seeded; dashboard at
   https://localhost:17203 (logs, traces, metrics), site at
   http://localhost:5203. Needs Docker (MANYHANDS.md §6)
-- Run the site alone: `dotnet run --project Website.Portal` (no Docker, no
+- Run the site alone: `dotnet run --project Website/Website.Portal` (no Docker, no
   database, ManyHands off)
 - Test: `dotnet test Platform.slnx` — **Docker must be running**: ManyHands'
   tests start their own Postgres
@@ -84,7 +90,7 @@ there and `doctl apps update`; never touch the control panel, or the two drift
 and the panel wins silently. This has already cost one failed deploy.
 
 Full detail, including the two constraints the .NET buildpack imposes and why
-`Website.Client` is `IsPublishable=false`: [`Docs/HOSTING.md`](Docs/HOSTING.md).
+`Website.Client` is `IsPublishable=false`: [`Docs/Platform/HOSTING.md`](Docs/Platform/HOSTING.md).
 
 ## Who PhillyPause is (get this right — it has been got wrong)
 
@@ -126,7 +132,7 @@ mail arrives pre-sorted — a bare `mailto:` is a bug.
 | `join@` | the list to import from when a provider lands. Never a signup: joining is the Join us dialog's form |
 | `support@` | corrections, privacy and deletion requests |
 
-`press@` is not set up; the archived press page still points at `info@`.
+`press@` is not set up.
 
 ## Domain rules (do not relitigate)
 
@@ -197,5 +203,5 @@ mail arrives pre-sorted — a bare `mailto:` is a bug.
   content when it is off or unreachable.
 - **Dapper and Npgsql fail at runtime, not compile time** — value tuples never
   map, and `timestamptz`, `bigint` and arrays need the handlers in
-  `ManyHands.Data/DapperTypeHandlers.cs`. MANYHANDS.md §4 has the table.
+  `ManyHands/ManyHands.Data/DapperTypeHandlers.cs`. MANYHANDS.md §4 has the table.
   Test SQL against real Postgres, never a stub reader.

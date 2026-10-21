@@ -4,13 +4,13 @@
     <Platform Name="x64" />
     <Platform Name="x86" />
   </Configurations>
-  <Project Path="ManyHands.Core/ManyHands.Core.csproj" />
-  <Project Path="ManyHands.Data/ManyHands.Data.csproj" />
-  <Project Path="ManyHands.Tests/ManyHands.Tests.csproj" />
-  <Project Path="Platform.AppHost/Platform.AppHost.csproj" />
-  <Project Path="Platform.ServiceDefaults/Platform.ServiceDefaults.csproj" />
-  <Project Path="Website.Client/Website.Client.csproj" />
-  <Project Path="Website.Content/Website.Content.csproj" />
-  <Project Path="Website.Tests/Website.Tests.csproj" />
-  <Project Path="Website.Portal/Website.Portal.csproj" />
+  <Project Path="ManyHands/ManyHands.Core/ManyHands.Core.csproj" />
+  <Project Path="ManyHands/ManyHands.Data/ManyHands.Data.csproj" />
+  <Project Path="ManyHands/ManyHands.Tests/ManyHands.Tests.csproj" />
+  <Project Path="Platform/Platform.AppHost/Platform.AppHost.csproj" />
+  <Project Path="Platform/Platform.ServiceDefaults/Platform.ServiceDefaults.csproj" />
+  <Project Path="Website/Website.Client/Website.Client.csproj" />
+  <Project Path="Website/Website.Content/Website.Content.csproj" />
+  <Project Path="Website/Website.Tests/Website.Tests.csproj" />
+  <Project Path="Website/Website.Portal/Website.Portal.csproj" />
 </Solution>

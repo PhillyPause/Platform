@@ -3,7 +3,7 @@
 A Blazor WebAssembly site for PhillyPause at `phillypause.org`, reimagining
 [pauseai.info](https://pauseai.info) for one city, sharing a host, a domain
 and a design language with ManyHands, PhillyPause's volunteer system
-([`MANYHANDS.md`](MANYHANDS.md)).
+([`MANYHANDS.md`](ManyHands/MANYHANDS.md)).
 
 Present tense: this file describes what the plan **is**. Conventions: UPPERCASE
 doc names, conventional commits, protected `main`, no ADRs.
@@ -113,7 +113,7 @@ What that costs is coupling, and two rules keep it small:
 `phillypause.org` is **live**, on App Platform behind Cloudflare, which still
 holds the zone (`aldo`/`liv.ns.cloudflare.com`). Apex and `www` are proxied
 CNAMEs to the app, so Cloudflare terminates TLS. The app, the spec and what
-the .NET buildpack imposes are in [`HOSTING.md`](HOSTING.md).
+the .NET buildpack imposes are in [`HOSTING.md`](Platform/HOSTING.md).
 
 ### 2.3 Content pipeline
 
@@ -138,15 +138,26 @@ PR without touching C#.
 ### 2.4 Project layout
 
 ```
-Website.Portal/       ASP.NET Core host — prerender, routing, OG tags, sitemap, RSS
-Website.Client/       Blazor WASM — interactive islands only
-Website.Content/      Markdown + the MSBuild task that compiles it
-Website.Tests/        xunit; snapshot the rendered HTML of every route
-ManyHands.Core/       the volunteer system's domain
-ManyHands.Data/       its repositories, migrations, mail, Discord and workers
-ManyHands.Tests/      xunit against real Postgres
-Docs/                 MANYHANDS.md, HOSTING.md, DESIGN.md, CONTENT.md, MOTION.md
-Deploy/digitalocean/  app spec + ingress rules
+Website/
+  Website.Portal/            ASP.NET Core host — prerender, routing, OG tags, sitemap, RSS
+  Website.Client/            Blazor WASM — interactive islands only
+  Website.Content/           Markdown + the MSBuild task that compiles it
+  Website.Tests/             xunit; snapshot the rendered HTML of every route
+ManyHands/
+  ManyHands.Core/            the volunteer system's domain
+  ManyHands.Data/            its repositories, migrations, mail, Discord and workers
+  ManyHands.Tests/           xunit against real Postgres
+Platform/
+  Platform.AppHost/          .NET Aspire, local orchestration only
+  Platform.ServiceDefaults/  OpenTelemetry and health checks, for every service
+Brand/                       the master logo, YouTube images, print poster
+Docs/                        PLAN.md, INCIDENT_FACTS.md
+  Platform/                  HOSTING.md
+  ManyHands/                 MANYHANDS.md
+  Website/                   KIOSK.md, PHOTO_SOURCES.md
+  Outreach/                  YOUTUBE.md
+Deploy/digitalocean/         app spec + ingress rules
+Platform.slnx                at the root: the deploy buildpack requires it there
 ```
 
 ### 2.5 Project naming
@@ -284,7 +295,7 @@ movement explainer; this is a **door into a room on a Tuesday night**.
 ## 5. ManyHands on the site
 
 ManyHands is PhillyPause's own volunteer system, in this solution and served
-by this host ([`MANYHANDS.md`](MANYHANDS.md)). The site reaches it in-process,
+by this host ([`MANYHANDS.md`](ManyHands/MANYHANDS.md)). The site reaches it in-process,
 through `ManyHands.Data`, never over HTTP:
 
 - **Events** — ManyHands' published activities are the front page's
@@ -365,8 +376,8 @@ scroll-driven hero, reduced-motion tests, performance budget in CI.
 **P4 — ManyHands** (flag-gated — §5.1)
 ManyHands is in this solution and built, with the site's side wired: the
 account bar, the join links, the privacy supplement
-([`MANYHANDS.md`](MANYHANDS.md) "On the site"). What remains is the flag
-flipped, a runbook in [`HOSTING.md`](HOSTING.md). The front page's Next event
+([`MANYHANDS.md`](ManyHands/MANYHANDS.md) "On the site"). What remains is the flag
+flipped, a runbook in [`HOSTING.md`](Platform/HOSTING.md). The front page's Next event
 stays hand-edited.
 
 **P5 — The originals**
@@ -392,4 +403,4 @@ mark, whether the site or ManyHands goes first, and whether ManyHands keeps
 its multi-chapter design (it does not).
 
 Resolved by shipping: where the domain points. `phillypause.org` is on App
-Platform behind Cloudflare — [`HOSTING.md`](HOSTING.md).
+Platform behind Cloudflare — [`HOSTING.md`](Platform/HOSTING.md).
