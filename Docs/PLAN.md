@@ -151,6 +151,7 @@ Platform/
   Platform.AppHost/          .NET Aspire, local orchestration only
   Platform.ServiceDefaults/  OpenTelemetry and health checks, for every service
 Brand/                       the master logo, YouTube images, print poster
+Video/Explainer/             the explainer film's Python pipeline (Git LFS)
 Docs/                        PLAN.md, INCIDENT_FACTS.md
   Platform/                  HOSTING.md
   ManyHands/                 MANYHANDS.md

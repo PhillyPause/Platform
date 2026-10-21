@@ -15,7 +15,7 @@ final R7 project.
   Effects reconstruction JSX plus its old trace.
 - **Latest persisted source overlay:** October 20 revision 5. These newer
   code/asset versions are merged OVER the R2 production files in
-  `02_Project/production/`; matching filenames are replaced by R5, not kept
+  `production/`; matching filenames are replaced by R5, not kept
   as parallel conflicting active files. Includes connected whole-sheet
   origami/crumpling source, revised jar geometry, continuous cylinder, rod
   connectors, puppet line connections, one-second intro, ten-second final
@@ -45,7 +45,7 @@ met 1, 2, 6, 7, 9, 10, 12 and 13. R7 adds the rest:
 
 ## Final creative requirements
 
-1. Preserve the verbatim words and scene order of `01_Script_and_Original_Audio/PhillyPause_Animation_Brief.md`, timed to the attached voice track. Do not replace/revoice narration.
+1. Preserve the verbatim words and scene order of `production/Animation_Brief.md`, timed to the attached voice track. Do not replace/revoice narration.
 2. Begin with one full second of **moving** lead-in before first word; captions and audio begin together afterward. Total video 76 seconds at 24 fps, final card completely motionless from 66 to 76 seconds.
 3. Every aspect ratio (16:9 720/1080/2160, 1:1 and 9:16) must show **substantially identical story, wording, imagery, and effects** with individually adjusted compositions rather than blind crops. Do not regress any aspect ratio to older assets.
 4. Closing card uses the matching PhillyPause logo, the exact centered one-banner line:
@@ -66,32 +66,33 @@ met 1, 2, 6, 7, 9, 10, 12 and 13. R7 adds the rest:
 
 ## Source and rerender starting point
 
-Directory `02_Project/production` contains the merged R2 foundation and R5 update.
-Some generated artwork caches in `assets/render` and `assets/transitions` came
-from earlier iterations; **do not treat all cached artwork as final**. Regenerate
-caches when render code or labels change. Use the live source `film.py`, `art.py`,
-`paper_crumple.py`, `transitions.py`, `render_review.py`, and `revision4_timing.py`.
+`production/` holds the source: the merged R2 foundation and R5 update, with
+R7 on top. Some generated artwork caches in `assets/render` and
+`assets/transitions` came from earlier iterations; **do not treat all cached
+artwork as final**. Regenerate caches when render code or labels change. Use
+the live source `film.py`, `art.py`, `paper_crumple.py`, `transitions.py`,
+`render_review.py`, and `revision4_timing.py`. RENDERING.md has the commands
+for every export.
 
-R5 readme (in `03_Historical_Notes/R5_Original_README.txt`) documents exact
-commands and inputs for a 76-second website approval preview. Original R2
-instructions are retained for provenance only, because they describe old
-67.46-second timing and a separate older closing card. The R2 After Effects
-JSX and `master_timeline.json` **cannot be used as a current R5/R7 match**
-without regenerating the timeline and auditing its layers. The JSX has not
-been verified in the actual After Effects application.
+The R2 After Effects JSX and `master_timeline.json` describe the old
+67.46-second timing and a separate older closing card, so they **cannot be
+used as a current R7 match** without regenerating the timeline and auditing
+its layers. The JSX has not been verified in the actual After Effects
+application.
 
 Environment: Python >=3.12, FFmpeg/ffprobe on PATH, dependencies in
-`02_Project/production/requirements.txt`. The source bundle does **not**
+`production/requirements.txt`. The source bundle does **not**
 include redistributable font binary files. Install fonts yourself from their
 rights-cleared sources (Libre Caslon Text, Rye and DejaVu Sans); the retained
 OFL/license texts describe names and terms. Source scan licenses and links
 are in `assets/historical/` and `Asset_Sources.txt`.
 
 The R2 original mix and independent music/foley/voice stems are in
-`02_Project/production/audio/`. The newer 76-second R4/R5 mix, which contains
-the one-second pre-roll, is `audio/mix_revision4.wav`. Use either the MIX or
-its COMPONENT stems appropriately; do not stack the mixed track atop the same
-components. Original MP3 is also copied under `01_Script_and_Original_Audio/`.
+`production/audio/`. The newer 76-second R4/R5 mix, which contains the
+one-second pre-roll, is `audio/mix_revision4.wav`. Use either the MIX or its
+COMPONENT stems appropriately; do not stack the mixed track atop the same
+components. The original narration MP3 is `audio/PhillyPauseSiteHeroVideo.mp3`,
+copied as `audio/source_narration.mp3`.
 
 ## Important acceptance and limitations
 
@@ -101,6 +102,6 @@ archive was actually persisted. R5 code plus this spec is the best recoverable
 material. Before publication your director must implement the outstanding
 R6/R7 changes, test synchronized aspect ratios and regenerate the film.
 
-This package contains no rendered `.mp4`/`.mov` video and no font binaries.
-`ASSET_MANIFEST.csv` lists every included asset, its source revision and SHA-256
-so a future editor can verify contents after extraction.
+The repo holds no rendered `.mp4`/`.mov` video and no font binaries: the
+films are built from source (RENDERING.md), and git, with Git LFS for the
+artwork and audio, is the record of what every asset is.

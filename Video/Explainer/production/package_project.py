@@ -24,7 +24,7 @@ def portable(value):
 
 def build(destination,exports):
     rootfiles=[
-      'README.txt','Website_Install.txt','Asset_Sources.txt','Production_Notes.txt',
+      'README.txt','Asset_Sources.txt','Production_Notes.txt',
       'Animation_Brief.md','AE_README.txt','Build_PhillyPause_AfterEffects.jsx',
       'film.py','art.py','transitions.py','audio_score.py','finish.py','package_project.py',
       'requirements.txt','master_timeline.json','audio_alignment.json',

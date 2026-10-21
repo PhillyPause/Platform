@@ -75,8 +75,8 @@ was used. Repeated crowd plates reuse the one original automaton design.
 
 USER BRANDING AND NARRATION
 
-PhillyPause logo: the user's existing website artwork, downloaded from
-https://phillypause.org/img/logo.svg
+PhillyPause logo: a copy of the repo's master, Brand/Logo/PhillyPause.svg,
+kept byte for byte the same by a test.
 Source: assets/brand/logo.svg. The film's soot-colored rendering preserves
 the supplied vector paths. This is user branding, not a public-domain asset.
 
