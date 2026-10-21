@@ -626,14 +626,10 @@ html:has(.dlgtoggle:checked:not(#dlg-none)) { overflow: hidden; }
   text-transform: none; color: #AE2012;
 }
 .joinfields .signuprow { margin-top: 2px; }
-/* Gray until name and email would pass: both carry the browser's own
-   required check (the name's pattern refuses only spaces), so CSS can see it
-   with no script. The server checks the same again. */
-.joinfields:has(input:invalid) button[type=submit],
-.joinfields:has(input:invalid) button[type=submit]:hover,
-.joinfields:has(input:invalid) button[type=submit]:focus-visible {
-  background: #A39B8E; border-color: #A39B8E; color: #FBF8F1; cursor: not-allowed;
-}
+/* Join always looks pressable. A gray button read as a broken one, and said
+   nothing about what was missing; pressing it instead lets the browser point
+   at the empty field ("required", and the name's pattern refuses only
+   spaces). The server checks the same again. */
 .joindone { padding: 16px 18px; border-left: 4px solid #AE2012; background: #F3EEE3; }
 .joindone p { margin: 0 0 12px; font-size: 14px; line-height: 1.55; color: #4A443A; }
 .joindone .joindone-head { margin-bottom: 6px; font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 800; color: #15110C; }

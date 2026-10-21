@@ -98,7 +98,7 @@ public sealed class SiteWiringTests(DatabaseFixture db) : IAsyncLifetime
         (await volunteers.GetInterestIdsAsync(joined.Id)).Should().Equal(TestData.Flyering);
     }
 
-    /// <summary>The browser's required checks are what gray the Join button; the server holds the same line.</summary>
+    /// <summary>The browser's required checks point at an empty field when Join is pressed; the server holds the same line.</summary>
     [Fact]
     public async Task Joining_needs_a_name_as_well_as_an_email()
     {
