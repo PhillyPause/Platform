@@ -1,0 +1,18 @@
+{
+  "id": "/kiosk",
+  "name": "PhillyPause Kiosk",
+  "short_name": "PhillyPause",
+  "description": "PhillyPause's table screen: brings people over, then shows them the site.",
+  "start_url": "/kiosk",
+  "scope": "/kiosk",
+  "display": "fullscreen",
+  "display_override": ["fullscreen", "standalone"],
+  "orientation": "any",
+  "background_color": "#15110C",
+  "theme_color": "#AE2012",
+  "icons": [
+    { "src": "/img/kiosk-icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/img/kiosk-icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/img/kiosk-icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

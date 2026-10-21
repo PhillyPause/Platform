@@ -19,6 +19,7 @@ public class StaticPublicPageTests(WebApplicationFactory<Program> factory)
     [InlineData("/join")]
     [InlineData("/privacy")]
     [InlineData("/license")]
+    [InlineData("/kiosk")]
     public async Task A_public_page_is_static_and_loads_no_Syncfusion(string path)
     {
         var page = await factory.CreateClient().GetStringAsync(path);
