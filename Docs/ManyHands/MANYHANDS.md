@@ -395,8 +395,16 @@ clock, labelled "Eastern time". Every route is in
 `ManyHands/ManyHands.Core/ManyHandsPaths.cs`: volunteers' pages under `/volunteer`,
 organizers' under `/team`, and `/join` and `/events` are front-page dialogs.
 
-Locally, secrets go in `dotnet user-secrets` on `Website.Portal`; in
-production they are App Platform environment variables
+Locally, secrets go in `dotnet user-secrets` on `Platform/Platform.AppHost`,
+which passes its `ManyHands`, `Email`, `Discord` and `FederalOfficials`
+sections on to the site (`Website.Portal` has no secrets store of its own):
+
+```powershell
+dotnet user-secrets set --project Platform/Platform.AppHost "Email:Provider" "resend"
+dotnet user-secrets set --project Platform/Platform.AppHost "Email:ApiKey" "re_..."
+```
+
+In production they are App Platform environment variables
 (`ManyHands__Enabled`, `ConnectionStrings__ManyHands`, `Discord__BotToken`).
 
 ## 6. Running it locally
