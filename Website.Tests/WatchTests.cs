@@ -37,6 +37,10 @@ public class WatchTests
         Script.Should().Contain(".remove()", "a hidden iframe keeps playing its sound");
 
     [Fact]
+    public void The_player_starts_without_captions() =>
+        Script.Should().Contain("cc_load_policy=0", "captions are the reader's choice, not the default");
+
+    [Fact]
     public void The_poster_works_without_the_script() =>
         Home.Should().MatchRegex(
             @"class=""watchposter"" href=""https://www\.youtube\.com/watch\?v=[^""]+"" target=""_blank"" rel=""noopener""");
