@@ -222,6 +222,12 @@ a:hover { color: #15110C; }
   clip-path: inset(50%);
   overflow: hidden;
 }
+/* While any dialog is open the page under it holds still. Otherwise a wheel
+   or swipe over a dialog with nothing left to scroll moved the page behind
+   it instead. The gutter stays reserved, so the page does not shift sideways
+   when its scrollbar goes. */
+html { scrollbar-gutter: stable; }
+html:has(.dlgtoggle:checked:not(#dlg-none)) { overflow: hidden; }
 
 /* The small flyout icon that sits to the right of each name. */
 .flyicon {
@@ -422,7 +428,8 @@ a:hover { color: #15110C; }
   border: 1px solid transparent;
 }
 .paneldlg-x:hover, .paneldlg-x:focus-visible { background: #AE2012; color: #FBF8F1; border-color: #AE2012; }
-.paneldlg-body { overflow: auto; padding: 22px 24px 24px; }
+/* contain: reaching the end of a long dialog does not hand the scroll on. */
+.paneldlg-body { overflow: auto; overscroll-behavior: contain; padding: 22px 24px 24px; }
 
 .flyname { font-family: 'Playfair Display', serif; font-size: 19px; font-weight: 800; letter-spacing: -0.01em; }
 .flyrole { font-size: 10px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: #AE2012; margin: 3px 0 6px; }
