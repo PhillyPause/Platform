@@ -180,7 +180,7 @@ public sealed class ContentStore
     /// Any path with an underscore-prefixed segment is set aside: drafts and
     /// retired pages stay in the repo, under version control and easy to bring
     /// back, without being routable or appearing in the nav.
-    /// <c>Content/_archive/risk/index.md</c> is not a page.
+    /// <c>Content/_manyhands/privacy.md</c> is not a page.
     /// </summary>
     private static bool IsSetAside(string path, string contentRoot) =>
         Relative(path, contentRoot)
