@@ -36,11 +36,24 @@ public static class EmailTemplates
         string? location,
         bool waitlisted,
         string manageUrl,
-        string unsubscribeUrl)
+        string unsubscribeUrl,
+        string? confirmUrl = null)
     {
         var when = startsAt is DateTimeOffset s
             ? LocalTime.Format(s)
             : "Ongoing — the organizers will be in touch about timing";
+
+        // Only for an address nobody has confirmed: signing up for one thing
+        // is not asking to hear about the rest, so this offers, once.
+        var confirmNote = confirmUrl is null
+            ? string.Empty
+            : $"""
+
+               Want to hear when something else like this comes up? One click
+               confirms this address is yours:
+               {confirmUrl}
+
+               """;
 
         var opening = waitlisted
             ? $"You are on the waitlist for {activityTitle}."
@@ -62,7 +75,7 @@ public static class EmailTemplates
              {waitlistNote}
              See or cancel your signups here:
              {manageUrl}
-
+             {confirmNote}
              Thank you for pitching in.
 
              ---
@@ -203,6 +216,61 @@ public static class EmailTemplates
              """;
 
         return ($"Join {Org}", body);
+    }
+
+    /// <summary>
+    /// The first thing someone receives when they join from the site. It asks
+    /// one small thing and offers the way out just as plainly: volunteers owe
+    /// us nothing, and someone else may have typed this address.
+    /// </summary>
+    public static (string Subject, string Body) ConfirmJoin(
+        string displayName, string confirmUrl, string removeUrl, TimeSpan validFor)
+    {
+        var body =
+            $"""
+             Hi {displayName},
+
+             Thanks for joining {Org}. One click tells us this address is
+             really yours, and then you will hear from us when something comes
+             up that matches what you ticked:
+
+             {confirmUrl}
+
+             That is all. Until you click it, this is the only email we send,
+             apart from one reminder in a few days. The link works for
+             {(int)validFor.TotalDays} days.
+
+             Not you, or changed your mind? This takes your name and address
+             off our list, no questions asked:
+             {removeUrl}
+             """;
+
+        return ($"One click to finish joining {Org}", body);
+    }
+
+    /// <summary>
+    /// The one reminder for someone who has not confirmed. It says it is the
+    /// last, and means it: doing nothing is a fine answer.
+    /// </summary>
+    public static (string Subject, string Body) ConfirmNudge(
+        string displayName, string confirmUrl, string removeUrl)
+    {
+        var body =
+            $"""
+             Hi {displayName},
+
+             A few days ago this address joined {Org}, and we have not heard
+             back. No rush and no pressure. If you would still like to hear
+             when something matches what you ticked, one click does it:
+
+             {confirmUrl}
+
+             If not, there is nothing to do. This is the last reminder we will
+             send. Or take your details off our list now:
+             {removeUrl}
+             """;
+
+        return ($"Still want to hear from {Org}?", body);
     }
 
     /// <summary>The first thing someone receives when they join: what is on, and where their page is.</summary>

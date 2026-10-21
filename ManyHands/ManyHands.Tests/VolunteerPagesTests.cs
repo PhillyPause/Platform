@@ -134,6 +134,43 @@ public sealed class VolunteerPagesTests(DatabaseFixture db) : IAsyncLifetime
     }
 
     [Fact]
+    public async Task Opening_a_confirmation_link_does_nothing_and_the_button_confirms_and_signs_in()
+    {
+        var volunteers = new VolunteerRepository(db.DataSource);
+        var joined = Assert.IsType<JoinResult.Ok>(await volunteers.JoinAsync("Confirmer", TestData.NewEmail(), []));
+        var link = ManyHandsPaths.ConfirmJoin(await new AuthTokenRepository(db.DataSource).IssueConfirmationAsync(joined.VolunteerId));
+
+        await _portal.Browser().GetAsync(link);
+        Assert.Null((await volunteers.GetByIdAsync(joined.VolunteerId))!.EmailVerifiedAt);
+
+        var person = _portal.Browser();
+        var answer = await Forms.SubmitAsync(person, link, "confirm");
+
+        Assert.Contains("You are in, Confirmer", await answer.Content.ReadAsStringAsync());
+        Assert.NotNull((await volunteers.GetByIdAsync(joined.VolunteerId))!.EmailVerifiedAt);
+        Assert.Contains("Hello, Confirmer", await person.GetStringAsync(ManyHandsPaths.Me));
+
+        var again = await Forms.SubmitAsync(_portal.Browser(), link, "confirm");
+        Assert.Contains("This link has done its job", await again.Content.ReadAsStringAsync());
+    }
+
+    [Fact]
+    public async Task Opening_a_removal_link_asks_and_the_button_removes()
+    {
+        var volunteers = new VolunteerRepository(db.DataSource);
+        var joined = Assert.IsType<JoinResult.Ok>(await volunteers.JoinAsync("Mistaken", TestData.NewEmail(), []));
+        var link = ManyHandsPaths.Remove((await volunteers.GetByIdAsync(joined.VolunteerId))!.CommsKey);
+
+        await _portal.Browser().GetAsync(link);
+        Assert.False((await volunteers.GetByIdAsync(joined.VolunteerId))!.IsDeleted);
+
+        var answer = await Forms.SubmitAsync(_portal.Browser(), link, "remove");
+
+        Assert.Contains("you are off our list", await answer.Content.ReadAsStringAsync());
+        Assert.True((await volunteers.GetByIdAsync(joined.VolunteerId))!.IsDeleted);
+    }
+
+    [Fact]
     public async Task A_mail_clients_one_click_unsubscribe_needs_no_token()
     {
         var volunteers = new VolunteerRepository(db.DataSource);

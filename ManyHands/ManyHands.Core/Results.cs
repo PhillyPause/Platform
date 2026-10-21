@@ -23,8 +23,12 @@ public abstract record SignupResult
 /// <summary>Outcome of somebody joining.</summary>
 public abstract record JoinResult
 {
-    /// <summary>Joined, or was already one of us — both a success to the person joining.</summary>
-    public sealed record Ok(Guid VolunteerId, bool AlreadyMember) : JoinResult;
+    /// <summary>
+    /// Joined, or was already one of us — both a success to the person joining.
+    /// <paramref name="Confirmed"/> says whether the address is known to be
+    /// theirs; until it is, the confirmation email is the only mail they get.
+    /// </summary>
+    public sealed record Ok(Guid VolunteerId, bool AlreadyMember, bool Confirmed) : JoinResult;
 
     public sealed record InvalidEmail : JoinResult;
 }

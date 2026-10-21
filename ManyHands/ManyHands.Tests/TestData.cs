@@ -76,6 +76,7 @@ internal static class TestData
         new ReportingRepository(db),
         new PingRepository(db),
         new InviteRepository(db),
+        new AuthTokenRepository(db),
         email ?? Email(db),
         new DiscordQueries(db),
         discord ?? new RecordingDiscordSender(),
@@ -95,15 +96,44 @@ internal static class TestData
         return rows.AsList();
     }
 
-    /// <summary>A volunteer with an address and these interests.</summary>
+    /// <summary>A volunteer with an address and these interests, confirmed unless told otherwise.</summary>
     public static async Task<Volunteer> VolunteerAsync(
-        NpgsqlDataSource db, string name = "Test Person", VolunteerRole role = VolunteerRole.Member, params short[] interests)
+        NpgsqlDataSource db, string name = "Test Person", VolunteerRole role = VolunteerRole.Member,
+        bool confirmed = true, params short[] interests)
     {
         var volunteers = new VolunteerRepository(db);
         var id = await volunteers.UpsertByEmailAsync(NewEmail(), name);
         if (interests.Length > 0) await volunteers.SetInterestsAsync(id, interests);
         if (role != VolunteerRole.Member) await volunteers.SetRoleAsync(id, role);
+        if (confirmed)
+        {
+            await using var conn = await db.OpenConnectionAsync();
+            await conn.ExecuteAsync("UPDATE volunteers SET email_verified_at = now() WHERE id = @id", new { id });
+        }
         return (await volunteers.GetByIdAsync(id))!;
+    }
+
+    /// <summary>The confirmation link in the latest joining email sent to an address, as its raw token.</summary>
+    public static async Task<string?> ConfirmTokenSentToAsync(NpgsqlDataSource db, string address)
+    {
+        await using var conn = await db.OpenConnectionAsync();
+        var body = await conn.ExecuteScalarAsync<string?>(
+            """
+            SELECT body_text FROM email_messages
+            WHERE lower(to_address) = lower(@address) AND body_text LIKE '%/volunteer/confirm/%'
+            ORDER BY created_at DESC LIMIT 1
+            """,
+            new { address });
+        var match = body is null ? null : System.Text.RegularExpressions.Regex.Match(body, @"/volunteer/confirm/([A-Za-z0-9_-]+)");
+        return match is { Success: true } ? match.Groups[1].Value : null;
+    }
+
+    public static async Task<int> CountOutboxForVolunteerAsync(NpgsqlDataSource db, string kind, Guid volunteerId)
+    {
+        await using var conn = await db.OpenConnectionAsync();
+        return await conn.ExecuteScalarAsync<int>(
+            "SELECT count(*)::int FROM outbox WHERE kind = @kind AND payload->>'volunteerId' = @id",
+            new { kind, id = volunteerId.ToString() });
     }
 
     public static async Task<int> CountOutboxWelcomesAsync(NpgsqlDataSource db, Guid volunteerId)

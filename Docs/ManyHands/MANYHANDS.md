@@ -18,6 +18,7 @@ Simplicity is the point: nothing here exists to serve a second organisation.
 | Activities | Browse what is coming up without an account; filter by type |
 | Signup | Sign up with a name, an email and the kinds of thing they like doing; capacity and a waitlist, and a freed place goes to the next person in line |
 | Sign-in | Passwordless: a link by email |
+| Joining | Name, email and interests; then one email asking them to confirm the address is theirs, with a link that removes them just as easily (Joining, below) |
 | Mail | Confirmation, a reminder the day before, "you are in" off the waitlist, a welcome, one-click unsubscribe |
 | Self-service | See and cancel their signups, change interests, export everything held about them, delete themselves |
 | Calendar | An ICS feed of activities, and a private one of their own signups |
@@ -98,6 +99,8 @@ Static SSR Razor components in `Website/Website.Portal/Components/Volunteer`, on
 | `/volunteer/sign-in` | Ask for a sign-in link |
 | `/volunteer/sign-in/{token}` | Opening the link shows a button; **pressing it** spends the token |
 | `/volunteer/me` | Signups and cancelling, interests and email, Discord unlink, the personal calendar feed, export, delete, sign out |
+| `/volunteer/confirm/{token}` | The link in a joining email. Opening it shows a button; **pressing it** confirms the address and signs them in |
+| `/volunteer/remove/{key}` | "Not you, or changed your mind?" Asks, then deletes them, as the button on their page does. Never an organizer |
 | `/volunteer/unsubscribe/{key}` | Asks, then unsubscribes |
 | `/volunteer/link-discord/{token}` | Where `/link` in Discord sends someone: signed in, one press links the account |
 
@@ -124,6 +127,37 @@ Three things about signing in:
   In the container they would be replaced by every deploy, signing everyone
   out on each merge to `main`.
 
+### Joining
+
+Anyone can type any address into the Join us form, so joining asks the
+person to confirm the address is theirs before ManyHands counts them as a
+member who hears about new activities. It asks gently. These are volunteers,
+and doing nothing is a fine answer.
+
+- **One email, then one reminder, then silence.** Joining queues
+  `member.confirm` at once and `member.nudge` to wait three days
+  (`VolunteerRepository.NudgeAfter`). The reminder says it is the last and
+  sends nothing to anyone who has confirmed, removed themselves or
+  unsubscribed by then. Joining again before confirming sends the email
+  again, never a second reminder.
+- **Every joining email carries a removal link** as plainly as the confirm
+  link: `/volunteer/remove/{key}` deletes the person outright, with no
+  sign-in, because someone else may have typed the address.
+- **The confirm link lasts 30 days**, or until any one of them is pressed,
+  which spends them all. A month-old email cannot sign anyone in. Pressing
+  one signs the person in, since it proves they read mail there.
+- **Unconfirmed is not unwelcome.** They are on `/team/members`, marked "not
+  confirmed yet", and can sign up for activities as anyone can, with the
+  mail that goes with that. What they do not get is interest pings: those
+  wait for a confirmed address. Signing in confirms too, and so does
+  accepting an invite, which was mailed to that address.
+- **An activity signup from a new address offers it once**: the signup's
+  own confirmation email carries the confirm link, with no reminder after.
+- **Nobody is removed for not answering.** An unconfirmed person stays until
+  they remove themselves.
+
+`volunteers.email_verified_at` is the state: set, the address is confirmed.
+
 ### The team pages
 
 Under `/team`, in `Website/Website.Portal/Components/Team`, all behind
@@ -137,7 +171,7 @@ request.
 | `/team/activity/new`, `/team/activity/{id}/edit` | The editor. Times are typed in Philadelphia's clock and stored as instants | Organizers |
 | `/team/activity/{id}` | Publish or unpublish; the roster, one big button per name for check-in; walk-ins | Organizers |
 | `/team/activity/{id}/check-in` | The QR code for the door | Organizers |
-| `/team/members` | Everyone, with what they like doing. Changing a role is admins' alone, and the last admin cannot stop being one | Organizers see; admins change |
+| `/team/members` | Everyone, with what they like doing and whether they have confirmed their address. Changing a role is admins' alone, and the last admin cannot stop being one | Organizers see; admins change |
 | `/team/invites` | The join link, invitations by email, and their state | Organizers |
 
 Two public pages come with them: `/volunteer/join/{token}`, where an
@@ -303,7 +337,9 @@ day-before reminders every five minutes.
 | `signup.confirmed` | `signupId` | The confirmation, or the waitlist notice; a DM beside it if they linked Discord, and an unnamed note in the activity's thread |
 | `signup.promoted` | `signupId` | "You are in", off the waitlist |
 | `activity.reminder` | `signupId` | The reminder, a day before |
-| `member.welcome` | `volunteerId` | One welcome, the first time someone joins |
+| `member.confirm` | `volunteerId` | Joining from the site: mints a 30-day confirm link and emails it beside the removal link. Nothing if already confirmed |
+| `member.nudge` | `volunteerId` | Queued to wait three days; the one reminder, if they are still unconfirmed and reachable |
+| `member.welcome` | `volunteerId` | One welcome, the first time someone joins by an accepted invite |
 | `activity.published` | `activityId` | The Discord post and its thread, once (claimed in `external_publications`); then a DM to everyone interested who linked Discord, an email to everyone else, once each (claimed in `activity_pings`) |
 | `invite.sent` | `inviteId` | Mints the invite link and emails it |
 
@@ -384,7 +420,10 @@ until the first deploy.
 
 Mail is only logged locally. To sign in, ask for a link on
 `/volunteer/sign-in`: in development, with no mail provider, the page shows
-the link it logged. Emails are in the dashboard's logs for `website`.
+the link it logged. Emails are in the dashboard's logs for `website`,
+among them the joining email with its confirm and removal links: join on
+<http://localhost:5203/join>, then find "One click to finish joining" there.
+Signed in as `organizer@example.test`, `/team/members` shows the newcomer.
 
 `dotnet run --project Website/Website.Portal` still runs the site alone, with
 ManyHands off and no database. `ManyHands.Tests` starts its own container,

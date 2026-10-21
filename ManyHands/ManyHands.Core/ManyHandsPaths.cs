@@ -40,6 +40,15 @@ public static class ManyHandsPaths
 
     public static string AcceptInvite(string token) => $"/volunteer/join/{token}";
 
+    /// <summary>
+    /// The link in a joining email that says "this address is mine". A page
+    /// with a button, like sign-in, so a mail scanner cannot confirm anyone.
+    /// </summary>
+    public static string ConfirmJoin(string token) => $"/volunteer/confirm/{token}";
+
+    /// <summary>"Not you, or changed your mind?": asks, then deletes the person outright.</summary>
+    public static string Remove(Guid commsKey) => $"/volunteer/remove/{commsKey}";
+
     /// <summary>The link in an email's footer: a page with a button, so a mail scanner cannot unsubscribe anyone.</summary>
     public static string Unsubscribe(Guid commsKey) => $"/volunteer/unsubscribe/{commsKey}";
 

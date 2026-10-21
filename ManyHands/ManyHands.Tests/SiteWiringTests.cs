@@ -91,7 +91,7 @@ public sealed class SiteWiringTests(DatabaseFixture db) : IAsyncLifetime
 
         var page = await response.Content.ReadAsStringAsync();
         page.Should().Contain("id=\"join-open\" class=\"dlgtoggle\" checked")
-            .And.Contain("A welcome email is on its way");
+            .And.Contain("Nearly there: check your email");
         var volunteers = new ManyHands.Data.VolunteerRepository(db.DataSource);
         var joined = await volunteers.GetByEmailAsync(email);
         joined!.DisplayName.Should().Be("Dialog Joiner");

@@ -3,7 +3,8 @@
 Joining, or signing up for something, on this site keeps a record so we can
 tell you what is on and know who is coming. It holds:
 
-- **Your name and email**, and whether you want emails about new activities.
+- **Your name and email**, whether you have confirmed the address is yours,
+  and whether you want emails about new activities.
 - **What you like doing**, from the boxes you ticked, so we only tell you
   about things that match.
 - **What you signed up for**, whether you were on the waitlist, and whether
@@ -12,6 +13,11 @@ tell you what is on and know who is coming. It holds:
   delivered. Not whether you opened them; we cannot tell, and do not try.
 - **Your Discord account**, only if you link it, so we can message you there
   instead of by email.
+
+When you join, we send one email asking you to confirm the address is yours,
+and one reminder a few days later if you have not. Until you confirm, those
+are the only emails you get. Each has a link that takes you off our list at
+once, with no sign-in, in case someone else typed your address.
 
 Signing in sets one cookie, `phillypause.session`, which keeps you signed in
 for up to 30 days. It holds who you are and nothing else, and signing out

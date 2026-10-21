@@ -24,6 +24,7 @@ public sealed class OutboxDispatcher(
     ReportingRepository reporting,
     PingRepository pings,
     InviteRepository invites,
+    AuthTokenRepository tokens,
     EmailDispatcher email,
     DiscordQueries discordQueries,
     IDiscordSender discord,
@@ -56,6 +57,14 @@ public sealed class OutboxDispatcher(
                 await HandleWelcomeAsync(message, ct);
                 break;
 
+            case OutboxKinds.MemberConfirm:
+                await HandleConfirmAsync(message, nudge: false, ct);
+                break;
+
+            case OutboxKinds.MemberNudge:
+                await HandleConfirmAsync(message, nudge: true, ct);
+                break;
+
             case OutboxKinds.ActivityPublished:
                 await HandlePublishedAsync(message, ct);
                 break;
@@ -79,10 +88,14 @@ public sealed class OutboxDispatcher(
         var n = await notifications.GetSignupAsync(signupId, ct);
         if (n is null) return;
 
+        var confirmUrl = await volunteers.GetByIdAsync(n.VolunteerId, ct) is { EmailVerifiedAt: null, CanReceiveEmail: true }
+            ? email.Link(ManyHandsPaths.ConfirmJoin(await tokens.IssueConfirmationAsync(n.VolunteerId, ct)))
+            : null;
+
         var (subject, body) = EmailTemplates.SignupConfirmation(
             n.DisplayName, n.Title, n.StartsAt, n.Location,
             waitlisted: n.Status == SignupStatus.Waitlisted,
-            ManageUrl, email.UnsubscribeUrl(n.CommsKey));
+            ManageUrl, email.UnsubscribeUrl(n.CommsKey), confirmUrl);
 
         await email.SendAsync(n.AsVolunteer(), subject, body, "signup.confirmation", ct: ct);
 
@@ -183,6 +196,29 @@ public sealed class OutboxDispatcher(
     }
 
     /// <summary>
+    /// The joining email, or its one reminder. The link is minted here, so it
+    /// exists only in the email. Someone who confirmed, removed themselves or
+    /// unsubscribed in the meantime gets nothing: the reminder waits three
+    /// days, and most people will have answered by then.
+    /// </summary>
+    private async Task HandleConfirmAsync(OutboxMessage message, bool nudge, CancellationToken ct)
+    {
+        if (ReadGuid(message.Payload, "volunteerId") is not Guid volunteerId) return;
+
+        var volunteer = await volunteers.GetByIdAsync(volunteerId, ct);
+        if (volunteer is null || volunteer.EmailVerifiedAt is not null || !volunteer.CanReceiveEmail) return;
+
+        var confirmUrl = email.Link(ManyHandsPaths.ConfirmJoin(await tokens.IssueConfirmationAsync(volunteerId, ct)));
+        var removeUrl = email.Link(ManyHandsPaths.Remove(volunteer.CommsKey));
+
+        var (subject, body) = nudge
+            ? EmailTemplates.ConfirmNudge(volunteer.DisplayName, confirmUrl, removeUrl)
+            : EmailTemplates.ConfirmJoin(volunteer.DisplayName, confirmUrl, removeUrl, AuthTokenRepository.ConfirmationLifetime);
+
+        await email.SendAsync(volunteer, subject, body, nudge ? OutboxKinds.MemberNudge : OutboxKinds.MemberConfirm, ct: ct);
+    }
+
+    /// <summary>
     /// Announces the activity on Discord, then tells the people whose interests
     /// match: by DM if they linked Discord, by email if not, never both. Each
     /// person carries their own claim, so a redelivered row resumes where it
@@ -232,7 +268,9 @@ public sealed class OutboxDispatcher(
                 continue;
             }
 
-            if (!volunteer.CanReceiveEmail) continue;
+            // Not until the address is known to be theirs: what joining from
+            // the site asks of them first.
+            if (!volunteer.CanReceiveEmail || volunteer.EmailVerifiedAt is null) continue;
             if (!await pings.TryClaimAsync(activityId, volunteer.Id, PingChannel.Email, ct)) continue;
 
             var (subject, body) = EmailTemplates.InterestPing(

@@ -117,4 +117,24 @@ public sealed class EmailTextTests
 
         bodies.Should().AllSatisfy(body => body.Should().Contain(UnsubscribeUrl));
     }
+
+    /// <summary>
+    /// Joining emails go to an address nobody has confirmed, so the way out is
+    /// removal, not just silence: someone else may have typed it.
+    /// </summary>
+    [Fact]
+    public void Both_joining_emails_offer_removal_as_plainly_as_the_confirmation()
+    {
+        const string confirm = "https://example.test/volunteer/confirm/abc";
+        const string remove = "https://example.test/volunteer/remove/def";
+
+        var bodies = new[]
+        {
+            EmailTemplates.ConfirmJoin("M", confirm, remove, TimeSpan.FromDays(30)).Body,
+            EmailTemplates.ConfirmNudge("M", confirm, remove).Body,
+        };
+
+        bodies.Should().AllSatisfy(body => body.Should().Contain(confirm).And.Contain(remove));
+        bodies[1].Should().Contain("last reminder");
+    }
 }
