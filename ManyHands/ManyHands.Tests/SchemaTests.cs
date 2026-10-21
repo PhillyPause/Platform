@@ -1,7 +1,12 @@
 using Dapper;
 using FluentAssertions;
 using ManyHands.Data;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
+using Microsoft.Extensions.Options;
 
 namespace ManyHands.Tests;
 
@@ -77,6 +82,42 @@ public sealed class SchemaTests(DatabaseFixture db)
         var migrate = () => ManyHandsDatabase.Migrate(db.ConnectionString, includeSeed: false, NullLogger.Instance);
 
         migrate.Should().NotThrow("DbUp journals every script and runs each once");
+    }
+
+    [Theory]
+    [InlineData("Production")]
+    [InlineData("Staging")]
+    public void Seeding_anywhere_but_Development_stops_the_site_starting(string environment)
+    {
+        var services = new ServiceCollection()
+            .AddSingleton<IConfiguration>(new ConfigurationBuilder().Build())
+            .AddSingleton(Options.Create(new ManyHandsOptions { Enabled = true, Seed = true }))
+            .AddSingleton<ILoggerFactory>(NullLoggerFactory.Instance)
+            .AddSingleton<IHostEnvironment>(new Environment(environment))
+            .BuildServiceProvider();
+
+        var migrate = () => services.MigrateManyHands();
+
+        migrate.Should().Throw<InvalidOperationException>().WithMessage("*outside Development*");
+    }
+
+    /// <summary>An invented event on the Events list reads as a real one.</summary>
+    [Fact]
+    public void The_seed_invents_no_activities()
+    {
+        using var stream = typeof(ManyHandsDatabase).Assembly.GetManifestResourceStream("ManyHands.Data.Scripts.9999_seed_dev.sql");
+        var seed = new StreamReader(stream!).ReadToEnd();
+
+        seed.Should().NotContain("INSERT INTO activities").And.NotContain("INSERT INTO signups");
+    }
+
+    private sealed class Environment(string name) : IHostEnvironment
+    {
+        public string EnvironmentName { get; set; } = name;
+        public string ApplicationName { get; set; } = "ManyHands.Tests";
+        public string ContentRootPath { get; set; } = AppContext.BaseDirectory;
+        public Microsoft.Extensions.FileProviders.IFileProvider ContentRootFileProvider { get; set; } =
+            new Microsoft.Extensions.FileProviders.NullFileProvider();
     }
 
     [Theory]

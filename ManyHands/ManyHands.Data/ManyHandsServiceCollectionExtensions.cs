@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.DataProtection.KeyManagement;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Npgsql;
@@ -197,6 +198,14 @@ public static class ManyHandsServiceCollectionExtensions
         var configuration = services.GetRequiredService<IConfiguration>();
         var options = services.GetRequiredService<IOptions<ManyHandsOptions>>().Value;
         var logger = services.GetRequiredService<ILoggerFactory>().CreateLogger(typeof(ManyHandsDatabase));
+
+        // Seeding writes invented people into whatever database it is pointed
+        // at, and DbUp never runs a script twice, so nothing would take them
+        // out again. Asked for anywhere but a developer's machine, refuse to
+        // start rather than seed: the previous deployment keeps serving.
+        if (options.Seed && !services.GetRequiredService<IHostEnvironment>().IsDevelopment())
+            throw new InvalidOperationException(
+                "ManyHands:Seed is set outside Development. Seed data is fictional and never goes in a real database.");
 
         ManyHandsDatabase.Migrate(
             configuration.GetConnectionString(ManyHandsOptions.ConnectionStringName)!,

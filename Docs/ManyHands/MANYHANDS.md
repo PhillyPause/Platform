@@ -65,8 +65,9 @@ What is built so far is in [section 7](#7-status).
   hashes. Volunteers' own mail (`email_messages`) is shown on no page.
 - **Seed data is fictional and opt-in**: a script whose name contains
   `_seed_` runs only when `ManyHands:Seed` is true, which nothing sets in
-  production. `example.test` addresses and `555-01xx` numbers, never real
-  people.
+  production, and set outside Development it stops the site starting.
+  `example.test` addresses and `555-01xx` numbers, never real people, and
+  no activities.
 
 ## 3. Shape
 
@@ -413,10 +414,12 @@ structured logs, traces (each request, with its database queries timed
 inside it) and metrics. The site is at <http://localhost:5203>.
 
 The database is **ephemeral**: every run starts from nothing, applies the
-schema and seeds the fictional data in `9999_seed_dev.sql` again — a few
-activities, one of them full, `organizer@example.test` (an admin) and
-`ben@example.test`. That is what lets `0001_schema.sql` be edited in place
-until the first deploy.
+schema and seeds the fictional data in `9999_seed_dev.sql` again —
+`organizer@example.test` (an admin), `ben@example.test`, `cai@example.test`,
+and a little CRM. That is what lets `0001_schema.sql` be edited in place
+until the first deploy. It seeds **no activities**: an invented event reads
+as a real one, so the Events list starts empty, and every event on it is one
+an organizer made at `/team/activity/new`.
 
 Mail is only logged locally. To sign in, ask for a link on
 `/volunteer/sign-in`: in development, with no mail provider, the page shows
