@@ -16,6 +16,7 @@ public class KioskTests(WebApplicationFactory<Program> factory)
     private const string KioskPath = "/kiosk";
     private const string ManifestPath = "/kiosk.webmanifest";
     private const string WorkerPath = "/kiosk-sw.js";
+    private const string AwakeVideoPath = "/kiosk-awake.mp4";
 
     private static readonly string Script = File.ReadAllText(Path.Combine(
         TestPaths.RepoRoot, "Website.Portal", "wwwroot", "kiosk.js"));
@@ -81,6 +82,28 @@ public class KioskTests(WebApplicationFactory<Program> factory)
 
         sizes.Should().NotBeEmpty().And.OnlyContain(size => size >= SmallestVmin);
         Script.Should().Contain($"const FLOOR = {(SmallestVmin / 100).ToString(CultureInfo.InvariantCulture)};");
+    }
+
+    [Fact]
+    public async Task The_kiosk_plays_a_silent_video_to_hold_off_the_screen_saver()
+    {
+        var client = factory.CreateClient();
+
+        var page = await client.GetStringAsync(KioskPath);
+        var video = await client.GetAsync(AwakeVideoPath);
+
+        page.Should().Contain($"src=\"{AwakeVideoPath}\" muted autoplay loop playsinline");
+        video.IsSuccessStatusCode.Should().BeTrue();
+        video.Content.Headers.ContentType!.MediaType.Should().Be("video/mp4");
+    }
+
+    [Fact]
+    public async Task The_kiosk_has_a_menu_for_whoever_runs_the_table()
+    {
+        var page = await factory.CreateClient().GetStringAsync(KioskPath);
+
+        page.Should().Contain("data-kiosk-menu").And.Contain("data-kiosk-windowed");
+        Script.Should().Contain("event.keyCode === 461");
     }
 
     [Fact]
