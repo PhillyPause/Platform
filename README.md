@@ -108,7 +108,7 @@ undo a release, and the two constraints App Platform's .NET buildpack imposes.
 | `Website/` | `Website.Portal` (the ASP.NET Core host), `Website.Client` (Blazor WASM islands), `Website.Content` (Markdown and the pipeline that compiles it), `Website.Tests` |
 | `ManyHands/` | `ManyHands.Core`, `ManyHands.Data`, `ManyHands.Tests`: the volunteer system ([`Docs/ManyHands/MANYHANDS.md`](Docs/ManyHands/MANYHANDS.md)) |
 | `Platform/` | `Platform.AppHost` (.NET Aspire, local only), `Platform.ServiceDefaults` |
-| `Brand/` | The master logo, the YouTube images, the print poster |
+| `Brand/` | The master logo, the YouTube images, the print poster ([`Docs/Outreach/BRAND.md`](Docs/Outreach/BRAND.md)) |
 
 Projects are named `<Product>.<Role>` and grouped in a folder per product;
 folder, assembly and namespace are all that same string. The solution is `Platform.slnx` rather than
