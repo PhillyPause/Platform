@@ -7,7 +7,9 @@
 @* Opening the link does not sign anyone in; pressing the button does. Mail
    scanners open every link in a message to check it, and a link spent on
    arrival would be spent by the scanner, leaving the volunteer an "expired"
-   page and no idea why. *@
+   page and no idea why. Signed in, they land on the front page, not their
+   own: the volunteer pages are not ready for readers yet, and organizers
+   reach theirs from Team in the account bar. *@
 
 <PageMeta Title="Sign in" Description="Finish signing in to PhillyPause." NoIndex="true" />
 
@@ -51,7 +53,7 @@
             if (await Volunteers.GetByIdAsync(ok.VolunteerId) is { IsDeleted: false } volunteer)
             {
                 await VolunteerSession.SignInAsync(HttpContext, volunteer);
-                Navigation.NavigateTo(ManyHandsPaths.Me);
+                Navigation.NavigateTo("/");
                 return;
             }
         }
