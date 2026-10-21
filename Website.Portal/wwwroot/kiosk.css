@@ -1,15 +1,24 @@
 /* The kiosk (/kiosk, Components/Pages/Kiosk.razor).
 
-   Read from across a walkway, outdoors, in daylight: few words per beat, set
-   as large as the screen allows, in the broadsheet's three inks at full
-   strength. Each beat changes the whole screen's colour, which catches the
-   eye at a distance before any word can be read. Sizes are in vmin, so the
-   same rules hold with the screen upright or on its side; kiosk.js shrinks
-   any .kfit line that would still run wider than the screen.
+   Seen first from across a walkway, outdoors, in daylight, by people who
+   were not planning to stop. Two rules follow from that.
 
-   No beat flashes more than once, and nothing flashes faster than three
-   times a second. Under prefers-reduced-motion every beat simply cross-fades
-   and nothing else moves. */
+   It reads from ten feet. Nothing on the loop is set smaller than 13vmin:
+   on the LG StanbyME 2's 27-inch panel, whose short side is 13.2 inches,
+   that is 1.7-inch type with capitals over 1⅛ inches, the ADA signage
+   height for ten feet. vmin is the short side either way up, so the rule
+   holds upright and on its side. Everything is capitals, in Archivo
+   condensed so a line holds more of them, and kiosk.js grows each line to
+   the width of the screen but never below the floor. Website.Tests'
+   KioskTests holds every vmin size here to it.
+
+   It never stands still: tickers scroll, letters tumble, words slam, race
+   and wobble, backgrounds spin, drift and change colour, and every beat
+   arrives by a different transition. Flashes are few and slow: never more
+   than two in any second, well inside the three a second that can set off
+   photosensitive seizures (WCAG 2.3.1), and no colour cycle steps faster
+   than every 0.6 seconds. Under prefers-reduced-motion every beat simply
+   fades in and nothing else moves. */
 
 body:has(.kiosk) { margin: 0; overflow: hidden; background: #15110C; }
 
@@ -18,12 +27,17 @@ body:has(.kiosk) { margin: 0; overflow: hidden; background: #15110C; }
   --paper: #FBF8F1;
   --red: #AE2012;
   --flare: #E8714F;
+  --band: 16vmin;
+  --gut: 5vmin;
   position: fixed;
   inset: 0;
   overflow: hidden;
   background: var(--ink);
   color: var(--paper);
-  font-family: Archivo, "Segoe UI", Arial, sans-serif;
+  font-family: Archivo, "Arial Narrow", "Segoe UI", Arial, sans-serif;
+  font-weight: 800;
+  font-stretch: 68%;
+  text-transform: uppercase;
   -webkit-user-select: none;
   user-select: none;
   touch-action: manipulation;
@@ -31,114 +45,235 @@ body:has(.kiosk) { margin: 0; overflow: hidden; background: #15110C; }
 }
 .kiosk p { margin: 0; }
 
-/* The ticker: a band of constant motion along the top, for the eye at the
-   edge of someone's vision. */
+/* The tickers: a band of constant motion along the bottom, and along the top
+   as well when the screen stands upright, running the other way. */
 .kticker {
   position: absolute;
-  inset: 0 0 auto;
+  left: 0;
+  right: 0;
   z-index: 3;
+  height: var(--band);
+  display: flex;
+  align-items: center;
   overflow: hidden;
-  background: var(--ink);
-  border-bottom: 0.5vmin solid var(--red);
-  font-weight: 700;
-  font-size: 3.4vmin;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  line-height: 2.4;
+  background: var(--red);
+  color: var(--paper);
+  font-size: 13vmin;
+  line-height: 1;
   white-space: nowrap;
 }
-.kticker-run { display: flex; width: max-content; animation: kticker 28s linear infinite; }
-.kticker-run span { padding: 0 1.6em; }
-.kticker-run span::after { content: "\25CF"; margin-left: 3.2em; color: var(--red); }
+.kticker-bottom { bottom: 0; }
+.kticker-top { top: 0; display: none; background: var(--ink); }
+.kticker-top i { color: var(--red); }
+@media (orientation: portrait) { .kticker-top { display: flex; } }
+.kticker-run { display: flex; align-items: center; width: max-content; padding-top: 0.06em; animation: kticker 24s linear infinite; }
+.kticker-top .kticker-run { animation-direction: reverse; }
+.kticker-run span { padding: 0.04em 0.3em 0; }
+.kticker-run i { font-style: normal; color: var(--ink); padding: 0 0.3em; }
+.kticker .kt-tap { display: none; }
+.kiosk.is-online .kticker .kt-tap { display: block; }
+.kiosk.is-online .kticker span.kt-tap { background: var(--paper); color: var(--red); }
 @keyframes kticker { to { transform: translateX(-50%); } }
 
-/* The beats. One is .is-on; the one it replaces stays drawn underneath as
-   .was-on while the new one wipes across it. */
+/* The beats. One is .is-on and arrives by its kin-* transition; the one it
+   replaces stays drawn underneath as .was-on until it has. */
 .kstage { position: absolute; inset: 0; }
 .kbeat {
   position: absolute;
   inset: 0;
+  overflow: hidden;
+  visibility: hidden;
+  background: var(--bg, var(--ink));
+  color: var(--fg, var(--paper));
+}
+.kbeat.was-on { visibility: visible; z-index: 1; }
+.kbeat.is-on {
+  visibility: visible;
+  z-index: 2;
+  animation: var(--in, kwipe) 0.55s var(--ease, cubic-bezier(0.7, 0, 0.2, 1)) both;
+}
+.kin-wipe { --in: kwipe; }
+.kin-wipeup { --in: kwipeup; }
+.kin-iris { --in: kiris; }
+.kin-slide { --in: kslide; }
+.kin-drop { --in: kdrop; --ease: cubic-bezier(0.3, 1.25, 0.5, 1); }
+.kin-zoom { --in: kzoom; --ease: cubic-bezier(0.3, 1.2, 0.5, 1); }
+.kin-flip { --in: kflip; --ease: cubic-bezier(0.3, 1.2, 0.5, 1); }
+@keyframes kwipe { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0); } }
+@keyframes kwipeup { from { clip-path: inset(100% 0 0 0); } to { clip-path: inset(0); } }
+@keyframes kiris { from { clip-path: circle(0% at 50% 50%); } to { clip-path: circle(75% at 50% 50%); } }
+@keyframes kslide { from { transform: translateX(100%); } to { transform: none; } }
+@keyframes kdrop { from { transform: translateY(-100%); } to { transform: none; } }
+@keyframes kzoom { from { transform: scale(0.15) rotate(-30deg); } to { transform: none; } }
+@keyframes kflip { from { transform: perspective(160vmin) rotateY(90deg); } to { transform: none; } }
+
+/* A beat's words, clear of the tickers. */
+.kbody {
+  position: absolute;
+  inset: var(--gut) var(--gut) calc(var(--band) + var(--gut));
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 3.5vmin;
-  /* The bottom keeps clear of the explore button, descenders included. */
-  padding: 11vmin 6vmin 19vmin;
-  box-sizing: border-box;
+  gap: 2.5vmin;
   text-align: center;
-  visibility: hidden;
 }
+@media (orientation: portrait) { .kbody { top: calc(var(--band) + var(--gut)); } }
 /* No shrinking: a beat too tall for the screen is kiosk.js's to fit, by
    making its type smaller, never by squashing the arrow or the QR code. */
-.kbeat > * { flex: none; }
-.kbeat.was-on { visibility: visible; z-index: 1; }
-.kbeat.is-on { visibility: visible; z-index: 2; animation: kwipe 0.6s cubic-bezier(0.7, 0, 0.2, 1) both; }
-@keyframes kwipe { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
+.kbody > * { flex: none; }
 
-.kmega {
+/* Three sizes, all over the floor; kiosk.js grows each line from here. */
+.kxl {
   font-family: "Playfair Display", Georgia, serif;
   font-weight: 900;
-  font-size: 19vmin;
-  line-height: 0.95;
-  letter-spacing: -0.03em;
+  font-stretch: normal;
+  font-size: 30vmin;
+  line-height: 0.92;
+  letter-spacing: -0.01em;
 }
-.kbig {
-  font-family: "Playfair Display", Georgia, serif;
-  font-weight: 900;
-  font-size: 9.5vmin;
-  line-height: 1.02;
-  letter-spacing: -0.02em;
-  max-width: 16ch;
-  text-wrap: balance;
+.kl { font-size: 20vmin; line-height: 0.92; }
+.km { font-size: 14vmin; line-height: 0.95; }
+.kfit { display: block; width: max-content; white-space: nowrap; word-spacing: 0.1em; }
+.knarrow { font-stretch: 62%; }
+.kart svg { display: block; }
+.kred { color: var(--red); }
+.kflare { color: var(--flare); }
+
+.kb-hey { --bg: var(--red); }
+.kb-minute { --bg: var(--red); }
+.kb-rich { --bg: var(--ink); }
+.kb-racing { --bg: var(--paper); --fg: var(--ink); }
+.kb-super { --bg: var(--red); }
+.kb-smarter { --bg: var(--ink); }
+.kb-control { --bg: var(--paper); --fg: var(--ink); }
+.kb-makers { --bg: var(--ink); }
+.kb-count { --bg: var(--red); }
+.kb-broke { --bg: var(--ink); }
+.kb-told { --bg: var(--paper); --fg: var(--ink); }
+.kb-jobs { --bg: var(--paper); --fg: var(--ink); }
+.kb-rod { --bg: var(--ink); }
+.kb-us { --bg: var(--flare); --fg: var(--ink); }
+.kb-pause { --bg: var(--red); }
+.kb-come { --bg: var(--paper); --fg: var(--ink); }
+.kb-scan { --bg: var(--paper); --fg: var(--ink); }
+
+/* Each line's own motion, from its --d. Every one ends where the line
+   stands still, so the beat underneath a transition shows its words. */
+.is-on .a-slam { animation: kslam 0.5s cubic-bezier(0.3, 1.4, 0.5, 1) var(--d, 0s) both; }
+.is-on .a-pop { animation: kpop 0.5s cubic-bezier(0.2, 1.6, 0.4, 1) var(--d, 0s) both; }
+.is-on .a-left { animation: kleft 0.5s cubic-bezier(0.2, 0.9, 0.2, 1) var(--d, 0s) both; }
+.is-on .a-right { animation: kright 0.5s cubic-bezier(0.2, 0.9, 0.2, 1) var(--d, 0s) both; }
+.is-on .a-up { animation: kup 0.55s cubic-bezier(0.2, 1.3, 0.4, 1) var(--d, 0s) both; }
+@keyframes kslam { from { opacity: 0; transform: scale(3); } to { opacity: 1; transform: none; } }
+@keyframes kpop { from { transform: scale(0); } to { transform: none; } }
+@keyframes kleft { from { transform: translateX(-120vw); } to { transform: none; } }
+@keyframes kright { from { transform: translateX(120vw); } to { transform: none; } }
+@keyframes kup { from { transform: translateY(70vh); } to { transform: none; } }
+
+/* Tumbling: letter by letter, dropped from above the screen, spinning. */
+.a-tumble .l, .a-chaos > span, .a-wiggle { display: inline-block; }
+.a-chaos > span { margin: 0 0.08em; }
+.is-on .a-tumble .l { animation: ktumble 0.9s cubic-bezier(0.3, 0.9, 0.4, 1.1) calc(var(--d, 0s) + var(--i) * 90ms) both; }
+@keyframes ktumble {
+  from { transform: translateY(-120vh) rotate(-540deg); }
+  75% { transform: translateY(3vmin) rotate(12deg); }
+  to { transform: none; }
 }
-.kline { font-size: 5.6vmin; font-weight: 600; line-height: 1.25; max-width: 24ch; text-wrap: balance; }
-.kfit { display: block; width: max-content; white-space: nowrap; }
 
-/* Upright, the screen has height to spare: the same beats, set larger. */
-@media (orientation: portrait) {
-  .kbig { font-size: 12vmin; }
-  .kline { font-size: 6.6vmin; }
-  .kcount { font-size: min(60vmin, 34vh); }
-  .kscan { flex-direction: column; text-align: center; font-size: 6vmin; }
-  .kqr { width: 46vmin; height: 46vmin; }
-  .klogo { height: 20vmin; }
+/* Out of control: each word tumbles in, then never settles. */
+.is-on .a-chaos > span {
+  animation:
+    ktumble 0.8s cubic-bezier(0.3, 0.9, 0.4, 1.1) calc(var(--i) * 120ms) both,
+    kwobble 0.45s ease-in-out calc(var(--i) * 120ms + 0.8s) infinite alternate;
 }
-.kstack { display: flex; flex-direction: column; align-items: center; gap: 2vmin; }
+.is-on .a-chaos > span:nth-child(even) { animation-direction: normal, alternate-reverse; }
+@keyframes kwobble { from { rotate: -7deg; scale: 1; } to { rotate: 8deg; scale: 1.07; } }
+.is-on .a-wiggle { animation: kwobble 0.3s ease-in-out 0.7s infinite alternate; }
 
-.kb-hey { background: var(--red); }
-.kb-race { background: var(--paper); color: var(--ink); }
-.kb-race .kmega { color: var(--red); }
-.kb-control { background: var(--ink); }
-.kb-control .kred { color: var(--flare); }
-.kb-agents { background: var(--red); }
-.kb-jobs { background: var(--paper); color: var(--ink); }
-.kb-jobs span:last-child { color: var(--red); }
-.kb-rod { background: var(--ink); }
-.kb-rod .kmega { color: var(--flare); }
-.kb-come { background: var(--paper); color: var(--ink); gap: 3vmin; }
-
-/* Each beat's own entrance, timed after the wipe. */
-.is-on .kmega, .is-on .kbig, .is-on .kline, .is-on .kscan, .is-on .klogo {
-  animation: krise 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) both;
-}
-.is-on > :nth-child(2) { animation-delay: 0.35s; }
-.is-on > :nth-child(3) { animation-delay: 0.7s; }
-.is-on > :nth-child(4) { animation-delay: 1.05s; }
-.is-on > :nth-child(5) { animation-delay: 1.4s; }
-@keyframes krise { from { opacity: 0; transform: translateY(6vmin); } to { opacity: 1; transform: none; } }
-
-.kb-hey.is-on .kmega { animation: kpunch 0.7s cubic-bezier(0.2, 1.4, 0.4, 1) 0.2s both; }
-@keyframes kpunch { from { opacity: 0; transform: scale(0.4) rotate(-6deg); } to { opacity: 1; transform: none; } }
-
-.kb-race.is-on .kslam { animation: kslam 0.55s cubic-bezier(0.3, 1.3, 0.5, 1) 0.9s both; }
-.kb-race.is-on { animation: kwipe 0.6s cubic-bezier(0.7, 0, 0.2, 1) both, kshake 0.4s linear 1.3s; }
-@keyframes kslam { from { opacity: 0; transform: scale(2.6); } to { opacity: 1; transform: none; } }
+/* The screen jolts. */
+.is-on .a-shake { animation: kshake 0.5s linear var(--shake, 1s) both; }
 @keyframes kshake {
-  20% { transform: translate(-1.2vmin, 0.6vmin); }
-  40% { transform: translate(1vmin, -0.8vmin); }
-  60% { transform: translate(-0.6vmin, 0.4vmin); }
-  80% { transform: translate(0.4vmin, -0.2vmin); }
+  15% { transform: translate(-2.4vmin, 1.2vmin) rotate(-1deg); }
+  35% { transform: translate(2vmin, -1.6vmin) rotate(1deg); }
+  55% { transform: translate(-1.2vmin, 0.8vmin); }
+  75% { transform: translate(0.8vmin, -0.4vmin); }
+}
+
+/* One flash each, of the whole screen. */
+.kflash { position: absolute; inset: 0; z-index: 5; background: var(--paper); opacity: 0; pointer-events: none; }
+.is-on .kflash { animation: kflash 0.3s ease-out var(--d, 0s) forwards; }
+@keyframes kflash { from { opacity: 0.95; } to { opacity: 0; } }
+
+/* Racing: the word itself, a band of it, tearing across the screen. */
+.krace {
+  align-self: stretch;
+  margin-inline: calc(-1 * var(--gut));
+  overflow: hidden;
+  rotate: -3deg;
+  background: var(--red);
+  color: var(--paper);
+  font-size: 24vmin;
+  line-height: 1.05;
+  white-space: nowrap;
+}
+.krace-run { display: flex; width: max-content; }
+.krace-run span::after { content: "\2192"; margin: 0 0.25em; }
+.is-on .krace-run { animation: kticker 1.6s linear infinite; }
+
+/* Background layers: behind the words, never over them. */
+.kfx { position: absolute; pointer-events: none; }
+.kfx-burst { inset: -70%; background: repeating-conic-gradient(rgba(251, 248, 241, 0.14) 0 8deg, transparent 8deg 16deg); }
+.kb-us .kfx-burst { background: repeating-conic-gradient(rgba(21, 17, 12, 0.1) 0 8deg, transparent 8deg 16deg); }
+.is-on .kfx-burst { animation: kspin 16s linear infinite; }
+@keyframes kspin { to { transform: rotate(1turn); } }
+
+.kfx-stripes { inset: 0 0 0 -12vmin; background: repeating-linear-gradient(-45deg, rgba(21, 17, 12, 0.18) 0 4vmin, transparent 4vmin 8vmin); }
+.is-on .kfx-stripes { animation: kstripes 0.5s linear infinite; }
+@keyframes kstripes { to { transform: translateX(11.31vmin); } }
+
+.kfx-words {
+  left: 50%;
+  top: 50%;
+  font-family: "Playfair Display", Georgia, serif;
+  font-weight: 900;
+  font-stretch: normal;
+  font-size: 44vmin;
+  line-height: 1;
+  white-space: nowrap;
+  color: transparent;
+  -webkit-text-stroke: 0.5vmin rgba(251, 248, 241, 0.2);
+  transform: translate(-50%, -50%) rotate(-12deg);
+}
+.kfx-run { display: flex; width: max-content; }
+.kfx-run span { padding: 0 0.3em; }
+.is-on .kfx-run { animation: kticker 14s linear infinite; }
+
+/* Colour cycles: the whole screen and its words change together. */
+.kfx-cycle { inset: 0; }
+.is-on .kfx-cycle { animation: kcycle 2.4s step-end infinite; }
+.k-cycle.is-on .kbody { animation: kcycle-ink 2.4s step-end infinite; }
+@keyframes kcycle {
+  0% { background: var(--red); }
+  25% { background: var(--ink); }
+  50% { background: var(--flare); }
+  75% { background: var(--paper); }
+}
+@keyframes kcycle-ink {
+  0% { color: var(--paper); }
+  50% { color: var(--ink); }
+}
+.kfx-jobs { inset: 0; }
+.is-on .kfx-jobs { animation: kjobs 3s step-end both; }
+.kb-jobs.is-on .kbody { animation: kjobs-ink 3s step-end both; }
+@keyframes kjobs {
+  0% { background: var(--paper); }
+  33.33% { background: var(--ink); }
+  66.67%, 100% { background: var(--red); }
+}
+@keyframes kjobs-ink {
+  0% { color: var(--ink); }
+  33.33%, 100% { color: var(--paper); }
 }
 
 /* The count: 0 to 700, as a typed custom property read through a counter.
@@ -149,22 +284,22 @@ body:has(.kiosk) { margin: 0; overflow: hidden; background: #15110C; }
   counter-reset: kn var(--kn);
   font-family: "Playfair Display", Georgia, serif;
   font-weight: 900;
-  font-size: min(40vmin, 30vh);
+  font-stretch: normal;
+  font-size: min(44vmin, 50vh);
   line-height: 0.85;
-  letter-spacing: -0.04em;
+  letter-spacing: -0.03em;
   font-variant-numeric: tabular-nums;
-  margin-bottom: 2vmin;
 }
 .kcount::after { content: counter(kn); }
-.kb-agents.is-on .kcount { animation: kcount 1.8s cubic-bezier(0.15, 0.7, 0.25, 1) 0.3s both; }
+.is-on .kcount {
+  animation:
+    kpop 0.4s cubic-bezier(0.2, 1.6, 0.4, 1) both,
+    kcount 1.3s cubic-bezier(0.15, 0.7, 0.25, 1) 0.2s both;
+}
 @keyframes kcount { from { --kn: 0; } to { --kn: 700; } }
 
-.kb-jobs.is-on .kstack span { animation: kpunch 0.5s cubic-bezier(0.2, 1.4, 0.4, 1) both; }
-.kb-jobs.is-on .kstack span:nth-child(2) { animation-delay: 0.7s; }
-.kb-jobs.is-on .kstack span:nth-child(3) { animation-delay: 1.4s; }
-
-/* The bolt strikes once: drawn, filled, and one flash of the whole screen. */
-.kbolt { width: 18vmin; height: 30vmin; overflow: visible; }
+/* The bolt strikes: drawn, filled, and two flashes of the whole screen. */
+.kbolt { width: 22vmin; height: 34vmin; overflow: visible; }
 .kbolt polygon {
   fill: var(--flare);
   stroke: var(--paper);
@@ -172,49 +307,56 @@ body:has(.kiosk) { margin: 0; overflow: hidden; background: #15110C; }
   stroke-linejoin: round;
   stroke-dasharray: 700;
 }
-.kb-rod.is-on .kbolt polygon { animation: kbolt 0.5s ease-in 0.3s both; }
+.kb-rod.is-on .kbolt polygon { animation: kbolt 0.5s ease-in 0.1s both; }
 @keyframes kbolt {
   from { stroke-dashoffset: 700; fill-opacity: 0; }
   70% { stroke-dashoffset: 0; fill-opacity: 0; }
   to { stroke-dashoffset: 0; fill-opacity: 1; }
 }
-.kflash { position: absolute; inset: 0; background: var(--paper); opacity: 0; pointer-events: none; }
-.kb-rod.is-on .kflash { animation: kflash 0.35s ease-out 0.8s both; }
-@keyframes kflash { from { opacity: 0.95; } to { opacity: 0; } }
 
-.karrow { width: 11vmin; height: 13vmin; fill: var(--red); }
-.kb-come.is-on .karrow { animation: kbounce 1s cubic-bezier(0.5, 0, 0.5, 1) 0.6s infinite alternate both; }
-@keyframes kbounce { from { transform: translateY(-1.5vmin); } to { transform: translateY(2.5vmin); } }
-.kscan { display: flex; align-items: center; gap: 4vmin; text-align: left; font-size: 4.6vmin; line-height: 1.3; }
-.kqr { width: 26vmin; height: 26vmin; border: 0.6vmin solid var(--ink); }
-.kscan strong { font-size: 1.3em; }
-.klogo { height: 15vmin; }
+.kbars { width: 34vmin; height: 34vmin; fill: var(--paper); }
+.is-on .kbars { animation: kpop 0.5s cubic-bezier(0.2, 1.6, 0.4, 1) both, kthrob 0.6s ease-in-out 0.6s infinite alternate; }
+@keyframes kthrob { to { scale: 1.12; } }
 
-/* Shown only while phillypause.org answers. */
-.kexplore {
+.karrow { width: 22vmin; height: 26vmin; fill: currentColor; }
+.is-on .karrow { animation: kbounce 0.5s cubic-bezier(0.5, 0, 0.5, 1) 0.4s infinite alternate both; }
+@keyframes kbounce { from { transform: translateY(-2vmin); } to { transform: translateY(4vmin); } }
+
+/* The QR code, as large as the screen allows, with a ring pulsing out of it.
+   Upright it stands over its words; on its side, beside them. */
+.kscan { flex-direction: row; gap: 5vmin; }
+.kqr {
+  width: min(64vmin, 100%);
+  height: auto;
+  aspect-ratio: 1;
+  box-sizing: border-box;
+  border: 2vmin solid var(--paper);
+  outline: 1vmin solid var(--ink);
+}
+.is-on .kqr { animation: kpop 0.5s cubic-bezier(0.2, 1.6, 0.4, 1) both, kring 1.2s ease-out 0.6s infinite; }
+@keyframes kring {
+  from { box-shadow: 0 0 0 0 rgba(174, 32, 18, 0.8); }
+  to { box-shadow: 0 0 0 6vmin rgba(174, 32, 18, 0); }
+}
+.kscan-say { flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: center; gap: 2.5vmin; }
+@media (orientation: portrait) {
+  .kscan { flex-direction: column; }
+  .kqr { width: 70vmin; }
+  .kscan-say { flex: none; align-self: stretch; }
+}
+
+/* The site, framed under a bar that always leads back. Close up, so the
+   reading sizes of the site itself. */
+.ksite {
   position: absolute;
-  left: 50%;
-  bottom: 4vmin;
-  z-index: 3;
-  transform: translateX(-50%);
-  padding: 1.6vmin 4.4vmin;
-  border: 0.5vmin solid var(--paper);
-  border-radius: 999px;
-  background: var(--ink);
-  color: var(--paper);
-  font: 700 4vmin/1.2 Archivo, "Segoe UI", Arial, sans-serif;
-  white-space: nowrap;
-  cursor: pointer;
-  animation: kpulse 2s ease-in-out infinite;
+  inset: 0;
+  z-index: 4;
+  display: flex;
+  flex-direction: column;
+  background: var(--paper);
+  text-transform: none;
+  font-stretch: normal;
 }
-.kexplore[hidden] { display: none; }
-@keyframes kpulse {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(251, 248, 241, 0.6); }
-  50% { box-shadow: 0 0 0 2.4vmin rgba(251, 248, 241, 0); }
-}
-
-/* The site, framed under a bar that always leads back. */
-.ksite { position: absolute; inset: 0; z-index: 4; display: flex; flex-direction: column; background: var(--paper); }
 .ksite[hidden] { display: none; }
 .ksite-bar {
   flex: none;
@@ -253,12 +395,12 @@ body:has(.kiosk) { margin: 0; overflow: hidden; background: #15110C; }
   font: 500 24px/1.45 Archivo, "Segoe UI", Arial, sans-serif;
 }
 .kleaving[hidden] { display: none; }
-.kleaving img { width: min(320px, 60vmin); }
+.kleaving img { width: min(320px, 60vw); }
 .kleaving strong { font-size: 1.25em; }
 
 @media (prefers-reduced-motion: reduce) {
-  .kticker-run, .kexplore, .kflash { animation: none; }
-  .kbeat.is-on, .kb-race.is-on { animation: kfade 0.4s linear both; }
-  .kbeat.is-on *, .kbeat.is-on *::after { animation: none !important; }
+  .kiosk *, .kiosk *::before, .kiosk *::after { animation: none !important; }
+  .kbeat.is-on { animation: kfade 0.4s linear both !important; }
+  .kfx-cycle, .kfx-jobs, .kflash { display: none; }
   @keyframes kfade { from { opacity: 0; } to { opacity: 1; } }
 }

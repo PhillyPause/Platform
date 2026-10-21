@@ -1,4 +1,6 @@
+using System.Globalization;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.Testing;
 
@@ -60,6 +62,25 @@ public class KioskTests(WebApplicationFactory<Program> factory)
 
         reply.IsSuccessStatusCode.Should().BeTrue();
         Script.Should().Contain($"register('{WorkerPath}', {{ scope: '{KioskPath}' }})");
+    }
+
+    /// <summary>
+    /// 13vmin is 1.7-inch type on the StanbyME 2's 27-inch panel, capitals
+    /// over the 1⅛ inches ADA signage asks for at ten feet. The framed site
+    /// and its overlay are read close up, in pixels, and are not held to it.
+    /// </summary>
+    [Fact]
+    public void Type_on_the_loop_reads_from_ten_feet()
+    {
+        const double SmallestVmin = 13;
+
+        var sizes = Regex.Matches(Styles, @"font(?:-size)?:\s*([^;}]+)")
+            .SelectMany(declaration => Regex.Matches(declaration.Groups[1].Value, @"([\d.]+)vmin"))
+            .Select(size => double.Parse(size.Groups[1].Value, CultureInfo.InvariantCulture))
+            .ToList();
+
+        sizes.Should().NotBeEmpty().And.OnlyContain(size => size >= SmallestVmin);
+        Script.Should().Contain($"const FLOOR = {(SmallestVmin / 100).ToString(CultureInfo.InvariantCulture)};");
     }
 
     [Fact]

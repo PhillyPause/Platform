@@ -1,14 +1,14 @@
 # The kiosk
 
 `phillypause.org/kiosk` is what the table's screen shows: a loop of bold,
-full-screen beats meant to be read from across a walkway, outdoors, by people
+full-screen beats meant to be read from ten feet away, outdoors, by people
 who were not planning to stop. It is part of the site, not a second one, and
 installs as an app of its own. Unlisted and `noindex`; nothing on the site
 links to it.
 
 | File | Does |
 |---|---|
-| `Website.Portal/Components/Pages/Kiosk.razor` | The beats, the explore button, the framed site |
+| `Website.Portal/Components/Pages/Kiosk.razor` | The beats, the tickers, the framed site |
 | `Website.Portal/Components/Layout/KioskLayout.razor` | No site chrome |
 | `Website.Portal/wwwroot/kiosk.css` | All of the motion |
 | `Website.Portal/wwwroot/kiosk.js` | The loop, the connection check, the framed site, wake lock |
@@ -18,15 +18,24 @@ links to it.
 
 ## What it does
 
-- **Loops seven beats**, about 38 seconds in all. Each one changes the whole
-  screen's colour, which catches the eye before any word can be read. A
-  ticker runs along the top. The last beat is "Come talk to us", an arrow
-  down to the table, and the QR code. No beat flashes more than once.
+- **Reads from ten feet.** Nothing on the loop is smaller than 13% of the
+  screen's short side: 1.7-inch type on the StanbyME 2's 27-inch panel,
+  either way up, with capitals over the 1⅛ inches ADA signage asks for at
+  ten feet. All capitals, in condensed Archivo and Playfair Display, with
+  each line grown to fill the screen's width. A test holds the CSS to it.
+- **Never stands still.** Seventeen beats of two to four words each, about
+  54 seconds in all, each arriving by its own transition (wipe, iris, drop,
+  zoom, flip, slide). Letters tumble in, words slam, race across, and
+  wobble out of control, a count runs to 700, backgrounds spin, drift and
+  change colour, and tickers scroll along the bottom (and the top, upright).
+  The last beat is the QR code: "Scan me to join us". Flashes are few:
+  never more than two in a second, inside the three-a-second limit for
+  photosensitive seizures (WCAG 2.3.1).
 - **Opens the site on a tap**, framed under a bar with a large Back button,
   but only while `phillypause.org` answers. The check runs every 20 seconds
   and whenever the device's connection changes, and it asks for the kiosk's
   own manifest, so a campus Wi-Fi sign-in page does not count as online.
-  The "Tap to explore our website" button shows only while it answers.
+  "Tap the screen" runs in the tickers only while it answers.
 - **Goes back by itself** after 90 seconds untouched, or the moment the
   connection drops. The framed page is thrown away on the way back, so the
   next person never sees the last one's. Form fields in it are set not to
@@ -39,8 +48,8 @@ links to it.
 - **Keeps the screen awake** where the browser allows it, and goes full
   screen on the first tap when it is not running as an installed app.
 
-The greeting is "Hey, Philly." by default. Add `?at=` once to change it on
-that device: `phillypause.org/kiosk?at=Penn` says "Hey, Penn." from then on,
+The greeting is "Hey, Philly!" by default. Add `?at=` once to change it on
+that device: `phillypause.org/kiosk?at=Penn` says "Hey, Penn!" from then on,
 in the browser and in the installed app.
 
 Every claim on it is from [INCIDENT_FACTS.md](INCIDENT_FACTS.md) or the
@@ -72,5 +81,5 @@ and whether it keeps the offline copy, has not been tried yet: check both at
 home before relying on either at a table. If the offline copy does not
 stick, the loop still runs as long as the screen stays connected.
 
-Before each table: open the kiosk with a connection, check that "Tap to
-explore our website" appears, tap it, and press Back.
+Before each table: open the kiosk with a connection, check that "Tap the
+screen" runs in the ticker, tap, and press Back.

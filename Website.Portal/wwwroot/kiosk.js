@@ -2,10 +2,12 @@
 
    kiosk.css does the motion; this module does what CSS cannot.
 
-   1. It runs the loop: which beat is on, for its data-seconds.
+   1. It runs the loop: which beat is on, for its data-seconds. It sizes
+      each line to fill the screen's width, never below FLOOR.
    2. It asks phillypause.org whether it is there, every PROBE_MS and whenever
       the browser's own idea of online changes. Only while it answers is the
-      "explore" button shown and a tap opens the site.
+      root .is-online, which puts "Tap the screen" in the tickers, and a tap
+      opens the site.
    3. It frames the site under a Back bar, and goes back by itself after
       IDLE_MS untouched or if the connection drops. The frame is removed on
       the way back, so the next person starts clean. Links that would leave
@@ -21,7 +23,9 @@ const IDLE_MS = 90_000;
 const PROBE_MS = 20_000;
 const PROBE_TIMEOUT_MS = 5_000;
 const PLACE_KEY = 'pp-kiosk-at';
-const FIT_GROWTH = 1.6;
+const FIT_GROWTH = 2.4;
+// Of the screen's short side: kiosk.css's smallest type, legible from ten feet.
+const FLOOR = 0.13;
 
 const root = document.querySelector('[data-kiosk]');
 if (root) start(root);
@@ -29,7 +33,6 @@ if (root) start(root);
 function start(root) {
   const beats = [...root.querySelectorAll('.kbeat')];
   const last = beats.findIndex((beat) => beat.hasAttribute('data-kiosk-last'));
-  const explore = root.querySelector('[data-kiosk-explore]');
   const site = root.querySelector('[data-kiosk-site]');
   const leaving = root.querySelector('[data-kiosk-leaving]');
 
@@ -43,6 +46,7 @@ function start(root) {
   fit(root);
   addEventListener('resize', () => fit(root));
   document.fonts?.ready.then(() => fit(root));
+  document.fonts?.addEventListener('loadingdone', () => fit(root));
 
   // 1. The loop.
   function show(index) {
@@ -79,7 +83,7 @@ function start(root) {
 
   function setOnline(value) {
     online = value;
-    explore.hidden = !online || browsing;
+    root.classList.toggle('is-online', online);
     if (!online && browsing) back();
   }
 
@@ -87,7 +91,6 @@ function start(root) {
   function openSite() {
     browsing = true;
     clearTimeout(beatTimer);
-    explore.hidden = true;
     const frame = document.createElement('iframe');
     frame.className = 'ksite-frame';
     frame.title = 'phillypause.org';
@@ -104,7 +107,6 @@ function start(root) {
     site.querySelector('.ksite-frame')?.remove();
     site.hidden = true;
     leaving.hidden = true;
-    explore.hidden = !online;
     show(0);
   }
 
@@ -178,30 +180,33 @@ function greet(root) {
   if (place) root.querySelectorAll('[data-kiosk-place]').forEach((span) => { span.textContent = place; });
 }
 
-// Set each .kfit line to the width of its beat: shrunk if it runs over, grown
-// up to FIT_GROWTH times its CSS size if it falls short. Then, if a beat is
-// taller than the screen, its .kfit lines give up the difference. On resize
-// and once the fonts arrive, never per frame.
+// Set each .kfit line to the width it stands in: shrunk if it runs over,
+// grown up to FIT_GROWTH times its CSS size if it falls short. Then, while a
+// beat is taller than its room, its .kfit lines give up the difference. No
+// line goes below FLOOR. Layout sizes, not on-screen boxes, so a line still
+// flying in measures where it lands. On resize and as fonts arrive, never
+// per frame.
 function fit(root) {
-  root.querySelectorAll('.kbeat').forEach((beat) => {
-    const lines = [...beat.querySelectorAll('.kfit')];
+  const floor = FLOOR * Math.min(innerWidth, innerHeight);
+  const size = (line) => parseFloat(getComputedStyle(line).fontSize);
+  const resize = (line, px) => { line.style.fontSize = `${Math.max(px, floor)}px`; };
+
+  root.querySelectorAll('.kbody').forEach((body) => {
+    const lines = [...body.querySelectorAll('.kfit')];
     if (lines.length === 0) return;
-    const style = getComputedStyle(beat);
-    const wide = beat.clientWidth - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight);
-    const tall = beat.clientHeight - parseFloat(style.paddingTop) - parseFloat(style.paddingBottom);
-    const resize = (line, ratio) => { line.style.fontSize = `${parseFloat(getComputedStyle(line).fontSize) * ratio}px`; };
 
     lines.forEach((line) => {
       line.style.fontSize = '';
-      resize(line, Math.min(wide / line.scrollWidth, FIT_GROWTH));
+      resize(line, size(line) * Math.min(line.parentElement.clientWidth / line.scrollWidth, FIT_GROWTH));
     });
 
-    const shown = [...beat.children].filter((child) => getComputedStyle(child).position !== 'absolute');
-    const used = shown.at(-1).getBoundingClientRect().bottom - shown[0].getBoundingClientRect().top;
-    if (used > tall) {
-      const fitted = lines.reduce((sum, line) => sum + line.getBoundingClientRect().height, 0);
-      const ratio = Math.max(0.3, 1 - (used - tall) / fitted);
-      lines.forEach((line) => resize(line, ratio));
+    for (let pass = 0; pass < 3; pass++) {
+      const shown = [...body.children];
+      const used = Math.max(...shown.map((child) => child.offsetTop + child.offsetHeight)) - Math.min(...shown.map((child) => child.offsetTop));
+      if (used <= body.clientHeight) break;
+      const fitted = lines.reduce((sum, line) => sum + line.offsetHeight, 0);
+      const ratio = Math.max(0.3, 1 - (used - body.clientHeight) / fitted);
+      lines.forEach((line) => resize(line, size(line) * ratio));
     }
   });
 }
