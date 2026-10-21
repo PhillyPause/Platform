@@ -10,7 +10,7 @@ namespace Website.Tests;
 public class DialogScrollTests
 {
     private static readonly string Styles = File.ReadAllText(Path.Combine(
-        TestPaths.RepoRoot, "Website.Portal", "wwwroot", "broadsheet.css"));
+        TestPaths.RepoRoot, "Website", "Website.Portal", "wwwroot", "broadsheet.css"));
 
     [Fact]
     public void The_page_holds_still_while_a_dialog_is_open() =>

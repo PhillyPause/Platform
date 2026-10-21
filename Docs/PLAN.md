@@ -138,15 +138,22 @@ PR without touching C#.
 ### 2.4 Project layout
 
 ```
-Website.Portal/       ASP.NET Core host — prerender, routing, OG tags, sitemap, RSS
-Website.Client/       Blazor WASM — interactive islands only
-Website.Content/      Markdown + the MSBuild task that compiles it
-Website.Tests/        xunit; snapshot the rendered HTML of every route
-ManyHands.Core/       the volunteer system's domain
-ManyHands.Data/       its repositories, migrations, mail, Discord and workers
-ManyHands.Tests/      xunit against real Postgres
-Docs/                 MANYHANDS.md, HOSTING.md, DESIGN.md, CONTENT.md, MOTION.md
-Deploy/digitalocean/  app spec + ingress rules
+Website/
+  Website.Portal/            ASP.NET Core host — prerender, routing, OG tags, sitemap, RSS
+  Website.Client/            Blazor WASM — interactive islands only
+  Website.Content/           Markdown + the MSBuild task that compiles it
+  Website.Tests/             xunit; snapshot the rendered HTML of every route
+ManyHands/
+  ManyHands.Core/            the volunteer system's domain
+  ManyHands.Data/            its repositories, migrations, mail, Discord and workers
+  ManyHands.Tests/           xunit against real Postgres
+Platform/
+  Platform.AppHost/          .NET Aspire, local orchestration only
+  Platform.ServiceDefaults/  OpenTelemetry and health checks, for every service
+Brand/                       the master logo, YouTube images, print poster
+Docs/                        MANYHANDS.md, HOSTING.md, DESIGN.md, CONTENT.md, MOTION.md
+Deploy/digitalocean/         app spec + ingress rules
+Platform.slnx                at the root: the deploy buildpack requires it there
 ```
 
 ### 2.5 Project naming

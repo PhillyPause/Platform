@@ -76,7 +76,7 @@ What is built so far is in [section 7](#7-status).
 | `ManyHands.Tests` | xunit, against real Postgres in a container |
 | `Website.Portal` | The pages, under its own components, and the few endpoints a page cannot be: the inbound mail webhook, one-click unsubscribe, the ICS feeds |
 
-`Website.Portal/Program.cs` calls `AddManyHands()` and `MigrateManyHands()`
+`Website/Website.Portal/Program.cs` calls `AddManyHands()` and `MigrateManyHands()`
 only when the flag is on. The background workers are hosted services in the
 same process: there is one instance, so there is nothing to coordinate. With
 the flag off, `UseManyHandsGate` answers every `/volunteer`, `/events` and `/team` path
@@ -85,10 +85,10 @@ registered.
 
 ### The volunteer pages
 
-Static SSR Razor components in `Website.Portal/Components/Volunteer`, on
+Static SSR Razor components in `Website/Website.Portal/Components/Volunteer`, on
 `VolunteerLayout` (the site's own header and footer, plus the area's nav and
 `volunteer.css`). Helpers that are not components live in
-`Website.Portal/Volunteer`.
+`Website/Website.Portal/Volunteer`.
 
 | Route | Page |
 |---|---|
@@ -126,7 +126,7 @@ Three things about signing in:
 
 ### The team pages
 
-Under `/team`, in `Website.Portal/Components/Team`, all behind
+Under `/team`, in `Website/Website.Portal/Components/Team`, all behind
 `TeamPolicies.Organizer`. A member who wanders onto one gets the ordinary 404:
 there is nothing there for them. The role is read from the database on every
 request.
@@ -211,7 +211,7 @@ behind it every reader would otherwise share one.
 
 ### Discord
 
-In `ManyHands.Data/Discord`, running in the portal process like the other
+In `ManyHands/ManyHands.Data/Discord`, running in the portal process like the other
 workers. **The token is the switch**: with `Discord:BotToken` set,
 `DiscordGateway` holds one connection and is the sender; without it,
 `LoggingDiscordSender` writes what it would have sent and reports it
@@ -270,7 +270,7 @@ on. A supplement for a page that does not exist stops the site starting.
 ## 4. Data
 
 Postgres, one schema (`public`), defined by
-[`ManyHands.Data/Scripts/0001_schema.sql`](../ManyHands.Data/Scripts/0001_schema.sql).
+[`ManyHands/ManyHands.Data/Scripts/0001_schema.sql`](../ManyHands/ManyHands.Data/Scripts/0001_schema.sql).
 
 | Table | Holds |
 |---|---|
@@ -352,10 +352,10 @@ against real Postgres. Test against the real thing.
 | `Discord:RoleSyncInterval` | 15 minutes | How often roles are reconciled |
 
 The organisation's name and its timezone, `America/New_York`, are constants
-in `ManyHands.Core/Organisation.cs`, not configuration: there is no second
+in `ManyHands/ManyHands.Core/Organisation.cs`, not configuration: there is no second
 organisation to configure for. Every time in an email is Philadelphia's
 clock, labelled "Eastern time". Every route is in
-`ManyHands.Core/ManyHandsPaths.cs`: volunteers' pages under `/volunteer`,
+`ManyHands/ManyHands.Core/ManyHandsPaths.cs`: volunteers' pages under `/volunteer`,
 organizers' under `/team`, and `/join` and `/events` are front-page dialogs.
 
 Locally, secrets go in `dotnet user-secrets` on `Website.Portal`; in
@@ -367,7 +367,7 @@ production they are App Platform environment variables
 With Docker Desktop running:
 
 ```powershell
-dotnet run --project Platform.AppHost
+dotnet run --project Platform/Platform.AppHost
 ```
 
 The Aspire AppHost starts a Postgres 17 container and the site with
@@ -386,7 +386,7 @@ Mail is only logged locally. To sign in, ask for a link on
 `/volunteer/sign-in`: in development, with no mail provider, the page shows
 the link it logged. Emails are in the dashboard's logs for `website`.
 
-`dotnet run --project Website.Portal` still runs the site alone, with
+`dotnet run --project Website/Website.Portal` still runs the site alone, with
 ManyHands off and no database. `ManyHands.Tests` starts its own container,
 so `dotnet test` needs Docker running too.
 

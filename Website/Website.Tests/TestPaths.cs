@@ -16,7 +16,7 @@ internal static class TestPaths
     /// </summary>
     public static string ContentRoot { get; } = FirstExisting(
         Path.Combine(AppContext.BaseDirectory, "Content"),
-        Path.Combine(RepoRoot, "Website.Content", "Content"));
+        Path.Combine(RepoRoot, "Website", "Website.Content", "Content"));
 
     private static string FirstExisting(params string[] candidates) =>
         candidates.FirstOrDefault(Directory.Exists)
