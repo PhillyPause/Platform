@@ -11,6 +11,9 @@ public static class EmailTemplates
 {
     private const string Org = Organisation.Name;
 
+    /// <summary>The joining email's subject, which the Check your email dialog quotes.</summary>
+    public const string ConfirmJoinSubject = $"One click to finish joining {Org}";
+
     public static (string Subject, string Body) MagicLink(
         string displayName, string linkUrl, TimeSpan validFor)
     {
@@ -245,7 +248,7 @@ public static class EmailTemplates
              {removeUrl}
              """;
 
-        return ($"One click to finish joining {Org}", body);
+        return (ConfirmJoinSubject, body);
     }
 
     /// <summary>

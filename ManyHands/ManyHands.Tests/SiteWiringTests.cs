@@ -1,5 +1,7 @@
+using System.Net;
 using FluentAssertions;
 using ManyHands.Core;
+using ManyHands.Data.Email;
 
 namespace ManyHands.Tests;
 
@@ -81,17 +83,26 @@ public sealed class SiteWiringTests(DatabaseFixture db) : IAsyncLifetime
     }
 
     [Fact]
-    public async Task Joining_in_the_dialog_saves_the_volunteer_and_answers_in_the_dialog()
+    public async Task Joining_in_the_dialog_saves_the_volunteer_and_opens_check_your_email()
     {
         var email = TestData.NewEmail();
+        var browser = _portal.Browser();
 
-        var response = await Forms.SubmitAsync(_portal.Browser(), ManyHandsPaths.Join, "join",
+        var response = await Forms.SubmitAsync(browser, ManyHandsPaths.Join, "join",
+            ("Input.DisplayName", "Dialog Joiner"), ("Input.Email", email),
+            ("interest", TestData.Flyering.ToString()));
+        var again = await Forms.SubmitAsync(browser, ManyHandsPaths.Join, "join",
             ("Input.DisplayName", "Dialog Joiner"), ("Input.Email", email),
             ("interest", TestData.Flyering.ToString()));
 
-        var page = await response.Content.ReadAsStringAsync();
-        page.Should().Contain("id=\"join-open\" class=\"dlgtoggle\" checked")
-            .And.Contain("Nearly there: check your email");
+        response.StatusCode.Should().Be(HttpStatusCode.Redirect);
+        response.Headers.Location?.PathAndQuery.Should().Be(ManyHandsPaths.CheckEmail);
+        again.Headers.Location?.PathAndQuery.Should().Be($"{ManyHandsPaths.CheckEmail}?again=true");
+        var page = await browser.GetStringAsync(ManyHandsPaths.CheckEmail);
+        page.Should().Contain("id=\"check-open\" class=\"dlgtoggle\" checked")
+            .And.Contain("Check your email")
+            .And.Contain(WebUtility.HtmlEncode(EmailTemplates.ConfirmJoinSubject));
+        (await browser.GetStringAsync($"{ManyHandsPaths.CheckEmail}?again=true")).Should().Contain("We have sent it again");
         var volunteers = new ManyHands.Data.VolunteerRepository(db.DataSource);
         var joined = await volunteers.GetByEmailAsync(email);
         joined!.DisplayName.Should().Be("Dialog Joiner");

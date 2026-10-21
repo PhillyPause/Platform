@@ -53,6 +53,13 @@ public static class ManyHandsPaths
     /// </summary>
     public const string Welcome = "/volunteer/welcome";
 
+    /// <summary>
+    /// Where joining lands: the front page with a dialog that says the
+    /// email is on its way and what to look for. <c>?again=true</c> when it
+    /// was sent again to someone who had not yet confirmed.
+    /// </summary>
+    public const string CheckEmail = "/volunteer/check-email";
+
     /// <summary>"Not you, or changed your mind?": asks, then deletes the person outright.</summary>
     public static string Remove(Guid commsKey) => $"/volunteer/remove/{commsKey}";
 
