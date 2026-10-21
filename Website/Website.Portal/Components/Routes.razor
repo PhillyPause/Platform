@@ -8,8 +8,13 @@
             <NotAuthorized>
                 @if (context.User.Identity?.IsAuthenticated == true)
                 {
-                    @* Not an organizer: there is nothing here, as on a static page. *@
-                    <Website.Portal.Components.Pages.NotFound />
+                    @* Not an organizer: there is nothing here, as on a static page.
+                       Said in the organizers' app's own layout; NotFound.razor
+                       is the whole front page, which does not belong inside it. *@
+                    <div class="wrap page-head">
+                        <h1>That page does not exist</h1>
+                        <p class="lead"><a href="/">Go to the front page</a></p>
+                    </div>
                 }
                 else
                 {

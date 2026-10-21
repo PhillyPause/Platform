@@ -1,12 +1,9 @@
 @page "/not-found"
-@layout MainLayout
+@layout BroadsheetLayout
 
-<PageMeta Title="Page not found" Description="That page does not exist on the PhillyPause site." />
+@* Every 404: an unknown address (ContentRoute hands it here), a gated
+   ManyHands path while it is off, a page that finds nothing to show. It is
+   the front page with a Not found dialog open, so a mistyped address still
+   lands on the site the reader meant, with everything a click away. *@
 
-<div class="wrap page-head">
-    <h1>That page does not exist</h1>
-    <p class="lead">
-        It may have moved. <a href="/">Start from the home page</a>, or go
-        straight to <a href="/act">what you can do</a>.
-    </p>
-</div>
+<Home NotFound="true" />

@@ -269,6 +269,7 @@ html:has(.dlgtoggle:checked:not(#dlg-none)) { overflow: hidden; }
 #welcome-open:checked ~ .paneldlg.d-welcome { display: grid; }
 #remove-open:checked ~ .paneldlg.d-remove { display: grid; }
 #check-open:checked ~ .paneldlg.d-check { display: grid; }
+#notfound-open:checked ~ .paneldlg.d-notfound { display: grid; }
 /* What we keep is a checkbox, not one of the radios, so it opens over Join
    us and closing it leaves Join us where it was. Later in the DOM and one
    z-index up, so it is the one on top. */
@@ -326,11 +327,13 @@ html:has(.dlgtoggle:checked:not(#dlg-none)) { overflow: hidden; }
    row on the same hairlines as the four ways in Join us. */
 .d-events .paneldlg-box { width: min(760px, 100%); }
 /* Joining's dialogs (CheckEmailDialog, ConfirmJoinDialog, WelcomeDialog,
-   RemoveDialog): the two that ask one question are narrower than Join us. */
+   RemoveDialog) and Not found: the short ones are narrower than Join us. */
 .d-confirm .paneldlg-box,
-.d-remove .paneldlg-box { width: min(600px, 100%); }
+.d-remove .paneldlg-box,
+.d-notfound .paneldlg-box { width: min(600px, 100%); }
 .d-welcome .paneldlg-box, .d-check .paneldlg-box { width: min(760px, 100%); }
-.d-confirm .joinform, .d-welcome .joinform, .d-remove .joinform, .d-check .joinform { margin-top: 18px; padding-top: 16px; border-top-color: #CFC7B6; }
+.d-confirm .joinform, .d-welcome .joinform, .d-remove .joinform, .d-check .joinform,
+.d-notfound .joinform { margin-top: 18px; padding-top: 16px; border-top-color: #CFC7B6; }
 .d-confirm .joinway { margin-top: 14px; }
 /* The quiet way out beside the main button: a link, never a second button. */
 .confirm-alt, .signup .confirm-alt {
