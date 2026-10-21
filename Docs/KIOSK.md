@@ -13,6 +13,7 @@ links to it.
 | `Website.Portal/wwwroot/kiosk.css` | All of the motion |
 | `Website.Portal/wwwroot/kiosk.js` | The loop, the connection check, the framed site, wake lock |
 | `Website.Portal/wwwroot/kiosk-sw.js` | The offline copy |
+| `Website.Portal/wwwroot/kiosk-awake.mp4` | Silent video that keeps a TV's screen saver off |
 | `Website.Portal/wwwroot/kiosk.webmanifest` | Installs `/kiosk` as "PhillyPause Kiosk", full screen |
 | `Website.Portal/wwwroot/img/kiosk-*` | App icons, and the QR code for `https://phillypause.org` |
 
@@ -45,8 +46,19 @@ links to it.
   carry on on your own phone". The Watch dialog's video still plays in place.
 - **Offline**, a tap skips to the last beat. The QR code needs no connection
   at the table: it takes people to the site on their own phones.
-- **Keeps the screen awake** where the browser allows it, and goes full
-  screen on the first tap when it is not running as an installed app.
+- **Keeps the screen awake** two ways: the Wake Lock, where the browser has
+  one, and `kiosk-awake.mp4`, four seconds of silent black looping behind
+  the loop. LG's webOS gives a web page no way to stop its screen saver,
+  and its screen saver ignores animation, but LG says it stays off while
+  video plays.
+- **Goes full screen** on the first tap when it is not running as an
+  installed app.
+- **Has a menu for whoever runs the table.** Hold the screen for three
+  seconds, or press Back on a remote (Escape on a keyboard): *Leave full
+  screen* brings back the browser's own controls, and the kiosk stops
+  going full screen until it is reloaded; *Keep going* closes the menu,
+  which also closes by itself after 20 seconds. Back on a remote while the
+  site is open goes straight back to the loop.
 
 The greeting is "Hey, Philly!" by default. Add `?at=` once to change it on
 that device: `phillypause.org/kiosk?at=Penn` says "Hey, Penn!" from then on,
@@ -76,7 +88,12 @@ or the menu. Launch "PhillyPause Kiosk" from then on: it opens full screen.
 Turn off the device's screen timeout and sleep.
 
 **LG StanbyME 2** (webOS): open the same address in its web browser and
-tap the screen once to go full screen. Whether its browser offers *Install*,
+tap the screen once to go full screen. Hold the screen for three seconds
+to get out again. In the screen's settings, turn off the screen saver,
+energy saving, and any sleep timer or auto power off where they are
+offered; names and places vary between webOS versions, and newer ones may
+not offer a screen saver switch at all, which is what the silent video is
+for. Whether its browser offers *Install*,
 and whether it keeps the offline copy, has not been tried yet: check both at
 home before relying on either at a table. If the offline copy does not
 stick, the loop still runs as long as the screen stays connected.

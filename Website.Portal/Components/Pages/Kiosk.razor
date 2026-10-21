@@ -38,6 +38,11 @@
 
 <div class="kiosk" data-kiosk>
 
+  @* Four seconds of black, looping silently behind everything. A TV's
+     screen saver ignores animation and waits for input or video; LG's
+     webOS offers a web page no other way to hold it off. *@
+  <video class="kawake" src="/kiosk-awake.mp4" muted autoplay loop playsinline aria-hidden="true" tabindex="-1" data-kiosk-awake></video>
+
   <div class="kstage">
     <section class="kbeat kb-hey kin-iris" data-seconds="2.8">
       <div class="kfx kfx-burst" aria-hidden="true"></div>
@@ -213,6 +218,14 @@
       </div>
     </div>
   }
+
+  @* The way out, for whoever runs the table: hold the screen for three
+     seconds, or press Back on the remote. *@
+  <div class="kmenu" data-kiosk-menu hidden>
+    <p><strong>Kiosk menu</strong></p>
+    <button type="button" class="kback" data-kiosk-windowed>Leave full screen</button>
+    <button type="button" class="kback kquiet" data-kiosk-resume>Keep going</button>
+  </div>
 
   <div class="ksite" data-kiosk-site hidden>
     <div class="ksite-bar">

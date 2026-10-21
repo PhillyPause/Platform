@@ -15,6 +15,11 @@
       instead: they belong on the reader's own phone.
    4. It keeps the screen awake, goes full screen on the first tap when not
       installed as an app, and registers kiosk-sw.js so the loop runs offline.
+      Awake is the Wake Lock where the browser has one, and the silent video
+      behind the loop kept playing, for TVs whose screen saver waits on video.
+   5. It opens the kiosk menu when the screen is held for HOLD_MS or Back is
+      pressed on a remote: the way out of full screen, for whoever runs the
+      table. The menu closes by itself after MENU_MS.
 
    ?at=Penn on the address sets the greeting ("Hey, Penn.") and is
    remembered on this device, so the installed app keeps it. */
@@ -22,6 +27,8 @@
 const IDLE_MS = 90_000;
 const PROBE_MS = 20_000;
 const PROBE_TIMEOUT_MS = 5_000;
+const HOLD_MS = 3_000;
+const MENU_MS = 20_000;
 const PLACE_KEY = 'pp-kiosk-at';
 const FIT_GROWTH = 2.4;
 // Of the screen's short side: kiosk.css's smallest type, legible from ten feet.
@@ -35,12 +42,18 @@ function start(root) {
   const last = beats.findIndex((beat) => beat.hasAttribute('data-kiosk-last'));
   const site = root.querySelector('[data-kiosk-site]');
   const leaving = root.querySelector('[data-kiosk-leaving]');
+  const menu = root.querySelector('[data-kiosk-menu]');
+  const awake = root.querySelector('[data-kiosk-awake]');
 
   let current = -1;
   let beatTimer = 0;
   let idleTimer = 0;
   let online = false;
   let browsing = false;
+  let holdTimer = 0;
+  let held = false;
+  let menuTimer = 0;
+  let windowed = false;
 
   greet(root);
   fit(root);
@@ -128,6 +141,11 @@ function start(root) {
     for (const type of ['pointerdown', 'keydown', 'wheel', 'touchstart', 'scroll']) {
       page.addEventListener(type, touched, { capture: true, passive: true });
     }
+    page.addEventListener('keydown', (event) => {
+      if (!isBack(event)) return;
+      event.preventDefault();
+      back();
+    });
     quiet(page);
     page.addEventListener('click', (event) => {
       touched();
@@ -149,16 +167,70 @@ function start(root) {
   site.addEventListener('pointerdown', touched);
 
   // A tap on the loop: the site when it is there, otherwise the last beat.
+  // The tap that ends a hold opened the menu; it is not a tap on the loop.
   root.addEventListener('click', (event) => {
-    if (browsing || site.contains(event.target)) return;
+    if (held) {
+      held = false;
+      return;
+    }
+    if (browsing || site.contains(event.target) || menu.contains(event.target)) return;
     if (online) openSite();
     else if (current !== last) show(last);
   });
 
   // 4. Awake, full screen, and offline.
+  const keepPlaying = () => awake.play().catch(() => {});
   stayAwake();
-  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') stayAwake(); });
-  root.addEventListener('pointerdown', fullScreen);
+  keepPlaying();
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState !== 'visible') return;
+    stayAwake();
+    keepPlaying();
+  });
+  root.addEventListener('pointerdown', (event) => {
+    keepPlaying();
+    if (!windowed && !menu.contains(event.target)) fullScreen();
+  });
+
+  // 5. The kiosk menu.
+  function openMenu() {
+    menu.hidden = false;
+    // An installed app is full screen for good: it is closed like any app.
+    root.querySelector('[data-kiosk-windowed]').hidden = installed();
+    clearTimeout(menuTimer);
+    menuTimer = setTimeout(closeMenu, MENU_MS);
+  }
+
+  function closeMenu() {
+    clearTimeout(menuTimer);
+    menu.hidden = true;
+  }
+
+  root.addEventListener('pointerdown', (event) => {
+    if (browsing || menu.contains(event.target)) return;
+    held = false;
+    clearTimeout(holdTimer);
+    holdTimer = setTimeout(() => {
+      held = true;
+      openMenu();
+    }, HOLD_MS);
+  });
+  for (const type of ['pointerup', 'pointercancel', 'pointerleave']) {
+    root.addEventListener(type, () => clearTimeout(holdTimer));
+  }
+  addEventListener('keydown', (event) => {
+    if (!isBack(event)) return;
+    event.preventDefault();
+    if (browsing) back();
+    else if (menu.hidden) openMenu();
+    else closeMenu();
+  });
+  root.querySelector('[data-kiosk-resume]').addEventListener('click', closeMenu);
+  root.querySelector('[data-kiosk-windowed]').addEventListener('click', () => {
+    windowed = true;
+    closeMenu();
+    document.exitFullscreen?.().catch(() => {});
+  });
 
   addEventListener('online', probe);
   addEventListener('offline', probe);
@@ -224,9 +296,17 @@ async function stayAwake() {
   }
 }
 
+function installed() {
+  return matchMedia('(display-mode: fullscreen), (display-mode: standalone)').matches;
+}
+
 function fullScreen() {
-  const installed = matchMedia('(display-mode: fullscreen), (display-mode: standalone)').matches;
-  if (!installed && !document.fullscreenElement) document.documentElement.requestFullscreen?.().catch(() => {});
+  if (!installed() && !document.fullscreenElement) document.documentElement.requestFullscreen?.().catch(() => {});
+}
+
+// Escape on a keyboard, Back on a remote (461 is LG webOS's).
+function isBack(event) {
+  return event.key === 'Escape' || event.key === 'GoBack' || event.key === 'BrowserBack' || event.keyCode === 461;
 }
 
 // Register the worker, then hand it every file this page loaded, so the next

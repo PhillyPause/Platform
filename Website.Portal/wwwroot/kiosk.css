@@ -345,6 +345,28 @@ body:has(.kiosk) { margin: 0; overflow: hidden; background: #15110C; }
   .kscan-say { flex: none; align-self: stretch; }
 }
 
+/* Under everything: a playing video, so the TV never thinks it is idle. */
+.kawake { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
+
+/* The kiosk menu, for whoever runs the table. Close up, in pixels. */
+.kmenu {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  background: rgba(21, 17, 12, 0.92);
+  color: var(--paper);
+  text-transform: none;
+  font: 500 28px/1.3 Archivo, "Segoe UI", Arial, sans-serif;
+}
+.kmenu[hidden] { display: none; }
+.kmenu .kback { min-width: 320px; min-height: 72px; font-size: 26px; }
+.kmenu .kquiet { background: transparent; }
+
 /* The site, framed under a bar that always leads back. Close up, so the
    reading sizes of the site itself. */
 .ksite {
