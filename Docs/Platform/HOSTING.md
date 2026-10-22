@@ -92,9 +92,24 @@ Two things to keep true:
 ## ManyHands
 
 ManyHands is served by this same component, so the spec has one ingress rule
-and always will (PLAN.md §2.2). It is off in production: the spec sets no
-`ManyHands__Enabled`, and no database is attached. Every key is in
+and always will (PLAN.md §2.2). It is **on in production**: the spec sets
+`ManyHands__Enabled` and attaches the managed Postgres below. Every key is in
 [`MANYHANDS.md`](../ManyHands/MANYHANDS.md) §5.
+
+| | |
+|---|---|
+| Database | `phillypause-pg`, id `54cfd158-cc1b-47b7-a668-f3861f96dfd9`, Postgres 17, `nyc3` |
+| Size | `db-s-1vcpu-1gb`, one node, about $15/month |
+| Database name | `manyhands`, as `doadmin` |
+| Backups | Daily, with seven days of point-in-time restore, kept by DigitalOcean |
+| Reached from | The app alone: attaching it as a component put the app in its trusted sources |
+
+The connection string is built in the spec from the component's bindable
+variables (`${db.HOSTNAME}` and the rest), so no password is in the file.
+
+**It holds real people's details. It is never wiped, reset or rewritten
+without a current backup to reload from.** Restoring is a fork from a
+backup or a point in time (`doctl databases fork`), never an edit in place.
 
 ### Switching it on
 
