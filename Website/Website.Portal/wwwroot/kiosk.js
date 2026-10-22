@@ -9,8 +9,11 @@
       root .is-online, which puts "Tap the screen" in the tickers, and a tap
       opens the site.
    3. It frames the site under a Back bar, and goes back by itself after
-      IDLE_MS untouched or if the connection drops. The frame is removed on
-      the way back, so the next person starts clean. Links that would leave
+      IDLE_MS untouched. The frame is removed on the way back, so the next
+      person starts clean. The site is framed at SITE, the front page at an
+      address kiosk-sw.js keeps, so a connection that drops mid-visit takes
+      nothing away, and a tap with no connection still opens the kept copy.
+      Joining checks the connection itself (join.js). Links that would leave
       the screen (another site, a new window, an email) show a QR code
       instead: they belong on the reader's own phone.
    4. It keeps the screen awake, goes full screen on the first tap when not
@@ -30,6 +33,8 @@ const PROBE_TIMEOUT_MS = 5_000;
 const HOLD_MS = 3_000;
 const MENU_MS = 20_000;
 const PLACE_KEY = 'pp-kiosk-at';
+const SITE = '/kiosk/site';
+const SITE_CACHE = 'pp-kiosk-site-v1';
 const FIT_GROWTH = 2.4;
 // Of the screen's short side: kiosk.css's smallest type, legible from ten feet.
 const FLOOR = 0.13;
@@ -94,10 +99,11 @@ function start(root) {
     }
   }
 
+  // A drop mid-visit leaves the visitor where they are: the page is already
+  // here, and the idle timer still brings the loop back.
   function setOnline(value) {
     online = value;
     root.classList.toggle('is-online', online);
-    if (!online && browsing) back();
   }
 
   // 3. The site, framed.
@@ -107,7 +113,7 @@ function start(root) {
     const frame = document.createElement('iframe');
     frame.className = 'ksite-frame';
     frame.title = 'phillypause.org';
-    frame.src = '/';
+    frame.src = SITE;
     frame.addEventListener('load', () => guard(frame));
     site.append(frame);
     site.hidden = false;
@@ -135,8 +141,15 @@ function start(root) {
     } catch {
       page = null;
     }
-    // Not our own page any more (it cannot be read): back to the loop.
-    if (!page) return back();
+    // Not our own page any more (it cannot be read, or nothing came):
+    // back to the loop, at the QR code if the connection is the reason.
+    if (!page) {
+      back();
+      if (!online) show(last);
+      return;
+    }
+    // Loaded from the network: the worker keeps what it used.
+    if (!page.documentElement.hasAttribute('data-kept') && new URL(page.URL).pathname === SITE) keepSite(frame);
 
     for (const type of ['pointerdown', 'keydown', 'wheel', 'touchstart', 'scroll']) {
       page.addEventListener(type, touched, { capture: true, passive: true });
@@ -166,7 +179,7 @@ function start(root) {
   root.querySelector('[data-kiosk-stay]').addEventListener('click', () => { leaving.hidden = true; touched(); });
   site.addEventListener('pointerdown', touched);
 
-  // A tap on the loop: the site when it is there, otherwise the last beat.
+  // A tap on the loop: the site when it is there or kept, otherwise the last beat.
   // The tap that ends a hold opened the menu; it is not a tap on the loop.
   root.addEventListener('click', (event) => {
     if (held) {
@@ -175,7 +188,10 @@ function start(root) {
     }
     if (browsing || site.contains(event.target) || menu.contains(event.target)) return;
     if (online) openSite();
-    else if (current !== last) show(last);
+    else siteKept().then((kept) => {
+      if (kept && !browsing) openSite();
+      else if (!kept && current !== last) show(last);
+    });
   });
 
   // 4. Awake, full screen, and offline.
@@ -342,6 +358,27 @@ function fillsScreen() {
 // Escape on a keyboard, Back on a remote (461 is LG webOS's).
 function isBack(event) {
   return event.key === 'Escape' || event.key === 'GoBack' || event.key === 'BrowserBack' || event.keyCode === 461;
+}
+
+// Whether the worker holds a copy of the framed site to show offline.
+async function siteKept() {
+  try {
+    return Boolean(await (await caches.open(SITE_CACHE)).match(SITE));
+  } catch {
+    return false;
+  }
+}
+
+// Hand the worker every file the framed site loaded, so a visit with no
+// connection finds them all.
+function keepSite(frame) {
+  try {
+    const files = frame.contentWindow.performance.getEntriesByType('resource')
+      .map((entry) => entry.name).filter((url) => !url.includes('probe='));
+    navigator.serviceWorker?.controller?.postMessage({ type: 'keep-site', urls: [SITE, ...files] });
+  } catch {
+    // No worker: the site still opens while online.
+  }
 }
 
 // Register the worker, then hand it every file this page loaded, so the next

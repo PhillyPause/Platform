@@ -33,7 +33,8 @@ else
 {
   <PageMeta Title="Stop the AI death race"
             Description="In July 2026, 700 AI agents broke out of their sandboxes to cheat on a test. PhillyPause is an independent, volunteer-run Philadelphia organisation working to stop the AI death race."
-            Canonical="@(JoinOpen || EventsOpen || ConfirmOpen || WelcomeOpen || RemoveOpen || CheckEmailOpen ? Navigation.BaseUri : null)" />
+            NoIndex="@Framed"
+            Canonical="@(Framed || JoinOpen || EventsOpen || ConfirmOpen || WelcomeOpen || RemoveOpen || CheckEmailOpen ? Navigation.BaseUri : null)" />
 }
 
 
@@ -782,6 +783,9 @@ else
 
     // Set by NotFound.razor, which every 404 renders.
     [Parameter] public bool NotFound { get; set; }
+
+    // Set by KioskSite.razor: this page as the table's screen frames it.
+    [Parameter] public bool Framed { get; set; }
 
     private bool EventsOpen => ManyHandsOn && IsAt(ManyHandsPaths.Events);
 
