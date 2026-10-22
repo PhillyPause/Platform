@@ -346,9 +346,8 @@ day-before reminders every five minutes.
 | `activity.published` | `activityId` | The Discord post and its thread, once (claimed in `external_publications`); then a DM to everyone interested who linked Discord, an email to everyone else, once each (claimed in `activity_pings`) |
 | `invite.sent` | `inviteId` | Mints the invite link and emails it |
 
-Until the first real deploy, `0001_schema.sql` is edited in place; nothing is
-deployed, so there is nothing to migrate. **The first deploy freezes it**, and
-every change after that is a new numbered script.
+`0001_schema.sql` has run in production, so it is frozen: every change is a
+new numbered script, and an applied script is never edited.
 
 ### Dapper and Npgsql fail at runtime, not compile time
 
@@ -426,8 +425,8 @@ inside it) and metrics. The site is at <http://localhost:5203>.
 The database is **ephemeral**: every run starts from nothing, applies the
 schema and seeds the fictional data in `9999_seed_dev.sql` again —
 `organizer@example.test` (an admin), `ben@example.test`, `cai@example.test`,
-and a little CRM. That is what lets `0001_schema.sql` be edited in place
-until the first deploy. It seeds **no activities**: an invented event reads
+and a little CRM. Locally, nothing survives a restart; production is
+another matter (section 7). It seeds **no activities**: an invented event reads
 as a real one, so the Events list starts empty, and every event on it is one
 an organizer made at `/team/activity/new`.
 
@@ -444,6 +443,9 @@ so `dotnet test` needs Docker running too.
 
 ## 7. Status
 
-All of it is built and tested, flag on and flag off. It is **off in
-production**; switching it on is a runbook, in
-[`HOSTING.md`](../Platform/HOSTING.md) under "Switching it on".
+All of it is built and tested, flag on and flag off. It is **on in
+production** at phillypause.org, with its managed Postgres
+([`HOSTING.md`](../Platform/HOSTING.md) under "ManyHands"). Migration
+`0001` has run there, so it is now as fixed as any other: changes go in a
+new script. For now, nothing sends a volunteer to their own page: signing
+in and confirming land on the front page.

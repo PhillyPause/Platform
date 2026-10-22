@@ -7,7 +7,9 @@ the platform rather than the site because it holds more than one product
 
 Public site for PhillyPause, at `/` on `phillypause.org`. Open source (MIT).
 ManyHands is served by the same host and is off unless `ManyHands:Enabled` is
-set; its design, rules and status are [`Docs/ManyHands/MANYHANDS.md`](Docs/ManyHands/MANYHANDS.md).
+set. It is **on in production**, with real volunteers' details in its
+database: never wipe, reset or rewrite that data without a backup to reload
+from (HOSTING.md). Its design, rules and status are [`Docs/ManyHands/MANYHANDS.md`](Docs/ManyHands/MANYHANDS.md).
 Present-tense docs only: this file and `Docs/` describe what IS; `git log` is
 the only history.
 

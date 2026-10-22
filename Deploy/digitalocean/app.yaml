@@ -49,8 +49,47 @@ services:
         scope: RUN_TIME
         value: Production
 
-    # 512 MiB is ample: content is parsed once at startup and there is no
-    # database, no cache and no background work.
+      # ManyHands (Docs/ManyHands/MANYHANDS.md section 5). The connection
+      # string is Npgsql's key-value form, built from the attached database's
+      # bindable variables, so no password is written here.
+      - key: ConnectionStrings__ManyHands
+        scope: RUN_TIME
+        value: Host=${db.HOSTNAME};Port=${db.PORT};Database=${db.DATABASE};Username=${db.USERNAME};Password=${db.PASSWORD};SSL Mode=Require
+
+      - key: Email__Provider
+        scope: RUN_TIME
+        value: resend
+
+      # Encrypted by App Platform; only the EV[...] form is committed.
+      - key: Email__ApiKey
+        scope: RUN_TIME
+        type: SECRET
+        value: EV[1:8z8doH0EuqfWhUAMT6eFWkDzO5Kgfp6y:Lu3blIWNHSjwG07GWDgKwydtJXhwjgi/HRImasrdAwumm7ZTGW5mte4OCRpGarF+hn860Q==]
+
+      - key: Email__FromAddress
+        scope: RUN_TIME
+        value: join@mail.phillypause.org
+
+      - key: Email__ReplyToAddress
+        scope: RUN_TIME
+        value: info@phillypause.org
+
+      - key: Email__PublicBaseUrl
+        scope: RUN_TIME
+        value: https://phillypause.org
+
+      # The first admin: an admin the first time they sign in.
+      - key: ManyHands__Admins__0
+        scope: RUN_TIME
+        value: louis@phillypause.org
+
+      # Last, so the deploy that turns it on has everything above.
+      - key: ManyHands__Enabled
+        scope: RUN_TIME
+        value: "true"
+
+    # 512 MiB is ample: content is parsed once at startup, and ManyHands'
+    # background work is a mail outbox and little else.
     instance_size_slug: apps-s-1vcpu-0.5gb
     instance_count: 1
 
@@ -64,6 +103,19 @@ services:
       initial_delay_seconds: 20
       period_seconds: 10
       failure_threshold: 3
+
+# ManyHands' Postgres: a managed cluster with daily backups and seven days
+# of point-in-time restore. Attached as a component, which adds the app to
+# its trusted sources and supplies ${db.*} above. It is never wiped or
+# reset without a backup to reload from.
+databases:
+  - name: db
+    engine: PG
+    version: "17"
+    production: true
+    cluster_name: phillypause-pg
+    db_name: manyhands
+    db_user: doadmin
 
 ingress:
   rules:
