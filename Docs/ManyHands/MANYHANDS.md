@@ -290,7 +290,7 @@ it; `ManyHandsGateTests` holds that, and `SiteWiringTests` the flag-on side.
 | Where | On | Off |
 |---|---|---|
 | The account bar, top of every page | Signed out: Events, Join, **Sign in**. Signed in: "Signed in as *name*", My page, Events, **Team** for organizers, Sign out. Events and Join load the page in full (`data-enhance-nav="false"`): enhanced navigation would leave the dialog shut | Not rendered |
-| Join us dialog, front page | The signup form itself (`JoinForm`): name, email, interests. It posts to `/join`, the front page with the dialog open, and answers there; if the database is unreachable it says so | No form and no email signup: the dialog says what joining means |
+| Join us dialog, front page | The signup form itself (`JoinForm`): name, email, interests. Pressing Join first checks the connection (`join.js`), and without one keeps the form and says so. It posts to `/join`; someone new is redirected to Check your email, a member already confirmed is answered in the dialog; if the database is unreachable it says so | No form and no email signup: the dialog says what joining means |
 | Events dialog, front page | What is coming up; if the database is unreachable it says so | Not rendered, and `/events` is a 404 |
 | I can help | Opens Events | Opens Join us |
 | Small Print, cookies | Adds the sign-in cookie | One cookie |

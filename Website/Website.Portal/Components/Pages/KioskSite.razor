@@ -1,0 +1,9 @@
+@page "/kiosk/site"
+@layout BroadsheetLayout
+
+@* The front page as the kiosk frames it (kiosk.js). The same page at an
+   address inside the kiosk worker's scope, so the worker can keep a copy
+   and the screen still shows the site when its connection drops. Unlisted:
+   nothing links here, and it is noindex with the front page as canonical. *@
+
+<Home Framed="true" />

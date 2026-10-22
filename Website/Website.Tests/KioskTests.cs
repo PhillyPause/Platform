@@ -17,6 +17,7 @@ public class KioskTests(WebApplicationFactory<Program> factory)
     private const string ManifestPath = "/kiosk.webmanifest";
     private const string WorkerPath = "/kiosk-sw.js";
     private const string AwakeVideoPath = "/kiosk-awake.mp4";
+    private const string FramedSitePath = "/kiosk/site";
 
     private static readonly string Script = File.ReadAllText(Path.Combine(
         TestPaths.RepoRoot, "Website", "Website.Portal", "wwwroot", "kiosk.js"));
@@ -114,4 +115,27 @@ public class KioskTests(WebApplicationFactory<Program> factory)
     [Fact]
     public void The_site_never_links_to_the_kiosk() =>
         Home.Should().NotContain(KioskPath);
+
+    /// <summary>
+    /// The kiosk frames the front page at an address inside its worker's
+    /// scope, so the worker can keep a copy; unlisted, with the front page
+    /// as its canonical.
+    /// </summary>
+    [Fact]
+    public async Task The_framed_site_is_the_front_page_at_an_address_the_worker_keeps()
+    {
+        var page = await factory.CreateClient().GetStringAsync(FramedSitePath);
+        var worker = await factory.CreateClient().GetStringAsync(WorkerPath);
+
+        page.Should().Contain("class=\"masthead\"")
+            .And.Contain("<meta name=\"robots\" content=\"noindex\">")
+            .And.Contain("rel=\"canonical\" href=\"http://localhost/\"");
+        Script.Should().Contain($"const SITE = '{FramedSitePath}';").And.Contain("frame.src = SITE;");
+        worker.Should().Contain($"const SITE = '{FramedSitePath}';");
+    }
+
+    /// <summary>A drop mid-visit must not throw away what a visitor was typing.</summary>
+    [Fact]
+    public void A_dropped_connection_leaves_the_visitor_on_the_site() =>
+        Script.Should().NotContain("if (!online && browsing) back();");
 }

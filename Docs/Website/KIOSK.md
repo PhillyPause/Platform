@@ -22,6 +22,8 @@ it works.
 4. Check the bottom ticker says **TAP THE SCREEN** within half a minute.
    That means the screen can reach the site.
 5. Tap. The website opens under a red **← Back** bar. Press **← Back**.
+   Opening it with a connection is what keeps the website on the screen for
+   when the connection drops.
 6. Hold the screen for **three seconds**. The kiosk menu opens. Press
    **Keep going**.
 7. Leave it untouched for longer than the screen saver used to take. It
@@ -44,10 +46,13 @@ there is no connection.
 - **Watch.** Nothing needs touching.
 - **Scan the QR code** on the last screen with their phone. It opens
   phillypause.org on their own phone, connection or not at the table.
-- **Tap the screen** (only while "Tap the screen" is in the ticker) to
-  browse the website. **← Back** returns to the loop, and so does leaving it
-  for 90 seconds. Whatever they typed is thrown away, so the next person
-  starts clean.
+- **Tap the screen** to browse the website. **← Back** returns to the loop,
+  and so does leaving it for 90 seconds. Whatever they typed is thrown away,
+  so the next person starts clean. A connection that drops while they
+  browse does not throw them out, and with no connection a tap still opens
+  the copy the screen kept. Only joining needs the connection: pressing
+  **Join** checks for one first, and without it says so and keeps what they
+  typed, so they can press it again in a moment.
 - **Tap a link to another site or an email address.** It doesn't leave the
   screen: a QR code comes up instead, to carry on on their own phone.
 
@@ -69,7 +74,8 @@ The kiosk menu opens:
 
 | What you see | What to do |
 |---|---|
-| No **TAP THE SCREEN** in the ticker | The screen can't reach phillypause.org. The loop and the QR code work anyway. To fix it: hold three seconds, **Leave full screen**, sign in to the Wi-Fi or switch to a hotspot, then reload the page |
+| No **TAP THE SCREEN** in the ticker | The screen can't reach phillypause.org. The loop, the QR code and the kept website work anyway; joining on the screen waits for the connection. To fix it: hold three seconds, **Leave full screen**, sign in to the Wi-Fi or switch to a hotspot, then reload the page |
+| "No connection just now" under **Join** | The connection dropped. Press **Join** again once it is back; nothing typed is lost. Or point them at the QR code, which joins on their own phone |
 | Stuck in the website | **← Back**, top left, or wait 90 seconds |
 | Stuck in full screen | Hold the screen three seconds |
 | Screen saver comes on | Turn it off in the screen's settings (see below). If it still comes on, the silent video isn't enough on this screen: tell whoever looks after the site |
@@ -112,13 +118,18 @@ and is closed like any app. Turn off the device's screen timeout and sleep.
   and whenever the device's connection changes, and it asks for the kiosk's
   own manifest, so a campus Wi-Fi sign-in page does not count as online.
   "Tap the screen" runs in the tickers only while it answers.
-- **Goes back by itself** after 90 seconds untouched, or the moment the
-  connection drops. The framed page is thrown away on the way back. Form
+- **Goes back by itself** after 90 seconds untouched, never because the
+  connection dropped. The framed page is thrown away on the way back. Form
   fields in it are set not to autofill.
+- **Frames the site at `/kiosk/site`**, the front page at an address inside
+  the kiosk worker's scope (unlisted, `noindex`, canonical `/`), so the
+  worker keeps it. Join checks the connection before the form goes
+  (`join.js`, on every page of the site, not just here).
 - **Keeps people on the screen.** A link that would leave it (another site,
   a new window, an email address) shows the QR code instead. The Watch
   dialog's video still plays in place.
-- **Offline**, a tap skips to the last beat.
+- **Offline**, a tap opens the kept copy of the site, or skips to the last
+  beat if there is none yet.
 - **Keeps the screen awake** two ways: the Wake Lock, where the browser has
   one, and `kiosk-awake.mp4`, four seconds of silent black looping behind
   the loop. LG's webOS gives a web page no way to stop its screen saver,
@@ -140,12 +151,20 @@ screen is its `data-seconds`.
 ## Offline
 
 `kiosk-sw.js` is registered with scope `/kiosk`, so it answers for the kiosk
-and the files the kiosk loads, fonts included, and for nothing else on the
-site. The framed site always comes live. On every load with a connection
-the page sends the worker the list of files it used; the worker keeps those
-and drops anything older. The page itself comes from the network when it
-answers within four seconds, so a deploy reaches the screen the next time it
-loads online; otherwise the last copy kept is shown.
+and the files it loads, fonts included, and for the framed site at
+`/kiosk/site` and the files that loads, and for nothing else on the site.
+The loop and the framed site keep separate copies. On every load with a
+connection the kiosk sends the worker the list of files it used, and each
+time the framed site loads from the network it does the same for the
+site's; the worker keeps those and drops anything older. Either page comes
+from the network when it answers within four seconds, so a deploy reaches
+the screen the next time it loads online; otherwise the last copy kept is
+shown. Pages the framed site fetches by Blazor's enhanced navigation, and
+the probe, always come live.
+
+The kept front page carries a form token that may have expired by the time
+someone joins on it, so the worker marks it (`<html data-kept>`), and
+`join.js` fetches a fresh token before the form goes.
 
 ## Files
 
@@ -155,7 +174,9 @@ loads online; otherwise the last copy kept is shown.
 | `Website/Website.Portal/Components/Layout/KioskLayout.razor` | No site chrome |
 | `Website/Website.Portal/wwwroot/kiosk.css` | All of the motion |
 | `Website/Website.Portal/wwwroot/kiosk.js` | The loop, the connection check, the framed site, the menu, keeping awake |
-| `Website/Website.Portal/wwwroot/kiosk-sw.js` | The offline copy |
+| `Website/Website.Portal/wwwroot/kiosk-sw.js` | The offline copies, the loop's and the framed site's |
+| `Website/Website.Portal/Components/Pages/KioskSite.razor` | The front page at `/kiosk/site`, for the frame |
+| `Website/Website.Portal/wwwroot/join.js` | Join checks the connection first, site-wide |
 | `Website/Website.Portal/wwwroot/kiosk-awake.mp4` | Silent video that keeps a TV's screen saver off |
 | `Website/Website.Portal/wwwroot/kiosk.webmanifest` | Installs `/kiosk` as "PhillyPause Kiosk", full screen |
 | `Website/Website.Portal/wwwroot/img/kiosk-*` | App icons, and the QR code for `https://phillypause.org` |
