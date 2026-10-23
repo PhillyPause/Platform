@@ -7,8 +7,8 @@
 <div class="wrap page-head">
     <h1>Members</h1>
     <p class="lead">
-        Everyone who has joined, signed up or been added at the door: @_members.Count people.
-        "Not confirmed yet" means they have not clicked the link in their joining email,
+        Everyone who has joined, signed up or been added at the door: @_members.Count people,
+        newest first. "Not confirmed yet" means they have not clicked the link in their joining email,
         so they hear about nothing new until they do.
         @(_isAdmin ? "As an admin, you decide who else organizes." : "Admins decide who organizes.")
     </p>
@@ -25,6 +25,7 @@
             <thead>
                 <tr>
                     <th scope="col">Name</th>
+                    <th scope="col">Joined</th>
                     <th scope="col">Likes doing</th>
                     <th scope="col">Role</th>
                 </tr>
@@ -39,6 +40,7 @@
                                 @(member.Email ?? "no email")@(member.Email is not null && !member.CanEmail ? " · unsubscribed" : "")@(member.Email is not null && member.CanEmail && !member.Confirmed ? " · not confirmed yet" : "")
                             </div>
                         </td>
+                        <td class="vol-small">@Show.Stamp(member.CreatedAt)</td>
                         <td class="vol-small">@string.Join(", ", member.Interests)</td>
                         <td>
                             @member.Role
@@ -74,8 +76,13 @@
     {
         Role ??= new();
         _isAdmin = (await Authorization.AuthorizeAsync(HttpContext.User, TeamPolicies.Admin)).Succeeded;
-        _members = await Volunteers.GetMembersAsync();
+        _members = await LoadAsync();
     }
+
+    // Newest first, so whoever joined at the last event is at the top. The
+    // repository keeps its name order for the organizer pickers that share it.
+    private async Task<IReadOnlyList<Member>> LoadAsync() =>
+        (await Volunteers.GetMembersAsync()).OrderByDescending(m => m.CreatedAt).ToList();
 
     private async Task SetRoleAsync()
     {
@@ -100,7 +107,7 @@
         if (await Volunteers.SetRoleAsync(volunteerId, role))
             _notice = $"{_members.First(m => m.Id == volunteerId).DisplayName} is now {Article(role)} {role.ToString().ToLowerInvariant()}.";
 
-        _members = await Volunteers.GetMembersAsync();
+        _members = await LoadAsync();
     }
 
     private static string Article(VolunteerRole role) => role == VolunteerRole.Admin ? "an" : "a";
