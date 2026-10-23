@@ -174,7 +174,7 @@ request.
 | `/team/activity/new`, `/team/activity/{id}/edit` | The editor. Times are typed in Philadelphia's clock and stored as instants | Organizers |
 | `/team/activity/{id}` | Publish or unpublish; the roster, one big button per name for check-in; walk-ins | Organizers |
 | `/team/activity/{id}/check-in` | The QR code for the door | Organizers |
-| `/team/members` | Everyone, with what they like doing and whether they have confirmed their address. Changing a role is admins' alone, and the last admin cannot stop being one | Organizers see; admins change |
+| `/team/members` | Everyone, newest first: email, when they joined (Philadelphia's clock), what they like doing and whether they have confirmed their address. Changing a role is admins' alone, and the last admin cannot stop being one | Organizers see; admins change |
 | `/team/invites` | The join link, invitations by email, and their state | Organizers |
 
 Two public pages come with them: `/volunteer/join/{token}`, where an
