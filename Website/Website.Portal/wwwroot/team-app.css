@@ -62,6 +62,22 @@ body { background: var(--team-cream); margin: 0; }
 .team-state-published { background: #E4F1E6; color: #1E6B30; }
 .team-state-finished { background: #ECECEC; color: #555; }
 
+.team-notice { background: var(--team-paper); border-left: 3px solid var(--team-red); padding: 10px 14px; margin: 0 0 14px; font-size: 14px; }
+
+/* Members: one line a person. The icons carry colour as a second cue only;
+   each has its words in a tooltip and for screen readers. */
+.member-icon { font-size: 16px; }
+.member-status-confirmed { color: #1E6B30; }
+.member-status-not-confirmed { color: #9A6A00; }
+.member-status-unsubscribed, .member-status-no-email { color: var(--team-muted); }
+.member-role-admin { color: var(--team-red); }
+.member-role-organizer { color: var(--team-ink); }
+.member-role-member { color: var(--team-muted); }
+.member-actions { display: flex; justify-content: flex-end; gap: 2px; white-space: nowrap; }
+.member-slot { display: inline-block; width: 32px; }
+.member-action.e-btn { width: 32px; height: 32px; padding: 0; }
+.member-action-danger.e-btn:hover, .member-action-danger.e-btn:focus-visible { color: var(--team-red); }
+
 @media (max-width: 639px) {
   .team-main { padding: 16px; }
   /* The name stays, so a phone still says who is signed in. */

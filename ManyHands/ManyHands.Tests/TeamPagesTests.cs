@@ -184,20 +184,35 @@ public sealed partial class TeamPagesTests(DatabaseFixture db) : IAsyncLifetime
             (await _portal.Browser().GetAsync(ManyHandsPaths.SelfCheckIn("forged-token"))).StatusCode);
     }
 
+    /// <summary>Who may change and delete is MemberAdminRepositoryTests'; this is what the page shows.</summary>
     [Fact]
-    public async Task Only_an_admin_can_change_a_role()
+    public async Task The_members_page_is_a_grid_with_each_address_and_the_day_they_joined()
     {
-        var target = await TestData.VolunteerAsync(db.DataSource, "Promotable");
+        var newcomer = await TestData.VolunteerAsync(db.DataSource, "Grid Newcomer", confirmed: false);
+        var admin = await SignedInAsync(VolunteerRole.Admin, "Members Admin");
+
+        var page = await admin.GetStringAsync(ManyHandsPaths.TeamMembers);
+
+        Assert.Contains("\"type\":\"server\"", page);
+        Assert.Contains("e-grid", page);
+        Assert.Contains(newcomer.Email!, page);
+        Assert.Contains(LocalTime.ToLocal(newcomer.CreatedAt).ToString("MM/dd/yyyy", System.Globalization.CultureInfo.InvariantCulture), page);
+        Assert.Contains("aria-label=\"Not confirmed\"", page);
+        Assert.Contains("Send Grid Newcomer the joining email again", page);
+        Assert.Contains("Delete Grid Newcomer", page);
+    }
+
+    [Fact]
+    public async Task An_organizer_sees_no_delete_or_role_buttons()
+    {
+        var newcomer = await TestData.VolunteerAsync(db.DataSource, "Plain Newcomer");
         var organizer = await SignedInAsync(VolunteerRole.Organizer);
-        var admin = await SignedInAsync(VolunteerRole.Admin, "An Admin");
-        var value = $"{target.Id}:{VolunteerRole.Organizer}";
-        var volunteers = new VolunteerRepository(db.DataSource);
 
-        await Forms.SubmitAsync(organizer, ManyHandsPaths.TeamMembers, "role", ("Role.Value", value));
-        Assert.Equal(VolunteerRole.Member, (await volunteers.GetByIdAsync(target.Id))!.Role);
+        var page = await organizer.GetStringAsync(ManyHandsPaths.TeamMembers);
 
-        await Forms.SubmitAsync(admin, ManyHandsPaths.TeamMembers, "role", ("Role.Value", value));
-        Assert.Equal(VolunteerRole.Organizer, (await volunteers.GetByIdAsync(target.Id))!.Role);
+        Assert.Contains(newcomer.Email!, page);
+        Assert.DoesNotContain("Delete Plain Newcomer", page);
+        Assert.DoesNotContain("Make Plain Newcomer", page);
     }
 
     [Fact]

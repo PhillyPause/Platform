@@ -1,0 +1,18 @@
+@* A round, icon-only button in the grid. The label is its tooltip and the
+   name a screen reader reads, so an icon is never the only clue. *@
+
+<button type="button" class="e-btn e-flat e-round e-icon-btn member-action@(Danger ? " member-action-danger" : "")"
+        title="@Label" aria-label="@Label" @onclick="OnClick">
+    <span class="e-btn-icon e-icons @Icon" aria-hidden="true"></span>
+</button>
+
+@code {
+    /// <summary>A Syncfusion icon class, such as <c>e-trash</c>.</summary>
+    [Parameter, EditorRequired] public required string Icon { get; set; }
+
+    [Parameter, EditorRequired] public required string Label { get; set; }
+
+    [Parameter] public bool Danger { get; set; }
+
+    [Parameter] public EventCallback OnClick { get; set; }
+}

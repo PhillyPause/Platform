@@ -28,6 +28,7 @@
     <PackageVersion Include="Syncfusion.Blazor.Grid" Version="35.1.37" />
     <PackageVersion Include="Syncfusion.Blazor.Navigations" Version="35.1.37" />
     <PackageVersion Include="Syncfusion.Blazor.Buttons" Version="35.1.37" />
+    <PackageVersion Include="Syncfusion.Blazor.Popups" Version="35.1.37" />
     <PackageVersion Include="Syncfusion.Blazor.Themes" Version="35.1.37" />
     <PackageVersion Include="Syncfusion.Licensing" Version="35.1.37" />
   </ItemGroup>
