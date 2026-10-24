@@ -15,7 +15,8 @@ public static class TeamApp
     /// <summary>Exact paths, without a trailing slash, compared ignoring case.</summary>
     private static readonly HashSet<string> Pages = new(StringComparer.OrdinalIgnoreCase)
     {
-        ManyHands.Core.ManyHandsPaths.Team
+        ManyHands.Core.ManyHandsPaths.Team,
+        ManyHands.Core.ManyHandsPaths.TeamMembers
     };
 
     /// <summary>The render mode for a request: interactive for the app's pages, static (null) for the rest.</summary>

@@ -17,6 +17,7 @@
     <PackageReference Include="Syncfusion.Blazor.Buttons" />
     <PackageReference Include="Syncfusion.Blazor.Grid" />
     <PackageReference Include="Syncfusion.Blazor.Navigations" />
+    <PackageReference Include="Syncfusion.Blazor.Popups" />
     <PackageReference Include="Syncfusion.Blazor.Themes" />
     <PackageReference Include="Syncfusion.Licensing" />
   </ItemGroup>

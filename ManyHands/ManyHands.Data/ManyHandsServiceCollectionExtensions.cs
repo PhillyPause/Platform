@@ -50,6 +50,7 @@ public static class ManyHandsServiceCollectionExtensions
         services.AddSingleton<EmailMessageRepository>();
         services.AddSingleton<NotificationQueries>();
         services.AddSingleton<VolunteerDataRepository>();
+        services.AddSingleton<MemberAdminRepository>();
         services.AddSingleton<CalendarRepository>();
         services.AddSingleton<ActivityAdminRepository>();
         services.AddSingleton<ReportingRepository>();

@@ -47,9 +47,11 @@ What is built so far is in [section 7](#7-status).
   check-ins. There is no timesheet.
 - **All outreach mail lives inside ManyHands**, inbound and outbound. Nobody's
   personal inbox is the system of record.
-- **Static server rendering.** The pages are server-rendered Razor components
-  and `EditForm`s, like the rest of the site. They call the data layer
-  directly; there is no HTTP API and no WASM.
+- **Static server rendering, but for the organizers' app.** The pages are
+  server-rendered Razor components and `EditForm`s, like the rest of the
+  site. The exception is the organizers' app (`TeamApp`): the team pages on
+  its list run interactive on the server, on Syncfusion's grid. Either way
+  they call the data layer directly; there is no HTTP API and no WASM.
 - **The site never needs ManyHands.** Off, nothing of it is registered and the
   site needs no database. On, the home page still never touches the
   database: its content is hand-edited and the account bar reads only the
@@ -174,7 +176,7 @@ request.
 | `/team/activity/new`, `/team/activity/{id}/edit` | The editor. Times are typed in Philadelphia's clock and stored as instants | Organizers |
 | `/team/activity/{id}` | Publish or unpublish; the roster, one big button per name for check-in; walk-ins | Organizers |
 | `/team/activity/{id}/check-in` | The QR code for the door | Organizers |
-| `/team/members` | Everyone, newest first: email, when they joined (Philadelphia's clock), what they like doing and whether they have confirmed their address. Changing a role is admins' alone, and the last admin cannot stop being one | Organizers see; admins change |
+| `/team/members` | Everyone, newest first, one line each, as a grid: search, sort, filter, a page at a time. Email, the day they joined (MM/dd/yyyy, Philadelphia's clock), whether they have confirmed, their role and what they like doing. Icon buttons send the joining email again, change a role and delete | Organizers see and resend; admins change and delete |
 | `/team/invites` | The join link, invitations by email, and their state | Organizers |
 
 Two public pages come with them: `/volunteer/join/{token}`, where an
@@ -189,6 +191,14 @@ leads.
 - **The door code** is the activity and an expiry sealed by Data Protection's
   time-limited protector, valid for twelve hours. Its keys are the ones in
   Postgres, so it needs no secret of its own and survives a restart.
+- **What the members page does, `MemberAdminRepository` checks again**,
+  reading the role of whoever pressed from the database, whatever the page
+  offered. Changing a role is admins' alone, and the last admin cannot stop
+  being one. Deleting is admins' alone, is the same anonymising deletion as
+  a person's own button, asks first, and never takes an admin or the person
+  pressing. Sending the joining email again queues `member.confirm` as
+  joining again would, never to someone confirmed or unsubscribed, and not
+  twice in fifteen minutes.
 - **A walk-in** is confirmed and checked in on the spot, past capacity if need
   be, with or without an email.
 - **The participation CSV defuses formulas.** Names in it were typed into
