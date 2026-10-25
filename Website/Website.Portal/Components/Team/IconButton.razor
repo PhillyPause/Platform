@@ -3,11 +3,11 @@
 
 <button type="button" class="e-btn e-flat e-round e-icon-btn member-action@(Danger ? " member-action-danger" : "")"
         title="@Label" aria-label="@Label" @onclick="OnClick">
-    <span class="e-btn-icon e-icons @Icon" aria-hidden="true"></span>
+    <span class="material-symbols-rounded" aria-hidden="true">@Icon</span>
 </button>
 
 @code {
-    /// <summary>A Syncfusion icon class, such as <c>e-trash</c>.</summary>
+    /// <summary>One of the <see cref="Symbols"/> constants.</summary>
     [Parameter, EditorRequired] public required string Icon { get; set; }
 
     [Parameter, EditorRequired] public required string Label { get; set; }

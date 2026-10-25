@@ -200,6 +200,26 @@ public sealed partial class TeamPagesTests(DatabaseFixture db) : IAsyncLifetime
         Assert.Contains("aria-label=\"Not confirmed\"", page);
         Assert.Contains("Send Grid Newcomer the joining email again", page);
         Assert.Contains("Delete Grid Newcomer", page);
+        Assert.Contains("Make Grid Newcomer an organizer", page);
+        Assert.Contains("e-filterbar", page);
+    }
+
+    /// <summary>The icon font draws only the names it was asked for; any other prints as a word.</summary>
+    [Fact]
+    public async Task Every_icon_on_the_members_page_is_in_the_font_it_loads()
+    {
+        await TestData.VolunteerAsync(db.DataSource, "Icon Newcomer", confirmed: false);
+        var admin = await SignedInAsync(VolunteerRole.Admin, "Icons Admin");
+
+        var page = await admin.GetStringAsync(ManyHandsPaths.TeamMembers);
+
+        var glyphs = Glyph().Matches(page).Select(m => m.Groups[1].Value).Distinct().ToList();
+        Assert.NotEmpty(glyphs);
+        Assert.All(glyphs, g => Assert.Contains(g, Website.Portal.Volunteer.Symbols.All));
+        Assert.Contains(Website.Portal.Volunteer.Symbols.StylesheetUrl, WebUtility.HtmlDecode(page));
+        Assert.Equal(
+            Website.Portal.Volunteer.Symbols.All.Order(StringComparer.Ordinal),
+            Website.Portal.Volunteer.Symbols.StylesheetUrl.Split("icon_names=")[1].Split('&')[0].Split(','));
     }
 
     [Fact]
@@ -244,4 +264,7 @@ public sealed partial class TeamPagesTests(DatabaseFixture db) : IAsyncLifetime
 
     [GeneratedRegex("<a href=\"([^\"]+/volunteer/check-in/[^\"]+)\"")]
     private static partial Regex CheckInLink();
+
+    [GeneratedRegex("<span class=\"material-symbols-rounded\" aria-hidden=\"true\">([^<]+)</span>")]
+    private static partial Regex Glyph();
 }
