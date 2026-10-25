@@ -83,6 +83,17 @@ body { background: var(--team-cream); margin: 0; }
 .member-role-admin { color: var(--team-red); }
 .member-role-organizer { color: #043464; }
 .member-role-member { color: #8C8476; }
+.interest-codes { display: flex; gap: 2px; white-space: nowrap; }
+.interest-code {
+  display: inline-block; width: 22px; height: 20px; line-height: 20px; border-radius: 3px; text-align: center;
+  background: #E9E1D0; color: var(--team-ink); font-size: 10px; font-weight: 700; letter-spacing: 0.02em;
+  text-decoration: none; cursor: help;
+}
+/* Read by screen readers, not shown: the full labels behind the codes. */
+.team-sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden;
+  clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+}
 .member-actions { display: flex; justify-content: flex-end; gap: 2px; white-space: nowrap; }
 .member-slot { display: inline-block; width: 32px; }
 .member-action.e-btn { width: 32px; height: 32px; padding: 0; color: #4A4338; }

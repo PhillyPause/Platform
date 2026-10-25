@@ -6,7 +6,7 @@
     <option value="" selected="@(Value.Length == 0)">All</option>
     @foreach (var choice in Choices)
     {
-        <option value="@choice" selected="@(choice == Value)">@choice</option>
+        <option value="@choice" selected="@(choice == Value)">@(Text?.Invoke(choice) ?? choice)</option>
     }
 </select>
 
@@ -14,6 +14,9 @@
     [Parameter, EditorRequired] public required string Label { get; set; }
 
     [Parameter, EditorRequired] public required IReadOnlyList<string> Choices { get; set; }
+
+    /// <summary>What a choice reads as in the menu, when that is more than the value it filters on.</summary>
+    [Parameter] public Func<string, string>? Text { get; set; }
 
     /// <summary>The choice in force; empty for All.</summary>
     [Parameter] public string Value { get; set; } = string.Empty;
