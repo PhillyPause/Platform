@@ -4,6 +4,7 @@
 @using Syncfusion.Blazor.Popups
 @inject VolunteerRepository Volunteers
 @inject MemberAdminRepository MemberAdmin
+@inject ActivityTypeRepository ActivityTypes
 
 @* Everyone who has joined, as a grid: a filter row under the headings that
    narrows the list as you type, sorting on every heading, a page at a time.
@@ -42,7 +43,7 @@
         <GridColumn Field="@nameof(Row.Name)" HeaderText="Name" ClipMode="ClipMode.EllipsisWithTooltip" FilterSettings="Contains" />
         <GridColumn Field="@nameof(Row.Email)" HeaderText="Email" ClipMode="ClipMode.EllipsisWithTooltip" FilterSettings="Contains" />
         @* The day, on Philadelphia's clock: the time of day says nothing an organizer needs. *@
-        <GridColumn Field="@nameof(Row.Joined)" HeaderText="Joined" Type="ColumnType.Date" Format="MM/dd/yyyy" Width="150"
+        <GridColumn Field="@nameof(Row.Joined)" HeaderText="Joined" Type="ColumnType.Date" Format="MM/dd/yyyy" Width="148"
                     HideAtMedia="(min-width: 560px)">
             <FilterTemplate>
                 <input class="e-input team-filter" type="date" aria-label="Show who joined on this day"
@@ -50,7 +51,7 @@
             </FilterTemplate>
         </GridColumn>
         @* Icons on screen; the words underneath are what sorting, filtering and a screen reader see. *@
-        <GridColumn Field="@nameof(Row.Status)" HeaderText="Status" Width="148" TextAlign="TextAlign.Center"
+        <GridColumn Field="@nameof(Row.Status)" HeaderText="Status" Width="112" TextAlign="TextAlign.Center"
                     HideAtMedia="(min-width: 720px)">
             <FilterTemplate>
                 <ChoiceFilter Label="Show status" Choices="Statuses" Value="@_statusFilter"
@@ -61,7 +62,7 @@
                 <Symbol Name="@StatusIcon(row.Status)" Label="@row.Status" CssClass="@($"member-status-{Slug(row.Status)}")" />
             </Template>
         </GridColumn>
-        <GridColumn Field="@nameof(Row.Role)" HeaderText="Role" Width="128" TextAlign="TextAlign.Center"
+        <GridColumn Field="@nameof(Row.Role)" HeaderText="Role" Width="112" TextAlign="TextAlign.Center"
                     HideAtMedia="(min-width: 720px)">
             <FilterTemplate>
                 <ChoiceFilter Label="Show role" Choices="Roles" Value="@_roleFilter"
@@ -72,9 +73,27 @@
                 <Symbol Name="@RoleIcon(row.RoleValue)" Label="@row.Role" CssClass="@($"member-role-{Slug(row.Role)}")" />
             </Template>
         </GridColumn>
-        <GridColumn Field="@nameof(Row.Interests)" HeaderText="Likes doing" ClipMode="ClipMode.EllipsisWithTooltip"
-                    FilterSettings="Contains" HideAtMedia="(min-width: 960px)" />
-        <GridColumn HeaderText="" Width="148" AllowFiltering="false" AllowSorting="false">
+        @* Two letters an interest (InterestCodes), the full label on hover, and
+           wide enough for every one at once, so no code is ever cut off. The menu
+           filters on the label, which also teaches the codes. *@
+        <GridColumn Field="@nameof(Row.Interests)" HeaderText="Likes doing" Width="@InterestsWidth"
+                    HideAtMedia="(min-width: 960px)">
+            <FilterTemplate>
+                <ChoiceFilter Label="Show who likes doing" Choices="_interestLabels" Text="InterestText" Value="@_interestFilter"
+                              OnChange="value => FilterChoiceAsync(nameof(Row.Interests), value)" />
+            </FilterTemplate>
+            <Template>
+                @{ var row = (Row)context; }
+                <span class="interest-codes">
+                    @foreach (var interest in row.Codes)
+                    {
+                        <abbr class="interest-code" title="@interest.Label" aria-hidden="true">@interest.Code</abbr>
+                    }
+                    <span class="team-sr-only">@row.Interests</span>
+                </span>
+            </Template>
+        </GridColumn>
+        <GridColumn HeaderText="" Width="140" AllowFiltering="false" AllowSorting="false">
             @* Nothing to filter: an empty cell, not a disabled box. *@
             <FilterTemplate></FilterTemplate>
             <Template>
@@ -146,6 +165,13 @@
     private static readonly string[] Roles = [.. Enum.GetValues<VolunteerRole>().Select(r => r.ToString())];
     private static readonly string[] PageSizes = ["25", "50", "100", "All"];
 
+    // Room for every interest at once: a 22px chip and a 2px gap each. Fixed
+    // rather than fitted to the data, because the grid lays its columns out
+    // before the data arrives, and a width that changes after that squeezes
+    // name and email to nothing.
+    private static readonly string InterestsWidth =
+        (20 + InterestCodes.BySlug.Count * 24).ToString(System.Globalization.CultureInfo.InvariantCulture);
+
     // Typing part of a name or address finds it anywhere, not only at the start.
     private static readonly FilterSettings Contains = new() { Operator = Syncfusion.Blazor.Operator.Contains };
 
@@ -154,7 +180,9 @@
     /// <summary>One grid row: flat, so every column sorts and filters on a plain value.</summary>
     private sealed record Row(
         Guid Id, string Name, string Email, DateTime Joined, string Status, string Role, string Interests,
-        VolunteerRole RoleValue, bool HasEmail, bool CanResend);
+        VolunteerRole RoleValue, bool HasEmail, bool CanResend, IReadOnlyList<Interest> Codes);
+
+    private sealed record Interest(string Code, string Label);
 
     private SfGrid<Row>? _grid;
     private List<Row> _rows = [];
@@ -169,6 +197,9 @@
     private string _statusFilter = string.Empty;
     private string _roleFilter = string.Empty;
     private string _joinedFilter = string.Empty;
+    private string _interestFilter = string.Empty;
+    private Dictionary<string, string> _codeByLabel = [];
+    private string[] _interestLabels = [];
 
     protected override async Task OnInitializedAsync()
     {
@@ -177,6 +208,11 @@
 
         // What to offer only; every action checks again as it runs.
         _isAdmin = _me is Guid me && await Volunteers.GetByIdAsync(me) is { } self && self.IsAtLeast(VolunteerRole.Admin);
+
+        var types = await ActivityTypes.GetActiveAsync();
+        _codeByLabel = types.ToDictionary(t => t.Label, t => InterestCodes.For(t.Slug, t.Label));
+        _interestLabels = [.. types.Select(t => t.Label)];
+
         await LoadAsync();
     }
 
@@ -185,7 +221,12 @@
     private async Task LoadAsync() =>
         _rows = (await Volunteers.GetMembersAsync()).OrderByDescending(m => m.CreatedAt).Select(ToRow).ToList();
 
-    private static Row ToRow(Member m)
+    private string InterestText(string label) => $"{Code(label)} · {label}";
+
+    // A type that has since been retired is not in the active list; its initials stand in.
+    private string Code(string label) => _codeByLabel.TryGetValue(label, out var code) ? code : InterestCodes.FromLabel(label);
+
+    private Row ToRow(Member m)
     {
         var status = m.Email is null ? NoEmail
             : !m.CanEmail ? Unsubscribed
@@ -195,15 +236,22 @@
         return new Row(
             m.Id, m.DisplayName, m.Email ?? string.Empty, LocalTime.ToLocal(m.CreatedAt).Date, status,
             m.Role.ToString(), string.Join(", ", m.Interests), m.Role,
-            HasEmail: m.Email is not null, CanResend: status == NotConfirmed);
+            HasEmail: m.Email is not null, CanResend: status == NotConfirmed,
+            Codes: [.. m.Interests.Select(label => new Interest(Code(label), label))]);
     }
 
     private async Task FilterChoiceAsync(string field, string value)
     {
-        if (field == nameof(Row.Status)) _statusFilter = value;
-        else _roleFilter = value;
+        switch (field)
+        {
+            case nameof(Row.Status): _statusFilter = value; break;
+            case nameof(Row.Role): _roleFilter = value; break;
+            default: _interestFilter = value; break;
+        }
 
-        await FilterAsync(field, value.Length == 0 ? null : value);
+        // Someone likes several things, listed in one cell: the interest is found within it.
+        await FilterAsync(field, value.Length == 0 ? null : value,
+            field == nameof(Row.Interests) ? "contains" : "equal");
     }
 
     private async Task FilterJoinedAsync(ChangeEventArgs e)
@@ -213,12 +261,12 @@
             DateTime.TryParse(_joinedFilter, System.Globalization.CultureInfo.InvariantCulture, out var day) ? day : null);
     }
 
-    private async Task FilterAsync(string field, object? value)
+    private async Task FilterAsync(string field, object? value, string filterOperator = "equal")
     {
         if (_grid is null) return;
 
         if (value is null) await _grid.ClearFilteringAsync(field);
-        else await _grid.FilterByColumnAsync(field, "equal", value);
+        else await _grid.FilterByColumnAsync(field, filterOperator, value);
     }
 
     private void AskResend(Row row) => Ask(new(

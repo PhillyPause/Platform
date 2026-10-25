@@ -188,7 +188,7 @@ public sealed partial class TeamPagesTests(DatabaseFixture db) : IAsyncLifetime
     [Fact]
     public async Task The_members_page_is_a_grid_with_each_address_and_the_day_they_joined()
     {
-        var newcomer = await TestData.VolunteerAsync(db.DataSource, "Grid Newcomer", confirmed: false);
+        var newcomer = await TestData.VolunteerAsync(db.DataSource, "Grid Newcomer", VolunteerRole.Member, false, TestData.Flyering);
         var admin = await SignedInAsync(VolunteerRole.Admin, "Members Admin");
 
         var page = await admin.GetStringAsync(ManyHandsPaths.TeamMembers);
@@ -201,6 +201,7 @@ public sealed partial class TeamPagesTests(DatabaseFixture db) : IAsyncLifetime
         Assert.Contains("Send Grid Newcomer the joining email again", page);
         Assert.Contains("Delete Grid Newcomer", page);
         Assert.Contains("Make Grid Newcomer an organizer", page);
+        Assert.Contains($"<abbr class=\"interest-code\" title=\"{TestData.FlyeringLabel}\" aria-hidden=\"true\">FL</abbr>", page);
         Assert.Contains("e-filterbar", page);
     }
 
