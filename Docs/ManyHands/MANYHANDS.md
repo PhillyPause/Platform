@@ -397,7 +397,7 @@ against real Postgres. Test against the real thing.
 | `Discord:AnnouncementChannelId` | — | Where announcements go. Unset, the server's system channel, else the first the bot may post in |
 | `Discord:RoleId` | — | The role every linked volunteer holds. Unset, nobody is given one, and any the bot gave are taken back |
 | `Discord:SendDelay` | 250 ms | The pause between DMs, and between role edits |
-| `SYNCFUSION_LICENSE_KEY` | — | The Syncfusion Community Licence for the organizers' app, as an environment variable of that name. Unset, its pages work and show a trial banner. Locally the AppHost passes on the machine's own |
+| `SYNCFUSION_LICENSE_KEY` | — | The Syncfusion Community Licence for the organizers' app, as an environment variable of that name. Unset, its pages work and show a trial banner. Locally the AppHost passes on the machine's own, falling back on Windows to the user's saved variable when it was opened before that was set. In production it is an App Platform secret |
 | `Discord:RoleSyncInterval` | 15 minutes | How often roles are reconciled |
 
 The organisation's name and its timezone, `America/New_York`, are constants
