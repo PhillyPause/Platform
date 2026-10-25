@@ -1,0 +1,16 @@
+@* One icon from the Material Symbols font (Symbols), coloured by its class.
+   The label is its tooltip and what a screen reader says; the glyph's own
+   name is hidden from both. *@
+
+<span class="team-symbol @CssClass" role="img" title="@Label" aria-label="@Label">
+    <span class="material-symbols-rounded" aria-hidden="true">@Name</span>
+</span>
+
+@code {
+    /// <summary>One of the <see cref="Symbols"/> constants.</summary>
+    [Parameter, EditorRequired] public required string Name { get; set; }
+
+    [Parameter, EditorRequired] public required string Label { get; set; }
+
+    [Parameter] public string? CssClass { get; set; }
+}

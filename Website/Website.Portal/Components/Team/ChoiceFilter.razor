@@ -1,0 +1,24 @@
+@* A grid's filter-row cell for a column with a few fixed values, such as
+   status or role: pick one, or All. Choosing filters at once, like typing
+   in the text cells beside it. *@
+
+<select class="e-input team-filter" aria-label="@Label" @onchange="ChangedAsync">
+    <option value="" selected="@(Value.Length == 0)">All</option>
+    @foreach (var choice in Choices)
+    {
+        <option value="@choice" selected="@(choice == Value)">@choice</option>
+    }
+</select>
+
+@code {
+    [Parameter, EditorRequired] public required string Label { get; set; }
+
+    [Parameter, EditorRequired] public required IReadOnlyList<string> Choices { get; set; }
+
+    /// <summary>The choice in force; empty for All.</summary>
+    [Parameter] public string Value { get; set; } = string.Empty;
+
+    [Parameter] public EventCallback<string> OnChange { get; set; }
+
+    private Task ChangedAsync(ChangeEventArgs e) => OnChange.InvokeAsync(e.Value as string ?? string.Empty);
+}

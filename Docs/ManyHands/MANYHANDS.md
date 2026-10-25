@@ -176,7 +176,7 @@ request.
 | `/team/activity/new`, `/team/activity/{id}/edit` | The editor. Times are typed in Philadelphia's clock and stored as instants | Organizers |
 | `/team/activity/{id}` | Publish or unpublish; the roster, one big button per name for check-in; walk-ins | Organizers |
 | `/team/activity/{id}/check-in` | The QR code for the door | Organizers |
-| `/team/members` | Everyone, newest first, one line each, as a grid: search, sort, filter, a page at a time. Email, the day they joined (MM/dd/yyyy, Philadelphia's clock), whether they have confirmed, their role and what they like doing. Icon buttons send the joining email again, change a role and delete | Organizers see and resend; admins change and delete |
+| `/team/members` | Everyone, newest first, one line each, as a grid: a filter row that narrows the list as you type, sorting, a page at a time. Email, the day they joined (MM/dd/yyyy, Philadelphia's clock), whether they have confirmed, their role and what they like doing. Icon buttons send the joining email again, change a role and delete | Organizers see and resend; admins change and delete |
 | `/team/invites` | The join link, invitations by email, and their state | Organizers |
 
 Two public pages come with them: `/volunteer/join/{token}`, where an

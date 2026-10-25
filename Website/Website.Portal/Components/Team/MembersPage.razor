@@ -5,12 +5,13 @@
 @inject VolunteerRepository Volunteers
 @inject MemberAdminRepository MemberAdmin
 
-@* Everyone who has joined, as a grid: search, sort, filter any column the way
-   a spreadsheet does, a page at a time. One line a person, cut short with an
-   ellipsis and whole on hover. Part of the organizers' app (TeamApp), so it
-   runs interactive. Any organizer can send someone's joining email again;
-   admins change roles and delete. MemberAdminRepository checks each of
-   those again, whatever this page showed. *@
+@* Everyone who has joined, as a grid: a filter row under the headings that
+   narrows the list as you type, sorting on every heading, a page at a time.
+   One line a person, cut short with an ellipsis and whole on hover. Part of
+   the organizers' app (TeamApp), so it runs interactive. Any organizer can
+   send someone's joining email again; admins change roles and delete.
+   MemberAdminRepository checks each of those again, whatever this page
+   showed. *@
 
 <PageMeta Title="Members" Description="Everyone who has joined PhillyPause." NoIndex="true" />
 
@@ -29,47 +30,60 @@
     <p class="team-notice" role="status">@_notice</p>
 }
 
-<SfGrid TValue="Row" DataSource="_rows" AllowPaging="true" AllowSorting="true" AllowFiltering="true"
-        Toolbar="@(new List<string> { "Search" })" GridLines="GridLine.Horizontal" RowHeight="44" CssClass="team-members">
+<SfGrid @ref="_grid" TValue="Row" DataSource="_rows" AllowPaging="true" AllowSorting="true" AllowFiltering="true"
+        GridLines="GridLine.Horizontal" RowHeight="44" CssClass="team-members">
     <GridPageSettings PageSize="25" PageSizes="PageSizes" />
-    <GridFilterSettings Type="Syncfusion.Blazor.Grids.FilterType.Excel" />
+    @* Filters as you type, a moment after the last key. *@
+    <GridFilterSettings Type="Syncfusion.Blazor.Grids.FilterType.FilterBar" Mode="FilterBarMode.Immediate" ImmediateModeDelay="250" />
     @* No sort column to start: the rows arrive newest first to the second
        (LoadAsync), which sorting the Joined column by day alone would lose. *@
     <GridColumns>
         @* No widths: name, email and interests share what the fixed columns leave. *@
-        <GridColumn Field="@nameof(Row.Name)" HeaderText="Name" ClipMode="ClipMode.EllipsisWithTooltip" />
-        <GridColumn Field="@nameof(Row.Email)" HeaderText="Email" ClipMode="ClipMode.EllipsisWithTooltip" />
+        <GridColumn Field="@nameof(Row.Name)" HeaderText="Name" ClipMode="ClipMode.EllipsisWithTooltip" FilterSettings="Contains" />
+        <GridColumn Field="@nameof(Row.Email)" HeaderText="Email" ClipMode="ClipMode.EllipsisWithTooltip" FilterSettings="Contains" />
         @* The day, on Philadelphia's clock: the time of day says nothing an organizer needs. *@
-        <GridColumn Field="@nameof(Row.Joined)" HeaderText="Joined" Type="ColumnType.Date" Format="MM/dd/yyyy" Width="116"
-                    HideAtMedia="(min-width: 560px)" />
+        <GridColumn Field="@nameof(Row.Joined)" HeaderText="Joined" Type="ColumnType.Date" Format="MM/dd/yyyy" Width="150"
+                    HideAtMedia="(min-width: 560px)">
+            <FilterTemplate>
+                <input class="e-input team-filter" type="date" aria-label="Show who joined on this day"
+                       value="@_joinedFilter" @onchange="FilterJoinedAsync" />
+            </FilterTemplate>
+        </GridColumn>
         @* Icons on screen; the words underneath are what sorting, filtering and a screen reader see. *@
-        @* Phones keep who, their address and the buttons. *@
-        <GridColumn Field="@nameof(Row.Status)" HeaderText="Status" Width="112" TextAlign="TextAlign.Center"
+        <GridColumn Field="@nameof(Row.Status)" HeaderText="Status" Width="148" TextAlign="TextAlign.Center"
                     HideAtMedia="(min-width: 720px)">
+            <FilterTemplate>
+                <ChoiceFilter Label="Show status" Choices="Statuses" Value="@_statusFilter"
+                              OnChange="value => FilterChoiceAsync(nameof(Row.Status), value)" />
+            </FilterTemplate>
             <Template>
                 @{ var row = (Row)context; }
-                <span class="e-icons @StatusIcon(row.Status) member-icon member-status-@Slug(row.Status)" role="img"
-                      title="@row.Status" aria-label="@row.Status"></span>
+                <Symbol Name="@StatusIcon(row.Status)" Label="@row.Status" CssClass="@($"member-status-{Slug(row.Status)}")" />
             </Template>
         </GridColumn>
-        <GridColumn Field="@nameof(Row.Role)" HeaderText="Role" Width="100" TextAlign="TextAlign.Center"
+        <GridColumn Field="@nameof(Row.Role)" HeaderText="Role" Width="128" TextAlign="TextAlign.Center"
                     HideAtMedia="(min-width: 720px)">
+            <FilterTemplate>
+                <ChoiceFilter Label="Show role" Choices="Roles" Value="@_roleFilter"
+                              OnChange="value => FilterChoiceAsync(nameof(Row.Role), value)" />
+            </FilterTemplate>
             <Template>
                 @{ var row = (Row)context; }
-                <span class="e-icons @RoleIcon(row.RoleValue) member-icon member-role-@Slug(row.Role)" role="img"
-                      title="@row.Role" aria-label="@row.Role"></span>
+                <Symbol Name="@RoleIcon(row.RoleValue)" Label="@row.Role" CssClass="@($"member-role-{Slug(row.Role)}")" />
             </Template>
         </GridColumn>
         <GridColumn Field="@nameof(Row.Interests)" HeaderText="Likes doing" ClipMode="ClipMode.EllipsisWithTooltip"
-                    HideAtMedia="(min-width: 960px)" />
-        <GridColumn HeaderText="" Width="148" AllowFiltering="false" AllowSorting="false" AllowSearching="false">
+                    FilterSettings="Contains" HideAtMedia="(min-width: 960px)" />
+        <GridColumn HeaderText="" Width="148" AllowFiltering="false" AllowSorting="false">
+            @* Nothing to filter: an empty cell, not a disabled box. *@
+            <FilterTemplate></FilterTemplate>
             <Template>
                 @{ var row = (Row)context; }
                 <div class="member-actions">
                     @* Every slot is there, filled or not, so the icons line up down the column. *@
                     @if (row.CanResend)
                     {
-                        <IconButton Icon="e-send" Label="@($"Send {row.Name} the joining email again")" OnClick="() => ResendAsync(row)" />
+                        <IconButton Icon="@Symbols.Send" Label="@($"Send {row.Name} the joining email again")" OnClick="() => ResendAsync(row)" />
                     }
                     else
                     {
@@ -78,7 +92,7 @@
                     @if (_isAdmin && row.HasEmail && row.RoleValue < VolunteerRole.Admin)
                     {
                         var up = row.RoleValue + 1;
-                        <IconButton Icon="e-chevron-up" Label="@($"Make {row.Name} {Article(up)} {Lower(up)}")" OnClick="() => SetRoleAsync(row, up)" />
+                        <IconButton Icon="@Symbols.ArrowUpward" Label="@($"Make {row.Name} {Article(up)} {Lower(up)}")" OnClick="() => SetRoleAsync(row, up)" />
                     }
                     else
                     {
@@ -87,7 +101,7 @@
                     @if (_isAdmin && row.HasEmail && row.RoleValue > VolunteerRole.Member)
                     {
                         var down = row.RoleValue - 1;
-                        <IconButton Icon="e-chevron-down" Label="@($"Make {row.Name} {Article(down)} {Lower(down)}")" OnClick="() => SetRoleAsync(row, down)" />
+                        <IconButton Icon="@Symbols.ArrowDownward" Label="@($"Make {row.Name} {Article(down)} {Lower(down)}")" OnClick="() => SetRoleAsync(row, down)" />
                     }
                     else
                     {
@@ -95,7 +109,7 @@
                     }
                     @if (_isAdmin && row.Id != _me && row.RoleValue != VolunteerRole.Admin)
                     {
-                        <IconButton Icon="e-trash" Label="@($"Delete {row.Name}")" Danger="true" OnClick="() => AskDelete(row)" />
+                        <IconButton Icon="@Symbols.Delete" Label="@($"Delete {row.Name}")" Danger="true" OnClick="() => AskDelete(row)" />
                     }
                     else
                     {
@@ -130,7 +144,12 @@
     private const string Unsubscribed = "Unsubscribed";
     private const string NoEmail = "No email";
 
+    private static readonly string[] Statuses = [Confirmed, NotConfirmed, Unsubscribed, NoEmail];
+    private static readonly string[] Roles = [.. Enum.GetValues<VolunteerRole>().Select(r => r.ToString())];
     private static readonly string[] PageSizes = ["25", "50", "100", "All"];
+
+    // Typing part of a name or address finds it anywhere, not only at the start.
+    private static readonly FilterSettings Contains = new() { Operator = Syncfusion.Blazor.Operator.Contains };
 
     [CascadingParameter] private Task<AuthenticationState>? AuthenticationState { get; set; }
 
@@ -139,12 +158,16 @@
         Guid Id, string Name, string Email, DateTime Joined, string Status, string Role, string Interests,
         VolunteerRole RoleValue, bool HasEmail, bool CanResend);
 
+    private SfGrid<Row>? _grid;
     private List<Row> _rows = [];
     private Guid? _me;
     private bool _isAdmin;
     private string? _notice;
     private Row? _deleting;
     private bool _deleteOpen;
+    private string _statusFilter = string.Empty;
+    private string _roleFilter = string.Empty;
+    private string _joinedFilter = string.Empty;
 
     protected override async Task OnInitializedAsync()
     {
@@ -172,6 +195,29 @@
             m.Id, m.DisplayName, m.Email ?? string.Empty, LocalTime.ToLocal(m.CreatedAt).Date, status,
             m.Role.ToString(), string.Join(", ", m.Interests), m.Role,
             HasEmail: m.Email is not null, CanResend: status == NotConfirmed);
+    }
+
+    private async Task FilterChoiceAsync(string field, string value)
+    {
+        if (field == nameof(Row.Status)) _statusFilter = value;
+        else _roleFilter = value;
+
+        await FilterAsync(field, value.Length == 0 ? null : value);
+    }
+
+    private async Task FilterJoinedAsync(ChangeEventArgs e)
+    {
+        _joinedFilter = e.Value as string ?? string.Empty;
+        await FilterAsync(nameof(Row.Joined),
+            DateTime.TryParse(_joinedFilter, System.Globalization.CultureInfo.InvariantCulture, out var day) ? day : null);
+    }
+
+    private async Task FilterAsync(string field, object? value)
+    {
+        if (_grid is null) return;
+
+        if (value is null) await _grid.ClearFilteringAsync(field);
+        else await _grid.FilterByColumnAsync(field, "equal", value);
     }
 
     private async Task ResendAsync(Row row)
@@ -230,22 +276,23 @@
 
     private static string StatusIcon(string status) => status switch
     {
-        Confirmed => "e-circle-check",
-        NotConfirmed => "e-clock",
-        Unsubscribed => "e-circle-close",
-        _ => "e-close"
+        Confirmed => Symbols.CheckCircle,
+        NotConfirmed => Symbols.Schedule,
+        Unsubscribed => Symbols.Unsubscribe,
+        _ => Symbols.DoNotDisturb
     };
 
     private static string RoleIcon(VolunteerRole role) => role switch
     {
-        VolunteerRole.Admin => "e-star-filled",
-        VolunteerRole.Organizer => "e-people",
-        _ => "e-user"
+        VolunteerRole.Admin => Symbols.ShieldPerson,
+        VolunteerRole.Organizer => Symbols.Badge,
+        _ => Symbols.Person
     };
 
     private static string Slug(string words) => words.ToLowerInvariant().Replace(' ', '-');
 
     private static string Lower(VolunteerRole role) => role.ToString().ToLowerInvariant();
 
-    private static string Article(VolunteerRole role) => role == VolunteerRole.Admin ? "an" : "a";
+    // "an admin", "an organizer", "a member".
+    private static string Article(VolunteerRole role) => role == VolunteerRole.Member ? "a" : "an";
 }

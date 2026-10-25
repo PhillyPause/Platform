@@ -64,18 +64,27 @@ body { background: var(--team-cream); margin: 0; }
 
 .team-notice { background: var(--team-paper); border-left: 3px solid var(--team-red); padding: 10px 14px; margin: 0 0 14px; font-size: 14px; }
 
-/* Members: one line a person. The icons carry colour as a second cue only;
-   each has its words in a tooltip and for screen readers. */
-.member-icon { font-size: 16px; }
-.member-status-confirmed { color: #1E6B30; }
-.member-status-not-confirmed { color: #9A6A00; }
-.member-status-unsubscribed, .member-status-no-email { color: var(--team-muted); }
+/* Icons: Material Symbols (Symbols.cs), filled, one size. Colour is a
+   second cue only; each has its words in a tooltip and for screen readers. */
+.material-symbols-rounded { font-size: 20px; line-height: 1; vertical-align: middle; }
+.team-symbol { display: inline-flex; }
+
+/* A filter row's select and date cells, the height of its text cells. */
+.team-filter.e-input { width: 100%; height: 30px; padding: 0 6px; font: inherit; font-size: 13px; }
+
+/* Members: one line a person. */
+.member-status-confirmed { color: #1E7B36; }
+.member-status-not-confirmed { color: #C77700; }
+.member-status-unsubscribed { color: #8A6A5A; }
+.member-status-no-email { color: #9A958C; }
 .member-role-admin { color: var(--team-red); }
-.member-role-organizer { color: var(--team-ink); }
-.member-role-member { color: var(--team-muted); }
+.member-role-organizer { color: #043464; }
+.member-role-member { color: #8C8476; }
 .member-actions { display: flex; justify-content: flex-end; gap: 2px; white-space: nowrap; }
 .member-slot { display: inline-block; width: 32px; }
-.member-action.e-btn { width: 32px; height: 32px; padding: 0; }
+.member-action.e-btn { width: 32px; height: 32px; padding: 0; color: #4A4338; }
+.member-action.e-btn .material-symbols-rounded { font-size: 18px; }
+.member-action.e-btn:hover, .member-action.e-btn:focus-visible { color: #043464; }
 .member-action-danger.e-btn:hover, .member-action-danger.e-btn:focus-visible { color: var(--team-red); }
 
 @media (max-width: 639px) {
