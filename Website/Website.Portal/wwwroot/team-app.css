@@ -62,6 +62,9 @@ body { background: var(--team-cream); margin: 0; }
 .team-state-published { background: #E4F1E6; color: #1E6B30; }
 .team-state-finished { background: #ECECEC; color: #555; }
 
+/* A confirm dialog's title is a question with a name in it: it wraps rather than cutting off. */
+.team-dialog .e-dlg-header { white-space: normal; overflow: visible; text-overflow: clip; }
+
 .team-notice { background: var(--team-paper); border-left: 3px solid var(--team-red); padding: 10px 14px; margin: 0 0 14px; font-size: 14px; }
 
 /* Icons: Material Symbols (Symbols.cs), filled, one size. Colour is a
