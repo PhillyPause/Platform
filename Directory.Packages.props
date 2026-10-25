@@ -21,8 +21,8 @@
   </ItemGroup>
 
   <!-- The organizers' app (/team): grids, layout, editors. Commercial, under
-       the Syncfusion Community License; the key is configuration
-       (Syncfusion:LicenseKey), never committed. Without one, components work
+       the Syncfusion Community License; the key is the SYNCFUSION_LICENSE_KEY
+       environment variable, never committed. Without one, components work
        and show a trial banner. -->
   <ItemGroup Label="Syncfusion">
     <PackageVersion Include="Syncfusion.Blazor.Grid" Version="35.1.37" />

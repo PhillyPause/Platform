@@ -29,7 +29,7 @@ var website = builder.AddProject<Projects.Website_Portal>("website", launchProfi
 //   dotnet user-secrets set --project Platform/Platform.AppHost "Email:ApiKey" "re_..."
 // Only what is set travels, so the site's own defaults stay the single place a
 // default is decided. ManyHands:Enabled and :Seed are fixed above.
-foreach (var section in new[] { "ManyHands", "Email", "Discord", "FederalOfficials", "Syncfusion" })
+foreach (var section in new[] { "ManyHands", "Email", "Discord", "FederalOfficials" })
 {
     foreach (var (key, value) in builder.Configuration.GetSection(section).AsEnumerable())
     {
@@ -37,5 +37,10 @@ foreach (var section in new[] { "ManyHands", "Email", "Discord", "FederalOfficia
         website.WithEnvironment(key.Replace(":", "__"), value);
     }
 }
+
+// The Syncfusion licence is the machine's own environment variable, the same
+// name the site reads in production.
+if (builder.Configuration["SYNCFUSION_LICENSE_KEY"] is { Length: > 0 } syncfusionKey)
+    website.WithEnvironment("SYNCFUSION_LICENSE_KEY", syncfusionKey);
 
 builder.Build().Run();
