@@ -83,7 +83,7 @@
                     @* Every slot is there, filled or not, so the icons line up down the column. *@
                     @if (row.CanResend)
                     {
-                        <IconButton Icon="@Symbols.Send" Label="@($"Send {row.Name} the joining email again")" OnClick="() => ResendAsync(row)" />
+                        <IconButton Icon="@Symbols.Send" Label="@($"Send {row.Name} the joining email again")" OnClick="() => AskResend(row)" />
                     }
                     else
                     {
@@ -121,20 +121,18 @@
     </GridColumns>
 </SfGrid>
 
-@* Deleting cannot be undone, so it asks, and says what goes. *@
-<SfDialog @bind-Visible="_deleteOpen" IsModal="true" Width="440px" ShowCloseIcon="true" CssClass="team-dialog">
+@* Anything that reaches a person or cannot be undone asks first, and says
+   what will happen: sending the joining email again, and deleting. *@
+<SfDialog @bind-Visible="_confirmOpen" IsModal="true" Width="440px" ShowCloseIcon="true" CssClass="team-dialog">
     <DialogTemplates>
-        <Header>Delete @_deleting?.Name?</Header>
+        <Header>@_confirm?.Title</Header>
         <Content>
-            <p>
-                This deletes their name, email and what they like doing, for good. Activities they
-                came to still count that someone came, without them attached. They can join again.
-            </p>
+            <p>@_confirm?.Body</p>
         </Content>
     </DialogTemplates>
     <DialogButtons>
-        <DialogButton Content="Delete" IsPrimary="true" OnClick="DeleteAsync" />
-        <DialogButton Content="Keep them" OnClick="@(() => _deleteOpen = false)" />
+        <DialogButton Content="@(_confirm?.Yes ?? string.Empty)" IsPrimary="true" OnClick="ConfirmAsync" />
+        <DialogButton Content="@(_confirm?.No ?? string.Empty)" OnClick="@(() => _confirmOpen = false)" />
     </DialogButtons>
 </SfDialog>
 
@@ -163,8 +161,11 @@
     private Guid? _me;
     private bool _isAdmin;
     private string? _notice;
-    private Row? _deleting;
-    private bool _deleteOpen;
+    private Confirmation? _confirm;
+    private bool _confirmOpen;
+
+    /// <summary>What the confirm dialog asks, its two buttons, and what "yes" does.</summary>
+    private sealed record Confirmation(string Title, string Body, string Yes, string No, Func<Task> Act);
     private string _statusFilter = string.Empty;
     private string _roleFilter = string.Empty;
     private string _joinedFilter = string.Empty;
@@ -220,6 +221,34 @@
         else await _grid.FilterByColumnAsync(field, "equal", value);
     }
 
+    private void AskResend(Row row) => Ask(new(
+        $"Send {row.Name} the joining email again?",
+        $"It goes to {row.Email}, with a fresh link to confirm the address and one to take them off the list. "
+            + "If they confirm in the meantime, nothing goes.",
+        "Send it", "Not now", () => ResendAsync(row)));
+
+    private void AskDelete(Row row) => Ask(new(
+        $"Delete {row.Name}?",
+        "This deletes their name, email and what they like doing, for good. Activities they came to "
+            + "still count that someone came, without them attached. They can join again.",
+        "Delete", "Keep them", () => DeleteAsync(row)));
+
+    private void Ask(Confirmation confirmation)
+    {
+        _confirm = confirmation;
+        _confirmOpen = true;
+    }
+
+    private async Task ConfirmAsync()
+    {
+        _confirmOpen = false;
+        if (_confirm is { } confirmation)
+        {
+            _confirm = null;
+            await confirmation.Act();
+        }
+    }
+
     private async Task ResendAsync(Row row)
     {
         if (_me is not Guid me) return;
@@ -251,16 +280,9 @@
         await LoadAsync();
     }
 
-    private void AskDelete(Row row)
+    private async Task DeleteAsync(Row row)
     {
-        _deleting = row;
-        _deleteOpen = true;
-    }
-
-    private async Task DeleteAsync()
-    {
-        _deleteOpen = false;
-        if (_me is not Guid me || _deleting is not { } row) return;
+        if (_me is not Guid me) return;
 
         _notice = await MemberAdmin.DeleteAsync(me, row.Id) switch
         {
@@ -270,7 +292,6 @@
             MemberActionResult.NotAllowed => "Only admins delete people.",
             _ => $"{row.Name} is not on the list any more."
         };
-        _deleting = null;
         await LoadAsync();
     }
 
