@@ -39,8 +39,13 @@ foreach (var section in new[] { "ManyHands", "Email", "Discord", "FederalOfficia
 }
 
 // The Syncfusion licence is the machine's own environment variable, the same
-// name the site reads in production.
-if (builder.Configuration["SYNCFUSION_LICENSE_KEY"] is { Length: > 0 } syncfusionKey)
+// name the site reads in production. On Windows it is also read from the
+// user's saved variables, because a terminal or IDE opened before it was set
+// never inherits it.
+var syncfusionKey = builder.Configuration["SYNCFUSION_LICENSE_KEY"];
+if (string.IsNullOrEmpty(syncfusionKey) && OperatingSystem.IsWindows())
+    syncfusionKey = Environment.GetEnvironmentVariable("SYNCFUSION_LICENSE_KEY", EnvironmentVariableTarget.User);
+if (!string.IsNullOrEmpty(syncfusionKey))
     website.WithEnvironment("SYNCFUSION_LICENSE_KEY", syncfusionKey);
 
 builder.Build().Run();
