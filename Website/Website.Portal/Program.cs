@@ -21,9 +21,10 @@ builder.Services.AddRazorComponents()
 builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddSyncfusionBlazor();
 
-// Never committed: user secrets locally, an App Platform secret in
+// The SYNCFUSION_LICENSE_KEY environment variable, never committed: the
+// machine's own locally (the AppHost passes it on), an App Platform secret in
 // production. Without it the components work and show a trial banner.
-if (builder.Configuration["Syncfusion:LicenseKey"] is { Length: > 0 } syncfusionKey)
+if (builder.Configuration["SYNCFUSION_LICENSE_KEY"] is { Length: > 0 } syncfusionKey)
     Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(syncfusionKey);
 
 // Content is read and rendered once, at startup. A request never touches the
