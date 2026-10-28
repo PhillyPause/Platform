@@ -1,0 +1,17 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "site",
+      "runtimeExecutable": "dotnet",
+      "runtimeArgs": ["run", "--project", "Website/Website.Portal", "--launch-profile", "http"],
+      "port": 5203
+    },
+    {
+      "name": "apphost",
+      "runtimeExecutable": "dotnet",
+      "runtimeArgs": ["run", "--project", "Platform/Platform.AppHost"],
+      "port": 5203
+    }
+  ]
+}
