@@ -145,6 +145,12 @@ and doing nothing is a fine answer.
   sends nothing to anyone who has confirmed, removed themselves or
   unsubscribed by then. Joining again before confirming sends the email
   again, never a second reminder.
+- **The joining emails are the only HTML mail**, because the click they ask
+  for is the whole point of them. Each sends the logo, a "Confirm my email"
+  button and the link written out, alongside the same words as plain text.
+  `email_messages` records the text. Everything else ManyHands sends is text
+  only. The logo is `wwwroot/img/email-logo.png`, since mail clients do not
+  draw SVG (BRAND.md).
 - **Every joining email carries a removal link** as plainly as the confirm
   link: `/volunteer/remove/{key}` deletes the person outright, with no
   sign-in, because someone else may have typed the address.

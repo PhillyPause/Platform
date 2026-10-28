@@ -211,11 +211,14 @@ public sealed class OutboxDispatcher(
         var confirmUrl = email.Link(ManyHandsPaths.ConfirmJoin(await tokens.IssueConfirmationAsync(volunteerId, ct)));
         var removeUrl = email.Link(ManyHandsPaths.Remove(volunteer.CommsKey));
 
-        var (subject, body) = nudge
-            ? EmailTemplates.ConfirmNudge(volunteer.DisplayName, confirmUrl, removeUrl)
-            : EmailTemplates.ConfirmJoin(volunteer.DisplayName, confirmUrl, removeUrl, AuthTokenRepository.ConfirmationLifetime);
+        var logoUrl = email.Link(EmailTemplates.LogoPath);
 
-        await email.SendAsync(volunteer, subject, body, nudge ? OutboxKinds.MemberNudge : OutboxKinds.MemberConfirm, ct: ct);
+        var (subject, body, html) = nudge
+            ? EmailTemplates.ConfirmNudge(volunteer.DisplayName, confirmUrl, removeUrl, logoUrl)
+            : EmailTemplates.ConfirmJoin(volunteer.DisplayName, confirmUrl, removeUrl, AuthTokenRepository.ConfirmationLifetime, logoUrl);
+
+        await email.SendAsync(volunteer, subject, body, nudge ? OutboxKinds.MemberNudge : OutboxKinds.MemberConfirm,
+            html: html, ct: ct);
     }
 
     /// <summary>
