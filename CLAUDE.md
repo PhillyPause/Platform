@@ -199,8 +199,10 @@ mail arrives pre-sorted — a bare `mailto:` is a bug.
   purpose: its 30-second total timeout would cut off the two-minute Congress
   download. Add resilience per client, never globally.
 - **`NuGetAuditMode` is `all`**, so a transitive advisory breaks the build.
-  Fix it by pinning the patched version in `Directory.Packages.props`
-  (transitive pinning is on), as `MessagePack` is for Aspire.
+  Fix it by bumping the package that brings it, or by pinning the patched
+  version in `Directory.Packages.props` (transitive pinning is on). Drop a
+  pin once its parent brings a version past it, or the build fails as a
+  downgrade (NU1109).
 - **ManyHands is behind `ManyHands:Enabled`, off by default.** Off, nothing of
   it is registered and the site needs no database. A prerender must never fail
   for want of it: any page that shows ManyHands data falls back to static
