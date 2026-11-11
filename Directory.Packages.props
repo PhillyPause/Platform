@@ -8,11 +8,8 @@
   <!-- Local orchestration (Platform.AppHost) and the telemetry the site sends
        its dashboard (Platform.ServiceDefaults). Same line as ManyHands used. -->
   <ItemGroup Label="Aspire">
-    <PackageVersion Include="Aspire.Hosting.AppHost" Version="13.5.0" />
-    <PackageVersion Include="Aspire.Hosting.PostgreSQL" Version="13.5.0" />
-    <!-- Not referenced directly: Aspire.Hosting brings 2.5.302, which has
-         GHSA-qhrr-8q5h-9q3h. Transitive pinning lifts it to the patch. -->
-    <PackageVersion Include="MessagePack" Version="2.5.303" />
+    <PackageVersion Include="Aspire.Hosting.AppHost" Version="13.6.5" />
+    <PackageVersion Include="Aspire.Hosting.PostgreSQL" Version="13.6.5" />
     <PackageVersion Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.17.0" />
     <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.17.0" />
     <PackageVersion Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.17.0" />
@@ -34,8 +31,8 @@
   </ItemGroup>
 
   <ItemGroup Label="Web + client">
-    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.13" />
-    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="10.0.13" />
+    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.15" />
+    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="10.0.15" />
   </ItemGroup>
 
   <ItemGroup Label="Content pipeline">
@@ -54,7 +51,7 @@
     <PackageVersion Include="Npgsql" Version="10.0.3" />
     <PackageVersion Include="dbup-postgresql" Version="7.0.1" />
     <!-- The check-in code at the door, drawn as SVG on the server. MIT. -->
-    <PackageVersion Include="QRCoder" Version="1.6.0" />
+    <PackageVersion Include="QRCoder" Version="1.7.0" />
     <!-- The Discord bot: announcements, threads, DMs, roles, slash commands. MIT. -->
     <PackageVersion Include="Discord.Net.WebSocket" Version="3.20.1" />
   </ItemGroup>
@@ -70,7 +67,7 @@
          MIT-licensed fork with the same API. -->
     <PackageVersion Include="FluentAssertions" Version="7.2.2" />
     <!-- The real host, in memory, for tests that drive pages end to end. -->
-    <PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="10.0.13" />
+    <PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="10.0.15" />
     <!-- Real Postgres for ManyHands' tests. Needs Docker. -->
     <PackageVersion Include="Testcontainers.PostgreSql" Version="4.14.0" />
   </ItemGroup>
