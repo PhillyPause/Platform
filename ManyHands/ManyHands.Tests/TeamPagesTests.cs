@@ -121,6 +121,7 @@ public sealed partial class TeamPagesTests(DatabaseFixture db) : IAsyncLifetime
 
         Assert.Equal(HttpStatusCode.NotFound, (await member.GetAsync(ManyHandsPaths.Team)).StatusCode);
         Assert.Equal(HttpStatusCode.NotFound, (await member.GetAsync(Website.Portal.Volunteer.TeamEndpoints.ParticipationPath)).StatusCode);
+        Assert.Equal(HttpStatusCode.NotFound, (await member.GetAsync(Website.Portal.Volunteer.TeamEndpoints.MembersPath)).StatusCode);
     }
 
     [Fact]
@@ -258,6 +259,37 @@ public sealed partial class TeamPagesTests(DatabaseFixture db) : IAsyncLifetime
         var organizer = await SignedInAsync(VolunteerRole.Organizer);
 
         var csv = await organizer.GetStringAsync(Website.Portal.Volunteer.TeamEndpoints.ParticipationPath);
+
+        Assert.Contains("\"'=HYPERLINK(\"\"https://example.test\"\")\"", csv);
+        Assert.DoesNotContain(",=HYPERLINK", csv);
+    }
+
+    [Fact]
+    public async Task The_members_file_lists_everyone_on_the_members_page_with_their_email()
+    {
+        var email = TestData.NewEmail();
+        var name = $"Listed {Guid.NewGuid():N}";
+        await new VolunteerRepository(db.DataSource).JoinAsync(name, email, [TestData.Flyering]);
+        var organizer = await SignedInAsync(VolunteerRole.Organizer);
+
+        var page = await organizer.GetStringAsync(ManyHandsPaths.TeamMembers);
+        var lines = (await organizer.GetStringAsync(Website.Portal.Volunteer.TeamEndpoints.MembersPath))
+            .Split('\n').Select(l => l.TrimEnd('\r')).ToArray();
+
+        Assert.Contains($"href=\"{Website.Portal.Volunteer.TeamEndpoints.MembersPath}\"", page);
+        Assert.Equal("Name,Email,Joined (Eastern),Status,Role,Likes doing", lines[0]);
+        Assert.Contains(lines, l => l.StartsWith($"{name},{email},", StringComparison.Ordinal)
+                                    && l.Contains($",{MemberStatus.NotConfirmed},Member,", StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public async Task The_members_file_defuses_a_name_that_is_a_formula()
+    {
+        const string formula = "=HYPERLINK(\"https://example.test\")";
+        await new VolunteerRepository(db.DataSource).JoinAsync(formula, TestData.NewEmail(), []);
+        var organizer = await SignedInAsync(VolunteerRole.Organizer);
+
+        var csv = await organizer.GetStringAsync(Website.Portal.Volunteer.TeamEndpoints.MembersPath);
 
         Assert.Contains("\"'=HYPERLINK(\"\"https://example.test\"\")\"", csv);
         Assert.DoesNotContain(",=HYPERLINK", csv);
