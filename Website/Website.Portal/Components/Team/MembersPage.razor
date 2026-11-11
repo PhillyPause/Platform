@@ -24,6 +24,10 @@
             so they hear about nothing new until they click the link in their joining email
         </p>
     </div>
+    <div class="team-actions">
+        @* A file, so a plain link: the browser downloads it. *@
+        <a class="e-btn" href="@TeamEndpoints.MembersPath" target="_top">Download the list</a>
+    </div>
 </div>
 
 @if (_notice is not null)
@@ -156,12 +160,11 @@
 </SfDialog>
 
 @code {
-    private const string Confirmed = "Confirmed";
-    private const string NotConfirmed = "Not confirmed";
-    private const string Unsubscribed = "Unsubscribed";
-    private const string NoEmail = "No email";
+    private const string Confirmed = MemberStatus.Confirmed;
+    private const string NotConfirmed = MemberStatus.NotConfirmed;
+    private const string Unsubscribed = MemberStatus.Unsubscribed;
 
-    private static readonly string[] Statuses = [Confirmed, NotConfirmed, Unsubscribed, NoEmail];
+    private static readonly string[] Statuses = MemberStatus.All;
     private static readonly string[] Roles = [.. Enum.GetValues<VolunteerRole>().Select(r => r.ToString())];
     private static readonly string[] PageSizes = ["25", "50", "100", "All"];
 
@@ -228,10 +231,7 @@
 
     private Row ToRow(Member m)
     {
-        var status = m.Email is null ? NoEmail
-            : !m.CanEmail ? Unsubscribed
-            : m.Confirmed ? Confirmed
-            : NotConfirmed;
+        var status = m.Status;
 
         return new Row(
             m.Id, m.DisplayName, m.Email ?? string.Empty, LocalTime.ToLocal(m.CreatedAt).Date, status,
