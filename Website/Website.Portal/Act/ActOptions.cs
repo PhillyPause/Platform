@@ -54,5 +54,12 @@ public sealed class DeepInfraOptions
 
     public int MaxTokens { get; set; } = 600;
 
+    /// <summary>
+    /// Model calls per day across everyone, after which drafts are templates
+    /// until the day turns over. The per-address limit stops one reader; this
+    /// stops a crowd of addresses running up the bill.
+    /// </summary>
+    public int DailyLimit { get; set; } = 500;
+
     public bool IsConfigured => !string.IsNullOrWhiteSpace(ApiKey);
 }

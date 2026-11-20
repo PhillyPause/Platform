@@ -116,8 +116,9 @@ what the reader types goes to DeepInfra.
   an email without a `Subject:` line: the template instead. A reader is never
   left without a draft.
 - Nothing is sent for the reader. They change it and send it themselves.
-- Ten drafts per address per ten minutes (`ActThrottle`), because each one
-  costs money.
+- Ten drafts per address per ten minutes (`ActThrottle`), and
+  `DeepInfra:DailyLimit` model calls a day across everyone (`ModelBudget`),
+  because each one costs money.
 
 ## The ask
 
@@ -154,6 +155,7 @@ Off, none of it renders and no act page mentions it.
 | `DeepInfra:BaseUrl` | `https://api.deepinfra.com/v1/openai/` | |
 | `DeepInfra:Timeout` | 20 seconds | Then the template |
 | `DeepInfra:MaxTokens` | 600 | |
+| `DeepInfra:DailyLimit` | 500 | Model calls a day across everyone; past it, templates until the day turns over |
 
 Locally, set them in the AppHost's user secrets, which passes the `Act` and
 `DeepInfra` sections on. In production they are App Platform environment

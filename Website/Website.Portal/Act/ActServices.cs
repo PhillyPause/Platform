@@ -70,6 +70,7 @@ public static class ActServiceCollectionExtensions
             .Validate(o => o.Timeout > TimeSpan.Zero && o.Timeout <= TimeSpan.FromMinutes(1),
                 "DeepInfra:Timeout must be between zero and a minute.")
             .Validate(o => o.MaxTokens is > 0 and <= 2000, "DeepInfra:MaxTokens must be between 1 and 2000.")
+            .Validate(o => o.DailyLimit is > 0 and <= 100_000, "DeepInfra:DailyLimit must be between 1 and 100,000.")
             .ValidateOnStart();
 
         var act = configuration.GetSection(ActOptions.SectionName).Get<ActOptions>() ?? new();
@@ -90,6 +91,7 @@ public static class ActServiceCollectionExtensions
         var model = configuration.GetSection(DeepInfraOptions.SectionName).Get<DeepInfraOptions>() ?? new();
         if (model.IsConfigured)
         {
+            services.AddSingleton<ModelBudget>();
             services.AddHttpClient<DeepInfraDrafter>(http =>
             {
                 // The drafter's own timeout is the one that matters; this is the backstop.

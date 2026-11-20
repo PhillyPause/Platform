@@ -193,18 +193,33 @@ public partial class ActTests(WebApplicationFactory<Program> factory) : IClassFi
     private static DraftRequest Request(string? story) =>
         new(Senator, DraftKind.Email, "Sam", "19134", story, DraftTone.Plain);
 
-    private static DeepInfraDrafter Drafter(HttpMessageHandler handler) => new(
-        new HttpClient(handler),
-        Options.Create(new DeepInfraOptions { ApiKey = "test-key", Model = "test/model" }),
-        NullLogger<DeepInfraDrafter>.Instance);
+    [Fact]
+    public async Task Past_the_days_limit_the_model_is_not_called_and_the_template_answers()
+    {
+        var handler = new StubHandler(HttpStatusCode.OK,
+            """{"choices":[{"message":{"role":"assistant","content":"Subject: Hi\n\nDear Senator,\nYes."}}]}""");
+        var drafter = Drafter(handler, dailyLimit: 1);
+
+        (await drafter.DraftAsync(Request(null))).AiAssisted.Should().BeTrue();
+        (await drafter.DraftAsync(Request(null))).AiAssisted.Should().BeFalse();
+        handler.Calls.Should().Be(1);
+    }
+
+    private static DeepInfraDrafter Drafter(HttpMessageHandler handler, int dailyLimit = 500)
+    {
+        var options = Options.Create(new DeepInfraOptions { ApiKey = "test-key", Model = "test/model", DailyLimit = dailyLimit });
+        return new DeepInfraDrafter(new HttpClient(handler), options, new ModelBudget(options), NullLogger<DeepInfraDrafter>.Instance);
+    }
 
     private sealed class StubHandler(HttpStatusCode status, string body) : HttpMessageHandler
     {
         public string? Authorization { get; private set; }
         public string Body { get; private set; } = "";
+        public int Calls { get; private set; }
 
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken ct)
         {
+            Calls++;
             Authorization = request.Headers.Authorization?.ToString();
             Body = request.Content is null ? "" : await request.Content.ReadAsStringAsync(ct);
             return new HttpResponseMessage(status) { Content = new StringContent(body, Encoding.UTF8, "application/json") };

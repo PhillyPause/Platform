@@ -114,6 +114,29 @@ public sealed class TemplateDrafter : IMessageDrafter
 }
 
 /// <summary>
+/// The day's allowance of model calls, shared by every request. One instance,
+/// so the count is the site's; a restart starts the day's count again, which
+/// at one instance and a few deploys a day is close enough.
+/// </summary>
+public sealed class ModelBudget(IOptions<DeepInfraOptions> options) : IDisposable
+{
+    private readonly System.Threading.RateLimiting.FixedWindowRateLimiter _limiter = new(new()
+    {
+        PermitLimit = Math.Max(1, options.Value.DailyLimit),
+        Window = TimeSpan.FromDays(1),
+        QueueLimit = 0
+    });
+
+    public bool TryTake()
+    {
+        using var lease = _limiter.AttemptAcquire();
+        return lease.IsAcquired;
+    }
+
+    public void Dispose() => _limiter.Dispose();
+}
+
+/// <summary>
 /// DeepInfra's hosted model, through its OpenAI-compatible chat API, to turn
 /// the reader's notes into a message in their own voice. The reader always
 /// sees, edits and sends the result themselves; nothing is sent for them.
@@ -123,6 +146,7 @@ public sealed class TemplateDrafter : IMessageDrafter
 public sealed class DeepInfraDrafter(
     HttpClient http,
     IOptions<DeepInfraOptions> options,
+    ModelBudget budget,
     ILogger<DeepInfraDrafter> logger) : IMessageDrafter
 {
     public bool UsesAi => true;
@@ -132,6 +156,11 @@ public sealed class DeepInfraDrafter(
     public async Task<Draft> DraftAsync(DraftRequest request, CancellationToken ct = default)
     {
         var o = options.Value;
+        if (!budget.TryTake())
+        {
+            logger.LogWarning("DeepInfra's daily limit of {Limit} is spent; using the template", o.DailyLimit);
+            return TemplateDrafter.Write(request);
+        }
         using var timeout = CancellationTokenSource.CreateLinkedTokenSource(ct);
         timeout.CancelAfter(o.Timeout);
 
