@@ -47,6 +47,11 @@
                 <GridSortColumn Field="@nameof(Row.Starts)" Direction="Syncfusion.Blazor.Grids.SortDirection.Ascending" />
             </GridSortColumns>
         </GridSortSettings>
+        <GridTemplates>
+            <EmptyRecordTemplate>
+                <p class="mh-grid-empty">No activities yet. <strong>New activity</strong> starts one as a draft; nobody hears about it until you publish.</p>
+            </EmptyRecordTemplate>
+        </GridTemplates>
         <GridColumns>
             <GridColumn Field="@nameof(Row.Title)" HeaderText="Activity" Width="38%">
                 <Template>
@@ -61,7 +66,7 @@
             <GridColumn Field="@nameof(Row.Starts)" HeaderText="When" Width="24%">
                 <Template>@(((Row)context).When)</Template>
             </GridColumn>
-            <GridColumn Field="@nameof(Row.SignedUp)" HeaderText="Going" TextAlign="TextAlign.Right" Width="96">
+            <GridColumn Field="@nameof(Row.SignedUp)" HeaderText="Going" TextAlign="TextAlign.Right" Width="112">
                 <Template>
                     @{ var row = (Row)context; }
                     @row.SignedUp@(row.Capacity is { } cap ? $" / {cap}" : "")
@@ -72,7 +77,7 @@
                 </Template>
             </GridColumn>
             @* Phones get the three columns that matter: what, when, how full. *@
-            <GridColumn Field="@nameof(Row.CheckedIn)" HeaderText="Checked in" TextAlign="TextAlign.Right" Width="120" HideAtMedia="(min-width: 720px)" />
+            <GridColumn Field="@nameof(Row.CheckedIn)" HeaderText="Checked in" TextAlign="TextAlign.Right" Width="132" HideAtMedia="(min-width: 720px)" />
             <GridColumn Field="@nameof(Row.State)" HeaderText="State" Width="130" HideAtMedia="(min-width: 560px)">
                 <Template>
                     @{ var row = (Row)context; }

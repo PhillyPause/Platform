@@ -25,8 +25,9 @@
 .mh .e-grid .e-filterbarcell,
 .mh .e-grid .e-detailheadercell { background: var(--mh-sand); }
 .mh .e-grid .e-headercell .e-headertext {
-  font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--mh-muted);
+  font-size: 12px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--mh-muted);
 }
+.mh-grid-empty { margin: 8px 0; color: var(--mh-ink-soft); white-space: normal; }
 .mh .e-grid .e-rowcell { font-size: 15px; color: var(--mh-ink); }
 .mh .e-grid .e-row:hover .e-rowcell { background: #FDFBF7; }
 .mh .e-grid .e-toolbar { background: var(--mh-paper); border-bottom: 1px solid var(--mh-line); }
