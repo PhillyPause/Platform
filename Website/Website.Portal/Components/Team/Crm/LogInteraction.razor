@@ -3,20 +3,20 @@
 @* "Log something": a call, a meeting, a note. Its own form, so the
    organization and engagement pages share it; one per page. *@
 
-<EditForm Model="Input" FormName="log" OnValidSubmit="LogAsync" class="vol-form vol-inline-form">
+<EditForm Model="Input" FormName="log" OnValidSubmit="LogAsync" class="mh-form mh-inline-form">
     <DataAnnotationsValidator />
-    <label>
-        <span>What happened</span>
+    <label class="mh-field mh-field-wide">
+        <span class="mh-label">What happened</span>
         <InputTextArea @bind-Value="Input!.Body" rows="2" placeholder="Called the DC office; they will look at the letter this week." />
     </label>
-    <label>
-        <span>How</span>
+    <label class="mh-field">
+        <span class="mh-label">How</span>
         <InputSelect @bind-Value="Input!.Kind">
             @foreach (var kind in Enum.GetValues<InteractionKind>()) { <option value="@kind">@Show.Words(kind)</option> }
         </InputSelect>
     </label>
     <ValidationMessage For="() => Input!.Body" />
-    <button class="btn btn-ghost" type="submit">Log it</button>
+    <button class="mh-btn mh-btn-secondary" type="submit">Log it</button>
 </EditForm>
 
 @code {

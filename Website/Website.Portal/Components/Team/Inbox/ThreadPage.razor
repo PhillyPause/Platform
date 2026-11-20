@@ -10,58 +10,69 @@
     return;
 }
 
-<div class="wrap page-head">
-    <h1>@_messages[0].Subject</h1>
-    <p class="vol-meta vol-meta-lead">
-        <span>with @Correspondent</span>
-        @if (_organization is not null) { <span><a href="@ManyHandsPaths.CrmOrganization(_organization.Id)">@_organization.Name</a></span> }
-    </p>
-</div>
+<header class="mh-page-head">
+    <div>
+        <p class="mh-crumb"><a href="@ManyHandsPaths.Inbox">Inbox</a></p>
+        <h1>@_messages[0].Subject</h1>
+        <p class="mh-meta">
+            <span>with @Correspondent</span>
+            @if (_organization is not null) { <span><a href="@ManyHandsPaths.CrmOrganization(_organization.Id)">@_organization.Name</a></span> }
+            <span>@_messages.Count @(_messages.Count == 1 ? "message" : "messages")</span>
+        </p>
+    </div>
+</header>
 
-<div class="wrap vol-body vol-stack">
-    @if (_notice is not null)
-    {
-        <p class="vol-notice" role="status">@_notice</p>
-    }
+@if (_notice is not null)
+{
+    <p class="mh-notice" role="status">@_notice</p>
+}
 
+<div class="mh-stack">
     @if (_messages.Any(m => m.NeedsTriage))
     {
-        <section class="vol-card" aria-labelledby="triage-head">
-            <h2 id="triage-head">Who is this?</h2>
+        <section class="mh-panel mh-notice-warn mh-triage" aria-labelledby="triage-head">
+            <div class="mh-panel-head">
+                <h2 id="triage-head">Who is this?</h2>
+                <span class="mh-badge mh-badge-warn">Needs a person</span>
+            </div>
             <p>We do not know @Correspondent yet. Say who they are and the whole conversation files under them.</p>
-            <EditForm Model="Triage" FormName="triage" OnValidSubmit="TriageAsync" class="vol-form">
-                <label>
-                    <span>Someone we already know</span>
+            <EditForm Model="Triage" FormName="triage" OnValidSubmit="TriageAsync" class="mh-form">
+                <label class="mh-field">
+                    <span class="mh-label">Someone we already know</span>
                     <InputSelect @bind-Value="Triage!.ContactId">
                         <option value="">Somebody new</option>
                         @foreach (var contact in _contacts) { <option value="@contact.Id">@contact.FullName@(contact.Email is { } e ? $" ({e})" : "")</option> }
                     </InputSelect>
                 </label>
-                <label>
-                    <span>Or their name, as a new contact</span>
+                <label class="mh-field">
+                    <span class="mh-label">Or their name, as a new contact</span>
                     <InputText @bind-Value="Triage!.NewName" />
                 </label>
-                <label>
-                    <span>At</span>
+                <label class="mh-field">
+                    <span class="mh-label">At</span>
                     <InputSelect @bind-Value="Triage!.OrganizationId">
                         <option value="">No organization</option>
                         @foreach (var org in _organizations) { <option value="@org.Id">@org.Name</option> }
                     </InputSelect>
                 </label>
-                <button class="btn" type="submit">File it</button>
+                <div class="mh-form-actions">
+                    <button class="mh-btn mh-btn-primary" type="submit">File it</button>
+                </div>
             </EditForm>
         </section>
     }
 
-    <ol class="vol-thread">
+    <ol class="mh-thread" aria-label="The conversation, oldest first">
         @foreach (var message in _messages)
         {
-            <li class="@(message.Direction == EmailDirection.Inbound ? "is-in" : "is-out")">
-                <p class="vol-small">
-                    @(message.Direction == EmailDirection.Inbound ? $"From {message.FromAddress}" : $"To {message.ToAddress}")
-                    · @Show.Stamp(message.OccurredAt)
-                    @if (message.Status == EmailStatus.Failed) { <strong class="vol-error"> · not delivered</strong> }
-                    @if (message.Status == EmailStatus.Simulated) { <text> · logged, not sent</text> }
+            var inbound = message.Direction == EmailDirection.Inbound;
+            <li class="mh-message @(inbound ? "mh-message-in" : "mh-message-out")">
+                <p class="mh-message-head">
+                    <span class="mh-badge @(inbound ? "mh-badge-warn" : "mh-badge-info")">@(inbound ? "Received" : "Sent")</span>
+                    <span>@(inbound ? $"From {message.FromAddress}" : $"To {message.ToAddress}")</span>
+                    <span>@Show.Stamp(message.OccurredAt)</span>
+                    @if (message.Status == EmailStatus.Failed) { <strong class="mh-badge mh-badge-danger">not delivered</strong> }
+                    @if (message.Status == EmailStatus.Simulated) { <span class="mh-badge">logged, not sent</span> }
                 </p>
                 @foreach (var paragraph in Show.Paragraphs(message.BodyText))
                 {
@@ -71,14 +82,16 @@
         }
     </ol>
 
-    <section aria-labelledby="reply-head">
+    <section class="mh-panel mh-editor-panel" aria-labelledby="reply-head">
         <h2 id="reply-head">Reply</h2>
-        <EditForm Model="Reply" FormName="reply" OnValidSubmit="ReplyAsync" class="vol-form vol-editor">
+        <EditForm Model="Reply" FormName="reply" OnValidSubmit="ReplyAsync" class="mh-form mh-form-wide">
             <DataAnnotationsValidator />
             <InputTextArea @bind-Value="Reply!.Body" rows="8" aria-label="Your reply" />
             <ValidationMessage For="() => Reply!.Body" />
-            <button class="btn" type="submit">Send to @Correspondent</button>
-            <p class="vol-small">From @Outreach.Mailbox. Replies come back here.</p>
+            <div class="mh-form-actions">
+                <button class="mh-btn mh-btn-primary" type="submit">Send to @Correspondent</button>
+                <span class="mh-help">From @Outreach.Mailbox. Replies come back here.</span>
+            </div>
         </EditForm>
     </section>
 </div>

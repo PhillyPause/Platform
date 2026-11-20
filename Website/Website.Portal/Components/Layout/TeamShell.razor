@@ -25,7 +25,9 @@
 }
 
 <div class="mh mh-app">
-    <a class="mh-skip" href="#main">Skip to content</a>
+    @* The page's own address before the #: under <base href="/">, a bare
+       "#main" would be the front page's. *@
+    <a class="mh-skip" href="@($"{_here}#main")">Skip to content</a>
 
     @* Keyed on the page, so arriving somewhere new inside the app shuts the
        menu, as a full page load does. *@
@@ -86,6 +88,7 @@
 
     private string? _name;
     private string _path = "/";
+    private string _here = "/";
     private TeamNav.Link? _current;
 
     protected override async Task OnInitializedAsync()
@@ -106,7 +109,8 @@
 
     private void SetPath(string uri)
     {
-        _path = "/" + Navigation.ToBaseRelativePath(uri).Split('?', '#')[0];
+        _here = "/" + Navigation.ToBaseRelativePath(uri).Split('#')[0];
+        _path = _here.Split('?')[0];
         _current = TeamNav.Current(_path);
     }
 

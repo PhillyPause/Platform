@@ -6,46 +6,52 @@
 
 <PageMeta Title="Write" Description="Write an outreach email." NoIndex="true" />
 
-<div class="wrap page-head">
-    <h1>Write</h1>
-    <p class="lead">
-        @(_contact is not null ? $"To {_contact.FullName}." : "To anyone.")
-        It goes from @Outreach.Mailbox, and the reply comes back to the team&rsquo;s inbox.
-    </p>
-</div>
-
-<div class="wrap vol-body vol-stack">
-    @if (_templates.Count > 0)
-    {
-        <p class="vol-filter">
-            Start from:
-            @foreach (var template in _templates)
-            {
-                <a href="@($"{ManyHandsPaths.InboxCompose}?contact={Contact}&template={template.Id}")">@template.Name</a>
-            }
+<header class="mh-page-head">
+    <div>
+        <p class="mh-crumb"><a href="@ManyHandsPaths.Inbox">Inbox</a></p>
+        <h1>Write</h1>
+        <p class="mh-summary">
+            @(_contact is not null ? $"To {_contact.FullName}." : "To anyone.")
+            It goes from @Outreach.Mailbox, and the reply comes back to the team&rsquo;s inbox.
         </p>
-    }
+    </div>
+</header>
 
-    <EditForm Model="Input" FormName="compose" OnValidSubmit="SendAsync" class="vol-form vol-editor">
+@if (_templates.Count > 0)
+{
+    <nav class="mh-filter" aria-label="Start from a template">
+        <span class="mh-filter-label">Start from</span>
+        @foreach (var template in _templates)
+        {
+            <a href="@($"{ManyHandsPaths.InboxCompose}?contact={Contact}&template={template.Id}")" aria-current="@(Template == template.Id ? "page" : null)">@template.Name</a>
+        }
+    </nav>
+}
+
+<section class="mh-panel mh-editor-panel" aria-label="The email">
+    <EditForm Model="Input" FormName="compose" OnValidSubmit="SendAsync" class="mh-form mh-form-wide">
         <DataAnnotationsValidator />
-        <label>
-            <span>To</span>
+        <label class="mh-field">
+            <span class="mh-label">To</span>
             <InputText @bind-Value="Input!.To" type="email" />
             <ValidationMessage For="() => Input!.To" />
         </label>
-        <label>
-            <span>Subject</span>
+        <label class="mh-field">
+            <span class="mh-label">Subject</span>
             <InputText @bind-Value="Input!.Subject" />
             <ValidationMessage For="() => Input!.Subject" />
         </label>
-        <label>
-            <span>Message</span>
+        <label class="mh-field">
+            <span class="mh-label">Message</span>
             <InputTextArea @bind-Value="Input!.Body" rows="12" />
+            <span class="mh-help">Plain text. Leave a blank line between paragraphs.</span>
             <ValidationMessage For="() => Input!.Body" />
         </label>
-        <button class="btn" type="submit">Send</button>
+        <div class="mh-form-actions">
+            <button class="mh-btn mh-btn-primary" type="submit">Send</button>
+        </div>
     </EditForm>
-</div>
+</section>
 
 @code {
     [CascadingParameter] private HttpContext HttpContext { get; set; } = default!;

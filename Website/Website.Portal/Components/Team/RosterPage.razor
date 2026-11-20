@@ -8,98 +8,137 @@
     return;
 }
 
-<div class="wrap page-head">
-    <h1>@_activity.Title</h1>
-    <p class="vol-meta vol-meta-lead">
-        <span>@Show.When(_activity.StartsAt)</span>
-        <span>@Show.Where(_activity.Location)</span>
-        <span class="vol-status">@(_activity.IsPublished ? "Published" : "Draft")</span>
-    </p>
-</div>
-
-<div class="wrap vol-body vol-stack">
-    @if (_notice is not null)
-    {
-        <p class="vol-notice" role="status">@_notice</p>
-    }
-
-    <div class="vol-actions">
-        <EditForm Model="Publish" FormName="publish" OnSubmit="TogglePublishedAsync">
+<header class="mh-page-head">
+    <div>
+        <p class="mh-crumb"><a href="@ManyHandsPaths.Team" data-enhance-nav="false">Activities</a></p>
+        <div class="mh-title-row">
+            <h1>@_activity.Title</h1>
             @if (_activity.IsPublished)
             {
-                <button class="btn btn-ghost" type="submit">Unpublish</button>
+                <span class="mh-badge mh-badge-ok">Published</span>
             }
             else
             {
-                <button class="btn" type="submit">Publish, and tell people who like this</button>
+                <span class="mh-badge mh-badge-warn">Draft</span>
+            }
+        </div>
+        <p class="mh-meta">
+            <span>@Show.When(_activity.StartsAt)</span>
+            <span>@Show.Where(_activity.Location)</span>
+        </p>
+    </div>
+    <div class="mh-page-actions">
+        <EditForm Model="Publish" FormName="publish" OnSubmit="TogglePublishedAsync">
+            @if (_activity.IsPublished)
+            {
+                <button class="mh-btn mh-btn-secondary" type="submit">Unpublish</button>
+            }
+            else
+            {
+                <button class="mh-btn mh-btn-primary" type="submit">Publish, and tell people who like this</button>
             }
         </EditForm>
-        <a class="btn btn-ghost" href="@ManyHandsPaths.TeamEditActivity(Id)">Edit</a>
+        <a class="mh-btn mh-btn-secondary" href="@ManyHandsPaths.TeamEditActivity(Id)">Edit</a>
         @if (_activity.IsPublished)
         {
-            <a class="btn btn-ghost" href="@ManyHandsPaths.Activity(Id)">See the public page</a>
-            <a class="btn btn-ghost" href="@ManyHandsPaths.TeamCheckInCode(Id)">Check-in code for the door</a>
+            <a class="mh-btn mh-btn-secondary" href="@ManyHandsPaths.TeamCheckInCode(Id)">Check-in code for the door</a>
+            <a class="mh-btn mh-btn-secondary" href="@ManyHandsPaths.Activity(Id)">See the public page</a>
         }
     </div>
+</header>
 
-    <section aria-labelledby="roster-head">
-        <h2 id="roster-head">Who is coming</h2>
-        <p>
-            @_roster.Count(r => r.Status == SignupStatus.Confirmed) signed up
-            @(_activity.Capacity is { } cap ? $"of {cap}" : "")
-            &middot; @_roster.Count(r => r.CheckedInAt is not null) checked in
-            @if (_roster.Any(r => r.Status == SignupStatus.Waitlisted))
+@if (_notice is not null)
+{
+    <p class="mh-notice" role="status">@_notice</p>
+}
+
+<div class="mh-cards mh-roster-numbers">
+    <div class="mh-card">
+        <span class="mh-card-label">Signed up</span>
+        <p class="mh-card-figure">@_roster.Count(r => r.Status == SignupStatus.Confirmed)</p>
+        <p class="mh-card-text">@(_activity.Capacity is { } cap ? $"of {cap} places" : "no limit")</p>
+    </div>
+    <div class="mh-card">
+        <span class="mh-card-label">Checked in</span>
+        <p class="mh-card-figure">@_roster.Count(r => r.CheckedInAt is not null)</p>
+        <p class="mh-card-text">at the door, so far</p>
+    </div>
+    <div class="mh-card">
+        <span class="mh-card-label">Waitlist</span>
+        <p class="mh-card-figure">@_roster.Count(r => r.Status == SignupStatus.Waitlisted)</p>
+        <p class="mh-card-text">waiting for a place</p>
+    </div>
+</div>
+
+<div class="mh-columns mh-section">
+    <section class="mh-panel" aria-labelledby="roster-head">
+        <div class="mh-panel-head">
+            <h2 id="roster-head">Who is coming</h2>
+            @if (_roster.Count > 0)
             {
-                <text>&middot; @_roster.Count(r => r.Status == SignupStatus.Waitlisted) on the waitlist</text>
+                <p>Press a name to check them in, or press it again to undo.</p>
             }
-        </p>
+        </div>
 
         @if (_roster.Count == 0)
         {
-            <p class="vol-empty">Nobody yet.</p>
+            <div class="mh-empty">
+                <p class="mh-empty-title">Nobody yet</p>
+                <p>
+                    @(_activity.IsPublished
+                        ? "Signups appear here as they come in. At the door, add anyone who turns up without one."
+                        : "It is a draft, so nobody can sign up. Publish it and the people who like this kind of thing are told.")
+                </p>
+            </div>
         }
         else
         {
             <EditForm Model="Toggle" FormName="check-in" OnSubmit="ToggleCheckInAsync">
-                <ul class="vol-roster">
+                <ul class="mh-roster">
                     @foreach (var entry in _roster)
                     {
                         <li class="@(entry.CheckedInAt is not null ? "is-in" : null)">
                             @* The pressed button posts its own value: the signup, and which way to flip it. *@
                             <button type="submit" name="Toggle.Value" value="@($"{entry.SignupId}:{entry.CheckedInAt is null}")"
                                     aria-pressed="@(entry.CheckedInAt is not null ? "true" : "false")">
-                                <span class="vol-tick" aria-hidden="true">@(entry.CheckedInAt is not null ? "✓" : "")</span>
+                                <span class="mh-tick" aria-hidden="true">@(entry.CheckedInAt is not null ? "✓" : "")</span>
                                 <span>
                                     <strong>@entry.DisplayName</strong>
-                                    <span class="vol-small">
+                                    <span class="mh-small">
                                         @entry.Email
                                         @if (entry.Status == SignupStatus.Waitlisted) { <text> &middot; waitlist</text> }
                                         @if (entry.Source == SignupSource.Organizer) { <text> &middot; walk-in</text> }
                                     </span>
                                 </span>
+                                @if (entry.CheckedInAt is not null)
+                                {
+                                    <span class="mh-badge mh-badge-ok mh-in-word" aria-hidden="true">In</span>
+                                }
                             </button>
                         </li>
                     }
                 </ul>
             </EditForm>
-            <p class="vol-small">Press a name to check them in, or press it again to undo.</p>
         }
     </section>
 
-    <section aria-labelledby="walk-in-head">
+    <section class="mh-panel" aria-labelledby="walk-in-head">
         <h2 id="walk-in-head">Somebody turned up without signing up</h2>
-        <EditForm Model="WalkIn" FormName="walk-in" OnValidSubmit="AddWalkInAsync" class="vol-form vol-narrow">
+        <EditForm Model="WalkIn" FormName="walk-in" OnValidSubmit="AddWalkInAsync" class="mh-form">
             <DataAnnotationsValidator />
-            <label>
-                <span>Name</span>
+            <label class="mh-field">
+                <span class="mh-label">Name</span>
                 <InputText @bind-Value="WalkIn!.DisplayName" />
                 <ValidationMessage For="() => WalkIn!.DisplayName" />
             </label>
-            <label>
-                <span>Email, if they want to hear about the next one</span>
+            <label class="mh-field">
+                <span class="mh-label">Email <span class="mh-optional">(optional)</span></span>
                 <InputText @bind-Value="WalkIn!.Email" type="email" />
+                <span class="mh-help">If they want to hear about the next one.</span>
             </label>
-            <button class="btn btn-ghost" type="submit">Add and check in</button>
+            <div class="mh-form-actions">
+                <button class="mh-btn mh-btn-secondary" type="submit">Add and check in</button>
+            </div>
         </EditForm>
     </section>
 </div>

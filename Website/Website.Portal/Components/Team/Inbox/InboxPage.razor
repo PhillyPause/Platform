@@ -4,32 +4,45 @@
 
 <PageMeta Title="Inbox" Description="PhillyPause's outreach mail." NoIndex="true" />
 
-<div class="wrap page-head">
-    <h1>Inbox</h1>
-    <p class="lead">
-        Outreach mail to and from @Outreach.Mailbox, whoever sent it. Nothing lives in anyone&rsquo;s
-        personal inbox, so a conversation survives the person who started it.
-    </p>
-</div>
+<header class="mh-page-head">
+    <div>
+        <h1>Inbox</h1>
+        <p class="mh-summary">
+            Outreach mail to and from @Outreach.Mailbox, whoever sent it. Nothing lives in anyone&rsquo;s
+            personal inbox, so a conversation survives the person who started it.
+        </p>
+    </div>
+    <div class="mh-page-actions">
+        <a class="mh-btn mh-btn-primary" href="@ManyHandsPaths.InboxCompose">Write</a>
+        <a class="mh-btn mh-btn-secondary" href="@ManyHandsPaths.InboxTemplates">Templates</a>
+    </div>
+</header>
 
-<div class="wrap vol-body">
-    <p class="vol-actions">
-        <a class="btn" href="@ManyHandsPaths.InboxCompose">Write</a>
-        <a class="btn btn-ghost" href="@ManyHandsPaths.InboxTemplates">Templates</a>
-    </p>
+<nav class="mh-filter" aria-label="Which threads">
+    <a href="@ManyHandsPaths.Inbox" aria-current="@(!Triage ? "page" : null)">Everything</a>
+    <a href="@($"{ManyHandsPaths.Inbox}?triage=true")" aria-current="@(Triage ? "page" : null)">From people we do not know yet</a>
+</nav>
 
-    <nav class="vol-filter" aria-label="Which threads">
-        <a href="@ManyHandsPaths.Inbox" aria-current="@(!Triage ? "page" : null)">Everything</a>
-        <a href="@($"{ManyHandsPaths.Inbox}?triage=true")" aria-current="@(Triage ? "page" : null)">From people we do not know yet</a>
-    </nav>
-
-    @if (_threads.Count == 0)
-    {
-        <p class="vol-empty">@(Triage ? "Nobody waiting to be identified." : "No mail yet.")</p>
-    }
-    else
-    {
-        <table class="vol-table">
+@if (_threads.Count == 0)
+{
+    <div class="mh-empty">
+        @if (Triage)
+        {
+            <p class="mh-empty-title">Nobody waiting to be identified</p>
+            <p>Mail from an address no contact has lands here, so someone can say who sent it.</p>
+        }
+        else
+        {
+            <p class="mh-empty-title">No mail yet</p>
+            <p>Write to an office or a partner, and their replies come back here, threaded.</p>
+            <a class="mh-btn mh-btn-secondary" href="@ManyHandsPaths.InboxCompose">Write the first one</a>
+        }
+    </div>
+}
+else
+{
+    <div class="mh-table-wrap">
+        <table class="mh-table mh-table-stack">
             <thead><tr><th scope="col">Conversation</th><th scope="col">With</th><th scope="col">Last</th></tr></thead>
             <tbody>
                 @foreach (var thread in _threads)
@@ -37,19 +50,22 @@
                     <tr>
                         <td>
                             <a href="@ManyHandsPaths.InboxThread(thread.ConversationId)">@thread.Subject</a>
-                            @if (thread.NeedsTriage) { <div class="vol-room">Who is this?</div> }
+                            @if (thread.NeedsTriage) { <span class="mh-badge mh-badge-warn">Who is this?</span> }
                         </td>
-                        <td>
+                        <td data-label="With">
                             @(thread.ContactName ?? (thread.Direction == EmailDirection.Inbound ? thread.FromAddress : thread.ToAddress))
-                            @if (thread.OrganizationName is { } org) { <div class="vol-small">@org</div> }
+                            @if (thread.OrganizationName is { } org) { <span class="mh-small">@org</span> }
                         </td>
-                        <td class="vol-small">@Show.Stamp(thread.LastMessageAt) · @thread.MessageCount</td>
+                        <td data-label="Last" class="mh-small">
+                            @Show.Stamp(thread.LastMessageAt)
+                            <span>@thread.MessageCount @(thread.MessageCount == 1 ? "message" : "messages")</span>
+                        </td>
                     </tr>
                 }
             </tbody>
         </table>
-    }
-</div>
+    </div>
+}
 
 @code {
     [SupplyParameterFromQuery(Name = "triage")] private bool Triage { get; set; }

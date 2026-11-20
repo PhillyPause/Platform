@@ -3,45 +3,64 @@
 
 <PageMeta Title="Pipeline" Description="Every engagement, by where it stands." NoIndex="true" />
 
-<div class="wrap page-head">
-    <h1>Pipeline</h1>
-    <p class="lead">Every effort, by where it stands. Move a card with its arrows.</p>
-</div>
+<header class="mh-page-head">
+    <div>
+        <h1>Pipeline</h1>
+        <p class="mh-summary">Every effort, by where it stands. Move a card with its arrows; start a new one from its organization.</p>
+    </div>
+    <div class="mh-page-actions">
+        <a class="mh-btn mh-btn-secondary" href="@ManyHandsPaths.Crm">Organizations</a>
+    </div>
+</header>
 
-<div class="wrap vol-body">
-    <EditForm Model="Move" FormName="move" OnSubmit="MoveAsync">
-        <div class="vol-board">
-            @foreach (var status in Columns)
-            {
-                var cards = _engagements.Where(e => e.Status == status).ToList();
-                <section class="vol-column" aria-labelledby="@($"col-{status}")">
-                    <h2 id="@($"col-{status}")">@Show.Words(status) <span class="vol-small">@cards.Count</span></h2>
-                    @foreach (var card in cards)
-                    {
-                        <article class="vol-board-card">
-                            <a href="@ManyHandsPaths.CrmEngagement(card.Id)">@card.Title</a>
-                            <div class="vol-small">
-                                @card.OrganizationName
-                                @if (card.ScheduledAt is { } at) { <text> · @Show.Stamp(at)</text> }
-                                @if (card.OpenTaskCount > 0) { <text> · @card.OpenTaskCount to do</text> }
-                            </div>
-                            <div class="vol-board-moves">
-                                @if (Previous(status) is { } back)
-                                {
-                                    <button class="vol-link-button" type="submit" name="Move.Value" value="@($"{card.Id}:{back}")" aria-label="@($"Move {card.Title} back to {Show.Words(back)}")">&larr; @Show.Words(back)</button>
-                                }
-                                @if (Next(status) is { } forward)
-                                {
-                                    <button class="vol-link-button" type="submit" name="Move.Value" value="@($"{card.Id}:{forward}")" aria-label="@($"Move {card.Title} on to {Show.Words(forward)}")">@Show.Words(forward) &rarr;</button>
-                                }
-                            </div>
-                        </article>
-                    }
-                </section>
-            }
-        </div>
-    </EditForm>
-</div>
+@if (_engagements.Count == 0)
+{
+    <div class="mh-empty">
+        <p class="mh-empty-title">Nothing in the pipeline yet</p>
+        <p>An engagement is one effort with one organization: a meeting, a letter, an ask. Open an organization and start one there.</p>
+        <a class="mh-btn mh-btn-secondary" href="@ManyHandsPaths.Crm">Go to Organizations</a>
+    </div>
+}
+
+<EditForm Model="Move" FormName="move" OnSubmit="MoveAsync">
+    <div class="mh-board mh-section">
+        @foreach (var status in Columns)
+        {
+            var cards = _engagements.Where(e => e.Status == status).ToList();
+            <section class="mh-column" aria-labelledby="@($"col-{status}")">
+                <div class="mh-column-head">
+                    <h2 id="@($"col-{status}")">@Show.Words(status)</h2>
+                    <span class="mh-badge">@cards.Count</span>
+                </div>
+                @if (cards.Count == 0)
+                {
+                    <p class="mh-board-empty">None</p>
+                }
+                @foreach (var card in cards)
+                {
+                    <article class="mh-board-card">
+                        <a href="@ManyHandsPaths.CrmEngagement(card.Id)">@card.Title</a>
+                        <div class="mh-meta">
+                            @if (card.OrganizationName is { } org) { <span>@org</span> }
+                            @if (card.ScheduledAt is { } at) { <span>@Show.Stamp(at)</span> }
+                            @if (card.OpenTaskCount > 0) { <span>@card.OpenTaskCount to do</span> }
+                        </div>
+                        <div class="mh-board-moves">
+                            @if (Previous(status) is { } back)
+                            {
+                                <button class="mh-btn mh-btn-quiet" type="submit" name="Move.Value" value="@($"{card.Id}:{back}")" aria-label="@($"Move {card.Title} back to {Show.Words(back)}")">&larr; @Show.Words(back)</button>
+                            }
+                            @if (Next(status) is { } forward)
+                            {
+                                <button class="mh-btn mh-btn-quiet" type="submit" name="Move.Value" value="@($"{card.Id}:{forward}")" aria-label="@($"Move {card.Title} on to {Show.Words(forward)}")">@Show.Words(forward) &rarr;</button>
+                            }
+                        </div>
+                    </article>
+                }
+            </section>
+        }
+    </div>
+</EditForm>
 
 @code {
     // Declined sits at the end: a card goes there from anywhere, by editing it.
