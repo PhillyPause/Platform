@@ -164,11 +164,20 @@
         _types = await Types.GetActiveAsync();
         _calendarUrl = Email.Link(ManyHandsPaths.PersonalCalendar(_me.CalendarKey));
 
-        if (HttpMethods.IsGet(HttpContext.Request.Method))
+        // The box shows what is saved, unless it is the box itself coming
+        // back: cancelling a signup or unlinking Discord posts another form,
+        // and must not redraw it unticked for the next Save to unsubscribe.
+        if (!Posted("interests"))
             Interests.EmailOptIn = _me.CanReceiveEmail;
 
         await LoadAsync();
     }
+
+    /// <summary>Whether this request is the named form on this page being submitted.</summary>
+    private bool Posted(string formName) =>
+        HttpMethods.IsPost(HttpContext.Request.Method)
+        && HttpContext.Request.HasFormContentType
+        && HttpContext.Request.Form["_handler"] == formName;
 
     private async Task LoadAsync()
     {

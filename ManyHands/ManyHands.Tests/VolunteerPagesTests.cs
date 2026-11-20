@@ -235,6 +235,25 @@ public sealed class VolunteerPagesTests(DatabaseFixture db) : IAsyncLifetime
         Assert.Equal(HttpStatusCode.Redirect, (await browser.GetAsync(ManyHandsPaths.Me)).StatusCode);
     }
 
+    /// <summary>Another form on the page posting must not redraw the email box unticked, for the next Save to unsubscribe.</summary>
+    [Fact]
+    public async Task Cancelling_a_signup_leaves_the_email_box_as_saved()
+    {
+        var activity = await TestData.ActivityAsync(db.DataSource);
+        var volunteer = await TestData.VolunteerAsync(db.DataSource, "Box Keeper");
+        await new SignupRepository(db.DataSource).SignUpAsync(activity, "Box Keeper", volunteer.Email!, []);
+        var signup = Assert.Single(await new SignupRepository(db.DataSource).GetForVolunteerAsync(volunteer.Id));
+        Assert.True(volunteer.CanReceiveEmail);
+        var browser = _portal.Browser();
+        await Forms.SignInAsync(browser, db.DataSource, volunteer.Id);
+
+        var response = await Forms.SubmitAsync(browser, ManyHandsPaths.Me, "cancel", ("Cancel.SignupId", signup.SignupId.ToString()));
+        var page = await response.Content.ReadAsStringAsync();
+
+        Assert.Contains("your place has gone to the next person", page);
+        Assert.Matches("<input[^>]*(name=\"Interests.EmailOptIn\"[^>]*checked|checked[^>]*name=\"Interests.EmailOptIn\")", page);
+    }
+
     [Fact]
     public async Task A_Discord_link_asks_a_stranger_to_sign_in_and_links_on_the_button_only()
     {
