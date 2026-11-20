@@ -182,6 +182,12 @@ html:has(.mh-app), html:has(.mh-app) body { background: var(--mh-cream); }
 /* Wide screens: a measure for the whole page, so a table never runs to 2000px. */
 .mh-main > * { max-width: 78rem; }
 
+/* A laptop: a slimmer sidebar and margins, so a wide grid keeps its room. */
+@media (min-width: 960px) and (max-width: 1279px) {
+  .mh-app { --mh-side: 216px; }
+  .mh-main { padding-inline: var(--mh-5); }
+}
+
 @media (min-width: 960px) {
   .mh-menu-toggle { display: none; }
   .mh-sidebar { position: sticky; top: var(--mh-bar); height: calc(100vh - var(--mh-bar)); overflow-y: auto; }
@@ -267,6 +273,7 @@ html:has(.mh-app), html:has(.mh-app) body { background: var(--mh-cream); }
 
 /* A line of facts: each item separated by a gap, never by colour. */
 .mh-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 2px var(--mh-4); margin: 6px 0 0; color: var(--mh-muted); font-size: var(--mh-text-sm); }
+.mh-meta-lead { font-size: var(--mh-text); color: var(--mh-ink-soft); }
 .mh-small { font-size: var(--mh-text-sm); color: var(--mh-muted); }
 
 /* --- sections, panels and layout ----------------------------------------- */
@@ -285,7 +292,7 @@ html:has(.mh-app), html:has(.mh-app) body { background: var(--mh-cream); }
 .mh-panel-head p { margin: 0; color: var(--mh-muted); font-size: var(--mh-text-sm); }
 .mh-panel > h2 + p, .mh-panel-head + p { color: var(--mh-ink-soft); }
 .mh-panel-foot { margin-top: var(--mh-4); padding-top: var(--mh-4); border-top: 1px solid var(--mh-line); }
-.mh-panel-sub { margin-top: var(--mh-5); }
+.mh .mh-panel-sub { margin-top: var(--mh-5); }
 .mh-narrow { max-width: 32rem; }
 
 /* A main column and a narrower one beside it; stacked below 1100px. */
@@ -320,6 +327,13 @@ html:has(.mh-app), html:has(.mh-app) body { background: var(--mh-cream); }
 .mh-card-foot { margin: auto 0 0 !important; padding-top: var(--mh-3); font-size: var(--mh-text-sm); color: var(--mh-ink-soft); }
 .mh-card .mh-list { margin-top: var(--mh-2); }
 .mh-card .mh-list .mh-list-main > a { font-weight: 600; }
+/* A row of plain figures: two abreast on a phone rather than a tall stack. */
+@media (max-width: 639px) {
+  .mh-cards-compact { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--mh-3); }
+  .mh-cards-compact .mh-card { padding: var(--mh-3); }
+  .mh-cards-compact .mh-card-figure { font-size: 1.75rem; }
+  .mh-cards-compact .mh-card-word { font-size: 1.3rem; }
+}
 /* Something waiting on someone: a red top rule and a word saying so. */
 .mh-card-attention { border-top-color: var(--mh-red); }
 
@@ -593,5 +607,7 @@ html:has(.mh-app), html:has(.mh-app) body { background: var(--mh-cream); }
 .mh-split { display: grid; gap: var(--mh-5); align-items: start; }
 @media (min-width: 52rem) { .mh-split { grid-template-columns: minmax(0, 1fr) 23rem; } }
 .mh-room { margin: 0 0 var(--mh-3) !important; font-weight: 700; color: var(--mh-red-deep); }
+/* The signup card is narrow: one interest a line. */
+.mh-split .mh-panel .vol-interests { grid-template-columns: minmax(0, 1fr); }
 .mh-prose { max-width: 38rem; font-size: 1.0625rem; line-height: 1.6; }
 .mh-prose p { margin: 0 0 1em; }

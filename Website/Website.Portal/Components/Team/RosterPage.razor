@@ -22,7 +22,7 @@
                 <span class="mh-badge mh-badge-warn">Draft</span>
             }
         </div>
-        <p class="mh-meta">
+        <p class="mh-meta mh-meta-lead">
             <span>@Show.When(_activity.StartsAt)</span>
             <span>@Show.Where(_activity.Location)</span>
         </p>
@@ -52,7 +52,7 @@
     <p class="mh-notice" role="status">@_notice</p>
 }
 
-<div class="mh-cards mh-roster-numbers">
+<div class="mh-cards mh-cards-compact">
     <div class="mh-card">
         <span class="mh-card-label">Signed up</span>
         <p class="mh-card-figure">@_roster.Count(r => r.Status == SignupStatus.Confirmed)</p>
@@ -104,11 +104,7 @@
                                 <span class="mh-tick" aria-hidden="true">@(entry.CheckedInAt is not null ? "✓" : "")</span>
                                 <span>
                                     <strong>@entry.DisplayName</strong>
-                                    <span class="mh-small">
-                                        @entry.Email
-                                        @if (entry.Status == SignupStatus.Waitlisted) { <text> &middot; waitlist</text> }
-                                        @if (entry.Source == SignupSource.Organizer) { <text> &middot; walk-in</text> }
-                                    </span>
+                                    <span class="mh-small">@Detail(entry)</span>
                                 </span>
                                 @if (entry.CheckedInAt is not null)
                                 {
@@ -198,6 +194,14 @@
         WalkIn = new();
         await LoadAsync();
     }
+
+    /// <summary>"sam@example.org · waitlist · walk-in": what there is of it.</summary>
+    private static string Detail(RosterEntry entry) => string.Join(" · ", new[]
+    {
+        entry.Email,
+        entry.Status == SignupStatus.Waitlisted ? "waitlist" : null,
+        entry.Source == SignupSource.Organizer ? "walk-in" : null
+    }.Where(part => !string.IsNullOrEmpty(part)));
 
     private sealed class PublishInput;
 

@@ -56,9 +56,9 @@ else
                             @(thread.ContactName ?? (thread.Direction == EmailDirection.Inbound ? thread.FromAddress : thread.ToAddress))
                             @if (thread.OrganizationName is { } org) { <span class="mh-small">@org</span> }
                         </td>
-                        <td data-label="Last" class="mh-small">
+                        <td data-label="Last">
                             @Show.Stamp(thread.LastMessageAt)
-                            <span>@thread.MessageCount @(thread.MessageCount == 1 ? "message" : "messages")</span>
+                            <span class="mh-small">@thread.MessageCount @(thread.MessageCount == 1 ? "message" : "messages")</span>
                         </td>
                     </tr>
                 }
