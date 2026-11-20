@@ -165,6 +165,11 @@ public sealed class OfficialsStore
             Party = meta.Party,
             Status = ParseStatus(meta.Status, name),
             TermEnds = meta.TermEnds,
+            TermStarts = meta.TermStarts,
+            Offices = (meta.Offices ?? [])
+                .Where(o => !string.IsNullOrWhiteSpace(o.Address))
+                .Select(o => new OfficialOffice(o.Label ?? "Office", o.Address!.Trim()))
+                .ToArray(),
             Counties = counties,
             Phones = (meta.Phones ?? [])
                 .Where(p => !string.IsNullOrWhiteSpace(p.Number))
@@ -262,6 +267,8 @@ public sealed class OfficialsStore
         public string? Party { get; set; }
         public string? Status { get; set; }
         public DateOnly? TermEnds { get; set; }
+        public DateOnly? TermStarts { get; set; }
+        public List<OfficeYaml>? Offices { get; set; }
         public List<string>? Counties { get; set; }
         public List<PhoneYaml>? Phones { get; set; }
         public string? Email { get; set; }
@@ -275,6 +282,12 @@ public sealed class OfficialsStore
         public List<string>? Sources { get; set; }
         public bool Verified { get; set; }
         public DateOnly? Updated { get; set; }
+    }
+
+    private sealed class OfficeYaml
+    {
+        public string? Label { get; set; }
+        public string? Address { get; set; }
     }
 
     private sealed class PhoneYaml

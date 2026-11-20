@@ -4,13 +4,13 @@
    has checked the entry. Production never shows the second: it is a note to
    the people editing the directory, not to readers. *@
 
-@if (Official.Status == OfficialStatus.MemberElect)
+@if (Official.Status == OfficialStatus.MemberElect && (Official.TermStarts is null || Official.TermStarts > Today))
 {
-    <p class="act-status act-status-elect">Elected; takes office @(Official.Level == OfficialLevel.Federal ? "January 3, 2027" : "in January")</p>
+    <p class="act-status act-status-elect">Elected; takes office @(Official.TermStarts is { } start ? start.ToString("MMMM d, yyyy", System.Globalization.CultureInfo.InvariantCulture) : "soon")</p>
 }
 else if (Official.Status == OfficialStatus.Departing)
 {
-    <p class="act-status act-status-leaving">Leaving office@(Official.TermEnds is { } end ? $" {end:MMMM d, yyyy}" : "")</p>
+    <p class="act-status act-status-leaving">Leaving office@(Official.TermEnds is { } end ? " " + end.ToString("MMMM d, yyyy", System.Globalization.CultureInfo.InvariantCulture) : "")</p>
 }
 @if (Options.Value.ShowUnverified && !Official.Verified)
 {
@@ -19,4 +19,6 @@ else if (Official.Status == OfficialStatus.Departing)
 
 @code {
     [Parameter, EditorRequired] public required Official Official { get; set; }
+
+    private static DateOnly Today => DateOnly.FromDateTime(DateTime.UtcNow);
 }

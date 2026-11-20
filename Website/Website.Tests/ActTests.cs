@@ -45,8 +45,10 @@ public partial class ActTests(WebApplicationFactory<Program> factory) : IClassFi
     public void Every_official_says_how_to_reach_them(string key)
     {
         var official = Store.Find(key)!;
-        (official.Phones.Count > 0 || official.CanEmail || official.Website is not null)
-            .Should().BeTrue($"{key} has no phone, email, form or website: a reader could do nothing with it");
+        // Someone just elected has no office yet; the page says so.
+        if (official.Status != OfficialStatus.MemberElect)
+            (official.Phones.Count > 0 || official.CanEmail || official.Website is not null)
+                .Should().BeTrue($"{key} has no phone, email, form or website: a reader could do nothing with it");
         official.Counties.Should().NotBeEmpty($"{key} must say which of the five counties the seat covers");
     }
 

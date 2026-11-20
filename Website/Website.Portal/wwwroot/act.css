@@ -257,3 +257,7 @@
   .act-wave { opacity: 1; }
   .act-map-county { transition: none; }
 }
+
+.act-offices-head { font-size: 0.95rem; margin: 1rem 0 0.4rem; }
+.act-offices { list-style: none; padding: 0; margin: 0; display: grid; gap: 0.5rem; font-size: 0.9rem; }
+.act-offices span { display: block; font-size: 0.8rem; color: var(--muted); }

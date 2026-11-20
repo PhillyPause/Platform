@@ -93,7 +93,7 @@
             @if (o.Committees.Count > 0)
             {
                 <section aria-labelledby="committees-head">
-                    <h2 id="committees-head" class="act-section-head">Committees that touch AI</h2>
+                    <h2 id="committees-head" class="act-section-head">Committees</h2>
                     <ul class="act-tags">
                         @foreach (var committee in o.Committees)
                         {
@@ -131,6 +131,20 @@
                 @if (o.Map is { } map)
                 {
                     <p><a href="@map" target="_blank" rel="noopener">Map of the district</a></p>
+                }
+                @if (o.Offices.Count > 0)
+                {
+                    <h3 class="act-offices-head">Offices</h3>
+                    <ul class="act-offices">
+                        @foreach (var office in o.Offices)
+                        {
+                            <li><span>@office.Label</span> @office.Address</li>
+                        }
+                    </ul>
+                }
+                @if (o.Phones.Count == 0 && !o.CanEmail && o.Status == OfficialStatus.MemberElect)
+                {
+                    <p class="act-small">Their office&rsquo;s numbers and contact form appear here once they take the seat.</p>
                 }
             </section>
 

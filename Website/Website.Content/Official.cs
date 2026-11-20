@@ -23,6 +23,9 @@ public enum OfficialStatus
     Departing,
 }
 
+/// <summary>An office's postal address, for a letter or a visit.</summary>
+public sealed record OfficialOffice(string Label, string Address);
+
 public sealed record OfficialPhone(string Label, string Number)
 {
     /// <summary>The number as a <c>tel:</c> link: digits only, US country code.</summary>
@@ -76,6 +79,11 @@ public sealed record Official
     public OfficialStatus Status { get; init; } = OfficialStatus.Serving;
 
     public DateOnly? TermEnds { get; init; }
+
+    /// <summary>For a member-elect: the day they take the seat. The General Assembly's terms start on December 1, Congress's on January 3.</summary>
+    public DateOnly? TermStarts { get; init; }
+
+    public IReadOnlyList<OfficialOffice> Offices { get; init; } = [];
 
     /// <summary>Counties the seat covers, by name without "County": "Philadelphia", "Bucks".</summary>
     public IReadOnlyList<string> Counties { get; init; } = [];
