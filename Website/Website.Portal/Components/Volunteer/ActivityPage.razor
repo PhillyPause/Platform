@@ -8,25 +8,33 @@
 @if (_activity is null)
 {
     <PageMeta Title="Not found" Description="That activity is not on, or never was." />
-    <div class="wrap page-head">
-        <h1>That one is not on</h1>
-        <p class="lead">It may have finished or been taken down. <a href="@ManyHandsPaths.Events" data-enhance-nav="false">See the events that are</a>.</p>
+    <div class="wrap">
+        <header class="mh-page-head">
+            <div>
+                <h1>That one is not on</h1>
+                <p class="mh-summary">It may have finished or been taken down. <a href="@ManyHandsPaths.Events" data-enhance-nav="false">See the events that are</a>.</p>
+            </div>
+        </header>
     </div>
     return;
 }
 
 <PageMeta Title="@_activity.Title" Description="@($"{Show.When(_activity.StartsAt)}, {Show.Where(_activity.Location)}. Sign up with PhillyPause.")" />
 
-<div class="wrap page-head">
-    <h1>@_activity.Title</h1>
-    <p class="vol-meta vol-meta-lead">
-        <span>@Show.When(_activity.StartsAt)</span>
-        <span>@Show.Where(_activity.Location)</span>
-    </p>
+<div class="wrap">
+    <header class="mh-page-head">
+        <div>
+            <h1>@_activity.Title</h1>
+            <p class="mh-meta">
+                <span>@Show.When(_activity.StartsAt)</span>
+                <span>@Show.Where(_activity.Location)</span>
+            </p>
+        </div>
+    </header>
 </div>
 
-<div class="wrap vol-body vol-split">
-    <div class="prose">
+<div class="wrap mh-split">
+    <div class="mh-prose">
         @foreach (var paragraph in Show.Paragraphs(_activity.Description))
         {
             <p>@paragraph</p>
@@ -37,11 +45,11 @@
         }
         @if (_activity.Tags.Count > 0)
         {
-            <p class="vol-tags">@string.Join(" · ", _activity.Tags)</p>
+            <p class="mh-small">@string.Join(" · ", _activity.Tags)</p>
         }
     </div>
 
-    <section class="vol-card" aria-labelledby="signup-head">
+    <section class="mh-panel" aria-labelledby="signup-head">
         @if (_outcome is not null)
         {
             <h2 id="signup-head">@_outcome.Heading</h2>
@@ -53,31 +61,31 @@
             <h2 id="signup-head">@(_activity.IsFull ? "Join the waitlist" : "Sign up")</h2>
             @if (Show.Room(_activity) is { } room)
             {
-                <p class="vol-room">@room</p>
+                <p class="mh-room">@room</p>
             }
             @if (_activity.IsFull)
             {
                 <p>It is full, but people drop out. If a place opens, it goes to the first person on the list and we email them.</p>
             }
 
-            <EditForm Model="Input" FormName="signup" OnValidSubmit="SignUpAsync" class="vol-form">
+            <EditForm Model="Input" FormName="signup" OnValidSubmit="SignUpAsync" class="mh-form">
                 <DataAnnotationsValidator />
-                <label>
-                    <span>Your name</span>
+                <label class="mh-field">
+                    <span class="mh-label">Your name</span>
                     <InputText @bind-Value="Input!.DisplayName" autocomplete="name" />
                 </label>
-                <label>
-                    <span>Email</span>
+                <label class="mh-field">
+                    <span class="mh-label">Email</span>
                     <InputText @bind-Value="Input!.Email" type="email" autocomplete="email" />
                     <ValidationMessage For="() => Input!.Email" />
                 </label>
                 <InterestChoices Types="_types" Selected="_suggested" Legend="Tell me about more like this" />
                 @if (_refused is not null)
                 {
-                    <p class="vol-error" role="alert">@_refused</p>
+                    <p class="mh-notice mh-alert" role="alert">@_refused</p>
                 }
-                <button class="btn" type="submit">@(_activity.IsFull ? "Join the waitlist" : "Count me in")</button>
-                <p class="vol-small">We email you the details and a reminder the day before. Nothing else unless you ask.</p>
+                <button class="mh-btn mh-btn-primary" type="submit">@(_activity.IsFull ? "Join the waitlist" : "Count me in")</button>
+                <p class="mh-help">We email you the details and a reminder the day before. Nothing else unless you ask.</p>
             </EditForm>
         }
     </section>

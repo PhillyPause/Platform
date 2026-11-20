@@ -9,24 +9,32 @@
 
 @if (_account is null)
 {
-    <div class="wrap page-head">
-        <h1>That link has run out</h1>
-        <p class="lead">Type <code>/link</code> in our Discord server again for a fresh one. Each lasts @((int)DiscordLinks.Lifetime.TotalMinutes) minutes.</p>
+    <div class="wrap">
+        <header class="mh-page-head">
+            <div>
+                <h1>That link has run out</h1>
+                <p class="mh-summary">Type <code>/link</code> in our Discord server again for a fresh one. Each lasts @((int)DiscordLinks.Lifetime.TotalMinutes) minutes.</p>
+            </div>
+        </header>
     </div>
     return;
 }
 
-<div class="wrap page-head">
-    <h1>Link Discord</h1>
-    <p class="lead">Discord account: <strong>@_account.Value.DiscordName</strong></p>
+<div class="wrap">
+    <header class="mh-page-head">
+        <div>
+            <h1>Link Discord</h1>
+            <p class="mh-summary">Discord account: <strong>@_account.Value.DiscordName</strong></p>
+        </div>
+    </header>
 </div>
 
-<div class="wrap vol-body">
-    <section class="vol-card vol-narrow" aria-live="polite">
+<div class="wrap">
+    <section class="mh-panel mh-narrow" aria-live="polite">
         @if (_volunteer is null)
         {
             <p>Sign in first, so we know whose account this is. Then open this link again; it works for @((int)DiscordLinks.Lifetime.TotalMinutes) minutes from when you typed <code>/link</code>.</p>
-            <a class="btn" href="@ManyHandsPaths.SignIn">Sign in</a>
+            <a class="mh-btn mh-btn-primary" href="@ManyHandsPaths.SignIn">Sign in</a>
         }
         else if (_linked)
         {
@@ -37,8 +45,8 @@
         else
         {
             <p>Link it to <strong>@_volunteer.DisplayName</strong>? Activities that match your interests will then reach you as a Discord message instead of an email. You can unlink it from your page at any time.</p>
-            <EditForm Model="Input" FormName="link-discord" OnSubmit="LinkAsync" class="vol-form">
-                <button class="btn" type="submit">Link my Discord</button>
+            <EditForm Model="Input" FormName="link-discord" OnSubmit="LinkAsync" class="mh-form">
+                <button class="mh-btn mh-btn-primary" type="submit">Link my Discord</button>
             </EditForm>
         }
     </section>

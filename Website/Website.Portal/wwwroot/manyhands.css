@@ -171,6 +171,8 @@ html:has(.mh-app), html:has(.mh-app) body { background: var(--mh-cream); }
 }
 .mh-nav-link .material-symbols-rounded { flex: none; width: 20px; overflow: hidden; font-size: 20px; color: var(--mh-muted); }
 .mh-app .mh-nav-link:hover { background: var(--mh-sand); color: var(--mh-ink); }
+/* Inside the link: the sidebar scrolls, and would clip a ring drawn outside it. */
+.mh-app .mh-nav-link:focus-visible { outline-offset: -3px; }
 /* Where you are: a bar, bold words and a red icon, never the colour alone. */
 .mh-app .mh-nav-link[aria-current="page"] { border-left-color: var(--mh-red); background: var(--mh-sand); font-weight: 700; }
 .mh-nav-link[aria-current="page"] .material-symbols-rounded { color: var(--mh-red); }
@@ -313,6 +315,7 @@ html:has(.mh-app), html:has(.mh-app) body { background: var(--mh-cream); }
   font-variant-numeric: lining-nums tabular-nums; color: var(--mh-ink);
 }
 .mh-card-text { margin: 0; font-size: var(--mh-text-sm); color: var(--mh-ink-soft); }
+.mh-card-word { font-size: 1.6rem; line-height: 1.15; }
 .mh-card-link { margin-top: auto; padding-top: var(--mh-2); font-size: var(--mh-text-sm); font-weight: 600; }
 .mh-card-foot { margin: auto 0 0 !important; padding-top: var(--mh-3); font-size: var(--mh-text-sm); color: var(--mh-ink-soft); }
 .mh-card .mh-list { margin-top: var(--mh-2); }
@@ -432,6 +435,9 @@ html:has(.mh-app), html:has(.mh-app) body { background: var(--mh-cream); }
 .mh-form .invalid { border-color: var(--mh-red) !important; border-width: 2px !important; }
 .mh .validation-message, .mh-error { margin: 0; color: var(--mh-red-deep); font-weight: 600; font-size: var(--mh-text-sm); }
 .mh-form-actions { display: flex; flex-wrap: wrap; gap: var(--mh-2) var(--mh-3); align-items: center; }
+/* A button straight in a form keeps its own width rather than the column's. */
+.mh-form > .mh-btn { justify-self: start; }
+.mh-form .mh-notice { margin: 0; }
 .mh-pair { display: grid; gap: 18px; }
 @media (min-width: 36rem) { .mh-pair { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
 

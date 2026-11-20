@@ -235,6 +235,30 @@ public sealed class VolunteerPagesTests(DatabaseFixture db) : IAsyncLifetime
         Assert.Equal(HttpStatusCode.Redirect, (await browser.GetAsync(ManyHandsPaths.Me)).StatusCode);
     }
 
+    [Fact]
+    public async Task My_page_is_in_sections_with_a_summary_at_the_top()
+    {
+        var volunteer = await TestData.VolunteerAsync(db.DataSource, "Sectioned Person");
+        var browser = _portal.Browser();
+        await Forms.SignInAsync(browser, db.DataSource, volunteer.Id);
+
+        var page = await browser.GetStringAsync(ManyHandsPaths.Me);
+
+        Assert.Contains("Hello, Sectioned Person", page);
+        Assert.Contains("aria-labelledby=\"short-head\"", page);
+        foreach (var (id, heading) in new[]
+                 {
+                     ("signups", "My signups"), ("interests", "What I like doing"), ("email", "Email and notifications"),
+                     ("discord", "Discord"), ("calendar", "Calendar feed"), ("data", "My data")
+                 })
+        {
+            Assert.Matches($"<section id=\"{id}\"[^>]*>\\s*(<div class=\"mh-panel-head\">\\s*)?<h2 id=\"{id}-head\">{heading}</h2>", page);
+            Assert.Contains($"href=\"{ManyHandsPaths.Me}#{id}\"", page);
+        }
+        Assert.Contains(ManyHandsPaths.PersonalCalendar(volunteer.CalendarKey), page);
+        Assert.Contains($"href=\"{ManyHandsPaths.Export}\"", page);
+    }
+
     /// <summary>Another form on the page posting must not redraw the email box unticked, for the next Save to unsubscribe.</summary>
     [Fact]
     public async Task Cancelling_a_signup_leaves_the_email_box_as_saved()
