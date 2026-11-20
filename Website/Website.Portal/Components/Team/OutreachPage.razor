@@ -1,0 +1,153 @@
+@page "/team/outreach"
+@inject OutreachRepository Outreach
+@inject Website.Content.OfficialsStore Officials
+
+@* The outreach CRM: who is contacting which officials from the action
+   centre, how, and who nobody has reached. Read-only; the log fills from
+   the "I called" and "I sent it" buttons on /act. *@
+
+<PageMeta Title="Outreach" Description="Members contacting their officials: totals, by official, by member, and the latest." NoIndex="true" />
+
+<div class="wrap page-head">
+    <h1>Outreach</h1>
+    <p class="lead">
+        Calls and messages members and visitors have told us about from <a href="/act">the action centre</a>.
+        Only that they happened, to whom and how; never what was said.
+        <a href="@ManyHandsPaths.TeamOutreachCsv">Download everything (CSV)</a>
+    </p>
+</div>
+
+<div class="wrap vol-body vol-stack">
+    <section aria-labelledby="numbers-head">
+        <h2 id="numbers-head" class="vol-sr">The numbers</h2>
+        <ul class="vol-figures">
+            <li><strong>@_totals.ThisWeek</strong> <span>this week</span></li>
+            <li><strong>@_totals.Last30Days</strong> <span>last 30 days</span></li>
+            <li><strong>@_totals.PeopleLast30Days</strong> <span>members acting (30 days)</span></li>
+            <li><strong>@_totals.OfficialsLast30Days</strong> <span>officials reached (30 days)</span></li>
+            <li><strong>@_totals.AllTime</strong> <span>all time</span></li>
+        </ul>
+        @if (_totals.AnonymousLast30Days > 0)
+        {
+            <p class="vol-small">@_totals.AnonymousLast30Days of the last 30 days&rsquo; actions were by people who were not signed in.</p>
+        }
+    </section>
+
+    <div class="vol-split-even">
+        <section aria-labelledby="officials-head">
+            <h2 id="officials-head">By official</h2>
+            @if (_byOfficial.Count == 0)
+            {
+                <p class="vol-empty">Nobody has logged a call or message yet. Share <a href="/act">phillypause.org/act</a> at the next event.</p>
+            }
+            else
+            {
+                <table class="vol-table">
+                    <thead><tr><th scope="col">Official</th><th scope="col" class="num">Calls</th><th scope="col" class="num">Messages</th><th scope="col" class="num">People</th><th scope="col">Last</th></tr></thead>
+                    <tbody>
+                        @foreach (var row in _byOfficial)
+                        {
+                            <tr>
+                                <td><a href="/act/officials/@row.OfficialKey">@row.OfficialName</a></td>
+                                <td class="num">@row.Calls</td>
+                                <td class="num">@row.Emails</td>
+                                <td class="num">@row.People</td>
+                                <td class="vol-small">@LocalTime.FormatShort(row.LastAt)</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+        </section>
+
+        <section aria-labelledby="people-head">
+            <h2 id="people-head">Most active, last 90 days</h2>
+            @if (_byVolunteer.Count == 0)
+            {
+                <p class="vol-empty">No signed-in member has logged anything in 90 days.</p>
+            }
+            else
+            {
+                <table class="vol-table">
+                    <thead><tr><th scope="col">Member</th><th scope="col" class="num">Actions</th><th scope="col" class="num">Officials</th><th scope="col">Last</th></tr></thead>
+                    <tbody>
+                        @foreach (var row in _byVolunteer)
+                        {
+                            <tr>
+                                <td>@row.VolunteerName</td>
+                                <td class="num">@row.Actions</td>
+                                <td class="num">@row.Officials</td>
+                                <td class="vol-small">@LocalTime.FormatShort(row.LastAt)</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+        </section>
+    </div>
+
+    <section aria-labelledby="unreached-head">
+        <h2 id="unreached-head">Nobody has reached these yet</h2>
+        @if (_unreached.Count == 0)
+        {
+            <p class="vol-empty">Everyone in Washington has heard from at least one of us.</p>
+        }
+        else
+        {
+            <p class="vol-small">Congress first: it is where a pause would be decided. Worth a call at the next meeting.</p>
+            <ul class="vol-people">
+                @foreach (var official in _unreached)
+                {
+                    <li><a href="/act/officials/@official.Key">@official.Name</a> <span class="vol-small">@official.Office</span></li>
+                }
+            </ul>
+        }
+    </section>
+
+    <section aria-labelledby="recent-head">
+        <h2 id="recent-head">Latest</h2>
+        @if (_recent.Count == 0)
+        {
+            <p class="vol-empty">Nothing yet.</p>
+        }
+        else
+        {
+            <ol class="vol-timeline">
+                @foreach (var action in _recent)
+                {
+                    <li>
+                        <strong>@(action.VolunteerName ?? "Someone not signed in")</strong>
+                        @(action.Channel == OutreachChannel.Call ? "called" : action.Channel == OutreachChannel.Meeting ? "met" : "wrote to")
+                        <a href="/act/officials/@action.OfficialKey">@action.OfficialName</a>
+                        <span class="vol-small">@LocalTime.FormatShort(action.OccurredAt) &middot; @action.Channel.Label()@(action.Outcome is { } o && action.Channel == OutreachChannel.Call ? $" · {o.Label()}" : "")</span>
+                        @if (action.Note is not null)
+                        {
+                            <p>@action.Note</p>
+                        }
+                    </li>
+                }
+            </ol>
+        }
+    </section>
+</div>
+
+@code {
+    private OutreachTotals _totals = new(0, 0, 0, 0, 0, 0);
+    private IReadOnlyList<OutreachByOfficial> _byOfficial = [];
+    private IReadOnlyList<OutreachByVolunteer> _byVolunteer = [];
+    private IReadOnlyList<OutreachAction> _recent = [];
+    private IReadOnlyList<Website.Content.Official> _unreached = [];
+
+    protected override async Task OnInitializedAsync()
+    {
+        _totals = await Outreach.TotalsAsync();
+        _byOfficial = await Outreach.ByOfficialAsync();
+        _byVolunteer = await Outreach.ByVolunteerAsync();
+        _recent = await Outreach.RecentAsync(40);
+
+        var reached = _byOfficial.Select(r => r.OfficialKey).ToHashSet(StringComparer.OrdinalIgnoreCase);
+        _unreached = Officials.Current(DateOnly.FromDateTime(DateTime.UtcNow))
+            .Where(o => o.Level == Website.Content.OfficialLevel.Federal && !reached.Contains(o.Key))
+            .ToArray();
+    }
+}

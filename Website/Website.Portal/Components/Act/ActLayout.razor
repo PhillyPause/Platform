@@ -1,0 +1,19 @@
+@inherits LayoutComponentBase
+@layout MainLayout
+
+@* The action centre: the site's own header and footer, plus the area's nav
+   and act.css. The stylesheet loads here and nowhere else, so the rest of the
+   site never pays for it; in the body rather than a <HeadContent>, because
+   PageMeta's is the one <HeadContent> a page shows. *@
+
+<link rel="stylesheet" href="@Assets["act.css"]" />
+
+<nav class="act-nav" aria-label="Act">
+    <div class="wrap">
+        <a href="/act" class="act-nav-home">Act</a>
+        <a href="/act/officials">Everyone who represents Greater Philadelphia</a>
+        <a href="/act/learn">How it works</a>
+    </div>
+</nav>
+
+@Body

@@ -1,0 +1,123 @@
+@page "/act/yours"
+@inject OfficialsStore Officials
+
+@* The officials for a set of districts. The districts are in the query
+   string (?cd=3&ss=1&sh=182&county=Philadelphia), never the address, so a
+   result can be bookmarked or sent to a neighbour without saying where
+   anyone lives. *@
+
+<PageMeta Title="Who represents you" Description="Your officials in Washington, Harrisburg and Greater Philadelphia, with their numbers and a script." NoIndex="true" />
+
+<div class="wrap page-head">
+    <h1>Who represents you</h1>
+    <p class="lead">
+        @if (_match.IsEmpty)
+        {
+            <text>Tell us your districts and we will show you who to call.</text>
+        }
+        else
+        {
+            @Describe(_match)
+        }
+    </p>
+</div>
+
+<div class="wrap act-body">
+    @if (_match.IsEmpty)
+    {
+        <DistrictPicker />
+    }
+    else
+    {
+        @foreach (var (arena, people, intro) in Groups())
+        {
+            <section class="act-group" aria-labelledby="group-@arena">
+                <h2 id="group-@arena" class="act-section-head">@arena</h2>
+                @if (intro is not null)
+                {
+                    <p class="act-small">@((MarkupString)intro)</p>
+                }
+                @if (people.Count == 0)
+                {
+                    <p class="act-empty">Nobody here yet for your districts. <a href="/act/officials">See everyone</a> or <a href="#by-district">change your districts</a>.</p>
+                }
+                else
+                {
+                    <ul class="act-cards">
+                        @foreach (var official in people)
+                        {
+                            <OfficialCard Official="official" />
+                        }
+                    </ul>
+                }
+            </section>
+        }
+
+        <p class="act-small">Start with Washington: Congress is where a pause would be decided. Then Harrisburg, then home.</p>
+        <DistrictPicker />
+    }
+</div>
+
+@code {
+    [SupplyParameterFromQuery(Name = "cd")] private string? Congressional { get; set; }
+    [SupplyParameterFromQuery(Name = "ss")] private string? StateSenate { get; set; }
+    [SupplyParameterFromQuery(Name = "sh")] private string? StateHouse { get; set; }
+    [SupplyParameterFromQuery(Name = "county")] private string? County { get; set; }
+
+    private DistrictMatch _match = new(null, null, null, null);
+    private IReadOnlyList<Official> _found = [];
+
+    /// <summary>The page for a match, as the address lookup redirects to it.</summary>
+    public static string UrlFor(DistrictMatch match)
+    {
+        var parts = new List<string>();
+        if (match.Congressional is { } cd) parts.Add($"cd={cd}");
+        if (match.StateSenate is { } ss) parts.Add($"ss={ss}");
+        if (match.StateHouse is { } sh) parts.Add($"sh={sh}");
+        if (match.County is { } county) parts.Add($"county={Uri.EscapeDataString(county)}");
+        return "/act/yours" + (parts.Count == 0 ? "" : "?" + string.Join('&', parts));
+    }
+
+    protected override void OnParametersSet()
+    {
+        _match = new DistrictMatch(
+            DistrictMatch.Normalise(Congressional),
+            DistrictMatch.Normalise(StateSenate),
+            DistrictMatch.Normalise(StateHouse),
+            DistrictMatch.NormaliseCounty(County));
+        _found = _match.IsEmpty ? [] : Officials.For(_match, DateOnly.FromDateTime(DateTime.UtcNow));
+    }
+
+    private IEnumerable<(string Arena, IReadOnlyList<Official> People, string? Intro)> Groups()
+    {
+        yield return ("Washington", _found.Where(o => o.Level == OfficialLevel.Federal).ToArray(),
+            _match.Congressional is null
+                ? "Your two senators. Add your US House district to see your representative."
+                : null);
+
+        yield return ("Harrisburg", _found.Where(o => o.Arena == "Harrisburg").ToArray(),
+            _match.StateSenate is null || _match.StateHouse is null
+                ? "Statewide officers below. Add your State Senate and State House districts to see your own legislators."
+                : null);
+
+        var local = _found.Where(o => o.Arena == "Local").ToArray();
+        if (_match.County is not null)
+        {
+            yield return (_match.County == "Philadelphia" ? "City of Philadelphia" : $"{_match.County} County", local,
+                _match.County == "Philadelphia" && local.Any(o => o.Level == OfficialLevel.City && o.District is not null)
+                    ? "Every Philadelphian has the Mayor and seven at-large members of City Council, plus one district member. "
+                      + "If you do not know your council district, <a href=\"https://phlcouncil.com/\" target=\"_blank\" rel=\"noopener\">City Council</a> will tell you."
+                    : null);
+        }
+    }
+
+    private static string Describe(DistrictMatch m)
+    {
+        var bits = new List<string>();
+        if (m.County is not null) bits.Add(m.County == "Philadelphia" ? "Philadelphia" : $"{m.County} County");
+        if (m.Congressional is not null) bits.Add($"PA-{m.Congressional}");
+        if (m.StateSenate is not null) bits.Add($"State Senate {m.StateSenate}");
+        if (m.StateHouse is not null) bits.Add($"State House {m.StateHouse}");
+        return $"For {string.Join(", ", bits)}. Call first if you can: it takes five minutes.";
+    }
+}

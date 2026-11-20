@@ -1,0 +1,36 @@
+@* The five counties, as a schematic: roughly where each sits against the
+   others and the river, not their borders, and it says so. Each county is a
+   link to everyone who represents it. Drawn by hand, so no map tiles or
+   boundary files load from anyone. *@
+
+<figure class="act-map">
+    <svg viewBox="0 0 380 300" role="img" aria-labelledby="act-map-title">
+        <title id="act-map-title">Greater Philadelphia's five counties, schematic. Choose one to see who represents it.</title>
+        <path class="act-map-river" d="M372 8 C352 70 362 110 340 150 C318 190 300 222 262 252 C230 276 196 290 150 298" />
+        @foreach (var county in Shapes)
+        {
+            <a href="/act/officials?county=@county.Name" aria-label="@county.Name County"
+               class="@(string.Equals(Selected, county.Name, StringComparison.OrdinalIgnoreCase) ? "is-on" : null)">
+                <path class="act-map-county" d="@county.Path" />
+                <text x="@county.X" y="@county.Y" text-anchor="middle">@county.Name</text>
+            </a>
+        }
+    </svg>
+    <figcaption>Not to scale. Choose a county to see who represents it.</figcaption>
+</figure>
+
+@code {
+    /// <summary>The county shown as chosen, when there is one.</summary>
+    [Parameter] public string? Selected { get; set; }
+
+    private sealed record Shape(string Name, string Path, int X, int Y);
+
+    private static readonly Shape[] Shapes =
+    [
+        new("Bucks", "M246 22 L322 8 L352 70 L344 132 L300 160 L262 132 Z", 300, 84),
+        new("Montgomery", "M140 64 L246 22 L262 132 L300 160 L270 186 L196 172 L138 132 Z", 206, 112),
+        new("Philadelphia", "M270 186 L300 160 L344 132 L332 166 L300 210 L262 240 L246 214 Z", 296, 190),
+        new("Chester", "M16 142 L138 132 L196 172 L182 268 L34 274 Z", 104, 210),
+        new("Delaware", "M182 268 L196 172 L270 186 L246 214 L262 240 L214 280 Z", 222, 232)
+    ];
+}

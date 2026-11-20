@@ -60,6 +60,7 @@ public static class ManyHandsServiceCollectionExtensions
         services.AddSingleton<CrmRepository>();
         services.AddSingleton<CrmEmailRepository>();
         services.AddSingleton<FederalOfficialsRepository>();
+        services.AddSingleton<OutreachRepository>();
 
         // Sign-in cookies and antiforgery tokens survive a deploy only if the
         // keys that sign them do.

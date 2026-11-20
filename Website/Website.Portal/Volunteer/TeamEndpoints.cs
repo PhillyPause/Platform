@@ -68,6 +68,27 @@ public static class TeamEndpoints
         })
         .RequireAuthorization(TeamPolicies.Organizer);
 
+        // The outreach log: who contacted which official, how, and when.
+        app.MapGet(ManyHandsPaths.TeamOutreachCsv, async (OutreachRepository outreach, CancellationToken ct) =>
+        {
+            var rows = await outreach.RecentAsync(limit: 10_000, ct);
+            var csv = Csv.Build(
+                ["When (Eastern)", "Volunteer", "Official", "Channel", "Outcome", "Note"],
+                rows.Select(r => new[]
+                {
+                    LocalTime.ToLocal(r.OccurredAt).ToString("yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture),
+                    r.VolunteerName ?? "(not signed in)",
+                    r.OfficialName,
+                    r.Channel.Label(),
+                    r.Outcome?.Label() ?? string.Empty,
+                    r.Note ?? string.Empty
+                }));
+
+            return Results.File(Encoding.UTF8.GetPreamble().Concat(Encoding.UTF8.GetBytes(csv)).ToArray(),
+                "text/csv", "outreach.csv");
+        })
+        .RequireAuthorization(TeamPolicies.Organizer);
+
         return app;
     }
 

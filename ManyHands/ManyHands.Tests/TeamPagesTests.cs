@@ -50,6 +50,7 @@ public sealed partial class TeamPagesTests(DatabaseFixture db) : IAsyncLifetime
     [InlineData(ManyHandsPaths.Crm + "?kind=Venue")]
     [InlineData(ManyHandsPaths.CrmPipeline)]
     [InlineData(ManyHandsPaths.CrmOfficials)]
+    [InlineData(ManyHandsPaths.TeamOutreach)]
     [InlineData(ManyHandsPaths.Inbox)]
     [InlineData(ManyHandsPaths.Inbox + "?triage=true")]
     [InlineData(ManyHandsPaths.InboxCompose)]

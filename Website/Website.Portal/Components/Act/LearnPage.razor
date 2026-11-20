@@ -1,0 +1,46 @@
+@page "/act/learn"
+@page "/act/learn/{Page}"
+@inject ContentStore Content
+@inject IConfiguration Configuration
+@inject NavigationManager Navigation
+@using ManyHands.Data
+
+@* The explainers: Markdown in Content/act/learn, rendered in the action
+   centre's frame rather than ContentRoute's, so the area's nav stays put.
+   A volunteer who can write Markdown can add one. *@
+
+@if (_page is not null)
+{
+    <PageMeta Title="@_page.Title" Description="@_page.Description" />
+
+    <div class="wrap page-head">
+        <p class="act-kicker">How it works</p>
+        <h1>@_page.Title</h1>
+        <p class="lead">@_page.Description</p>
+    </div>
+
+    <div class="wrap act-body act-learn-page">
+        <article class="prose">
+            @((MarkupString)Content.HtmlFor(_page, Configuration.IsManyHandsEnabled()))
+        </article>
+        <SourceCredit Page="_page" />
+        @if (Page is not null)
+        {
+            <p class="act-small"><a href="/act/learn">All the explainers</a> &middot; <a href="/act">Find who represents you</a></p>
+        }
+    </div>
+}
+
+@code {
+    [CascadingParameter] private HttpContext? HttpContext { get; set; }
+
+    [Parameter] public string? Page { get; set; }
+
+    private ContentPage? _page;
+
+    protected override void OnParametersSet()
+    {
+        _page = Content.Find(Page is null ? "act/learn" : $"act/learn/{Page}");
+        if (_page is null && HttpContext is not null) Navigation.NotFound();
+    }
+}

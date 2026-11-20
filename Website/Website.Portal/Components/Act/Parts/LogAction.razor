@@ -1,0 +1,136 @@
+@using ManyHands.Core
+@using ManyHands.Data
+@using Microsoft.Extensions.DependencyInjection
+@inject IConfiguration Configuration
+@inject IServiceProvider Services
+@inject ActThrottle Throttle
+
+@* "I did it": the outreach log, with ManyHands on. Off, this renders nothing
+   and nothing on the page mentions it (CLAUDE.md). Signed in, the action is
+   theirs, on their own page; not signed in, it is counted with nobody's name
+   on it. The message itself is never sent here. *@
+
+@if (_outreach is not null)
+{
+    <section class="act-panel act-log" aria-labelledby="log-@Kind-head">
+        @if (_done)
+        {
+            <h2 id="log-@Kind-head">Thank you. That counts.</h2>
+            @if (_signedIn)
+            {
+                <p>It is on <a href="@ManyHandsPaths.MyOutreach">your page</a> with everything else you have done.</p>
+            }
+            else
+            {
+                <p>We counted it, with nobody&rsquo;s name on it. <a href="/join" data-enhance-nav="false">Join us</a> and we will keep a record you can see, and tell you when there is something worth calling about.</p>
+            }
+            <p><a class="act-btn act-btn-ghost" href="/act">Contact someone else</a></p>
+        }
+        else
+        {
+            <h2 id="log-@Kind-head">@(Kind == DraftKind.Call ? "Called?" : "Sent it?") Tell us</h2>
+            <p class="act-small">So we know which offices are hearing from people, and which are not. We keep that it happened, never what you said.</p>
+            <EditForm Model="Input" FormName="log" OnValidSubmit="LogAsync" class="act-form">
+                <DataAnnotationsValidator />
+                @if (Kind == DraftKind.Call)
+                {
+                    <fieldset class="act-choice">
+                        <legend>How did it go?</legend>
+                        <InputRadioGroup @bind-Value="Input!.Outcome">
+                            <label><InputRadio Value="OutreachOutcome.SpokeToSomeone" /> I spoke to someone</label>
+                            <label><InputRadio Value="OutreachOutcome.LeftVoicemail" /> I left a voicemail</label>
+                            <label><InputRadio Value="OutreachOutcome.NoAnswer" /> Nobody answered</label>
+                        </InputRadioGroup>
+                    </fieldset>
+                }
+                else
+                {
+                    <fieldset class="act-choice">
+                        <legend>How did you send it?</legend>
+                        <InputRadioGroup @bind-Value="Input!.Channel">
+                            @if (Official.Email is not null)
+                            {
+                                <label><InputRadio Value="OutreachChannel.Email" /> By email</label>
+                            }
+                            @if (Official.ContactForm is not null)
+                            {
+                                <label><InputRadio Value="OutreachChannel.ContactForm" /> On their website&rsquo;s form</label>
+                            }
+                            <label><InputRadio Value="OutreachChannel.Letter" /> By post</label>
+                        </InputRadioGroup>
+                    </fieldset>
+                }
+                <label>
+                    <span>Anything we should know? <span class="act-small">Optional. What they said, if anything.</span></span>
+                    <InputTextArea @bind-Value="Input!.Note" rows="2" maxlength="@OutreachRepository.NoteLimit" />
+                    <ValidationMessage For="() => Input!.Note" />
+                </label>
+                @if (_refused is not null)
+                {
+                    <p class="act-error" role="alert">@_refused</p>
+                }
+                <button class="act-btn" type="submit">@(Kind == DraftKind.Call ? "I called" : "I sent it")</button>
+            </EditForm>
+        }
+    </section>
+}
+
+@code {
+    [CascadingParameter] private HttpContext? HttpContext { get; set; }
+
+    [Parameter, EditorRequired] public required Official Official { get; set; }
+
+    [Parameter, EditorRequired] public required DraftKind Kind { get; set; }
+
+    /// <summary>One per page: the write page logs a message, the call page a call.</summary>
+    [SupplyParameterFromForm(FormName = "log")] private LogInput? Input { get; set; }
+
+    private OutreachRepository? _outreach;
+    private bool _signedIn;
+    private bool _done;
+    private string? _refused;
+
+    protected override void OnInitialized()
+    {
+        if (Configuration.IsManyHandsEnabled())
+            _outreach = Services.GetService<OutreachRepository>();
+
+        _signedIn = HttpContext?.User.VolunteerId() is not null;
+
+        Input ??= new LogInput
+        {
+            Channel = Kind == DraftKind.Call ? OutreachChannel.Call
+                : Official.Email is not null ? OutreachChannel.Email
+                : Official.ContactForm is not null ? OutreachChannel.ContactForm
+                : OutreachChannel.Letter,
+            Outcome = Kind == DraftKind.Call ? OutreachOutcome.SpokeToSomeone : OutreachOutcome.Sent
+        };
+    }
+
+    private async Task LogAsync()
+    {
+        if (_outreach is null || HttpContext is null) return;
+
+        if (!Throttle.AllowLog(HttpContext))
+        {
+            _refused = "That is a lot in a short time. Wait a few minutes and try again.";
+            return;
+        }
+
+        var channel = Kind == DraftKind.Call ? OutreachChannel.Call : Input!.Channel;
+        var outcome = Kind == DraftKind.Call ? Input!.Outcome : OutreachOutcome.Sent;
+
+        await _outreach.LogAsync(HttpContext.User.VolunteerId(), Official.Key, Official.Name, channel, outcome, Input!.Note);
+        _done = true;
+    }
+
+    private sealed class LogInput
+    {
+        public OutreachChannel Channel { get; set; }
+
+        public OutreachOutcome Outcome { get; set; }
+
+        [StringLength(OutreachRepository.NoteLimit, ErrorMessage = "Keep it to a few sentences.")]
+        public string? Note { get; set; }
+    }
+}

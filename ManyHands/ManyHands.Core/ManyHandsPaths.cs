@@ -81,6 +81,9 @@ public static class ManyHandsPaths
     /// <summary>One volunteer's own signups. Unguessable rather than signed in.</summary>
     public static string PersonalCalendar(Guid calendarKey) => $"/volunteer/calendar/{calendarKey}.ics";
 
+    /// <summary>The officials a volunteer has contacted from the action centre, and how.</summary>
+    public const string MyOutreach = "/volunteer/outreach";
+
     /// <summary>A volunteer checking themselves in at the door, from the code an organizer shows.</summary>
     public static string SelfCheckIn(string token) => $"/volunteer/check-in/{token}";
 
@@ -111,6 +114,12 @@ public static class ManyHandsPaths
     public static string CrmEngagement(Guid engagementId) => $"/team/crm/engagement/{engagementId}";
 
     public const string CrmOfficials = "/team/crm/officials";
+
+    /// <summary>Who has contacted which officials from the action centre, and how.</summary>
+    public const string TeamOutreach = "/team/outreach";
+
+    /// <summary>The outreach log as a spreadsheet.</summary>
+    public const string TeamOutreachCsv = "/team/outreach.csv";
 
     /// <summary>Outreach mail, every thread.</summary>
     public const string Inbox = "/team/inbox";

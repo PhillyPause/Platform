@@ -1,0 +1,258 @@
+/* The action centre (/act). Loaded by ActLayout only. Built on tokens.css, so
+   it follows the site's palette and its dark mode; nothing here invents a
+   colour. Motion is CSS alone, and prefers-reduced-motion stops all of it
+   (PLAN.md section 6). */
+
+/* ---------------------------------------------------------------- frame */
+
+.act-nav { border-bottom: 1px solid var(--line); background: var(--surface); }
+.act-nav .wrap { display: flex; flex-wrap: wrap; gap: 0.25rem 1.5rem; padding-block: 0.6rem; font-size: 0.95rem; }
+.act-nav a { color: var(--ink); text-decoration: none; font-weight: 600; }
+.act-nav a:hover, .act-nav a:focus-visible { color: var(--alarm-ink); text-decoration: underline; }
+.act-nav .act-nav-home { color: var(--alarm-ink); text-transform: uppercase; letter-spacing: 0.12em; }
+
+.act-body { padding-bottom: 4rem; display: grid; gap: 3rem; }
+.act-kicker { margin: 0 0 0.4rem; font-size: 0.8rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--alarm-ink); }
+.act-section-head { font-size: var(--step-h3); margin: 0 0 1rem; padding-bottom: 0.4rem; border-bottom: 3px double var(--rule); }
+.act-small { font-size: 0.875rem; color: var(--muted); }
+.act-empty { color: var(--muted); }
+.act-error { color: var(--alarm-ink); font-weight: 600; }
+
+/* ---------------------------------------------------------------- hero */
+
+.act-hero { background: var(--ground); color: var(--ground-ink); padding-block: clamp(2.5rem, 7vw, 4.5rem); margin-bottom: 3rem; }
+.act-hero h1 { color: var(--ground-ink); font-size: var(--step-hero); line-height: 0.95; text-transform: uppercase; max-width: 14ch; margin: 0 0 1rem; }
+.act-hero .act-kicker { color: var(--alarm); }
+.act-lead { font-size: var(--step-lead); max-width: var(--measure); color: var(--ground-muted); margin: 0 0 2rem; }
+.act-hero a { color: var(--ground-ink); }
+.act-hero .act-small { color: var(--ground-muted); }
+
+.act-find { background: var(--surface); color: var(--ink); border-radius: var(--radius); padding: clamp(1.25rem, 3vw, 2rem); max-width: 44rem; box-shadow: 0 10px 30px rgb(0 0 0 / 0.18); }
+.act-find h2 { margin: 0 0 1rem; font-size: var(--step-h3); color: var(--heading); }
+.act-find a { color: var(--heading); }
+.act-find .act-small { color: var(--muted); }
+.act-find-form { display: grid; gap: 0.75rem; }
+@media (min-width: 40rem) { .act-find-form { grid-template-columns: 1fr auto; align-items: end; } }
+
+/* ---------------------------------------------------------------- forms */
+
+.act-form { display: grid; gap: 1rem; }
+.act-form label, .act-field { display: grid; gap: 0.35rem; font-weight: 600; }
+.act-form label > span .act-small, .act-field .act-small { font-weight: 400; }
+.act-form input[type="text"], .act-form input:not([type]), .act-form input[type="number"], .act-form select, .act-form textarea,
+.act-field input, .act-field textarea {
+  width: 100%; min-height: 48px; padding: 0.65rem 0.8rem; font: inherit; font-weight: 400;
+  color: var(--ink); background: var(--bg); border: 1px solid var(--rule); border-radius: 6px;
+}
+.act-field textarea, .act-form textarea { line-height: 1.55; resize: vertical; }
+.act-form input:focus-visible, .act-form select:focus-visible, .act-form textarea:focus-visible,
+.act-field input:focus-visible, .act-field textarea:focus-visible { outline: 3px solid var(--alarm); outline-offset: 1px; }
+.act-pair { display: grid; gap: 1rem; }
+@media (min-width: 40rem) { .act-pair { grid-template-columns: 1fr 1fr; } }
+.act-choice { border: 0; padding: 0; margin: 0; display: grid; gap: 0.4rem; }
+.act-choice legend { font-weight: 600; margin-bottom: 0.4rem; }
+.act-choice label { display: flex; gap: 0.6rem; align-items: center; font-weight: 400; min-height: 32px; }
+.act-choice input { width: 1.2rem; height: 1.2rem; accent-color: var(--heading); }
+
+.act-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem;
+  min-height: 48px; padding: 0.65rem 1.4rem; border-radius: 999px; border: 2px solid var(--heading);
+  background: var(--heading); color: var(--bg); font: inherit; font-weight: 700; text-decoration: none; cursor: pointer;
+}
+.act-btn:hover, .act-btn:focus-visible { background: var(--alarm-ink); border-color: var(--alarm-ink); color: #fff; }
+.act-btn-ghost { background: transparent; color: var(--heading); }
+.act-btn-small { min-height: 40px; padding: 0.4rem 1rem; font-size: 0.9rem; }
+.act-hero .act-btn { background: var(--alarm); border-color: var(--alarm); color: #1B1B1B; }
+
+.act-picker { margin-top: 1.25rem; }
+.act-picker summary { cursor: pointer; font-weight: 700; color: var(--heading); }
+.act-picker[open] summary { margin-bottom: 0.75rem; }
+.act-picker-form { grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr)); align-items: end; }
+
+/* ---------------------------------------------------------------- cards */
+
+.act-cards { list-style: none; padding: 0; margin: 0; display: grid; gap: 1rem; grid-template-columns: repeat(auto-fill, minmax(min(100%, 19rem), 1fr)); }
+.act-card { display: flex; gap: 1rem; padding: 1rem; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); }
+.act-card-body { min-width: 0; }
+.act-card-name { margin: 0; font-size: 1.1rem; }
+.act-card-name a { color: var(--heading); text-decoration: none; }
+.act-card-name a:hover, .act-card-name a:focus-visible { text-decoration: underline; }
+.act-card-office { margin: 0.2rem 0 0.5rem; font-size: 0.9rem; color: var(--muted); }
+.act-card-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; margin: 0.4rem 0 0; }
+.act-card-phone { font-size: 0.9rem; font-variant-numeric: tabular-nums; color: var(--ink); }
+.act-party { white-space: nowrap; }
+
+.act-avatar { flex: none; border-radius: 50%; object-fit: cover; background: var(--line); }
+.act-avatar-sm { width: 48px; height: 48px; font-size: 1rem; }
+.act-avatar-md { width: 72px; height: 72px; font-size: 1.4rem; }
+.act-avatar-lg { width: 128px; height: 128px; font-size: 2.4rem; }
+.act-avatar-initials { display: inline-grid; place-items: center; background: var(--navy); color: var(--cream); font-weight: 700; letter-spacing: 0.04em; }
+
+.act-status { display: inline-block; margin: 0 0.4rem 0.4rem 0; padding: 0.15rem 0.6rem; border-radius: 999px; font-size: 0.78rem; font-weight: 700; }
+.act-status-elect { background: color-mix(in srgb, var(--heading) 14%, transparent); color: var(--heading); }
+.act-status-leaving { background: color-mix(in srgb, var(--muted) 18%, transparent); color: var(--ink); }
+.act-status-check { background: #FFF2C2; color: #5A4300; border: 1px dashed #B58A00; }
+
+.act-group + .act-group { margin-top: 2.5rem; }
+
+/* ---------------------------------------------------------------- home */
+
+.act-ways-list { list-style: none; padding: 0; margin: 0; display: grid; gap: 1.5rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr)); }
+.act-ways-list h3 { margin: 0 0 0.3rem; font-size: 1.3rem; color: var(--heading); }
+.act-ways-list p { margin: 0; }
+.act-ways-list li { border-top: 4px solid var(--alarm); padding-top: 0.8rem; }
+
+.act-ask-grid { display: grid; gap: 1.5rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr)); }
+.act-ask-grid h3 { margin: 0 0 0.3rem; color: var(--heading); }
+.act-ask-grid p { margin: 0; font-family: var(--serif); font-size: 1.05rem; }
+
+.act-browse { display: grid; gap: 2rem; align-items: center; }
+@media (min-width: 52rem) { .act-browse { grid-template-columns: 1fr 1fr; } }
+
+.act-learn-list { list-style: none; padding: 0; margin: 0; display: grid; gap: 0.25rem; }
+.act-learn-list li { display: grid; gap: 0.1rem; padding: 0.7rem 0; border-bottom: 1px solid var(--line); }
+.act-learn-list a { font-weight: 700; color: var(--heading); }
+.act-learn-list span { font-size: 0.9rem; color: var(--muted); }
+
+/* ---------------------------------------------------------------- map */
+
+.act-map { margin: 0; }
+.act-map svg { width: 100%; height: auto; max-width: 30rem; display: block; }
+.act-map-county { fill: color-mix(in srgb, var(--heading) 10%, var(--surface)); stroke: var(--heading); stroke-width: 1.5; transition: fill 150ms ease; }
+.act-map a:hover .act-map-county, .act-map a:focus-visible .act-map-county, .act-map a.is-on .act-map-county { fill: var(--alarm); }
+.act-map a:focus-visible { outline: none; }
+.act-map a:focus-visible .act-map-county { stroke-width: 4; }
+.act-map text { font: 600 13px var(--sans); fill: var(--ink); pointer-events: none; }
+.act-map-river { fill: none; stroke: color-mix(in srgb, var(--heading) 35%, transparent); stroke-width: 6; stroke-linecap: round; }
+.act-map figcaption { font-size: 0.85rem; color: var(--muted); margin-top: 0.4rem; }
+
+.act-directory { display: grid; gap: 2rem; align-items: start; }
+@media (min-width: 64rem) {
+  .act-directory { grid-template-columns: minmax(0, 1fr) 20rem; }
+  .act-directory-map { position: sticky; top: 1rem; }
+}
+
+/* ---------------------------------------------------------------- profile */
+
+.act-profile-head { background: var(--surface); border-bottom: 1px solid var(--line); padding-block: 2rem; }
+.act-profile-head .wrap { display: flex; flex-wrap: wrap; gap: 1.5rem; align-items: center; }
+.act-profile-head h1 { margin: 0; font-size: var(--step-h2); }
+.act-profile-office { margin: 0.3rem 0 0.6rem; font-size: 1.05rem; color: var(--muted); }
+.act-profile-actions { display: flex; flex-wrap: wrap; gap: 0.6rem; margin: 0.6rem 0 0; }
+.act-profile { padding-top: 2rem; }
+@media (min-width: 56rem) { .act-profile { grid-template-columns: minmax(0, 1fr) 20rem; align-items: start; } }
+.act-profile-main { display: grid; gap: 2.5rem; min-width: 0; }
+.act-profile-side { display: grid; gap: 1rem; }
+
+.act-panel { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 1.25rem; }
+.act-panel h2 { font-size: 1.1rem; margin: 0 0 0.8rem; }
+.act-panel p:last-child { margin-bottom: 0; }
+
+.act-phones { list-style: none; padding: 0; margin: 0 0 1rem; display: grid; gap: 0.5rem; }
+.act-phones li { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0.25rem 1rem; align-items: center; }
+.act-phones span { font-size: 0.85rem; color: var(--muted); }
+.act-phones a { font-weight: 700; font-variant-numeric: tabular-nums; }
+.act-phones-big a.act-btn { font-size: 1.1rem; }
+
+.act-record { list-style: none; padding: 0; margin: 0; display: grid; gap: 1rem; }
+.act-record li { display: grid; grid-template-columns: 5.5rem 1fr; gap: 1rem; border-left: 3px solid var(--alarm); padding-left: 0.9rem; }
+.act-record time { font-size: 0.85rem; font-weight: 700; color: var(--muted); padding-top: 0.15rem; }
+.act-record p { margin: 0; }
+.act-record a { margin-left: 0.3rem; font-size: 0.85rem; }
+.act-record li.is-unchecked { border-left-style: dashed; }
+.act-unchecked { display: inline-block; margin-left: 0.4rem; font-size: 0.75rem; font-weight: 700; color: #5A4300; background: #FFF2C2; padding: 0 0.4rem; border-radius: 4px; }
+
+.act-tags { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.act-tags li { padding: 0.25rem 0.75rem; border: 1px solid var(--rule); border-radius: 999px; font-size: 0.9rem; }
+
+.act-sources ul { padding-left: 1.1rem; margin: 0 0 0.6rem; }
+.act-sources li { font-size: 0.9rem; overflow-wrap: anywhere; }
+
+/* ---------------------------------------------------------------- write / call */
+
+.act-task-head { display: flex; gap: 1rem; align-items: center; }
+.act-task-head h1 { margin: 0; }
+.act-task { padding-top: 0.5rem; }
+@media (min-width: 60rem) { .act-task { grid-template-columns: minmax(0, 1fr) 22rem; align-items: start; } }
+.act-task-main, .act-task-side { display: grid; gap: 1.5rem; min-width: 0; }
+
+.act-draft .act-field { margin-bottom: 1rem; }
+.act-send { display: flex; flex-wrap: wrap; gap: 0.6rem; margin: 0.5rem 0 0.8rem; }
+.act-ai-note { border-left: 3px solid var(--heading); padding-left: 0.7rem; }
+
+.act-script-text { margin: 0 0 0.5rem; padding: 1rem 1.2rem; font-family: var(--serif); font-size: 1.15rem; line-height: 1.6; background: var(--bg); border-left: 4px solid var(--alarm); border-radius: 0 6px 6px 0; }
+.act-personalise { margin-top: 1rem; }
+.act-personalise summary { cursor: pointer; font-weight: 700; color: var(--heading); margin-bottom: 0.8rem; }
+
+.act-tips { padding-left: 1.1rem; margin: 0 0 0.8rem; display: grid; gap: 0.4rem; }
+.act-faq dt { font-weight: 700; margin-top: 0.7rem; }
+.act-faq dd { margin: 0.2rem 0 0; color: var(--muted); }
+.act-log { border-color: var(--heading); border-width: 2px; }
+
+/* ---------------------------------------------------------------- tutorials
+   Four steps light in turn on a twelve-second loop, and each icon does one
+   small thing while its step is lit. Every value is a transform, an opacity
+   or a stroke offset, which the browser can run off the main thread. */
+
+.act-tuts { display: grid; gap: 1.5rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 24rem), 1fr)); }
+.act-tut { margin: 0; padding: 1.25rem; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); }
+.act-tut-title { font-weight: 700; color: var(--heading); margin-bottom: 1rem; }
+.act-tut-title span { font-weight: 400; font-size: 0.85rem; color: var(--muted); margin-left: 0.4rem; }
+.act-tut-steps { list-style: none; padding: 0; margin: 0; display: grid; gap: 0.9rem; counter-reset: step; }
+.act-tut-step {
+  counter-increment: step;
+  display: grid; grid-template-columns: 3.25rem 1fr; column-gap: 0.9rem; align-items: start;
+  opacity: 0.45; transform: translateX(0);
+  animation: act-step 12s infinite both; animation-delay: calc(var(--i) * 3s);
+}
+.act-tut-step strong { grid-column: 2; display: block; }
+.act-tut-step strong::before { content: counter(step) ". "; color: var(--alarm-ink); }
+.act-tut-step span { grid-column: 2; font-size: 0.9rem; color: var(--muted); }
+.act-tut-icon {
+  grid-row: span 2; width: 3.25rem; height: 3.25rem; padding: 0.35rem; border-radius: 12px;
+  background: color-mix(in srgb, var(--heading) 8%, transparent);
+  fill: none; stroke: var(--heading); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round;
+}
+.act-tut-icon * { transform-box: fill-box; transform-origin: center; }
+
+@keyframes act-step {
+  0%, 26% { opacity: 1; transform: translateX(4px); }
+  31%, 100% { opacity: 0.45; transform: translateX(0); }
+}
+
+.act-tut-step .act-bounce, .act-tut-step .act-ring, .act-tut-step .act-wave,
+.act-tut-step .act-draw, .act-tut-step .act-strike, .act-tut-step .act-scribble, .act-tut-step .act-fly {
+  animation-duration: 12s; animation-iteration-count: infinite; animation-delay: calc(var(--i) * 3s); animation-fill-mode: both;
+}
+.act-bounce { animation-name: act-bounce; }
+.act-ring { animation-name: act-ring; }
+.act-wave { animation-name: act-wave; stroke: var(--alarm-ink); }
+.act-draw { stroke-dasharray: 1; animation-name: act-draw; }
+.act-strike { stroke-dasharray: 1; animation-name: act-draw; stroke: var(--alarm-ink); }
+.act-scribble { animation-name: act-scribble; }
+.act-fly { animation-name: act-fly; }
+
+@keyframes act-bounce { 0% { transform: translateY(0); } 4% { transform: translateY(-6px); } 8%, 100% { transform: translateY(0); } }
+@keyframes act-ring {
+  0% { transform: rotate(0); } 3% { transform: rotate(-12deg); } 6% { transform: rotate(12deg); }
+  9% { transform: rotate(-12deg); } 12% { transform: rotate(10deg); } 15%, 100% { transform: rotate(0); }
+}
+@keyframes act-wave { 0%, 2% { opacity: 0; } 6%, 22% { opacity: 1; } 27%, 100% { opacity: 0.25; } }
+@keyframes act-draw { 0% { stroke-dashoffset: 1; } 18%, 100% { stroke-dashoffset: 0; } }
+@keyframes act-scribble {
+  0% { transform: translate(0, 0); } 6% { transform: translate(-3px, 3px); } 12% { transform: translate(3px, -2px); }
+  18% { transform: translate(-2px, 2px); } 24%, 100% { transform: translate(0, 0); }
+}
+@keyframes act-fly {
+  0%, 4% { transform: translate(0, 0); opacity: 1; } 16% { transform: translate(14px, -12px) rotate(-8deg); opacity: 0; }
+  17% { transform: translate(-10px, 6px); opacity: 0; } 26%, 100% { transform: translate(0, 0); opacity: 1; }
+}
+
+/* Reduced motion: no loop, no wiggle, every step lit and every line drawn. */
+@media (prefers-reduced-motion: reduce) {
+  .act-tut *, .act-tut-step { animation: none !important; }
+  .act-tut-step { opacity: 1; transform: none; }
+  .act-draw, .act-strike { stroke-dashoffset: 0; }
+  .act-wave { opacity: 1; }
+  .act-map-county { transition: none; }
+}

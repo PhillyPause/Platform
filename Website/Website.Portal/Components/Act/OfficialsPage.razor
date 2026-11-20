@@ -1,0 +1,75 @@
+@page "/act/officials"
+@inject OfficialsStore Officials
+
+@* The whole directory, or one county's share of it: the county map's links
+   land here with ?county=. *@
+
+<PageMeta Title="@(_county is null ? "Everyone who represents Greater Philadelphia" : $"Who represents {Place(_county)}")"
+          Description="Pennsylvania's senators, the House members, statewide officers, the General Assembly, the City of Philadelphia and the collar counties, with their numbers." />
+
+<div class="wrap page-head">
+    <h1>@(_county is null ? "Everyone who represents Greater Philadelphia" : $"Who represents {Place(_county)}")</h1>
+    <p class="lead">
+        @if (_county is null)
+        {
+            <text>The five counties, from Washington to City Hall. Choose a county to narrow it, or <a href="/act">find your own</a> by address.</text>
+        }
+        else
+        {
+            <text>Everyone whose seat covers part of @Place(_county), plus the two senators and the statewide officers. <a href="/act/officials">Show all five counties</a>.</text>
+        }
+    </p>
+</div>
+
+<div class="wrap act-body">
+    <div class="act-directory">
+        <div class="act-directory-list">
+            @foreach (var group in _people.GroupBy(o => o.Level))
+            {
+                <section class="act-group" aria-labelledby="level-@group.Key">
+                    <h2 id="level-@group.Key" class="act-section-head">@Heading(group.Key)</h2>
+                    <ul class="act-cards">
+                        @foreach (var official in group)
+                        {
+                            <OfficialCard Official="official" />
+                        }
+                    </ul>
+                </section>
+            }
+            @if (_people.Count == 0)
+            {
+                <p class="act-empty">Nobody in the directory for that yet.</p>
+            }
+        </div>
+        <aside class="act-directory-map">
+            <CountyMap Selected="@_county" />
+        </aside>
+    </div>
+</div>
+
+@code {
+    [SupplyParameterFromQuery(Name = "county")] private string? County { get; set; }
+
+    private string? _county;
+    private IReadOnlyList<Official> _people = [];
+
+    protected override void OnParametersSet()
+    {
+        _county = DistrictMatch.NormaliseCounty(County);
+        var today = DateOnly.FromDateTime(DateTime.UtcNow);
+        _people = (_county is null ? Officials.Current(today) : Officials.InCounty(_county, today)).ToArray();
+    }
+
+    private static string Place(string county) => county == "Philadelphia" ? "Philadelphia" : $"{county} County";
+
+    private static string Heading(OfficialLevel level) => level switch
+    {
+        OfficialLevel.Federal => "Congress",
+        OfficialLevel.StateExecutive => "Pennsylvania: statewide",
+        OfficialLevel.StateSenate => "Pennsylvania Senate",
+        OfficialLevel.StateHouse => "Pennsylvania House",
+        OfficialLevel.City => "City of Philadelphia",
+        OfficialLevel.County => "County government",
+        _ => level.ToString()
+    };
+}

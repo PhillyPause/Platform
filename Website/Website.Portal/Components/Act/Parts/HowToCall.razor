@@ -1,0 +1,41 @@
+@* A call, in four steps: the motion tutorial. Each step lights in turn and
+   its icon does one small thing; CSS does all of it (act.css), and with
+   prefers-reduced-motion every step simply shows, still (PLAN.md section 6).
+   Hand-drawn SVG, a few hundred bytes, inside the motion budget. *@
+
+<figure class="act-tut" aria-labelledby="tut-call-title">
+    <figcaption id="tut-call-title" class="act-tut-title">A call, in four steps <span>about five minutes</span></figcaption>
+    <ol class="act-tut-steps">
+        <li class="act-tut-step" style="--i: 0">
+            <svg class="act-tut-icon" viewBox="0 0 64 64" aria-hidden="true">
+                <g class="act-bounce"><path d="M32 58s-16-17-16-30a16 16 0 0 1 32 0c0 13-16 30-16 30z" /><circle cx="32" cy="28" r="6" /></g>
+            </svg>
+            <strong>Find who represents you</strong>
+            <span>Your address, or just your districts. Washington, Harrisburg, and here at home.</span>
+        </li>
+        <li class="act-tut-step" style="--i: 1">
+            <svg class="act-tut-icon" viewBox="0 0 64 64" aria-hidden="true">
+                <rect x="14" y="8" width="36" height="48" rx="3" />
+                <path class="act-draw" pathLength="1" d="M22 20h20M22 28h20M22 36h20M22 44h12" />
+            </svg>
+            <strong>Read the script once</strong>
+            <span>Thirty seconds, in your words. Your name, where you live, one ask.</span>
+        </li>
+        <li class="act-tut-step" style="--i: 2">
+            <svg class="act-tut-icon" viewBox="0 0 64 64" aria-hidden="true">
+                <g class="act-ring"><path d="M18 10h8l4 12-6 4a32 32 0 0 0 14 14l4-6 12 4v8a4 4 0 0 1-4 4C30 50 14 34 14 14a4 4 0 0 1 4-4z" /></g>
+                <path class="act-wave" d="M42 14a10 10 0 0 1 8 8M42 6a18 18 0 0 1 16 16" />
+            </svg>
+            <strong>Call. A staffer answers</strong>
+            <span>They are paid to listen. They will ask for your zip code, not your credentials.</span>
+        </li>
+        <li class="act-tut-step" style="--i: 3">
+            <svg class="act-tut-icon" viewBox="0 0 64 64" aria-hidden="true">
+                <path d="M16 16v32M24 16v32M32 16v32M40 16v32" />
+                <path class="act-strike" pathLength="1" d="M10 42L48 22" />
+            </svg>
+            <strong>It goes on the tally</strong>
+            <span>Offices count every constituent who calls. On AI almost nobody has, so yours stands out.</span>
+        </li>
+    </ol>
+</figure>

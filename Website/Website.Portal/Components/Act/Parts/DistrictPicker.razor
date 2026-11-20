@@ -1,0 +1,52 @@
+@* Pick your districts by hand: a plain GET form to /act/yours, for anyone who
+   would rather not type an address, and for every reader while the address
+   lookup is off. Any field can be left blank. *@
+
+<details class="act-picker" id="by-district" open="@Open">
+    <summary>Pick your districts instead</summary>
+    <p class="act-small">
+        All four are on your voter registration, which the
+        <a href="https://www.pavoterservices.pa.gov/pages/voterregistrationstatus.aspx" target="_blank" rel="noopener">Department of State</a>
+        will show you, or ask the General Assembly&rsquo;s
+        <a href="https://www.palegis.us/find-my-legislator" target="_blank" rel="noopener">Find My Legislator</a>.
+        Leave blank whatever you do not know.
+    </p>
+    <form method="get" action="/act/yours" class="act-form act-picker-form">
+        <label>
+            <span>County</span>
+            <select name="county">
+                <option value="">Not sure</option>
+                @foreach (var county in OfficialsStore.Counties)
+                {
+                    <option value="@county">@county</option>
+                }
+            </select>
+        </label>
+        <label>
+            <span>US House district</span>
+            <select name="cd">
+                <option value="">Not sure</option>
+                @for (var n = 1; n <= 6; n++)
+                {
+                    <option value="@n">PA-@n</option>
+                }
+            </select>
+        </label>
+        <label>
+            <span>State Senate district</span>
+            <input name="ss" type="number" min="1" max="50" inputmode="numeric" />
+        </label>
+        <label>
+            <span>State House district</span>
+            <input name="sh" type="number" min="1" max="203" inputmode="numeric" />
+        </label>
+        <button class="act-btn" type="submit">Show me</button>
+    </form>
+</details>
+
+@code {
+    /// <summary>Open from the start when there is no address lookup to offer first.</summary>
+    [Inject] private IDistrictLookup Lookup { get; set; } = default!;
+
+    private bool Open => !Lookup.IsAvailable;
+}

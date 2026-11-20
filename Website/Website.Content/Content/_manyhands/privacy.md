@@ -34,6 +34,17 @@ file, and deletes you with one button. Deleting removes your name, email,
 interests and Discord link at once. What stays is that *someone* came to an
 event, so a count of twelve people stays twelve, without you attached.
 
+## If you tell us you called or wrote
+
+The action centre's "I called" and "I sent it" buttons keep a record that
+it happened: which official, by phone, email, form or post, when, how a
+call went if you say, and a note if you write one. Never what you said or
+wrote to them. If you are signed in it is yours, on
+[your page](/volunteer/outreach), in the file your page downloads, and
+visible to the organizers so we know which offices are hearing from people.
+If you are not signed in it is kept with nobody's name on it. Deleting
+yourself keeps the count and removes your notes.
+
 ## If we contact you about policy
 
 We keep a list of the offices and people we talk to about AI policy: elected

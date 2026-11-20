@@ -1,0 +1,21 @@
+@* A portrait when the directory has one (self-hosted under img/officials, so
+   nothing loads from a third party), otherwise a disc with their initials.
+   Neutral in colour whatever the party: the page is not a scoreboard. *@
+
+@if (Official.Photo is { } photo)
+{
+    <img class="act-avatar act-avatar-@Size" src="img/officials/@photo" alt="" loading="lazy" width="@Pixels" height="@Pixels" />
+}
+else
+{
+    <span class="act-avatar act-avatar-@Size act-avatar-initials" aria-hidden="true">@Official.Initials</span>
+}
+
+@code {
+    [Parameter, EditorRequired] public required Official Official { get; set; }
+
+    /// <summary>"sm", "md" or "lg".</summary>
+    [Parameter] public string Size { get; set; } = "md";
+
+    private int Pixels => Size switch { "sm" => 48, "lg" => 128, _ => 72 };
+}
