@@ -25,10 +25,14 @@
     <ImportMap />
     @if (_renderMode is not null)
     {
-        @* The organizers' app only: no public page pays for Syncfusion. *@
+        @* The organizers' app only: no public page pays for Syncfusion. The
+           team frame's own sheets are here too, not in TeamShell, so the
+           page never loses them while the app takes over the prerendered
+           markup. *@
         <link rel="stylesheet" href="_content/Syncfusion.Blazor.Themes/fluent2.css" />
         <link rel="stylesheet" href="@Website.Portal.Volunteer.Symbols.StylesheetUrl" />
         <link rel="stylesheet" href="@Assets["team-app.css"]" />
+        <link rel="stylesheet" href="@Assets["manyhands.css"]" />
     }
     <HeadOutlet @rendermode="_renderMode" />
 </head>

@@ -1,0 +1,117 @@
+@using ManyHands.Core
+@using Website.Portal.Volunteer
+@implements IDisposable
+@inject NavigationManager Navigation
+
+@* The frame of every team page, static or in the organizers' app: an app
+   bar that always says who is signed in, the sidebar (TeamNav), and the
+   page. Plain markup, so it looks and works the same either way and a
+   static page downloads nothing for it. On a phone the sidebar is a menu,
+   opened by a hidden checkbox and CSS alone (manyhands.css), the way the
+   front page opens its dialogs.
+
+   Links that leave the app, or a static page, load in full (target="_top"):
+   the app's router would otherwise draw a static page inside itself, and
+   enhanced navigation cannot start the app. Inside the app, a link to
+   another of its pages stays in the app. *@
+
+@if (!InApp)
+{
+    @* The app loads these in the head (App.razor). In the body here, as in
+       VolunteerLayout: only the last <HeadContent> on a page is shown, and
+       PageMeta's is that one. *@
+    <link rel="stylesheet" href="@Assets["manyhands.css"]" />
+    <link rel="stylesheet" href="@Symbols.StylesheetUrl" />
+}
+
+<div class="mh mh-app">
+    <a class="mh-skip" href="#main">Skip to content</a>
+
+    @* Keyed on the page, so arriving somewhere new inside the app shuts the
+       menu, as a full page load does. *@
+    <input @key="_path" type="checkbox" id="mh-menu" class="mh-menu-toggle" aria-label="Menu" aria-controls="mh-sidebar" />
+
+    <header class="mh-appbar">
+        <label class="mh-menu-button" for="mh-menu" aria-hidden="true"><span class="mh-burger"></span></label>
+        <a class="mh-brand" href="@ManyHandsPaths.Team" target="@Target(ManyHandsPaths.Team)">
+            PhillyPause <span class="mh-product">Team</span>
+        </a>
+        <div class="mh-appbar-end">
+            @if (_name is not null)
+            {
+                <span class="mh-who"><span class="mh-who-label">Signed in as </span><strong>@_name</strong></span>
+            }
+            <a class="mh-appbar-link mh-appbar-me" href="@ManyHandsPaths.Me" target="_top">My page</a>
+            <a class="mh-appbar-link" href="@ManyHandsPaths.SignOut" target="_top">Sign out</a>
+        </div>
+    </header>
+
+    <div class="mh-frame">
+        <nav id="mh-sidebar" class="mh-sidebar" aria-label="Team">
+            @foreach (var section in TeamNav.Sections)
+            {
+                <div class="mh-nav-section">
+                    <span class="mh-nav-heading" aria-hidden="true">@section.Heading</span>
+                    <ul class="mh-nav-list" aria-label="@section.Heading">
+                        @foreach (var link in section.Links)
+                        {
+                            <li>
+                                <a class="mh-nav-link" href="@link.Path" target="@Target(link.Path)"
+                                   aria-current="@(ReferenceEquals(link, _current) ? "page" : null)">
+                                    <span class="material-symbols-rounded" aria-hidden="true">@link.Icon</span>
+                                    <span>@link.Label</span>
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            }
+        </nav>
+        @* Tapping beside the open menu shuts it. *@
+        <label class="mh-scrim" for="mh-menu" aria-hidden="true"></label>
+
+        <main id="main" class="mh-main" tabindex="-1">
+            @ChildContent
+        </main>
+    </div>
+</div>
+
+@code {
+    /// <summary>True in the organizers' app (TeamAppLayout): interactive, its styles already in the head.</summary>
+    [Parameter] public bool InApp { get; set; }
+
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+
+    [CascadingParameter] private Task<AuthenticationState>? AuthenticationState { get; set; }
+
+    private string? _name;
+    private string _path = "/";
+    private TeamNav.Link? _current;
+
+    protected override async Task OnInitializedAsync()
+    {
+        SetPath(Navigation.Uri);
+        // Raised only inside the app, where the page changes under this frame.
+        Navigation.LocationChanged += OnLocationChanged;
+
+        if (AuthenticationState is not null)
+            _name = (await AuthenticationState).User.DisplayName();
+    }
+
+    private void OnLocationChanged(object? sender, LocationChangedEventArgs e)
+    {
+        SetPath(e.Location);
+        _ = InvokeAsync(StateHasChanged);
+    }
+
+    private void SetPath(string uri)
+    {
+        _path = "/" + Navigation.ToBaseRelativePath(uri).Split('?', '#')[0];
+        _current = TeamNav.Current(_path);
+    }
+
+    /// <summary>Null to stay inside the app; a full page load for everything else.</summary>
+    private string? Target(string path) => InApp && TeamApp.IsAppPage(path) ? null : "_top";
+
+    public void Dispose() => Navigation.LocationChanged -= OnLocationChanged;
+}
