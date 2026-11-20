@@ -14,15 +14,19 @@
 <PageMeta Title="Sign in" Description="Finish signing in to PhillyPause." NoIndex="true" />
 
 
-<div class="wrap page-head">
-    <h1>One more click</h1>
-    <p class="lead">This signs you in on this device, and keeps you signed in for a month.</p>
+<div class="wrap">
+    <header class="mh-page-head">
+        <div>
+            <h1>One more click</h1>
+            <p class="mh-summary">This signs you in on this device, and keeps you signed in for a month.</p>
+        </div>
+    </header>
 </div>
 
-<div class="wrap vol-body">
-    <section class="vol-card vol-narrow">
-        <EditForm Model="Input" FormName="redeem" OnSubmit="RedeemAsync" class="vol-form">
-            <button class="btn" type="submit">Sign me in</button>
+<div class="wrap">
+    <section class="mh-panel mh-narrow">
+        <EditForm Model="Input" FormName="redeem" OnSubmit="RedeemAsync" class="mh-form">
+            <button class="mh-btn mh-btn-primary" type="submit">Sign me in</button>
         </EditForm>
     </section>
 </div>

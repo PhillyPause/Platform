@@ -20,6 +20,20 @@ public sealed record TeamStats(
     int CheckedIn);
 
 /// <summary>
+/// What is waiting on the team, for the top of /team: who is new, who has not
+/// confirmed their address, CRM tasks still open, and mail from strangers.
+/// </summary>
+public sealed record TeamOverview(
+    int JoinedThisWeek,
+    /// <summary>The members page's "Not confirmed": an address we may write to, never confirmed.</summary>
+    int NotConfirmed,
+    int OpenTasks,
+    /// <summary>Open, with a due day before today on Philadelphia's clock.</summary>
+    int OverdueTasks,
+    /// <summary>Conversations with a message nobody has said who sent.</summary>
+    int ThreadsToTriage);
+
+/// <summary>
 /// The numbers organizers get asked for. Participation, not hours: people
 /// came to things, and that is what is counted.
 /// </summary>
@@ -61,6 +75,28 @@ public sealed class ReportingRepository(NpgsqlDataSource db)
               (SELECT count(*)::int FROM signups WHERE checked_in_at IS NOT NULL)         AS checked_in
             """,
             cancellationToken: ct));
+    }
+
+    /// <summary>Counts only, in one round trip: cheap enough for every visit to /team.</summary>
+    public async Task<TeamOverview> GetOverviewAsync(CancellationToken ct = default)
+    {
+        await using var conn = await db.OpenConnectionAsync(ct);
+        return await conn.QuerySingleAsync<TeamOverview>(new CommandDefinition(
+            """
+            SELECT
+              (SELECT count(*)::int FROM volunteers
+                WHERE NOT is_deleted AND created_at > now() - interval '7 days')            AS joined_this_week,
+              (SELECT count(*)::int FROM volunteers
+                WHERE NOT is_deleted AND email IS NOT NULL AND email_verified_at IS NULL
+                  AND email_opt_in AND unsubscribed_at IS NULL)                              AS not_confirmed,
+              (SELECT count(*)::int FROM crm_tasks
+                WHERE NOT is_deleted AND status = 0)                                         AS open_tasks,
+              (SELECT count(*)::int FROM crm_tasks
+                WHERE NOT is_deleted AND status = 0
+                  AND due_on < (now() AT TIME ZONE @zone)::date)                              AS overdue_tasks,
+              (SELECT count(DISTINCT conversation_id)::int FROM crm_emails WHERE needs_triage) AS threads_to_triage
+            """,
+            new { zone = Organisation.TimeZone }, cancellationToken: ct));
     }
 
     /// <summary>

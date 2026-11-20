@@ -3,36 +3,63 @@
 
 <PageMeta Title="Templates" Description="Outreach email templates." NoIndex="true" />
 
-<div class="wrap page-head">
-    <h1>Templates</h1>
-    <p class="lead">Letters the team sends often. Start a new email from one and change what needs changing.</p>
-</div>
+<header class="mh-page-head">
+    <div>
+        <p class="mh-crumb"><a href="@ManyHandsPaths.Inbox">Inbox</a></p>
+        <h1>Templates</h1>
+        <p class="mh-summary">Letters the team sends often. Start a new email from one and change what needs changing.</p>
+    </div>
+</header>
 
-<div class="wrap vol-body vol-stack">
-    @if (_templates.Count > 0)
-    {
-        <EditForm Model="Remove" FormName="remove" OnSubmit="RemoveAsync">
-            <ul class="vol-people">
-                @foreach (var template in _templates)
-                {
-                    <li>
-                        <a href="@($"{ManyHandsPaths.InboxCompose}?template={template.Id}")">@template.Name</a>
-                        <span class="vol-small">@template.Subject</span>
-                        <button class="vol-link-button" type="submit" name="Remove.Id" value="@template.Id">Remove</button>
-                    </li>
-                }
-            </ul>
-        </EditForm>
-    }
+<div class="mh-columns">
+    <section class="mh-panel" aria-labelledby="list-head">
+        <div class="mh-panel-head">
+            <h2 id="list-head">The team&rsquo;s templates</h2>
+            @if (_templates.Count > 0) { <p>Press one to write from it</p> }
+        </div>
+        @if (_templates.Count == 0)
+        {
+            <div class="mh-empty">
+                <p class="mh-empty-title">No templates yet</p>
+                <p>Save a letter you send often with the form here, and it shows up under Start from when anyone writes.</p>
+            </div>
+        }
+        else
+        {
+            <EditForm Model="Remove" FormName="remove" OnSubmit="RemoveAsync">
+                <ul class="mh-list">
+                    @foreach (var template in _templates)
+                    {
+                        <li>
+                            <div class="mh-list-main">
+                                <a href="@($"{ManyHandsPaths.InboxCompose}?template={template.Id}")">@template.Name</a>
+                                <div class="mh-meta"><span>@template.Subject</span></div>
+                            </div>
+                            <div class="mh-list-end">
+                                <button class="mh-btn mh-btn-quiet" type="submit" name="Remove.Id" value="@template.Id"
+                                        aria-label="@($"Remove {template.Name}")">Remove</button>
+                            </div>
+                        </li>
+                    }
+                </ul>
+            </EditForm>
+        }
+    </section>
 
-    <section aria-labelledby="new-head">
+    <section class="mh-panel" aria-labelledby="new-head">
         <h2 id="new-head">A new template</h2>
-        <EditForm Model="Input" FormName="template" OnValidSubmit="AddAsync" class="vol-form vol-editor">
+        <EditForm Model="Input" FormName="template" OnValidSubmit="AddAsync" class="mh-form">
             <DataAnnotationsValidator />
-            <label><span>Name, for the team</span><InputText @bind-Value="Input!.Name" placeholder="Meeting request" /><ValidationMessage For="() => Input!.Name" /></label>
-            <label><span>Subject</span><InputText @bind-Value="Input!.Subject" /><ValidationMessage For="() => Input!.Subject" /></label>
-            <label><span>Message</span><InputTextArea @bind-Value="Input!.Body" rows="10" /><ValidationMessage For="() => Input!.Body" /></label>
-            <button class="btn" type="submit">Save</button>
+            <label class="mh-field">
+                <span class="mh-label">Name, for the team</span>
+                <InputText @bind-Value="Input!.Name" placeholder="Meeting request" />
+                <ValidationMessage For="() => Input!.Name" />
+            </label>
+            <label class="mh-field"><span class="mh-label">Subject</span><InputText @bind-Value="Input!.Subject" /><ValidationMessage For="() => Input!.Subject" /></label>
+            <label class="mh-field"><span class="mh-label">Message</span><InputTextArea @bind-Value="Input!.Body" rows="10" /><ValidationMessage For="() => Input!.Body" /></label>
+            <div class="mh-form-actions">
+                <button class="mh-btn mh-btn-primary" type="submit">Save</button>
+            </div>
         </EditForm>
     </section>
 </div>

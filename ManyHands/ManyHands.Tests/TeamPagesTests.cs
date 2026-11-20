@@ -80,6 +80,88 @@ public sealed partial class TeamPagesTests(DatabaseFixture db) : IAsyncLifetime
         Assert.Contains("Signed in as </span><strong>Grid Organizer</strong>", page);
     }
 
+    /// <summary>
+    /// Static or in the app, every team page has the one frame (TeamShell):
+    /// who is signed in, the grouped sidebar with this page marked, and not
+    /// the public site's header.
+    /// </summary>
+    [Theory]
+    [InlineData(ManyHandsPaths.Team, ManyHandsPaths.Team)]
+    [InlineData(ManyHandsPaths.TeamMembers, ManyHandsPaths.TeamMembers)]
+    [InlineData(ManyHandsPaths.TeamInvites, ManyHandsPaths.TeamInvites)]
+    [InlineData(ManyHandsPaths.TeamNewActivity, ManyHandsPaths.Team)]
+    [InlineData(ManyHandsPaths.Crm, ManyHandsPaths.Crm)]
+    [InlineData(ManyHandsPaths.CrmPipeline, ManyHandsPaths.CrmPipeline)]
+    [InlineData(ManyHandsPaths.CrmOfficials, ManyHandsPaths.CrmOfficials)]
+    [InlineData(ManyHandsPaths.Inbox, ManyHandsPaths.Inbox)]
+    [InlineData(ManyHandsPaths.InboxCompose, ManyHandsPaths.InboxCompose)]
+    [InlineData(ManyHandsPaths.InboxTemplates, ManyHandsPaths.InboxTemplates)]
+    public async Task Every_team_page_has_the_one_frame_with_its_place_marked(string path, string place)
+    {
+        var organizer = await SignedInAsync(VolunteerRole.Organizer, "Frame Organizer");
+
+        var page = await organizer.GetStringAsync(path);
+
+        Assert.Contains("Signed in as </span><strong>Frame Organizer</strong>", page);
+        var sidebar = Regex.Match(page, "<nav id=\"mh-sidebar\".*?</nav>", RegexOptions.Singleline).Value;
+        foreach (var heading in new[] { "Volunteering", "Lobbying", "Mail", "Site" })
+            Assert.Contains($"aria-label=\"{heading}\"", sidebar);
+        Assert.Single(Regex.Matches(sidebar, "aria-current=\"page\""));
+        Assert.Matches($"<a class=\"mh-nav-link\" href=\"{Regex.Escape(place)}\"[^>]*aria-current=\"page\"", sidebar);
+        Assert.DoesNotContain("class=\"account-bar\"", page);
+        Assert.DoesNotContain("class=\"site-header\"", page);
+    }
+
+    [Fact]
+    public async Task The_top_of_the_team_page_shows_what_is_next_and_how_full()
+    {
+        var organizer = await SignedInAsync(VolunteerRole.Organizer);
+        var title = $"Soonest {Guid.NewGuid():N}";
+        var activity = await TestData.ActivityAsync(db.DataSource, title, startsInHours: 0.5, capacity: 9);
+        await new SignupRepository(db.DataSource).SignUpAsync(activity, "Early Bird", TestData.NewEmail(), []);
+
+        var page = await organizer.GetStringAsync(ManyHandsPaths.Team);
+
+        Assert.Contains("Next up", page);
+        Assert.Matches($"{title}</a>\\s*<div class=\"mh-meta\">\\s*<span>[^<]+</span>\\s*<span>1 of 9 going</span>", page);
+        Assert.Contains("New this week", page);
+        Assert.Contains("Who is this?", page);
+    }
+
+    [Fact]
+    public async Task The_overview_counts_newcomers_the_unconfirmed_late_tasks_and_strangers_mail()
+    {
+        var reporting = new ReportingRepository(db.DataSource);
+        var crm = new CrmRepository(db.DataSource);
+        var before = await reporting.GetOverviewAsync();
+
+        await TestData.VolunteerAsync(db.DataSource, "Brand New", confirmed: false);
+        await TestData.VolunteerAsync(db.DataSource, "Brand New Confirmed");
+        var unsubscribed = await TestData.VolunteerAsync(db.DataSource, "Brand New Gone", confirmed: false);
+        await new VolunteerRepository(db.DataSource).SetEmailOptInAsync(unsubscribed.Id, false);
+        var today = DateOnly.FromDateTime(LocalTime.ToLocal(DateTimeOffset.UtcNow));
+        await crm.AddTaskAsync("Late", null, null, today.AddDays(-2), null);
+        await crm.AddTaskAsync("Due today", null, null, today, null);
+        var done = await crm.AddTaskAsync("Done already", null, null, today.AddDays(-2), null);
+        await crm.SetTaskStatusAsync(done, CrmTaskStatus.Done);
+        var thread = Guid.NewGuid();
+        foreach (var subject in new[] { "First", "Second" })
+        {
+            await new CrmEmailRepository(db.DataSource).RecordAsync(new CrmEmail(
+                Guid.Empty, EmailDirection.Inbound, null, null, null, "stranger@example.test", "outreach@example.test",
+                subject, "Hi.", null, null, thread, EmailStatus.Sent, null, null, null,
+                DateTimeOffset.UtcNow, DateTimeOffset.UtcNow, NeedsTriage: true));
+        }
+
+        var after = await reporting.GetOverviewAsync();
+
+        Assert.Equal(before.JoinedThisWeek + 3, after.JoinedThisWeek);
+        Assert.Equal(before.NotConfirmed + 1, after.NotConfirmed);
+        Assert.Equal(before.OpenTasks + 2, after.OpenTasks);
+        Assert.Equal(before.OverdueTasks + 1, after.OverdueTasks);
+        Assert.Equal(before.ThreadsToTriage + 1, after.ThreadsToTriage);
+    }
+
     [Fact]
     public async Task The_app_stays_closed_to_a_member()
     {

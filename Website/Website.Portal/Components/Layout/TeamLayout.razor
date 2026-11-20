@@ -1,0 +1,9 @@
+@inherits LayoutComponentBase
+
+@* Every team page outside the organizers' app: static, in the same frame as
+   the app (TeamShell), so moving between team pages never changes the look.
+   Every page in Components/Team takes this layout and TeamPolicies.Organizer
+   from that folder's _Imports; this file lives here so that _Imports does
+   not make it its own layout. *@
+
+<TeamShell>@Body</TeamShell>

@@ -91,9 +91,9 @@ registered.
 ### The volunteer pages
 
 Static SSR Razor components in `Website/Website.Portal/Components/Volunteer`, on
-`VolunteerLayout` (the site's own header and footer, plus the area's nav and
-`volunteer.css`). Helpers that are not components live in
-`Website/Website.Portal/Volunteer`.
+`VolunteerLayout`: the site's own header and footer, the area's nav, and the
+same parts as the team pages (`manyhands.css`, below). Helpers that are not
+components live in `Website/Website.Portal/Volunteer`.
 
 | Route | Page |
 |---|---|
@@ -102,7 +102,7 @@ Static SSR Razor components in `Website/Website.Portal/Components/Volunteer`, on
 | `/join` | Joining is not a page here: it is the front page's Join us dialog (On the site, below). Every Join link goes to it |
 | `/volunteer/sign-in` | Ask for a sign-in link |
 | `/volunteer/sign-in/{token}` | Opening the link shows a button; **pressing it** spends the token and lands on the front page, not `/volunteer/me`, until the volunteer pages are ready for readers |
-| `/volunteer/me` | Signups and cancelling, interests and email, Discord unlink, the personal calendar feed, export, delete, sign out |
+| `/volunteer/me` | A summary at the top (coming up, done, what they like, how news reaches them), then a section each, listed at the side: My signups (coming up, with cancelling, and done), What I like doing, Email and notifications (one form with the interests, so either Save saves both), Discord unlink, Calendar feed, My data (export, delete). Sign out and Events head the page |
 | `/volunteer/check-email` | The front page with the Check your email dialog, where joining redirects someone not yet confirmed: what the email looks like, and what to do if it does not come. `?again=true` when it was sent again |
 | `/volunteer/confirm/{token}` | Not a page here: the front page with the Finish joining dialog, where the link in a joining email lands. It greets them by name; **pressing** "Yes, that's me" confirms the address and signs them in, and "That's not me" is a link to removal |
 | `/volunteer/welcome` | The front page with the Welcome dialog, where confirming redirects: what happens now, the primer, back to the front page. It does not link to their page yet |
@@ -178,9 +178,29 @@ Under `/team`, in `Website/Website.Portal/Components/Team`, all behind
 there is nothing there for them. The role is read from the database on every
 request.
 
+- **One frame, static or in the app.** Every team page sits in `TeamShell`:
+  an app bar (who is signed in, My page, Sign out) and a sidebar grouped
+  Volunteering, Lobbying, Mail and Site, with the page's place marked, a
+  record's own page under the place it belongs to. `TeamAppLayout` (the
+  app's pages) and `TeamLayout` (the rest) both wrap it, and neither sits
+  under the public site's header. It is plain markup, so a static page
+  downloads nothing for it; on a phone the sidebar is a menu opened by a
+  hidden checkbox and CSS, as the front page opens its dialogs. A link
+  between the app and a static page loads the page in full.
+- **The sidebar is one list**, `TeamNav`: a place added to its section there
+  is on every team page. `SiteLinks` is where a public area joins.
+- **One look, both sides.** `manyhands.css` holds the parts the team pages
+  and a member's pages share: a page header (title, a line saying what is
+  here, the main actions), panels, tables that become cards on a phone,
+  badges that say a state in a word, primary, secondary and danger buttons,
+  labelled fields with help, and empty states that say what to do next.
+  Light only, in the front page's ink, cream and red, checked for contrast in
+  its header. `team-app.css` gives Syncfusion's grid and dialogs the same
+  look, on the app's pages only.
+
 | Route | Page | Who |
 |---|---|---|
-| `/team` | Every activity, drafts included, with the numbers; the participation CSV | Organizers |
+| `/team` | At a glance: what is next and how full, who joined this week, who has not confirmed, open and overdue CRM tasks, mail waiting to be identified (`ReportingRepository.GetOverviewAsync`, counts only). Then every activity, drafts included, with the numbers; the participation CSV | Organizers |
 | `/team/activity/new`, `/team/activity/{id}/edit` | The editor. Times are typed in Philadelphia's clock and stored as instants | Organizers |
 | `/team/activity/{id}` | Publish or unpublish; the roster, one big button per name for check-in; walk-ins | Organizers |
 | `/team/activity/{id}/check-in` | The QR code for the door | Organizers |
@@ -220,7 +240,7 @@ Also under `/team`, also for organizers: `Components/Team/Crm` and
 
 | Route | Page |
 |---|---|
-| `/team/crm` | Organizations, filterable by kind; every open task |
+| `/team/crm` | Organizations, filterable by kind; every open task; adding one |
 | `/team/crm/organization/{id}` | People, engagements, tasks, the timeline and its mail; details |
 | `/team/crm/pipeline` | Every engagement as a card in its column, moved with arrows |
 | `/team/crm/engagement/{id}` | Tasks, the timeline, and details: status, category, owner, when |

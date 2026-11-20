@@ -1,76 +1,92 @@
 @page "/team"
 @layout Website.Portal.Components.Layout.TeamAppLayout
 @using Syncfusion.Blazor.Grids
-@using Syncfusion.Blazor.Buttons
 @inject ActivityAdminRepository Admin
 @inject ReportingRepository Reporting
-@inject NavigationManager Navigation
 
-@* Every activity, drafts included, as a grid: sort any column, filter any
-   column the way a spreadsheet does, or search the lot. Part of the
-   organizers' app (TeamApp), so it runs interactive. *@
+@* Where the team starts: what is coming up and what is waiting on someone
+   (TeamAtAGlance), then every activity, drafts included, as a grid: sort any
+   column, filter any column the way a spreadsheet does, or search the lot.
+   Part of the organizers' app (TeamApp), so it runs interactive. *@
 
 <PageMeta Title="Team" Description="PhillyPause's organizers' console." NoIndex="true" />
 
-<div class="team-page-head">
+<header class="mh-page-head">
     <div>
-        <h1>Activities</h1>
-        <p class="team-stats">
+        <h1>Team</h1>
+        <p class="mh-summary">
             @_stats.UpcomingActivities coming up &middot; @_stats.ConfirmedSignups signed up &middot;
             @_stats.CheckedIn checked in, ever &middot; @_stats.Volunteers volunteers
         </p>
     </div>
-    <div class="team-actions">
-        <SfButton IsPrimary="true" OnClick="NewActivity">New activity</SfButton>
-        @* A file, so a plain link: the browser downloads it. *@
-        <a class="e-btn" href="@TeamEndpoints.ParticipationPath" target="_top">Download who came to what</a>
+    <div class="mh-page-actions">
+        @* The editor is a static page: a full load. *@
+        <a class="mh-btn mh-btn-primary" href="@ManyHandsPaths.TeamNewActivity" target="_top">New activity</a>
     </div>
-</div>
+</header>
 
-<SfGrid TValue="Row" DataSource="_rows" AllowSorting="true" AllowFiltering="true" AllowTextWrap="true"
-        Toolbar="@(new List<string> { "Search" })" GridLines="GridLine.Horizontal">
-    <GridFilterSettings Type="Syncfusion.Blazor.Grids.FilterType.Excel" />
-    @* Wrap rather than cut: on a phone a long title takes two lines, not an ellipsis. *@
-    <GridTextWrapSettings WrapMode="WrapMode.Content" />
-    <GridSortSettings>
-        <GridSortColumns>
-            <GridSortColumn Field="@nameof(Row.Starts)" Direction="Syncfusion.Blazor.Grids.SortDirection.Ascending" />
-        </GridSortColumns>
-    </GridSortSettings>
-    <GridColumns>
-        <GridColumn Field="@nameof(Row.Title)" HeaderText="Activity" Width="38%">
-            <Template>
-                @{ var row = (Row)context; }
-                <a href="@ManyHandsPaths.TeamActivity(row.Id)" target="_top">@row.Title</a>
-                @if (row.Location is not null)
-                {
-                    <div class="team-cell-sub">@row.Location</div>
-                }
-            </Template>
-        </GridColumn>
-        <GridColumn Field="@nameof(Row.Starts)" HeaderText="When" Width="24%">
-            <Template>@(((Row)context).When)</Template>
-        </GridColumn>
-        <GridColumn Field="@nameof(Row.SignedUp)" HeaderText="Going" TextAlign="TextAlign.Right" Width="96">
-            <Template>
-                @{ var row = (Row)context; }
-                @row.SignedUp@(row.Capacity is { } cap ? $" / {cap}" : "")
-                @if (row.Waiting > 0)
-                {
-                    <div class="team-cell-sub">+@row.Waiting waiting</div>
-                }
-            </Template>
-        </GridColumn>
-        @* Phones get the three columns that matter: what, when, how full. *@
-        <GridColumn Field="@nameof(Row.CheckedIn)" HeaderText="Checked in" TextAlign="TextAlign.Right" Width="120" HideAtMedia="(min-width: 720px)" />
-        <GridColumn Field="@nameof(Row.State)" HeaderText="State" Width="130" HideAtMedia="(min-width: 560px)">
-            <Template>
-                @{ var row = (Row)context; }
-                <span class="team-state team-state-@row.State.ToLowerInvariant()">@row.State</span>
-            </Template>
-        </GridColumn>
-    </GridColumns>
-</SfGrid>
+@if (_overview is not null)
+{
+    <TeamAtAGlance Activities="_activities" Overview="_overview" />
+}
+
+<section class="mh-section" aria-labelledby="activities-head">
+    <div class="mh-section-head">
+        <h2 id="activities-head">Activities</h2>
+        @* A file, so a plain link: the browser downloads it. *@
+        <a class="mh-btn mh-btn-secondary mh-btn-small" href="@TeamEndpoints.ParticipationPath" target="_top">Download who came to what</a>
+    </div>
+
+    <SfGrid TValue="Row" DataSource="_rows" AllowSorting="true" AllowFiltering="true" AllowTextWrap="true"
+            Toolbar="@(new List<string> { "Search" })" GridLines="GridLine.Horizontal">
+        <GridFilterSettings Type="Syncfusion.Blazor.Grids.FilterType.Excel" />
+        @* Wrap rather than cut: on a phone a long title takes two lines, not an ellipsis. *@
+        <GridTextWrapSettings WrapMode="WrapMode.Content" />
+        <GridSortSettings>
+            <GridSortColumns>
+                <GridSortColumn Field="@nameof(Row.Starts)" Direction="Syncfusion.Blazor.Grids.SortDirection.Ascending" />
+            </GridSortColumns>
+        </GridSortSettings>
+        <GridTemplates>
+            <EmptyRecordTemplate>
+                <p class="mh-grid-empty">No activities yet. <strong>New activity</strong> starts one as a draft; nobody hears about it until you publish.</p>
+            </EmptyRecordTemplate>
+        </GridTemplates>
+        <GridColumns>
+            <GridColumn Field="@nameof(Row.Title)" HeaderText="Activity" Width="38%">
+                <Template>
+                    @{ var row = (Row)context; }
+                    <a href="@ManyHandsPaths.TeamActivity(row.Id)" target="_top">@row.Title</a>
+                    @if (row.Location is not null)
+                    {
+                        <div class="team-cell-sub">@row.Location</div>
+                    }
+                </Template>
+            </GridColumn>
+            <GridColumn Field="@nameof(Row.Starts)" HeaderText="When" Width="24%">
+                <Template>@(((Row)context).When)</Template>
+            </GridColumn>
+            <GridColumn Field="@nameof(Row.SignedUp)" HeaderText="Going" TextAlign="TextAlign.Right" Width="112">
+                <Template>
+                    @{ var row = (Row)context; }
+                    @row.SignedUp@(row.Capacity is { } cap ? $" / {cap}" : "")
+                    @if (row.Waiting > 0)
+                    {
+                        <div class="team-cell-sub">+@row.Waiting waiting</div>
+                    }
+                </Template>
+            </GridColumn>
+            @* Phones get the three columns that matter: what, when, how full. *@
+            <GridColumn Field="@nameof(Row.CheckedIn)" HeaderText="Checked in" TextAlign="TextAlign.Right" Width="132" HideAtMedia="(min-width: 720px)" />
+            <GridColumn Field="@nameof(Row.State)" HeaderText="State" Width="130" HideAtMedia="(min-width: 560px)">
+                <Template>
+                    @{ var row = (Row)context; }
+                    <span class="mh-badge @StateBadge(row.State)">@row.State</span>
+                </Template>
+            </GridColumn>
+        </GridColumns>
+    </SfGrid>
+</section>
 
 @code {
     /// <summary>One grid row: flat, so every column sorts and filters on a plain value.</summary>
@@ -78,23 +94,27 @@
         Guid Id, string Title, string? Location, DateTime? Starts, string When,
         int SignedUp, int? Capacity, int Waiting, int CheckedIn, string State);
 
+    private const string Draft = "Draft";
+    private const string Published = "Published";
+    private const string Finished = "Finished";
+
+    private IReadOnlyList<ActivityAdminRow> _activities = [];
     private List<Row> _rows = [];
     private TeamStats _stats = new(0, 0, 0, 0);
+    private TeamOverview? _overview;
 
     protected override async Task OnInitializedAsync()
     {
         _stats = await Reporting.GetStatsAsync();
-        _rows = (await Admin.GetAllAsync())
+        _overview = await Reporting.GetOverviewAsync();
+        _activities = await Admin.GetAllAsync();
+        _rows = _activities
             .Select(a => new Row(
                 a.Id, a.Title, string.IsNullOrWhiteSpace(a.Location) ? null : a.Location,
                 a.StartsAt is { } s ? LocalTime.ToLocal(s) : null, When(a.StartsAt),
                 a.SignupCount, a.Capacity, a.WaitlistCount, a.CheckedInCount, State(a)))
             .ToList();
     }
-
-    // The editor is not part of the app yet: a full page load.
-    private void NewActivity() =>
-        Navigation.NavigateTo(ManyHandsPaths.TeamNewActivity, forceLoad: !TeamApp.IsAppPage(ManyHandsPaths.TeamNewActivity));
 
     /// <summary>"Thu, Oct 22 · 1:00 PM": every time in the app is Philadelphia's, so no label.</summary>
     private static string When(DateTimeOffset? startsAt) =>
@@ -103,7 +123,14 @@
             : "Ongoing";
 
     private static string State(ActivityAdminRow a) =>
-        !a.IsPublished ? "Draft"
-        : a.EndsAt is { } ends && ends <= DateTimeOffset.UtcNow ? "Finished"
-        : "Published";
+        !a.IsPublished ? Draft
+        : a.EndsAt is { } ends && ends <= DateTimeOffset.UtcNow ? Finished
+        : Published;
+
+    private static string StateBadge(string state) => state switch
+    {
+        Published => "mh-badge-ok",
+        Draft => "mh-badge-warn",
+        _ => string.Empty
+    };
 }

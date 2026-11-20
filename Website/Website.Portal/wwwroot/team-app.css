@@ -1,15 +1,8 @@
-/* The organizers' app (TeamAppLayout): Syncfusion's Fluent 2 theme, in the
-   front page's ink, cream and red. Loaded only on the app's pages. */
+/* The organizers' app (TeamApp): Syncfusion's Fluent 2 theme in the back
+   end's colours (manyhands.css), so its grid, buttons and dialogs look like
+   every other team page. Loaded only on the app's pages, with the theme. */
 
 :root {
-  --team-ink: #15110C;
-  --team-cream: #FBF8F1;
-  --team-paper: #FFFFFF;
-  --team-red: #AE2012;
-  --team-red-deep: #8E190E;
-  --team-rule: #CFC7B6;
-  --team-muted: #6A6254;
-
   /* Fluent 2's own variables, so its buttons, focus rings and selections
      use the same red rather than its default blue. */
   --color-sf-primary: #AE2012;
@@ -20,52 +13,34 @@
   --color-sf-primary-text-color: #FFFFFF;
 }
 
-body { background: var(--team-cream); margin: 0; }
-
-.team-app { min-height: 100vh; display: flex; flex-direction: column; font-family: var(--sans); color: var(--team-ink); }
-
-.team-appbar.e-appbar { background: var(--team-ink); color: var(--team-cream); gap: 14px; padding-inline: 12px 20px; }
-.team-brand { color: var(--team-cream); font-family: "Playfair Display", serif; font-weight: 800; font-size: 20px; text-decoration: none; }
-.team-product {
-  font-size: 11px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase;
-  background: var(--team-red); color: #fff; padding: 3px 8px;
+/* The grid as a panel: the same hairline, corners and table headings as a
+   plain table (.mh-table). */
+.mh .e-grid {
+  font-family: var(--mh-sans);
+  border: 1px solid var(--mh-line); border-radius: var(--mh-radius); overflow: hidden;
 }
-.team-who { font-size: 13px; }
-.team-bar-link {
-  color: var(--team-cream); font-size: 12px; font-weight: 600; letter-spacing: 0.06em;
-  text-transform: uppercase; text-decoration: none; white-space: nowrap;
+.mh .e-grid .e-gridheader,
+.mh .e-grid .e-headercontent,
+.mh .e-grid .e-headercell,
+.mh .e-grid .e-filterbarcell,
+.mh .e-grid .e-detailheadercell { background: var(--mh-sand); }
+.mh .e-grid .e-headercell .e-headertext {
+  font-size: 12px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--mh-muted);
 }
-.team-bar-link:hover, .team-bar-link:focus-visible { text-decoration: underline; }
+.mh-grid-empty { margin: 8px 0; color: var(--mh-ink-soft); white-space: normal; }
+.mh .e-grid .e-rowcell { font-size: 15px; color: var(--mh-ink); }
+.mh .e-grid .e-row:hover .e-rowcell { background: #FDFBF7; }
+.mh .e-grid .e-toolbar { background: var(--mh-paper); border-bottom: 1px solid var(--mh-line); }
+.mh .e-grid .e-rowcell a { color: var(--mh-ink); font-weight: 600; text-decoration: underline; text-decoration-color: var(--mh-edge); text-underline-offset: 2px; }
+.mh .e-grid .e-rowcell a:hover { color: var(--mh-red); text-decoration-color: currentColor; }
+.mh .e-pager { font-family: var(--mh-sans); border-top: 1px solid var(--mh-line); }
 
-.team-body { flex: 1; display: flex; min-height: 0; position: relative; }
-.team-sidebar.e-sidebar { background: var(--team-paper); border-right: 1px solid var(--team-rule); }
-.team-nav { display: flex; flex-direction: column; padding: 14px 0 24px; }
-.team-nav-group {
-  font-size: 10px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase;
-  color: var(--team-red); padding: 14px 20px 6px;
-}
-.team-nav-link { color: var(--team-ink); text-decoration: none; padding: 7px 20px; font-size: 14px; border-left: 3px solid transparent; }
-.team-nav-link:hover, .team-nav-link:focus-visible { background: var(--team-cream); }
-.team-nav-link.active { border-left-color: var(--team-red); font-weight: 700; background: var(--team-cream); }
-
-.team-main { flex: 1; min-width: 0; padding: 24px 28px 48px; }
-.team-main:focus { outline: none; }
-
-.team-page-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 24px; margin-bottom: 18px; }
-.team-page-head h1 { font-family: "Playfair Display", serif; font-weight: 800; font-size: 30px; margin: 0; }
-.team-stats { color: var(--team-muted); font-size: 14px; margin: 4px 0 0; }
-.team-actions { display: flex; flex-wrap: wrap; gap: 10px; }
-
-.team-cell-sub { color: var(--team-muted); font-size: 12px; }
-.team-state { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 2px 8px; border-radius: 2px; }
-.team-state-draft { background: #EFE9DC; color: var(--team-muted); }
-.team-state-published { background: #E4F1E6; color: #1E6B30; }
-.team-state-finished { background: #ECECEC; color: #555; }
+/* A cell's second line: where an activity is, how many are waiting. */
+.team-cell-sub { color: var(--mh-muted); font-size: 13px; }
 
 /* A confirm dialog's title is a question with a name in it: it wraps rather than cutting off. */
-.team-dialog .e-dlg-header { white-space: normal; overflow: visible; text-overflow: clip; }
-
-.team-notice { background: var(--team-paper); border-left: 3px solid var(--team-red); padding: 10px 14px; margin: 0 0 14px; font-size: 14px; }
+.team-dialog .e-dlg-header { white-space: normal; overflow: visible; text-overflow: clip; font-family: var(--mh-sans); }
+.team-dialog .e-dlg-content { font-family: var(--mh-sans); color: var(--mh-ink); }
 
 /* Icons: Material Symbols (Symbols.cs), filled, one size. Colour is a
    second cue only; each has its words in a tooltip and for screen readers. */
@@ -75,18 +50,18 @@ body { background: var(--team-cream); margin: 0; }
 /* A filter row's select and date cells, the height of its text cells. */
 .team-filter.e-input { width: 100%; height: 30px; padding: 0 6px; font: inherit; font-size: 13px; }
 
-/* Members: one line a person. */
+/* Members: one line a person. Each icon colour is 3:1 or better on white. */
 .member-status-confirmed { color: #1E7B36; }
-.member-status-not-confirmed { color: #C77700; }
+.member-status-not-confirmed { color: #A35F00; }
 .member-status-unsubscribed { color: #8A6A5A; }
-.member-status-no-email { color: #9A958C; }
-.member-role-admin { color: var(--team-red); }
-.member-role-organizer { color: #043464; }
-.member-role-member { color: #8C8476; }
+.member-status-no-email { color: #857A66; }
+.member-role-admin { color: var(--mh-red); }
+.member-role-organizer { color: var(--mh-navy); }
+.member-role-member { color: #7A6F5E; }
 .interest-codes { display: flex; gap: 2px; white-space: nowrap; }
 .interest-code {
   display: inline-block; width: 22px; height: 20px; line-height: 20px; border-radius: 3px; text-align: center;
-  background: #E9E1D0; color: var(--team-ink); font-size: 10px; font-weight: 700; letter-spacing: 0.02em;
+  background: #E9E1D0; color: var(--mh-ink); font-size: 10px; font-weight: 700; letter-spacing: 0.02em;
   text-decoration: none; cursor: help;
 }
 /* Read by screen readers, not shown: the full labels behind the codes. */
@@ -96,14 +71,7 @@ body { background: var(--team-cream); margin: 0; }
 }
 .member-actions { display: flex; justify-content: flex-end; gap: 2px; white-space: nowrap; }
 .member-slot { display: inline-block; width: 32px; }
-.member-action.e-btn { width: 32px; height: 32px; padding: 0; color: #4A4338; }
+.member-action.e-btn { width: 32px; height: 32px; padding: 0; color: var(--mh-ink-soft); }
 .member-action.e-btn .material-symbols-rounded { font-size: 18px; }
-.member-action.e-btn:hover, .member-action.e-btn:focus-visible { color: #043464; }
-.member-action-danger.e-btn:hover, .member-action-danger.e-btn:focus-visible { color: var(--team-red); }
-
-@media (max-width: 639px) {
-  .team-main { padding: 16px; }
-  /* The name stays, so a phone still says who is signed in. */
-  .team-who-label, .team-bar-me, .team-product { display: none; }
-  .team-who { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 45vw; }
-}
+.member-action.e-btn:hover, .member-action.e-btn:focus-visible { color: var(--mh-navy); }
+.member-action-danger.e-btn:hover, .member-action-danger.e-btn:focus-visible { color: var(--mh-red); }

@@ -16,112 +16,205 @@
     return;
 }
 
-<div class="wrap page-head">
-    <h1>Hello, @_me.DisplayName</h1>
-    <p class="lead">What you have signed up for, what you like doing, and what we hold about you.</p>
-</div>
+<div class="wrap">
+    <header class="mh-page-head">
+        <div>
+            <h1>Hello, @_me.DisplayName</h1>
+            <p class="mh-summary">What you have signed up for, what you like doing, and what we hold about you.</p>
+        </div>
+        <div class="mh-page-actions">
+            <a class="mh-btn mh-btn-primary" href="@ManyHandsPaths.Events" data-enhance-nav="false">See events</a>
+            <EditForm Model="SignOut" FormName="sign-out" OnSubmit="SignOutAsync">
+                <button class="mh-btn mh-btn-secondary" type="submit">Sign out</button>
+            </EditForm>
+        </div>
+    </header>
 
-<div class="wrap vol-body vol-stack">
     @if (_notice is not null)
     {
-        <p class="vol-notice" role="status">@_notice</p>
+        <p class="mh-notice" role="status">@_notice</p>
     }
 
-    <section aria-labelledby="coming-head">
-        <h2 id="coming-head">Coming up</h2>
-        @if (_upcoming.Count == 0)
-        {
-            <p>Nothing yet. <a href="@ManyHandsPaths.Events" data-enhance-nav="false">See events</a>.</p>
-        }
-        else
-        {
-            <EditForm Model="Cancel" FormName="cancel" OnSubmit="CancelAsync">
-                <ul class="vol-list vol-mine">
-                    @foreach (var signup in _upcoming)
-                    {
-                        <li>
-                            <h3><a href="@ManyHandsPaths.Activity(signup.ActivityId)">@signup.Title</a></h3>
-                            <p class="vol-meta">
-                                <span>@Show.When(signup.StartsAt)</span>
-                                <span>@Show.Where(signup.Location)</span>
-                                <span class="vol-status">@Show.Status(signup.Status)</span>
-                            </p>
-                            @* The button that was pressed is the one whose value is posted. *@
-                            <button class="btn btn-ghost" type="submit" name="Cancel.SignupId" value="@signup.SignupId">
-                                Cannot make it
-                            </button>
-                        </li>
-                    }
-                </ul>
-            </EditForm>
-        }
-        <p class="vol-aside">
-            <a href="@_calendarUrl">Your own calendar feed</a> &mdash; subscribe to it in any
-            calendar app and your signups appear there. It is private to you: do not share the link.
-        </p>
+    <section aria-labelledby="short-head">
+        <h2 id="short-head" class="mh-sr">In short</h2>
+        <div class="mh-cards mh-cards-compact">
+            <div class="mh-card">
+                <span class="mh-card-label">Coming up</span>
+                <p class="mh-card-figure">@_upcoming.Count</p>
+                <p class="mh-card-text">@(_upcoming.Count == 1 ? "activity" : "activities") you are down for</p>
+            </div>
+            <div class="mh-card">
+                <span class="mh-card-label">Done</span>
+                <p class="mh-card-figure">@_past.Count</p>
+                <p class="mh-card-text">@(_past.Count == 1 ? "activity" : "activities") since you joined</p>
+            </div>
+            <div class="mh-card">
+                <span class="mh-card-label">You like</span>
+                <p class="mh-card-figure">@_interests.Count</p>
+                <p class="mh-card-text">@(_interests.Count == 1 ? "kind" : "kinds") of thing to do</p>
+            </div>
+            <div class="mh-card">
+                <span class="mh-card-label">New activities</span>
+                <p class="mh-card-figure mh-card-word">@Channel</p>
+                <p class="mh-card-text">how we tell you when one you like is on</p>
+            </div>
+        </div>
     </section>
 
-    @if (_past.Count > 0)
-    {
-        <section aria-labelledby="past-head">
-            <h2 id="past-head">Done</h2>
-            <ul class="vol-past">
-                @foreach (var signup in _past)
-                {
-                    <li>@signup.Title <span class="vol-meta">@Show.When(signup.StartsAt)</span></li>
-                }
+    <div class="mh-me">
+        <nav class="mh-toc" aria-labelledby="toc-head">
+            <h2 id="toc-head">On this page</h2>
+            <ul>
+                <li><a href="@($"{ManyHandsPaths.Me}#signups")">My signups</a></li>
+                <li><a href="@($"{ManyHandsPaths.Me}#interests")">What I like doing</a></li>
+                <li><a href="@($"{ManyHandsPaths.Me}#email")">Email and notifications</a></li>
+                <li><a href="@($"{ManyHandsPaths.Me}#discord")">Discord</a></li>
+                <li><a href="@($"{ManyHandsPaths.Me}#calendar")">Calendar feed</a></li>
+                <li><a href="@($"{ManyHandsPaths.Me}#data")">My data</a></li>
             </ul>
-        </section>
-    }
+        </nav>
 
-    <section aria-labelledby="interests-head">
-        <h2 id="interests-head">What you like doing</h2>
-        <EditForm Model="Interests" FormName="interests" OnSubmit="SaveInterestsAsync" class="vol-form">
-            <InterestChoices Types="_types" Selected="_interests" Legend="We tell you when one of these is on" />
-            <label class="vol-check">
-                <InputCheckbox @bind-Value="Interests!.EmailOptIn" />
-                <span>@(_me.DiscordUserId is null ? "Email me" : "Message me on Discord") about new activities like these</span>
-            </label>
-            <button class="btn" type="submit">Save</button>
-        </EditForm>
-    </section>
+        <div class="mh-stack">
+            <section id="signups" class="mh-panel" aria-labelledby="signups-head">
+                <h2 id="signups-head">My signups</h2>
 
-    <section aria-labelledby="discord-head">
-        <h2 id="discord-head">Discord</h2>
-        @if (_me.DiscordUserId is null)
-        {
-            <p>In our Discord server, type <code>/link</code> to link your account. New activities that match your interests then arrive as a Discord message instead of an email.</p>
-        }
-        else
-        {
-            <p>Your Discord account is linked. Unlink it and we go back to email, and the volunteer role in the server comes off within a quarter of an hour.</p>
-            <EditForm Model="Unlink" FormName="unlink-discord" OnSubmit="UnlinkAsync" class="vol-form">
-                <button class="btn btn-ghost" type="submit">Unlink Discord</button>
+                <h3 id="coming-head">Coming up</h3>
+                @if (_upcoming.Count == 0)
+                {
+                    <div class="mh-empty">
+                        <p class="mh-empty-title">Nothing yet</p>
+                        <p>Find something on the list and sign up; it shows here, with a button for when you cannot make it.</p>
+                        <a href="@ManyHandsPaths.Events" data-enhance-nav="false">See events</a>
+                    </div>
+                }
+                else
+                {
+                    <EditForm Model="Cancel" FormName="cancel" OnSubmit="CancelAsync">
+                        <ul class="mh-signups" aria-labelledby="coming-head">
+                            @foreach (var signup in _upcoming)
+                            {
+                                <li>
+                                    <div class="mh-list-main">
+                                        <h4><a href="@ManyHandsPaths.Activity(signup.ActivityId)">@signup.Title</a></h4>
+                                        <p class="mh-meta">
+                                            <span>@Show.When(signup.StartsAt)</span>
+                                            <span>@Show.Where(signup.Location)</span>
+                                        </p>
+                                    </div>
+                                    <div class="mh-list-end">
+                                        <span class="mh-badge @(signup.Status == SignupStatus.Waitlisted ? "mh-badge-warn" : "mh-badge-ok")">@Show.Status(signup.Status)</span>
+                                        @* The button that was pressed is the one whose value is posted. *@
+                                        <button class="mh-btn mh-btn-secondary mh-btn-small" type="submit" name="Cancel.SignupId" value="@signup.SignupId"
+                                                aria-label="@($"Cannot make it: {signup.Title}")">
+                                            Cannot make it
+                                        </button>
+                                    </div>
+                                </li>
+                            }
+                        </ul>
+                    </EditForm>
+                }
+
+                <h3 id="past-head" class="mh-panel-sub">Done</h3>
+                @if (_past.Count == 0)
+                {
+                    <p class="mh-small">Nothing yet. What you signed up for shows here once it has happened.</p>
+                }
+                else
+                {
+                    <ul class="mh-past" aria-labelledby="past-head">
+                        @foreach (var signup in _past)
+                        {
+                            <li><span>@signup.Title</span> <span class="mh-small">@Show.When(signup.StartsAt)</span></li>
+                        }
+                    </ul>
+                }
+            </section>
+
+            @* One form for both panels, as it always was: saving either saves
+               what you like doing and whether we may tell you about it. *@
+            <EditForm Model="Interests" FormName="interests" OnSubmit="SaveInterestsAsync" class="mh-stack">
+                <section id="interests" class="mh-panel mh-form" aria-labelledby="interests-head">
+                    <h2 id="interests-head">What I like doing</h2>
+                    <InterestChoices Types="_types" Selected="_interests" Legend="We tell you when one of these is on" />
+                    <div class="mh-form-actions">
+                        <button class="mh-btn mh-btn-primary" type="submit">Save</button>
+                    </div>
+                </section>
+
+                <section id="email" class="mh-panel mh-form" aria-labelledby="email-head">
+                    <h2 id="email-head">Email and notifications</h2>
+                    @if (_me.Email is { } address)
+                    {
+                        <p>Your address with us is <strong>@address</strong>.</p>
+                    }
+                    <div class="mh-field">
+                        <label class="mh-check">
+                            <InputCheckbox @bind-Value="Interests!.EmailOptIn" />
+                            <span>@(_me.DiscordUserId is null ? "Email me" : "Message me on Discord") about new activities like these</span>
+                        </label>
+                        <p class="mh-help">
+                            Untick it and we stop writing to you altogether, apart from sign-in links you ask for.
+                            Tick it again whenever you like.
+                        </p>
+                    </div>
+                    <div class="mh-form-actions">
+                        <button class="mh-btn mh-btn-primary" type="submit">Save</button>
+                    </div>
+                </section>
             </EditForm>
-        }
-    </section>
 
-    <section aria-labelledby="data-head">
-        <h2 id="data-head">Your data</h2>
-        <p>
-            <a href="@ManyHandsPaths.Export">Download everything we hold about you</a>, as a file
-            to keep. It is short: your name, your email, what you like doing, what you signed up
-            for, and the subjects of the emails we sent you.
-        </p>
-        <EditForm Model="Delete" FormName="delete" OnValidSubmit="DeleteAsync" class="vol-form vol-danger">
-            <DataAnnotationsValidator />
-            <label class="vol-check">
-                <InputCheckbox @bind-Value="Delete!.Confirm" />
-                <span>Delete me. My name and email go; the fact that someone came to things stays, without me on it.</span>
-            </label>
-            <ValidationMessage For="() => Delete!.Confirm" />
-            <button class="btn btn-ghost" type="submit">Delete me</button>
-        </EditForm>
-    </section>
+            <section id="discord" class="mh-panel" aria-labelledby="discord-head">
+                <div class="mh-panel-head">
+                    <h2 id="discord-head">Discord</h2>
+                    <span class="mh-badge @(_me.DiscordUserId is null ? "" : "mh-badge-ok")">@(_me.DiscordUserId is null ? "Not linked" : "Linked")</span>
+                </div>
+                @if (_me.DiscordUserId is null)
+                {
+                    <p>In our Discord server, type <code>/link</code> to link your account. New activities that match your interests then arrive as a Discord message instead of an email.</p>
+                }
+                else
+                {
+                    <p>Your Discord account is linked. Unlink it and we go back to email, and the volunteer role in the server comes off within a quarter of an hour.</p>
+                    <EditForm Model="Unlink" FormName="unlink-discord" OnSubmit="UnlinkAsync">
+                        <button class="mh-btn mh-btn-secondary" type="submit">Unlink Discord</button>
+                    </EditForm>
+                }
+            </section>
 
-    <EditForm Model="SignOut" FormName="sign-out" OnSubmit="SignOutAsync">
-        <button class="btn btn-ghost" type="submit">Sign out</button>
-    </EditForm>
+            <section id="calendar" class="mh-panel" aria-labelledby="calendar-head">
+                <h2 id="calendar-head">Calendar feed</h2>
+                <p>
+                    <a href="@_calendarUrl">Your own calendar feed</a> &mdash; subscribe to it in any
+                    calendar app and your signups appear there. It is private to you: do not share the link.
+                </p>
+                <code class="mh-code">@_calendarUrl</code>
+            </section>
+
+            <section id="data" class="mh-panel" aria-labelledby="data-head">
+                <h2 id="data-head">My data</h2>
+                <p>
+                    <a href="@ManyHandsPaths.Export">Download everything we hold about you</a>, as a file
+                    to keep. It is short: your name, your email, what you like doing, what you signed up
+                    for, and the subjects of the emails we sent you.
+                </p>
+                <div class="mh-danger-zone">
+                    <h3>Leave the list</h3>
+                    <EditForm Model="Delete" FormName="delete" OnValidSubmit="DeleteAsync" class="mh-form">
+                        <DataAnnotationsValidator />
+                        <label class="mh-check">
+                            <InputCheckbox @bind-Value="Delete!.Confirm" />
+                            <span>Delete me. My name and email go; the fact that someone came to things stays, without me on it.</span>
+                        </label>
+                        <ValidationMessage For="() => Delete!.Confirm" />
+                        <div class="mh-form-actions">
+                            <button class="mh-btn mh-btn-danger" type="submit">Delete me</button>
+                        </div>
+                    </EditForm>
+                </div>
+            </section>
+        </div>
+    </div>
 </div>
 
 @code {
@@ -164,11 +257,27 @@
         _types = await Types.GetActiveAsync();
         _calendarUrl = Email.Link(ManyHandsPaths.PersonalCalendar(_me.CalendarKey));
 
-        if (HttpMethods.IsGet(HttpContext.Request.Method))
+        // The box shows what is saved, unless it is the box itself coming
+        // back: cancelling a signup or unlinking Discord posts another form,
+        // and must not redraw it unticked for the next Save to unsubscribe.
+        if (!Posted("interests"))
             Interests.EmailOptIn = _me.CanReceiveEmail;
 
         await LoadAsync();
     }
+
+    /// <summary>Whether this request is the named form on this page being submitted.</summary>
+    private bool Posted(string formName) =>
+        HttpMethods.IsPost(HttpContext.Request.Method)
+        && HttpContext.Request.HasFormContentType
+        && HttpContext.Request.Form["_handler"] == formName;
+
+    /// <summary>How news of a new activity reaches them, in a word: the summary at the top.</summary>
+    private string Channel =>
+        !_me!.MayContact ? "Off"
+        : _me.DiscordUserId is not null ? "Discord"
+        : _me.Email is not null ? "Email"
+        : "Off";
 
     private async Task LoadAsync()
     {
@@ -192,6 +301,8 @@
     {
         await Volunteers.SetInterestsAsync(_me!.Id, InterestChoices.Read(HttpContext));
         await Volunteers.SetEmailOptInAsync(_me.Id, Interests!.EmailOptIn);
+        // Read back, so the summary at the top says what was just saved.
+        _me = await Volunteers.GetByIdAsync(_me.Id) ?? _me;
         _notice = "Saved.";
         await LoadAsync();
     }

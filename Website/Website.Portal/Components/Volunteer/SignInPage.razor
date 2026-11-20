@@ -9,13 +9,17 @@
 <PageMeta Title="Sign in" Description="Sign in to PhillyPause with a link by email. No password." NoIndex="true" />
 
 
-<div class="wrap page-head">
-    <h1>Sign in</h1>
-    <p class="lead">No password. Give us your email and we send you a link that signs you in.</p>
+<div class="wrap">
+    <header class="mh-page-head">
+        <div>
+            <h1>Sign in</h1>
+            <p class="mh-summary">No password. Give us your email and we send you a link that signs you in.</p>
+        </div>
+    </header>
 </div>
 
-<div class="wrap vol-body">
-    <section class="vol-card vol-narrow" aria-labelledby="sign-in-head">
+<div class="wrap">
+    <section class="mh-panel mh-narrow" aria-labelledby="sign-in-head">
         @if (_sent)
         {
             <h2 id="sign-in-head">Check your email</h2>
@@ -26,7 +30,7 @@
             </p>
             @if (_devLink is not null)
             {
-                <p class="vol-error" role="note">
+                <p class="mh-notice mh-notice-warn" role="note">
                     Development only: mail goes to the console here, so here is the link.
                     <a href="@_devLink">Open it</a>
                 </p>
@@ -37,20 +41,20 @@
             <h2 id="sign-in-head">Email me a link</h2>
             @if (Expired)
             {
-                <p class="vol-error" role="alert">That link has expired or was already used. Ask for a fresh one.</p>
+                <p class="mh-notice mh-alert" role="alert">That link has expired or was already used. Ask for a fresh one.</p>
             }
-            <EditForm Model="Input" FormName="sign-in" OnValidSubmit="SendAsync" class="vol-form">
+            <EditForm Model="Input" FormName="sign-in" OnValidSubmit="SendAsync" class="mh-form">
                 <DataAnnotationsValidator />
-                <label>
-                    <span>Email</span>
+                <label class="mh-field">
+                    <span class="mh-label">Email</span>
                     <InputText @bind-Value="Input!.Email" type="email" autocomplete="email" />
                     <ValidationMessage For="() => Input!.Email" />
                 </label>
                 @if (_refused is not null)
                 {
-                    <p class="vol-error" role="alert">@_refused</p>
+                    <p class="mh-notice mh-alert" role="alert">@_refused</p>
                 }
-                <button class="btn" type="submit">Send the link</button>
+                <button class="mh-btn mh-btn-primary" type="submit">Send the link</button>
             </EditForm>
         }
     </section>
