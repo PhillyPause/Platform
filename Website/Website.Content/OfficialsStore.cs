@@ -244,7 +244,10 @@ public sealed class OfficialsStore
             }
 
             var byStatus = x.Status.CompareTo(y.Status);
-            return byStatus != 0 ? byStatus : string.CompareOrdinal(x.Name, y.Name);
+            if (byStatus != 0) return byStatus;
+
+            var bySurname = string.Compare(x.SortName, y.SortName, StringComparison.OrdinalIgnoreCase);
+            return bySurname != 0 ? bySurname : string.CompareOrdinal(x.Name, y.Name);
         }
     }
 

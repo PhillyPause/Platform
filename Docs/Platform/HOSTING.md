@@ -139,6 +139,17 @@ committed.
 Off again is the flag alone. The Join us dialog loses its form, there is no
 account bar, and the database keeps everything until it is wanted.
 
+## The action centre
+
+`/act` works with nothing set. Two things make it better, each an
+environment variable in `app.yaml`, applied with `doctl apps update`
+(keys in [`ACT.md`](../Website/ACT.md)):
+
+1. **Address lookup**: `Act__LookupEnabled` = `true`. The Census Bureau's
+   geocoder needs no key or account.
+2. **Drafting help**: `DeepInfra__ApiKey`, `type: SECRET`, from a DeepInfra
+   account. Optionally `DeepInfra__Model`.
+
 ## Tokens
 
 `doctl` needs an App Platform token with `app:create`, `app:read` and

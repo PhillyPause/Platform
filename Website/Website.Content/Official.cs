@@ -115,6 +115,18 @@ public sealed record Official
     /// <summary>When the entry was last checked or drafted.</summary>
     public DateOnly? Updated { get; init; }
 
+    /// <summary>The surname, for ordering: "Boyle" for "Brendan F. Boyle", "Johnson" for "Kenyatta Johnson Jr.".</summary>
+    public string SortName
+    {
+        get
+        {
+            var words = Name.Split(' ', StringSplitOptions.RemoveEmptyEntries)
+                .Where(w => !w.EndsWith('.') && w is not ("II" or "III" or "IV") && !w.Equals("Jr", StringComparison.OrdinalIgnoreCase))
+                .ToArray();
+            return words.Length == 0 ? Name : words[^1];
+        }
+    }
+
     /// <summary>First and last name's initials, for the disc shown until there is a portrait.</summary>
     public string Initials
     {

@@ -26,6 +26,7 @@ Simplicity is the point: nothing here exists to serve a second organisation.
 | CRM | Organizations, contacts, a timeline of interactions, an engagement pipeline, tasks |
 | Outreach email | Compose, send, and receive replies inside ManyHands, threaded; unrecognised mail is kept for triage |
 | Officials | The members of Congress, refreshed weekly from a public dataset, importable into the CRM |
+| Outreach | A log of members and visitors contacting their officials from the action centre (`/act`): their own record, and the organizers' view of who is reaching whom |
 | Discord | Announce on publish, a thread per activity, a DM on signup, slash commands, interest pings, role sync |
 
 Not here, and not coming back: multiple chapters or a "national" tier,
@@ -108,6 +109,7 @@ Static SSR Razor components in `Website/Website.Portal/Components/Volunteer`, on
 | `/volunteer/remove/{key}` | The front page with the Leave the list dialog: "Not you, or changed your mind?" Asks, then deletes them, as the button on their page does, and signs this device out if it was them. Never an organizer |
 | `/volunteer/unsubscribe/{key}` | Asks, then unsubscribes |
 | `/volunteer/link-discord/{token}` | Where `/link` in Discord sends someone: signed in, one press links the account |
+| `/volunteer/outreach` | The officials they have called and written to from `/act`, how it went, and who is worth a follow-up call |
 
 Endpoints that are not pages: `/volunteer/calendar.ics`,
 `/volunteer/calendar/{key}.ics`, `/volunteer/me/export.json`, and
@@ -223,6 +225,7 @@ Also under `/team`, also for organizers: `Components/Team/Crm` and
 | `/team/crm/pipeline` | Every engagement as a card in its column, moved with arrows |
 | `/team/crm/engagement/{id}` | Tasks, the timeline, and details: status, category, owner, when |
 | `/team/crm/officials` | Members of Congress for PA and its neighbours; import one as an organization |
+| `/team/outreach` | Calls and messages from the action centre: this week and month, by official, the most active members, federal offices nobody has reached, the latest; the log as a CSV |
 | `/team/inbox` | Every outreach thread, and the ones from senders nobody has identified |
 | `/team/inbox/{conversation}` | A thread, a reply, and "who is this?" for a stranger |
 | `/team/inbox/new`, `/team/inbox/templates` | Writing, from a template if one fits |
@@ -238,6 +241,14 @@ Also under `/team`, also for organizers: `Components/Team/Crm` and
 - **Outreach goes from `Email:OutreachAddress`** with our own Message-ID, and
   a reply carries In-Reply-To and References, so threads hold in both
   directions.
+- **The outreach log keeps that it happened, never what was said.** "I
+  called" and "I sent it" on the action centre's pages (`LogAction`) record
+  the official (by the directory's key and their name at the time), the
+  channel, how a call went, and an optional note of at most 500 characters.
+  Signed in, it is the member's; not signed in, it is nobody's and still
+  counted. It is in the member's export, and deleting them clears their
+  notes and keeps the count, as signups do. The CSV defuses formulas like
+  the participation file.
 
 #### The inbound webhook
 
@@ -340,6 +351,7 @@ Postgres, one schema (`public`), defined by
 | `external_publications`, `activity_pings`, `discord_role_grants` | What has been announced, who has been pinged, which Discord roles the bot granted |
 | `crm_*` | The CRM and outreach mail |
 | `federal_officials`, `sync_runs` | The officials directory and its refreshes |
+| `outreach_actions` | Who contacted which official from `/act`, how and when (`0002_outreach.sql`) |
 
 ### The outbox
 

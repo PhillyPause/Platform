@@ -3,7 +3,7 @@
    lookup is off. Any field can be left blank. *@
 
 <details class="act-picker" id="by-district" open="@Open">
-    <summary>Pick your districts instead</summary>
+    <summary>@(Lookup.IsAvailable ? "Pick your districts instead" : "Your districts")</summary>
     <p class="act-small">
         All four are on your voter registration, which the
         <a href="https://www.pavoterservices.pa.gov/pages/voterregistrationstatus.aspx" target="_blank" rel="noopener">Department of State</a>

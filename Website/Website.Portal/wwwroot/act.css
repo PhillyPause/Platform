@@ -21,7 +21,7 @@
 /* ---------------------------------------------------------------- hero */
 
 .act-hero { background: var(--ground); color: var(--ground-ink); padding-block: clamp(2.5rem, 7vw, 4.5rem); margin-bottom: 3rem; }
-.act-hero h1 { color: var(--ground-ink); font-size: var(--step-hero); line-height: 0.95; text-transform: uppercase; max-width: 14ch; margin: 0 0 1rem; }
+.act-hero h1 { color: var(--ground-ink); font-size: clamp(2.1rem, 1rem + 4.2vw, 4.25rem); line-height: 0.98; text-transform: uppercase; max-width: 20ch; margin: 0 0 1rem; }
 .act-hero .act-kicker { color: var(--alarm); }
 .act-lead { font-size: var(--step-lead); max-width: var(--measure); color: var(--ground-muted); margin: 0 0 2rem; }
 .act-hero a { color: var(--ground-ink); }
@@ -80,7 +80,7 @@
 .act-card-office { margin: 0.2rem 0 0.5rem; font-size: 0.9rem; color: var(--muted); }
 .act-card-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; margin: 0.4rem 0 0; }
 .act-card-phone { font-size: 0.9rem; font-variant-numeric: tabular-nums; color: var(--ink); }
-.act-party { white-space: nowrap; }
+.act-party { white-space: nowrap; margin-left: 0.3em; }
 
 .act-avatar { flex: none; border-radius: 50%; object-fit: cover; background: var(--line); }
 .act-avatar-sm { width: 48px; height: 48px; font-size: 1rem; }
@@ -122,7 +122,7 @@
 .act-map a:hover .act-map-county, .act-map a:focus-visible .act-map-county, .act-map a.is-on .act-map-county { fill: var(--alarm); }
 .act-map a:focus-visible { outline: none; }
 .act-map a:focus-visible .act-map-county { stroke-width: 4; }
-.act-map text { font: 600 13px var(--sans); fill: var(--ink); pointer-events: none; }
+.act-map text { font: 600 12px var(--sans); fill: var(--ink); pointer-events: none; }
 .act-map-river { fill: none; stroke: color-mix(in srgb, var(--heading) 35%, transparent); stroke-width: 6; stroke-linecap: round; }
 .act-map figcaption { font-size: 0.85rem; color: var(--muted); margin-top: 0.4rem; }
 
@@ -170,7 +170,8 @@
 
 /* ---------------------------------------------------------------- write / call */
 
-.act-task-head { display: flex; gap: 1rem; align-items: center; }
+.act-task-head { display: flex; gap: 1rem; align-items: flex-start; }
+.act-task-head .act-avatar { margin-top: 0.4rem; }
 .act-task-head h1 { margin: 0; }
 .act-task { padding-top: 0.5rem; }
 @media (min-width: 60rem) { .act-task { grid-template-columns: minmax(0, 1fr) 22rem; align-items: start; } }
@@ -202,7 +203,7 @@
 .act-tut-step {
   counter-increment: step;
   display: grid; grid-template-columns: 3.25rem 1fr; column-gap: 0.9rem; align-items: start;
-  opacity: 0.45; transform: translateX(0);
+  opacity: 0.62; transform: translateX(0);
   animation: act-step 12s infinite both; animation-delay: calc(var(--i) * 3s);
 }
 .act-tut-step strong { grid-column: 2; display: block; }
@@ -217,7 +218,7 @@
 
 @keyframes act-step {
   0%, 26% { opacity: 1; transform: translateX(4px); }
-  31%, 100% { opacity: 0.45; transform: translateX(0); }
+  31%, 100% { opacity: 0.62; transform: translateX(0); }
 }
 
 .act-tut-step .act-bounce, .act-tut-step .act-ring, .act-tut-step .act-wave,
