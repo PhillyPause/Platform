@@ -42,7 +42,7 @@
         <article class="mh-card@(_unreached.Count > 0 ? " mh-card-attention" : "")">
             <span class="mh-card-label">Officials reached</span>
             <p class="mh-card-figure">@_totals.OfficialsLast30Days</p>
-            <p class="mh-card-text">in 30 days; @_totals.AllTime actions all time</p>
+            <p class="mh-card-text">in 30 days; @_totals.AllTime @(_totals.AllTime == 1 ? "action" : "actions") all time</p>
         </article>
     </div>
 </section>
