@@ -167,7 +167,7 @@
 
 /* ---------------------------------------------------------------- filters */
 
-/* The directory and "Who represents you" narrow by chips rather than list
+/* The directory and "Your officials" narrow by chips rather than list
    dozens: a row each, its label on the left once there is room. A chip is a
    link that says how many it would show; the chosen one is ink, and one
    that would show nobody is greyed and not a link. */

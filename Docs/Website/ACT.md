@@ -34,7 +34,7 @@ link into it): enhanced navigation would patch the radio's `checked`
 attribute, which a radio the reader has clicked ignores, and the dialog would
 shut. Closing the dialog leaves the reader on the front page, as /join does.
 
-The dialog's three places, "Who represents you", "Everyone" and "How it
+The dialog's three places, "Your officials", "Greater Philly" and "How it
 works", are tabs under its title bar (`ActTabs`). It is styled by `act.css`,
 which re-points the tokens.css names it uses at the broadsheet's ink, ivory
 and red inside `.d-act`, and lays out by the dialog's width (container
@@ -43,7 +43,7 @@ queries) rather than the window's.
 **Never a list of dozens.** Nobody reads one, so the officials are reached
 by filter chips instead (`FilterChips`): each is a link to the view with
 that choice made and says how many it would show, the chosen one is ink, and
-one that would show nobody is not a link. "Who represents you" shows one
+one that would show nobody is not a link. "Your officials" shows one
 place at a time, Washington first; the directory lists nobody until
 something is chosen, and never more than a dozen (`DirectoryFilter.Shown`),
 past which it says how many matched and asks for one more choice. Every
@@ -56,7 +56,7 @@ and `Website/Website.Portal/Act`; the addresses are in `ActPaths`.
 
 | Route | View |
 |---|---|
-| `/act` | Find who represents you (an address, or districts picked by hand), the three ways in, the two motion tutorials, the ask, the county map, the explainers. The address form posts here from wherever it was shown, so a problem with the address comes back with the dialog open. An address outside the five counties, in Pennsylvania or not, comes back with a button to ControlAI's action page instead of a list, and a line under the finder points anyone outside them there before they type |
+| `/act` | Find your officials (an address, or districts picked by hand), the three ways in, the two motion tutorials, the ask, the county map, the explainers. The address form posts here from wherever it was shown, so a problem with the address comes back with the dialog open. An address outside the five counties, in Pennsylvania or not, comes back with a button to ControlAI's action page instead of a list, and a line under the finder points anyone outside them there before they type |
 | `/act/yours?cd=&ss=&sh=&county=` | The officials for those districts, one place at a time: Washington, then `in=harrisburg` or `in=local`, each a chip with its count. A Philadelphian's City Hall is the citywide officials plus the member for the council district they choose (`cc=`). District numbers in the address bar, never the address |
 | `/act/officials?body=&county=&q=` | The directory behind a filter (`DirectoryFilter`): a government (Congress, Statewide, State Senate, State House, City Hall, County), a county, and a name or a district number. A bare number is a district, so `182` is House district 182; names match without accents or punctuation. The county map's links land here with `?county=` |
 | `/act/officials/{key}` | One official: contacts, bio, AI record with sources, committees |

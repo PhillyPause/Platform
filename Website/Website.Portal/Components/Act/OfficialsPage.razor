@@ -1,7 +1,7 @@
 @page "/act/officials"
 @inject OfficialsStore Officials
 
-@* Everyone in the directory, in the Act dialog, behind a filter: which
+@* Greater Philadelphia's officials, in the Act dialog, behind a filter: which
    government, which county, a name or a district number (DirectoryFilter).
    Nobody is listed until something is chosen, and never more than a dozen at
    once; each chip says how many it would show. Every state is an address:
@@ -14,13 +14,13 @@
     <ActView>
         <header class="act-intro">
             <h2>@Heading()</h2>
-            <p class="act-lead">@_everyone.Count people, from Washington to City Hall. Narrow them down, or <a href="@ActPaths.Start">find your own</a> by address.</p>
+            <p class="act-lead">@_all.Count people, from Washington to City Hall. Narrow them down, or <a href="@ActPaths.Start">find your own</a> by address.</p>
         </header>
 
         <div class="act-filter">
             <FilterChips Id="f-body" Label="Government" Toggle="true" Chips="@BodyChips()" />
             <FilterChips Id="f-county" Label="County" Toggle="true" Chips="@CountyChips()" />
-            <form method="get" action="@ActPaths.Everyone" class="act-filter-search" role="search">
+            <form method="get" action="@ActPaths.Directory" class="act-filter-search" role="search">
                 <label for="f-q" class="act-chiprow-label">Name or district</label>
                 <span class="act-filter-box">
                     <input id="f-q" name="q" type="search" value="@_filter.Query" placeholder="Fetterman, or 182" maxlength="60" autocomplete="off" />
@@ -47,18 +47,18 @@
                 <text>Nobody matches that.</text>
                 @if (_filter.Query is not null && Widened() is { } wider)
                 {
-                    <text> </text><a href="@wider.Href">Search everyone for &ldquo;@_filter.Query&rdquo;</a><text>.</text>
+                    <text> </text><a href="@wider.Href">Search all @_all.Count for &ldquo;@_filter.Query&rdquo;</a><text>.</text>
                 }
-                <text> </text><a href="@ActPaths.Everyone">Start again</a><text>.</text>
+                <text> </text><a href="@ActPaths.Directory">Start again</a><text>.</text>
             }
             else if (_matches.Count <= DirectoryFilter.Shown)
             {
-                @People(_matches.Count)<text>. </text><a href="@ActPaths.Everyone">Clear</a>
+                @People(_matches.Count)<text>. </text><a href="@ActPaths.Directory">Clear</a>
             }
             else
             {
                 <text>@_matches.Count people match, so here are the first @DirectoryFilter.Shown. @Narrow() to see the rest. </text>
-                <a href="@ActPaths.Everyone">Clear</a>
+                <a href="@ActPaths.Directory">Clear</a>
             }
         </p>
 
@@ -80,14 +80,14 @@
     [SupplyParameterFromQuery(Name = "q")] private string? Query { get; set; }
 
     private DirectoryFilter _filter = DirectoryFilter.None;
-    private IReadOnlyList<Official> _everyone = [];
+    private IReadOnlyList<Official> _all = [];
     private IReadOnlyList<Official> _matches = [];
 
     protected override void OnParametersSet()
     {
         _filter = DirectoryFilter.From(Body, County, Query);
-        _everyone = Officials.Current(DateOnly.FromDateTime(DateTime.UtcNow)).ToArray();
-        _matches = _everyone.Where(_filter.Matches).ToArray();
+        _all = Officials.Current(DateOnly.FromDateTime(DateTime.UtcNow)).ToArray();
+        _matches = _all.Where(_filter.Matches).ToArray();
     }
 
     private IReadOnlyList<FilterChips.Chip> BodyChips() =>
@@ -95,7 +95,7 @@
         {
             var on = _filter.Body == choice.Key;
             var with = _filter with { Body = choice.Key };
-            return new FilterChips.Chip(choice.Label, _everyone.Count(with.Matches), on ? (_filter with { Body = null }).Href : with.Href, on);
+            return new FilterChips.Chip(choice.Label, _all.Count(with.Matches), on ? (_filter with { Body = null }).Href : with.Href, on);
         }).ToArray();
 
     private IReadOnlyList<FilterChips.Chip> CountyChips() =>
@@ -103,14 +103,14 @@
         {
             var on = _filter.County == county;
             var with = _filter with { County = county };
-            return new FilterChips.Chip(county, _everyone.Count(with.Matches), on ? (_filter with { County = null }).Href : with.Href, on);
+            return new FilterChips.Chip(county, _all.Count(with.Matches), on ? (_filter with { County = null }).Href : with.Href, on);
         }).ToArray();
 
     // The same search without the chips, when the chips are what hid them.
     private DirectoryFilter? Widened()
     {
         var wider = DirectoryFilter.None with { Query = _filter.Query };
-        return wider != _filter && _everyone.Any(wider.Matches) ? wider : null;
+        return wider != _filter && _all.Any(wider.Matches) ? wider : null;
     }
 
     private string Narrow()
@@ -125,7 +125,7 @@
     private static string People(int n) => n == 1 ? "1 person" : $"{n} people";
 
     private string Heading() =>
-        _filter.County is { } county ? $"Who represents {Place(county)}" : "Everyone who represents Greater Philadelphia";
+        _filter.County is { } county ? $"{Place(county)}’s officials" : "Greater Philadelphia’s officials";
 
     private static string Place(string county) => county == "Philadelphia" ? "Philadelphia" : $"{county} County";
 }

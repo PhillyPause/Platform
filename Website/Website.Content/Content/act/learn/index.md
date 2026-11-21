@@ -15,4 +15,4 @@ Start with whichever fits the time you have:
 - **[What we are asking for](/act/learn/the-ask)**: the ask at each level, how to say it, and what to say back to the usual replies.
 - **[AI bills to watch](/act/learn/bills)**: what is moving, and where.
 
-When you are ready, [find who represents you](/act).
+When you are ready, [find your officials](/act).

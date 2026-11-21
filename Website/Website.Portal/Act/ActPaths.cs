@@ -10,7 +10,7 @@ namespace Website.Portal.Act;
 public static class ActPaths
 {
     public const string Start = "/act";
-    public const string Everyone = "/act/officials";
+    public const string Directory = "/act/officials";
     public const string Learn = "/act/learn";
 
     /// <summary>The officials for a match, as the address lookup redirects to them.</summary>

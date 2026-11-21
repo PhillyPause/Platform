@@ -4,7 +4,7 @@ using Website.Content;
 namespace Website.Portal.Act;
 
 /// <summary>
-/// The Everyone view's filter: which government, which county, and a name or
+/// The directory's filter: which government, which county, and a name or
 /// a district number. A list of dozens is one nobody reads, so nobody is
 /// listed until something is chosen, and never more than <see cref="Shown"/>
 /// at once: past that the reader narrows it rather than scrolling it. Every
@@ -56,7 +56,7 @@ public sealed record DirectoryFilter(string? Body, string? County, string? Query
             if (Body is not null) parts.Add($"body={Body}");
             if (County is not null) parts.Add($"county={Uri.EscapeDataString(County)}");
             if (Query is not null) parts.Add($"q={Uri.EscapeDataString(Query)}");
-            return ActPaths.Everyone + (parts.Count == 0 ? "" : "?" + string.Join('&', parts));
+            return ActPaths.Directory + (parts.Count == 0 ? "" : "?" + string.Join('&', parts));
         }
     }
 

@@ -55,6 +55,15 @@ public partial class ActDialogTests(WebApplicationFactory<Program> factory) : IC
     }
 
     [Fact]
+    public async Task The_dialogs_three_places_are_your_officials_Greater_Philly_and_how_it_works()
+    {
+        var page = await factory.CreateClient().GetStringAsync("/act");
+
+        TabLabel().Matches(Tabs().Match(page).Value).Select(m => m.Groups[1].Value)
+            .Should().Equal(["Your officials", "Greater Philly", "How it works"]);
+    }
+
+    [Fact]
     public async Task An_official_names_the_page_and_the_front_page_does_not()
     {
         var official = Store.All.First();
@@ -171,6 +180,12 @@ public partial class ActDialogTests(WebApplicationFactory<Program> factory) : IC
 
     [GeneratedRegex(@"<label class=""[a-z ]+"" for=""[a-z-]+"">(?:<svg[\s\S]*?</svg>)?([^<]*)</label>")]
     private static partial Regex NavItem();
+
+    [GeneratedRegex(@"<nav class=""act-tabs""[\s\S]*?</nav>")]
+    private static partial Regex Tabs();
+
+    [GeneratedRegex(@"<a [^>]*>([^<]*)</a>")]
+    private static partial Regex TabLabel();
 
     [GeneratedRegex("<title>([^<]*)</title>")]
     private static partial Regex Title();

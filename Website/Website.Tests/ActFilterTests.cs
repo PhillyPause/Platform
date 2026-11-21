@@ -1,3 +1,4 @@
+using System.Net;
 using System.Text.RegularExpressions;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -9,7 +10,7 @@ namespace Website.Tests;
 /// <summary>
 /// Nobody reads a list of dozens, so the action centre never shows one: the
 /// directory is a filter that lists nobody until something is chosen and no
-/// more than a dozen at once, and "Who represents you" shows one place at a
+/// more than a dozen at once, and "Your officials" shows one place at a
 /// time. Chips say how many they hold; every state is an address.
 /// </summary>
 public partial class ActFilterTests(WebApplicationFactory<Program> factory) : IClassFixture<WebApplicationFactory<Program>>
@@ -23,11 +24,22 @@ public partial class ActFilterTests(WebApplicationFactory<Program> factory) : IC
     [Fact]
     public async Task The_directory_lists_nobody_until_something_is_chosen()
     {
-        var page = await factory.CreateClient().GetStringAsync(ActPaths.Everyone);
+        var page = await factory.CreateClient().GetStringAsync(ActPaths.Directory);
 
         Cards(page).Should().Be(0);
-        page.Should().Contain("Choose a government or a county")
+        WebUtility.HtmlDecode(page).Should().Contain("<h2>Greater Philadelphia’s officials</h2>", "the heading names the area, not \"everyone\"")
+            .And.Contain("Choose a government or a county")
             .And.Contain("class=\"act-chip\" href=\"/act/officials?body=congress\"");
+    }
+
+    [Theory]
+    [InlineData("Bucks", "Bucks County’s officials")]
+    [InlineData("Philadelphia", "Philadelphia’s officials")]
+    public async Task A_county_names_its_own_officials(string county, string heading)
+    {
+        var page = await factory.CreateClient().GetStringAsync($"/act/officials?county={county}");
+
+        WebUtility.HtmlDecode(page).Should().Contain($"<h2>{heading}</h2>").And.Contain($"<title>{heading}");
     }
 
     [Fact]
@@ -70,7 +82,7 @@ public partial class ActFilterTests(WebApplicationFactory<Program> factory) : IC
         var page = await factory.CreateClient().GetStringAsync($"/act/officials?body=congress&q={surname}");
 
         Cards(page).Should().Be(0);
-        page.Should().Contain($"href=\"/act/officials?q={surname}\">Search everyone for");
+        page.Should().Contain($"href=\"/act/officials?q={surname}\">Search all {Current.Count} for");
     }
 
     [Fact]
@@ -92,12 +104,12 @@ public partial class ActFilterTests(WebApplicationFactory<Program> factory) : IC
         DirectoryFilter.From("galactic-senate", "Atlantis", "  ").Should().Be(DirectoryFilter.None);
     }
 
-    // ---------------------------------------------------------------- who represents you
+    // ---------------------------------------------------------------- your officials
 
     private const string Philadelphian = "/act/yours?cd=3&ss=1&sh=182&county=Philadelphia";
 
     [Fact]
-    public async Task Who_represents_you_starts_with_Washington_alone()
+    public async Task Your_officials_start_with_Washington_alone()
     {
         var washington = Current.Count(o => o.IsSenator || (o.Level == OfficialLevel.Federal && o.District == "3"));
 

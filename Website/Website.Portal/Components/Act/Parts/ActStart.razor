@@ -5,7 +5,7 @@
 @inject OfficialsStore Officials
 @inject IMessageDrafter Drafter
 
-@* The Act dialog's first view: find who represents you, then call or write.
+@* The Act dialog's first view: find your officials, then call or write.
    The front page draws it behind the ACT button, and /act opens the
    front page with it showing. The address form always posts to /act, never
    to the page it sits on, so a problem with the address comes back with the
@@ -23,7 +23,7 @@
 </header>
 
 <section class="act-find" aria-labelledby="find-head">
-    <h3 id="find-head">Who represents you?</h3>
+    <h3 id="find-head">Find your officials</h3>
     @if (Lookup.IsAvailable)
     {
         <EditForm Model="Input" FormName="find" OnValidSubmit="FindAsync" action="/act" class="act-form act-find-form">
@@ -116,7 +116,7 @@
             five counties, the governor and statewide officers, the General Assembly, the City of Philadelphia
             and the collar counties&rsquo; commissioners. Narrow them by government, county, name or district.
         </p>
-        <p><a class="act-btn act-btn-ghost" href="@ActPaths.Everyone">Search the directory</a></p>
+        <p><a class="act-btn act-btn-ghost" href="@ActPaths.Directory">Search the directory</a></p>
     </div>
     <CountyMap />
 </section>

@@ -8,12 +8,12 @@
    the council district they choose (cc=), which the Census geocoder cannot
    tell us. *@
 
-<PageMeta Title="Who represents you" Description="Your officials in Washington, Harrisburg and Greater Philadelphia, with their numbers and a script." NoIndex="true" />
+<PageMeta Title="Your officials" Description="Your officials in Washington, Harrisburg and Greater Philadelphia, with their numbers and a script." NoIndex="true" />
 
 <Home>
     <ActView>
         <header class="act-intro">
-            <h2>Who represents you</h2>
+            <h2>Your officials</h2>
             <p class="act-lead">
                 @if (_match.IsEmpty)
                 {
@@ -61,7 +61,7 @@
                 }
                 else
                 {
-                    <p class="act-empty">Nobody here yet for your districts. <a href="@ActPaths.Everyone">Search the directory</a> or <a href="#by-district">change your districts</a>.</p>
+                    <p class="act-empty">Nobody here yet for your districts. <a href="@ActPaths.Directory">Search the directory</a> or <a href="#by-district">change your districts</a>.</p>
                 }
             </section>
 
