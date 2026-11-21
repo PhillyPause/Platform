@@ -15,6 +15,7 @@ phones:
     number: "(215) 686-3442"
   - label: "City Hall"
     number: "(215) 686-3443"
+contact_form: "https://phlcouncil.com/jefferyyoungjr/"
 website: "https://phlcouncil.com/jefferyyoungjr/"
 committees:
   - "Commerce and Economic Development"
@@ -25,7 +26,7 @@ sources:
   - "https://phlcouncil.com/council-members/"
   - "https://phlcouncil.com/standing-committees/"
 verified: false
-updated: 2026-11-20
+updated: 2026-11-21
 ---
 
 Represents the 5th District (North Philadelphia and parts of Center City) since January 2024, succeeding his former boss Darrell Clarke. A Temple and Rutgers Law graduate, he was legislative counsel to Council President Clarke.

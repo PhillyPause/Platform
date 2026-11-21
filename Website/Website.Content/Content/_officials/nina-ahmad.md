@@ -12,6 +12,7 @@ offices:
 phones:
   - label: "City Hall"
     number: "(215) 686-3450"
+contact_form: "https://phlcouncil.com/ninaahmad/"
 website: "https://phlcouncil.com/ninaahmad/"
 committees:
   - "Environment"
@@ -22,7 +23,7 @@ sources:
   - "https://phlcouncil.com/council-members/"
   - "https://phlcouncil.com/standing-committees/"
 verified: false
-updated: 2026-11-20
+updated: 2026-11-21
 ---
 
 At-large councilmember elected in November 2023, the first South Asian American and first Muslim woman on Council. A Penn-trained chemist, she was a deputy mayor under Jim Kenney.

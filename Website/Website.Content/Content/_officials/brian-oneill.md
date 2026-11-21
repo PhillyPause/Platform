@@ -15,6 +15,7 @@ phones:
     number: "(215) 686-3422"
   - label: "City Hall"
     number: "(215) 686-3423"
+contact_form: "https://phlcouncil.com/brianoneill/"
 website: "https://phlcouncil.com/brianoneill/"
 committees:
   - "Law and Government"
@@ -24,7 +25,7 @@ sources:
   - "https://phlcouncil.com/council-members/"
   - "https://phlcouncil.com/standing-committees/"
 verified: false
-updated: 2026-11-20
+updated: 2026-11-21
 ---
 
 Has represented the 10th District (Far Northeast Philadelphia) since 1980 and is Council's longest-serving member and only Republican. He is a lawyer and a past president of the National League of Cities.

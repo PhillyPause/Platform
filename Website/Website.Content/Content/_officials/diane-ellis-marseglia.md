@@ -14,12 +14,14 @@ phones:
     number: "215-348-6425"
   - label: "Bucks County main line"
     number: "215-348-6000"
+email: "CommEllisMarseglia@buckscounty.org"
 website: "https://www.buckscounty.gov/191"
 sources:
   - "https://www.buckscounty.gov/191"
   - "https://www.buckscounty.gov/190/Commissioners"
+  - "https://www.buckscounty.gov/191/Board-Chair"
 verified: false
-updated: 2026-11-20
+updated: 2026-11-21
 ---
 
 A licensed clinical social worker first elected commissioner in 2007 and now in her fifth term. She was chosen board chair at the January 5, 2026 reorganisation after serving as vice chair in 2025.

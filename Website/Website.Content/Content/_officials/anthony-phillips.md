@@ -21,6 +21,7 @@ phones:
     number: "(215) 686-3454"
   - label: "District office (N. 5th St)"
     number: "(215) 685-8289"
+contact_form: "https://phlcouncil.com/anthonyphillips/"
 website: "https://phlcouncil.com/anthonyphillips/"
 committees:
   - "Technology and Information Services"
@@ -32,7 +33,7 @@ sources:
   - "https://phlcouncil.com/council-members/"
   - "https://phlcouncil.com/standing-committees/"
 verified: false
-updated: 2026-11-20
+updated: 2026-11-21
 ---
 
 Represents the 9th District (Northwest and upper North Philadelphia, including Oak Lane and Mount Airy east) since a November 2022 special election to succeed Cherelle Parker. Before Council he led youth-education nonprofits Youth Action and TeenSHARP.

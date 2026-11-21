@@ -19,6 +19,7 @@ phones:
     number: "(215) 686-3412"
   - label: "District office (City Hall Rm 580)"
     number: "(215) 686-3413"
+contact_form: "https://phlcouncil.com/kenyattajohnson/"
 website: "https://phlcouncil.com/kenyattajohnson/"
 committees:
   - "Council President (presides over Council)"
@@ -32,7 +33,7 @@ sources:
   - "https://phlcouncil.com/council-members/"
   - "https://phlcouncil.com/standing-committees/"
 verified: false
-updated: 2026-11-20
+updated: 2026-11-21
 ---
 
 President of City Council since January 2024, representing the 2nd District (parts of Center City, South and Southwest Philadelphia) since 2012. He previously served in the state House (186th District) and founded the anti-violence initiative Peace Not Guns.

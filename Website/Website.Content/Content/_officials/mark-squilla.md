@@ -15,6 +15,7 @@ phones:
     number: "(215) 686-3458"
   - label: "City Hall"
     number: "(215) 686-3459"
+contact_form: "https://phlcouncil.com/marksquilla/"
 website: "https://phlcouncil.com/marksquilla/"
 committees:
   - "Commerce and Economic Development (chair)"
@@ -27,7 +28,7 @@ sources:
   - "https://phlcouncil.com/council-members/"
   - "https://phlcouncil.com/standing-committees/"
 verified: false
-updated: 2026-11-20
+updated: 2026-11-21
 ---
 
 Has represented the 1st District (South Philadelphia, Center City east and the river wards) since 2012 after 26 years in the state Auditor General's office. He holds a computer science degree from La Salle University.

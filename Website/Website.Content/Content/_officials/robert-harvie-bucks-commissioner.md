@@ -13,6 +13,7 @@ phones:
     number: "215-348-6424"
   - label: "Bucks County main line"
     number: "215-348-6000"
+email: "CommHarvie@buckscounty.org"
 website: "https://www.buckscounty.gov/192"
 ai_record:
   - summary: "Celebrated Amazon's data-centre investment at the Keystone Trade Center in Falls Township (post on X) and attended Gov. Shapiro's announcement of the project."
@@ -31,8 +32,9 @@ sources:
   - "https://www.buckscounty.gov/190/Commissioners"
   - "https://www.fox29.com/news/bob-harvie-wins-pennsylvanias-1st-congressional-district-ap"
   - "https://www.inquirer.com/politics/election/fitzpatrick-harvie-race-winner-results-pennsylvania-1st-district-20261104.html"
+  - "https://www.buckscounty.gov/192/Board-Vice-Chair"
 verified: false
-updated: 2026-11-20
+updated: 2026-11-21
 ---
 
 A former high-school social studies teacher and longtime Falls Township supervisor, elected commissioner in 2019 and re-elected in 2023. He defeated Rep. Brian Fitzpatrick for Pennsylvania's 1st Congressional District on November 3, 2026, so he will leave the county board when he joins Congress.

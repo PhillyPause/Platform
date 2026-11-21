@@ -19,6 +19,7 @@ phones:
     number: "(215) 686-3425"
   - label: "District office"
     number: "215-685-9182"
+contact_form: "https://phlcouncil.com/cindybass/"
 website: "https://phlcouncil.com/cindybass/"
 committees:
   - "Environment (vice chair)"
@@ -29,7 +30,7 @@ sources:
   - "https://phlcouncil.com/council-members/"
   - "https://phlcouncil.com/standing-committees/"
 verified: false
-updated: 2026-11-20
+updated: 2026-11-21
 ---
 
 Has represented the 8th District (Germantown, Mount Airy, Chestnut Hill, Nicetown and nearby) since 2012 and is Council's deputy majority whip. She worked in federal and state legislative offices before joining Council.

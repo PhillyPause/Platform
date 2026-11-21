@@ -11,6 +11,7 @@ offices:
 phones:
   - label: "Office of Attorney General (Harrisburg)"
     number: "717-787-3391"
+contact_form: "https://www.attorneygeneral.gov/contact/"
 website: "https://www.attorneygeneral.gov/"
 ai_record:
   - summary: "Joined a bipartisan letter of 36 attorneys general urging Congress not to pre-empt state AI laws (his office says he joined a similar coalition earlier in 2025, during the reconciliation-bill moratorium fight)."
@@ -32,7 +33,7 @@ sources:
   - "https://www.attorneygeneral.gov/"
   - "https://www.naag.org/press-releases/bipartisan-coalition-of-36-state-attorneys-general-opposes-federal-ban-on-state-ai-laws/"
 verified: false
-updated: 2026-11-20
+updated: 2026-11-21
 ---
 
 A former York County district attorney and Navy veteran, Sunday was elected attorney general in November 2024 and took office in January 2025. His office has taken a leading multistate role on AI chatbot safety for children.

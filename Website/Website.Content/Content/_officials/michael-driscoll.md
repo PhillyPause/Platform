@@ -19,6 +19,7 @@ phones:
     number: "(215) 686-3445"
   - label: "District office"
     number: "(215) 683-9220"
+contact_form: "https://phlcouncil.com/michaeldriscoll/"
 website: "https://phlcouncil.com/michaeldriscoll/"
 committees:
   - "Licenses and Inspections (chair)"
@@ -32,7 +33,7 @@ sources:
   - "https://phlcouncil.com/council-members/"
   - "https://phlcouncil.com/standing-committees/"
 verified: false
-updated: 2026-11-20
+updated: 2026-11-21
 ---
 
 Represents the 6th District (lower Northeast Philadelphia) since winning a May 2022 special election. He previously served in the state House for the 173rd District from 2015.

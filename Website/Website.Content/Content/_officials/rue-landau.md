@@ -14,6 +14,7 @@ phones:
     number: "(215) 686-3420"
   - label: "City Hall"
     number: "(215) 686-3421"
+contact_form: "https://phlcouncil.com/ruelandau/"
 website: "https://phlcouncil.com/ruelandau/"
 committees:
   - "Technology and Information Services (chair)"
@@ -39,7 +40,7 @@ sources:
   - "https://phlcouncil.com/council-members/"
   - "https://phlcouncil.com/standing-committees/"
 verified: false
-updated: 2026-11-20
+updated: 2026-11-21
 ---
 
 At-large councilmember elected in November 2023, the first openly LGBTQ+ member of Council. A civil-rights and housing lawyer, she led the Philadelphia Commission on Human Relations for 12 years.

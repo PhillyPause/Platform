@@ -19,6 +19,7 @@ phones:
     number: "(215) 686-0460"
   - label: "District office"
     number: "(215) 472-2419"
+contact_form: "https://phlcouncil.com/jamiegauthier/"
 website: "https://phlcouncil.com/jamiegauthier/"
 committees:
   - "Environment (chair)"
@@ -31,7 +32,7 @@ sources:
   - "https://phlcouncil.com/council-members/"
   - "https://phlcouncil.com/standing-committees/"
 verified: false
-updated: 2026-11-20
+updated: 2026-11-21
 ---
 
 Represents the 3rd District (West and Southwest Philadelphia) since 2020; a city planner who previously led the Fairmount Park Conservancy. She focuses on housing, neighbourhood development and environmental issues.

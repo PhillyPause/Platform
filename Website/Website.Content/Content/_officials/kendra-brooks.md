@@ -14,6 +14,7 @@ phones:
     number: "(215) 686-0461"
   - label: "City Hall"
     number: "(215) 686-0462"
+contact_form: "https://phlcouncil.com/kendrabrooks/"
 website: "https://phlcouncil.com/kendrabrooks/"
 committees:
   - "Law and Government (vice chair)"
@@ -24,7 +25,7 @@ sources:
   - "https://phlcouncil.com/council-members/"
   - "https://phlcouncil.com/standing-committees/"
 verified: false
-updated: 2026-11-20
+updated: 2026-11-21
 ---
 
 At-large councilmember since 2020 and the first Working Families Party member elected to Council; now in her second term as minority leader. A Nicetown community organiser, she founded Stand Up Nicetown and the Our City, Our Schools coalition.

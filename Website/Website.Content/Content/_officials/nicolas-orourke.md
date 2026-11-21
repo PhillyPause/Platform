@@ -12,6 +12,7 @@ offices:
 phones:
   - label: "City Hall"
     number: "(215) 686-3452"
+contact_form: "https://phlcouncil.com/nicolasorourke/"
 website: "https://phlcouncil.com/nicolasorourke/"
 committees:
   - "Technology and Information Services"
@@ -22,7 +23,7 @@ sources:
   - "https://phlcouncil.com/council-members/"
   - "https://phlcouncil.com/standing-committees/"
 verified: false
-updated: 2026-11-20
+updated: 2026-11-21
 ---
 
 At-large councilmember elected in November 2023, the second Working Families Party member on Council, serving as minority whip. He is a pastor at Living Water United Church of Christ and a POWER Interfaith leader.

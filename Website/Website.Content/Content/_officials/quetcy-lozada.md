@@ -17,6 +17,7 @@ phones:
     number: "(215) 686-3449"
   - label: "District office"
     number: "(215) 686-3448"
+contact_form: "https://phlcouncil.com/quetcylozada/"
 website: "https://phlcouncil.com/quetcylozada/"
 committees:
   - "Public Property and Public Works (chair)"
@@ -27,7 +28,7 @@ sources:
   - "https://phlcouncil.com/council-members/"
   - "https://phlcouncil.com/standing-committees/"
 verified: false
-updated: 2026-11-20
+updated: 2026-11-21
 ---
 
 Has represented the 7th District (Kensington, Fairhill and parts of North and lower Northeast Philadelphia) since November 2022. She previously led community engagement at the nonprofit Esperanza and chairs Council's Special Committee on Kensington.

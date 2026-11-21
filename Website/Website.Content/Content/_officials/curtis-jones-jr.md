@@ -19,6 +19,7 @@ phones:
     number: "(215) 686-3417"
   - label: "District office"
     number: "215-764-1542"
+contact_form: "https://phlcouncil.com/curtisjonesjr/"
 website: "https://phlcouncil.com/curtisjonesjr/"
 committees:
   - "Public Safety (chair)"
@@ -30,7 +31,7 @@ sources:
   - "https://phlcouncil.com/council-members/"
   - "https://phlcouncil.com/standing-committees/"
 verified: false
-updated: 2026-11-20
+updated: 2026-11-21
 ---
 
 Represents the 4th District (West and Northwest Philadelphia including Wynnefield, Overbrook, Manayunk and Roxborough) and is in his fifth term, having first taken office in 2008. He has served as Council majority leader and majority whip.

@@ -14,6 +14,7 @@ phones:
     number: "(215) 686-8295"
   - label: "City Hall"
     number: "(215) 686-8296"
+contact_form: "https://phlcouncil.com/jimharrity/"
 website: "https://phlcouncil.com/jimharrity/"
 committees:
   - "Labor and Civil Service (chair)"
@@ -26,7 +27,7 @@ sources:
   - "https://phlcouncil.com/council-members/"
   - "https://phlcouncil.com/standing-committees/"
 verified: false
-updated: 2026-11-20
+updated: 2026-11-21
 ---
 
 At-large councilmember since a November 2022 special election, re-elected in 2023. He was previously political director of the Pennsylvania Democratic Party and an auditor in the City Controller's office.
