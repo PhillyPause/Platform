@@ -50,36 +50,38 @@ a:hover { color: #15110C; }
 .navwatch { display: inline-flex; align-items: center; gap: 7px; }
 .navwatch svg { color: #AE2012; }
 
+/* JOIN and ACT, a pair in opposite colours: JOIN ink, turning red under the
+   pointer; ACT red, the louder of the two, turning ink. JOIN takes the push
+   to the right edge, and ACT holds the corner. */
 .joinbtn {
   margin-left: auto;
   padding: 9px 16px;
-  background: #AE2012;
+  background: #15110C;
   color: #FBF8F1;
   cursor: pointer;
   transition: background 140ms ease;
 }
 .joinbtn:hover,
 .joinbtn:focus-visible {
-  background: #15110C;
+  background: #AE2012;
   color: #FBF8F1;
 }
-/* ACT, last on the line after JOIN: ink to its red, with a red handset, so
-   the two asks read as a pair and neither drowns the other. JOIN takes the
-   push to the right edge, and ACT holds the corner. */
+/* An ivory handset on the red; on the ink, a red one. */
 .actbtn {
   display: inline-flex;
   align-items: center;
   gap: 7px;
   padding: 9px 16px;
-  background: #15110C;
+  background: #AE2012;
   color: #FBF8F1;
   cursor: pointer;
   transition: background 140ms ease;
 }
-.actbtn svg { color: #E8714F; transition: color 140ms ease; }
+.actbtn svg { color: #FBF8F1; transition: color 140ms ease; }
 .actbtn:hover,
-.actbtn:focus-visible { background: #AE2012; color: #FBF8F1; }
-.actbtn:hover svg { color: #FBF8F1; }
+.actbtn:focus-visible { background: #15110C; color: #FBF8F1; }
+.actbtn:hover svg,
+.actbtn:focus-visible svg { color: #E8714F; }
 
 /* The lead story's call to action: a band of ink under the dek, the widest
    thing on the front that can be pressed. The whole band is the label. */
