@@ -16,7 +16,7 @@ a:hover { color: #15110C; }
 .broadsheet h2,
 .broadsheet h3 { color: inherit; }
 
-/* The nav band: five links and the JOIN US button on one rule-bounded line.
+/* The nav band: five links and the JOIN and ACT buttons on one rule-bounded line.
    The first link's negative margin puts its text, not its hover field, on
    the column edge. */
 .navband {
@@ -63,11 +63,10 @@ a:hover { color: #15110C; }
   background: #15110C;
   color: #FBF8F1;
 }
-/* ACT NOW, beside JOIN US: ink to its red, with a red handset, so the two
-   asks read as a pair and neither drowns the other. It takes the push to the
-   right edge, and JOIN US follows it. */
+/* ACT, last on the line after JOIN: ink to its red, with a red handset, so
+   the two asks read as a pair and neither drowns the other. JOIN takes the
+   push to the right edge, and ACT holds the corner. */
 .actbtn {
-  margin-left: auto;
   display: inline-flex;
   align-items: center;
   gap: 7px;
@@ -81,7 +80,6 @@ a:hover { color: #15110C; }
 .actbtn:hover,
 .actbtn:focus-visible { background: #AE2012; color: #FBF8F1; }
 .actbtn:hover svg { color: #FBF8F1; }
-.actbtn + .joinbtn { margin-left: 0; }
 
 /* The lead story's call to action: a band of ink under the dek, the widest
    thing on the front that can be pressed. The whole band is the label. */
@@ -164,7 +162,7 @@ a:hover { color: #15110C; }
 }
 
 /* Pushed right, so the title and the strapline end on the same vertical as
-   the JOIN US button. The title is sized from the room it actually has
+   the ACT button. The title is sized from the room it actually has
    (container units on .mastline), never from the viewport, so it holds one
    line at every width: it measures about 9.8em, so 9.6cqi leaves it a little
    air. The strapline is 0.3 of the title's size, which is the ratio at which
@@ -340,11 +338,11 @@ html:has(.dlgtoggle:checked:not(#dlg-none)) { overflow: hidden; }
 #check-open:checked ~ .paneldlg.d-check { display: grid; }
 #notfound-open:checked ~ .paneldlg.d-notfound { display: grid; }
 /* What we keep is a checkbox, not one of the radios, so it opens over Join
-   us and closing it leaves Join us where it was. Later in the DOM and one
+   and closing it leaves Join where it was. Later in the DOM and one
    z-index up, so it is the one on top. */
 #privacy-open:checked ~ .paneldlg.d-privacy { display: grid; z-index: 110; }
 
-/* Join us dialog. Plain ivory, like the panel — nothing here needs a colour
+/* Join dialog. Plain ivory, like the panel — nothing here needs a colour
    field of its own. Its job is to make the case for joining: the four things
    we do, then the one field that starts it. */
 .joinbody h2 {
@@ -393,10 +391,10 @@ html:has(.dlgtoggle:checked:not(#dlg-none)) { overflow: hidden; }
 .d-join .paneldlg-box,
 .d-notices .paneldlg-box { width: min(840px, 100%); }
 /* Events (EventsList.razor): the kinds as small pills, then one event per
-   row on the same hairlines as the four ways in Join us. */
+   row on the same hairlines as the four ways in Join. */
 .d-events .paneldlg-box { width: min(760px, 100%); }
 /* Joining's dialogs (CheckEmailDialog, ConfirmJoinDialog, WelcomeDialog,
-   RemoveDialog) and Not found: the short ones are narrower than Join us. */
+   RemoveDialog) and Not found: the short ones are narrower than Join. */
 .d-confirm .paneldlg-box,
 .d-remove .paneldlg-box,
 .d-notfound .paneldlg-box { width: min(600px, 100%); }
@@ -478,7 +476,7 @@ html:has(.dlgtoggle:checked:not(#dlg-none)) { overflow: hidden; }
   box-shadow: 0 18px 50px rgba(21, 17, 12, 0.4);
   animation: dlg-in 200ms cubic-bezier(0.16, 1, 0.3, 1) both;
 }
-/* A short laptop screen gets the dialog closer to its edges, so Join us
+/* A short laptop screen gets the dialog closer to its edges, so Join
    still fits without scrolling. */
 @media (max-height: 760px) {
   .paneldlg { padding-block: 12px; }
@@ -609,7 +607,7 @@ html:has(.dlgtoggle:checked:not(#dlg-none)) { overflow: hidden; }
   .watchplay::after { animation: none; display: none; }
 }
 
-/* Mailing list. Lives in the Join us dialog, on ivory. 46px minimum target
+/* Mailing list. Lives in the Join dialog, on ivory. 46px minimum target
    height on the field and the button. */
 .signup { display: flex; gap: 10px; flex-wrap: wrap; align-items: flex-end; }
 .signup label {
@@ -657,7 +655,7 @@ html:has(.dlgtoggle:checked:not(#dlg-none)) { overflow: hidden; }
 .signupbtn:hover, .signupbtn:focus-visible { background: #AE2012; border-color: #AE2012; color: #FBF8F1; }
 .signup-note { margin: 16px 0 0; font-size: 12.5px; line-height: 1.55; color: #6A6254; }
 
-/* The join form in the Join us dialog (JoinForm.razor), with ManyHands on. */
+/* The join form in the Join dialog (JoinForm.razor), with ManyHands on. */
 /* It borrows .signup's field and button; the labels keep .signup's small
    red capitals, the ticks below go back to ordinary text. */
 /* Compact on purpose: on a laptop the whole dialog should fit without a
@@ -675,7 +673,7 @@ html:has(.dlgtoggle:checked:not(#dlg-none)) { overflow: hidden; }
 .signup .joinnote-link:hover { color: #AE2012; }
 
 /* What we keep: the privacy page's Markdown, set in the dialog's type.
-   Narrower and shorter than Join us, so it plainly sits on top of it. */
+   Narrower and shorter than Join, so it plainly sits on top of it. */
 .d-privacy .paneldlg-box {
   width: min(680px, 100%);
   max-height: calc(100vh - 120px); max-height: calc(100dvh - 120px);
@@ -816,7 +814,7 @@ html:has(.dlgtoggle:checked:not(#dlg-none)) { overflow: hidden; }
 
 /* Under 760px the seven nav items no longer fit one line, and wrapping them
    strands the buttons on a line of their own. They become a three-column
-   grid instead: the five links and JOIN US in two rows, and ACT NOW across
+   grid instead: the five links and JOIN in two rows, and ACT across
    the full width beneath them, directly above the story it answers. */
 @media (max-width: 759px) {
   .navband {

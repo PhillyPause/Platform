@@ -1,0 +1,45 @@
+@* A row of filter chips. Each is a link to the view with that choice made,
+   and says how many it would show; one that would show nobody is not a link.
+   With Toggle, the chosen chip carries a cross and its link clears it. *@
+
+<div class="act-chiprow">
+    <span class="act-chiprow-label" id="@Id">@Label</span>
+    <ul class="act-chips" aria-labelledby="@Id">
+        @foreach (var chip in Chips)
+        {
+            <li>
+                @if (chip.Count == 0 && !chip.Selected)
+                {
+                    <span class="act-chip is-empty">@chip.Label<span class="act-chip-n">0</span></span>
+                }
+                else
+                {
+                    <a class="act-chip" href="@chip.Href" aria-current="@(chip.Selected ? "true" : null)">
+                        @chip.Label
+                        @if (chip.Count is { } n)
+                        {
+                            <span class="act-chip-n">@n</span>
+                        }
+                        @if (Toggle && chip.Selected)
+                        {
+                            <span class="act-chip-x" aria-hidden="true">&times;</span><span class="act-sr"> (clear)</span>
+                        }
+                    </a>
+                }
+            </li>
+        }
+    </ul>
+</div>
+
+@code {
+    /// <summary>One choice: its label, how many it would show (null to say nothing), where it goes, and whether it is the one made.</summary>
+    public sealed record Chip(string Label, int? Count, string Href, bool Selected);
+
+    [Parameter, EditorRequired] public required string Id { get; set; }
+
+    [Parameter, EditorRequired] public required string Label { get; set; }
+
+    [Parameter, EditorRequired] public required IReadOnlyList<Chip> Chips { get; set; }
+
+    [Parameter] public bool Toggle { get; set; }
+}

@@ -284,7 +284,7 @@ Nothing else in this plan depends on which mark wins.
 | `/pennsylvania` | originate | Local orgs, campuses, Harrisburg, local press |
 | `/learn` | adapt | Curated reading and quotes |
 | `/about` | originate | Who we are — independent, loosely affiliated with PauseAI Global (§0.0) |
-| `/join` | originate | The front page with Join us open: the address on posters |
+| `/join` | originate | The front page with Join open: the address on posters |
 | `/events` | originate | The front page with Events open: ManyHands' published activities |
 | `/press` | originate | Assets, boilerplate, contact |
 | `/license` | originate | §3 |
@@ -303,7 +303,7 @@ through `ManyHands.Data`, never over HTTP:
   Events dialog, `/events`. The front page's Next event box is **not** fed from them: it
   is hand-edited, because what the site leads with is an editorial choice,
   and a published activity must never push it aside.
-- **Join** — ManyHands' join form is the front page's Join us dialog,
+- **Join** — ManyHands' join form is the front page's Join dialog,
   rate-limited and flood-capped, and every Join link opens it. There is one
   signup form, and it is that one; there is no email signup.
 - **Calendar** — the ICS feed is a link, not a feature.
@@ -316,7 +316,7 @@ Every touchpoint has a real fallback, not an error:
 
 | Touchpoint | Flag off, or ManyHands unreachable |
 |---|---|
-| Join us | No form, and never an email signup; I can help opens it |
+| Join | No form, and never an email signup; I can help opens it |
 | Calendar feed | Link hidden |
 | Small Print and `/privacy` | Say nothing of ManyHands; on, they add what it sets and holds |
 

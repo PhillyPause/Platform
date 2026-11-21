@@ -24,10 +24,11 @@ public sealed class ActOptions
     public string Vintage { get; set; } = "Current_Current";
 
     /// <summary>
-    /// Show research that nobody has checked yet: an official's unverified AI
-    /// record, and the "needs checking" notes. True in development (set in
+    /// Show AI record items nobody has checked yet. True in development (set in
     /// appsettings.Development.json), false everywhere else, so nothing
-    /// unchecked reaches a reader.
+    /// unchecked reaches a reader. Nothing on the page marks an item either
+    /// way: checking is done before the directory goes live, not shown to
+    /// readers.
     /// </summary>
     public bool ShowUnverified { get; set; }
 }

@@ -234,7 +234,10 @@ public partial class ActTests(WebApplicationFactory<Program> factory) : IClassFi
     {
         var pages = new TheoryData<string>
         {
-            "/act", "/act/officials", "/act/officials?county=Bucks", "/act/yours", "/act/yours?cd=3&ss=1&sh=182&county=Philadelphia",
+            "/act", "/act/officials", "/act/officials?county=Bucks", "/act/officials?body=state-house&county=Philadelphia&q=smith",
+            "/act/yours", "/act/yours?cd=3&ss=1&sh=182&county=Philadelphia",
+            "/act/yours?cd=3&ss=1&sh=182&county=Philadelphia&in=harrisburg",
+            "/act/yours?cd=3&ss=1&sh=182&county=Philadelphia&in=local&cc=5",
             "/act/learn"
         };
         foreach (var learn in Directory.EnumerateFiles(Path.Combine(TestPaths.ContentRoot, "act", "learn"), "*.md"))
@@ -262,6 +265,10 @@ public partial class ActTests(WebApplicationFactory<Program> factory) : IClassFi
         page.Should().NotContain("\"type\":\"server\"").And.NotContain("<script src=\"_content/Syncfusion");
         page.Should().NotContain("/volunteer").And.NotContain("phillypause.session")
             .And.NotContain("name=\"_handler\" value=\"log\"", "the outreach log is ManyHands', and it is off");
+
+        // The tests run as Development, where unchecked research is shown:
+        // shown or not, nothing tells a reader it is unchecked.
+        page.Should().NotContain("Needs checking").And.NotContain("Not yet checked").And.NotContain("unchecked");
 
         foreach (Match link in ExternalLink().Matches(page))
             link.Value.Should().Contain("target=\"_blank\"", $"{path}: every external link opens a new window ({link.Value})");

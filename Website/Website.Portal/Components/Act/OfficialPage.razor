@@ -5,7 +5,8 @@
 
 @* One official, in the Act dialog: who they are, how to reach them, and what
    they have done or said about AI, each item with its source. Items nobody
-   has checked are shown in development only (ActOptions.ShowUnverified). *@
+   has checked are shown in development only (ActOptions.ShowUnverified), and
+   nothing marks them either way. *@
 
 @if (_official is { } o)
 {
@@ -67,7 +68,7 @@
                             <ol class="act-record">
                                 @foreach (var item in _record)
                                 {
-                                    <li class="@(item.Verified ? null : "is-unchecked")">
+                                    <li>
                                         @if (item.Date is { } date)
                                         {
                                             <time datetime="@date.ToString("yyyy-MM-dd")">@date.ToString("MMM yyyy", System.Globalization.CultureInfo.InvariantCulture)</time>
@@ -77,10 +78,6 @@
                                             @if (item.Source is { } source)
                                             {
                                                 <a href="@source" target="_blank" rel="noopener">Source</a>
-                                            }
-                                            @if (!item.Verified)
-                                            {
-                                                <span class="act-unchecked">Not yet checked</span>
                                             }
                                         </p>
                                     </li>

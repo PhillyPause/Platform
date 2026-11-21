@@ -13,7 +13,7 @@
 @inject ContentStore Content
 
 @* The home page, as a broadsheet front: masthead and nav, the lead story on
-   the July 2026 incident, and the dialogs: watch, panelists, join us, act,
+   the July 2026 incident, and the dialogs: watch, panelists, join, act,
    the primer, volunteer, educate, organize and the small print.
 
    The dialogs are driven by one hidden radio group and `:checked ~` sibling
@@ -56,15 +56,15 @@ else
   <input type="radio" name="dlg" id="dlg-none" class="dlgtoggle" checked="@(!NotFound && !JoinOpen && !EventsOpen && !ConfirmOpen && !WelcomeOpen && !RemoveOpen && !CheckEmailOpen && !ActOpen)" aria-label="No panel open">
   <input type="radio" name="dlg" id="watch-open" class="dlgtoggle" aria-label="Watch">
   <input type="radio" name="dlg" id="panel-open" class="dlgtoggle" aria-label="Who is on the panel">
-  <input type="radio" name="dlg" id="join-open" class="dlgtoggle" checked="@JoinOpen" aria-label="Join us">
-  <input type="radio" name="dlg" id="act-open" class="dlgtoggle" checked="@ActOpen" aria-label="Act now">
+  <input type="radio" name="dlg" id="join-open" class="dlgtoggle" checked="@JoinOpen" aria-label="Join">
+  <input type="radio" name="dlg" id="act-open" class="dlgtoggle" checked="@ActOpen" aria-label="Act">
   <input type="radio" name="dlg" id="primer-open" class="dlgtoggle" aria-label="The primer">
   <input type="radio" name="dlg" id="volunteer-open" class="dlgtoggle" aria-label="Volunteer">
   <input type="radio" name="dlg" id="educate-open" class="dlgtoggle" aria-label="Educate">
   <input type="radio" name="dlg" id="organize-open" class="dlgtoggle" aria-label="Organize">
   <input type="radio" name="dlg" id="notices-open" class="dlgtoggle" aria-label="Small Print">
   <input type="radio" name="dlg" id="notfound-open" class="dlgtoggle" checked="@NotFound" aria-label="Page not found">
-  @* Not one of the radios: What we keep opens on top of Join us rather
+  @* Not one of the radios: What we keep opens on top of Join rather
      than in its place, so closing it puts the reader back in the form. *@
   @if (ManyHandsOn)
   {
@@ -106,8 +106,8 @@ else
       <label class="navlink" for="volunteer-open">Volunteer</label>
       <label class="navlink" for="educate-open">Educate</label>
       <label class="navlink" for="organize-open">Organize</label>
-      <label class="actbtn" for="act-open">@PhoneGlyph Act now</label>
-      <label class="joinbtn" for="join-open">Join us</label>
+      <label class="joinbtn" for="join-open">Join</label>
+      <label class="actbtn" for="act-open">@PhoneGlyph Act</label>
     </nav>
 
     <div class="lead">
@@ -116,11 +116,11 @@ else
       <div class="leaddek">To cheat on a test. If a person did it, it would be a felony!</div>
 
       @* The story's one call to action, under the headline it answers: the
-         Act dialog, the same as ACT NOW in the nav band. *@
+         Act dialog, the same as ACT in the nav band. *@
       <label class="actcall" for="act-open">
         <span class="actcall-icon" aria-hidden="true">@PhoneGlyph</span>
         <span class="actcall-text">
-          <span class="actcall-k">Act now</span>
+          <span class="actcall-k">Act</span>
           <span class="actcall-t">Call or write the people who represent you</span>
           <span class="actcall-s">Congress, Harrisburg and City Hall. Find yours in a minute; a call takes five.</span>
         </span>
@@ -409,7 +409,7 @@ else
             <div class="signuprow">
               <a class="signupbtn" href="/">Go to the front page</a>
               <label class="signupalt confirm-alt" for="primer-open">Learn</label>
-              <label class="signupalt confirm-alt" for="join-open">Join us</label>
+              <label class="signupalt confirm-alt" for="join-open">Join</label>
             </div>
           </div>
         </div>
@@ -423,7 +423,7 @@ else
     <label class="paneldlg-scrim" for="dlg-none" aria-label="Close"></label>
     <div class="paneldlg-box" role="dialog" aria-modal="true" aria-labelledby="joindlg-title">
       <div class="paneldlg-head">
-        <span id="joindlg-title">Join us</span>
+        <span id="joindlg-title">Join</span>
         <label class="paneldlg-x" for="dlg-none" aria-label="Close">&times;</label>
       </div>
       <div class="paneldlg-body joinbody">
@@ -463,7 +463,7 @@ else
     </div>
   </div>
 
-  @* What we keep, over Join us: the privacy page itself, ManyHands' part
+  @* What we keep, over Join: the privacy page itself, ManyHands' part
      included, so the dialog and /privacy can never disagree. *@
   @if (ManyHandsOn && Content.Find("privacy") is { } privacy)
   {
@@ -648,7 +648,7 @@ else
 
         <div class="joinform">
           <p class="joinform-ask">Our next event is always in the box at the top of this page. Come to that one, or say hello now and we will look out for you.</p>
-          @* On, the Events dialog. Off, the Join us dialog. Labels, like
+          @* On, the Events dialog. Off, the Join dialog. Labels, like
              every other link between dialogs. *@
           <div class="signuprow">
             @if (ManyHandsOn)
@@ -727,7 +727,7 @@ else
     </div>
   </div>
 
-  @* Act: the action centre, as a dialog. The nav band's ACT NOW, the lead's
+  @* Act: the action centre, as a dialog. The nav band's ACT, the lead's
      call to action and Organize's "Who to call" open it here at its first
      view (ActStart); every /act address opens the front page with it showing
      a view of its own (ActView), and moving between views loads the next
@@ -740,7 +740,7 @@ else
     <label class="paneldlg-scrim" for="dlg-none" aria-label="Close"></label>
     <div class="paneldlg-box" role="dialog" aria-modal="true" aria-labelledby="actdlg-title" data-enhance-nav="false">
       <div class="paneldlg-head">
-        <span id="actdlg-title">Act now</span>
+        <span id="actdlg-title">Act</span>
         <label class="paneldlg-x" for="dlg-none" aria-label="Close">&times;</label>
       </div>
       <Website.Portal.Components.Act.Parts.ActTabs />
@@ -841,7 +841,7 @@ else
 
     // Set by the action pages (Components/Act): what the Act dialog shows,
     // and that it opens on load. Unset, the dialog holds ActStart and waits
-    // for ACT NOW.
+    // for ACT.
     [Parameter] public RenderFragment? ActView { get; set; }
 
     private bool ActOpen => ActView is not null;

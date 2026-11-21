@@ -1,4 +1,4 @@
-/* Joining on a bad connection (JoinForm.razor, in the Join us dialog).
+/* Joining on a bad connection (JoinForm.razor, in the Join dialog).
 
    Pressing Join with no connection would trade the form for the browser's
    own error page, and what the person typed with it. So the press first

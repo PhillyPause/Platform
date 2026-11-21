@@ -12,16 +12,16 @@ contacted whom, which is ManyHands' (below, and
 
 ## A dialog on the front page
 
-The action centre is the front page's **Act** dialog, opened like Join us by
+The action centre is the front page's **Act** dialog, opened like Join by
 a hidden radio (`#act-open`) and CSS, with no script. The ways in are kept
 prominent:
 
-- **ACT NOW** in the front page's nav band, beside JOIN US; full width under
-  the other links on a phone.
+- **ACT**, the last item in the front page's nav band, after JOIN, at its
+  right edge; full width under the other links on a phone.
 - A band of ink under the lead story's headline, "Call or write the people
   who represent you", the front page's one call to action.
 - Organize's "Who to call".
-- **Act now** in the header of every inner page, and "Act" in a member's nav,
+- **Act** in the header of every inner page, and in a member's nav,
   as links to `/act`.
 
 On the plain front page the dialog holds its first view (`ActStart`). Every
@@ -39,6 +39,15 @@ which re-points the tokens.css names it uses at the broadsheet's ink, ivory
 and red inside `.d-act`, and lays out by the dialog's width (container
 queries) rather than the window's.
 
+**Never a list of dozens.** Nobody reads one, so the officials are reached
+by filter chips instead (`FilterChips`): each is a link to the view with
+that choice made and says how many it would show, the chosen one is ink, and
+one that would show nobody is not a link. "Who represents you" shows one
+place at a time, Washington first; the directory lists nobody until
+something is chosen, and never more than a dozen (`DirectoryFilter.Shown`),
+past which it says how many matched and asks for one more choice. Every
+state is an address, so the chips are plain links and the search a GET form.
+
 ## Views
 
 All static server rendering. Code in `Website/Website.Portal/Components/Act`
@@ -47,8 +56,8 @@ and `Website/Website.Portal/Act`; the addresses are in `ActPaths`.
 | Route | View |
 |---|---|
 | `/act` | Find who represents you (an address, or districts picked by hand), the three ways in, the two motion tutorials, the ask, the county map, the explainers. The address form posts here from wherever it was shown, so a problem with the address comes back with the dialog open |
-| `/act/yours?cd=&ss=&sh=&county=` | The officials for those districts, grouped Washington, Harrisburg, local. District numbers in the address bar, never the address |
-| `/act/officials`, `?county=` | Everyone, or one county's share |
+| `/act/yours?cd=&ss=&sh=&county=` | The officials for those districts, one place at a time: Washington, then `in=harrisburg` or `in=local`, each a chip with its count. A Philadelphian's City Hall is the citywide officials plus the member for the council district they choose (`cc=`). District numbers in the address bar, never the address |
+| `/act/officials?body=&county=&q=` | The directory behind a filter (`DirectoryFilter`): a government (Congress, Statewide, State Senate, State House, City Hall, County), a county, and a name or a district number. A bare number is a district, so `182` is House district 182; names match without accents or punctuation. The county map's links land here with `?county=` |
 | `/act/officials/{key}` | One official: contacts, bio, AI record with sources, committees |
 | `/act/call/{key}` | The numbers, a script that works as it stands, one with the reader's own name and reason, and "I called" |
 | `/act/write/{key}` | A draft to change and send from the reader's own email or the office's form, and "I sent it" |
@@ -94,18 +103,20 @@ updated: 2026-11-20
 
 A malformed file stops the site starting, as a malformed page does.
 
-**Nothing unchecked reaches a reader.** `Act:ShowUnverified` is true in
-`appsettings.Development.json` and false everywhere else. Locally, an
-unchecked entry carries a "Needs checking" note and its unchecked AI record
-is shown, marked. In production the note is never shown and an unchecked AI
-record item is hidden. Contact details are shown either way, so check them
+**No caveats.** Nothing a reader sees says whether an entry or an item has
+been checked: the two `verified:` flags are the editors' checklist, and the
+directory is checked before it goes live. `Act:ShowUnverified` is true in
+`appsettings.Development.json` and false everywhere else, so locally every AI
+record item is shown and in production an unchecked one is left out,
+unmarked either way. Contact details are shown regardless, so check them
 first.
 
 **Matching.** The senators and statewide officers represent every
 Pennsylvania address; a House or General Assembly member matches on the
 district number; the city and counties match on the county. The Census
 geocoder does not know Philadelphia's council districts, so a Philadelphian
-is shown every district council member and told how to find theirs.
+chooses theirs from chips, with a link to City Council's site for anyone
+unsure; until they do, City Hall shows the citywide officials alone.
 
 **Seats change in January.** A member-elect is shown with "takes office";
 someone departing drops out of the directory the day after `term_ends`.
@@ -175,7 +186,7 @@ Off, none of it renders and no act page mentions it.
 |---|---|---|
 | `Act:LookupEnabled` | `false` | Look addresses up with the Census geocoder. Off, readers pick their districts |
 | `Act:GeocoderUrl`, `Act:Benchmark`, `Act:Vintage` | the Census geocoder, `Public_AR_Current`, `Current_Current` | Where and against which maps |
-| `Act:ShowUnverified` | `false` (true in Development) | Show unchecked research, marked |
+| `Act:ShowUnverified` | `false` (true in Development) | Show AI record items nobody has checked. Never marked |
 | `DeepInfra:ApiKey` | — | Secret. Set, drafts are written with the model's help |
 | `DeepInfra:Model` | `meta-llama/Llama-3.3-70B-Instruct` | Any chat model DeepInfra serves |
 | `DeepInfra:BaseUrl` | `https://api.deepinfra.com/v1/openai/` | |

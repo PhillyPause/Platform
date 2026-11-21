@@ -99,7 +99,7 @@ components live in `Website/Website.Portal/Volunteer`.
 |---|---|
 | `/events` | Not a page here: the front page's Events dialog (`EventsList`), what is coming up, filterable by type, with the public calendar feed. Its filters link back to `/events?type=...` |
 | `/volunteer/activity/{id}` | One activity and its signup form |
-| `/join` | Joining is not a page here: it is the front page's Join us dialog (On the site, below). Every Join link goes to it |
+| `/join` | Joining is not a page here: it is the front page's Join dialog (On the site, below). Every Join link goes to it |
 | `/volunteer/sign-in` | Ask for a sign-in link |
 | `/volunteer/sign-in/{token}` | Opening the link shows a button; **pressing it** spends the token and lands on the front page, not `/volunteer/me`, until the volunteer pages are ready for readers |
 | `/volunteer/me` | A summary at the top (coming up, done, what they like, how news reaches them), then a section each, listed at the side: My signups (coming up, with cancelling, and done), What I like doing, Email and notifications (one form with the interests, so either Save saves both), Discord unlink, Calendar feed, My data (export, delete). Sign out and Events head the page |
@@ -136,7 +136,7 @@ Three things about signing in:
 
 ### Joining
 
-Anyone can type any address into the Join us form, so joining asks the
+Anyone can type any address into the Join form, so joining asks the
 person to confirm the address is theirs before ManyHands counts them as a
 member who hears about new activities. It asks gently. These are volunteers,
 and doing nothing is a fine answer.
@@ -337,9 +337,9 @@ it; `ManyHandsGateTests` holds that, and `SiteWiringTests` the flag-on side.
 | Where | On | Off |
 |---|---|---|
 | The account bar, top of every page | Signed out: Events, Join, **Sign in**. Signed in: "Signed in as *name*", My page, Events, **Team** for organizers, Sign out. Events and Join load the page in full (`data-enhance-nav="false"`): enhanced navigation would leave the dialog shut | Not rendered |
-| Join us dialog, front page | The signup form itself (`JoinForm`): name, email, interests. Pressing Join first checks the connection (`join.js`), and without one keeps the form and says so. It posts to `/join`; someone new is redirected to Check your email, a member already confirmed is answered in the dialog; if the database is unreachable it says so | No form and no email signup: the dialog says what joining means |
+| Join dialog, front page | The signup form itself (`JoinForm`): name, email, interests. Pressing Join first checks the connection (`join.js`), and without one keeps the form and says so. It posts to `/join`; someone new is redirected to Check your email, a member already confirmed is answered in the dialog; if the database is unreachable it says so | No form and no email signup: the dialog says what joining means |
 | Events dialog, front page | What is coming up; if the database is unreachable it says so | Not rendered, and `/events` is a 404 |
-| I can help | Opens Events | Opens Join us |
+| I can help | Opens Events | Opens Join |
 | Small Print, cookies | Adds the sign-in cookie | One cookie |
 | `/privacy` | Adds what ManyHands holds, from `Content/_manyhands/privacy.md` | The base page |
 

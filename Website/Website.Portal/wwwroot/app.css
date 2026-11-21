@@ -60,7 +60,7 @@ a:hover { color: var(--heading); }
   text-transform: uppercase; color: var(--muted);
 }
 .header-end { display: flex; align-items: center; flex-wrap: wrap; gap: 0.6rem 1.25rem; }
-/* The front page's ACT NOW, on every inner page. */
+/* The front page's ACT, on every inner page. */
 .header-act {
   display: inline-flex; align-items: center; gap: 0.45rem;
   min-height: 44px; padding: 0.55rem 1.1rem;

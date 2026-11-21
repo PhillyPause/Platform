@@ -89,10 +89,6 @@
 .act-empty { color: var(--muted); }
 .act-error { color: #AE2012; font-weight: 600; }
 
-/* The map beside the directory's heading, once there is room for both. */
-.act-intro-map { gap: 1.25rem; }
-@container (min-width: 44rem) { .act-intro-map { grid-template-columns: minmax(0, 1fr) 15rem; align-items: center; } }
-
 /* ---------------------------------------------------------------- forms */
 
 .act-form { display: grid; gap: 1rem; }
@@ -161,9 +157,48 @@
 .act-status { display: inline-block; margin: 0 0.4rem 0.4rem 0; padding: 0.1rem 0.55rem; border-radius: 999px; font-size: 11.5px; font-weight: 700; }
 .act-status-elect { background: #EBE3D2; color: #15110C; }
 .act-status-leaving { background: #E6DFCE; color: #4A443A; }
-.act-status-check { background: #FFF2C2; color: #5A4300; border: 1px dashed #B58A00; }
 
 .act-group + .act-group { margin-top: 0.5rem; }
+
+/* ---------------------------------------------------------------- filters */
+
+/* The directory and "Who represents you" narrow by chips rather than list
+   dozens: a row each, its label on the left once there is room. A chip is a
+   link that says how many it would show; the chosen one is ink, and one
+   that would show nobody is greyed and not a link. */
+.act-filter { display: grid; gap: 0.85rem; padding: 14px 16px; background: var(--surface); border: 1px solid var(--line); }
+.act-filter > .act-small { margin: 0; }
+.act-chiprow, .act-filter-search { display: grid; gap: 0.4rem; }
+@container (min-width: 40rem) {
+  .act-chiprow, .act-filter-search { grid-template-columns: 9.5rem minmax(0, 1fr); align-items: center; }
+  .act-filter > .act-small { padding-left: 9.5rem; }
+}
+.act-chiprow-label { font-size: 10.5px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #AE2012; }
+.act-chips { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+.act-chip {
+  display: inline-flex; align-items: center; gap: 0.45em;
+  min-height: 34px; padding: 4px 13px; border: 1px solid var(--line); border-radius: 999px;
+  background: #FFFDF8; color: #15110C; font-size: 13px; font-weight: 600; line-height: 1.2;
+  white-space: nowrap; transition: border-color 140ms ease, background 140ms ease;
+}
+.actbody a.act-chip { color: #15110C; text-decoration: none; }
+.actbody a.act-chip:hover, .actbody a.act-chip:focus-visible { border-color: #15110C; color: #15110C; }
+.actbody a.act-chip[aria-current] { background: #15110C; border-color: #15110C; color: #FBF8F1; }
+.actbody a.act-chip[aria-current]:hover { background: #AE2012; border-color: #AE2012; }
+.act-chip-n { font-size: 11.5px; font-weight: 700; color: var(--muted); font-variant-numeric: tabular-nums; }
+.act-chip[aria-current] .act-chip-n { color: #E8C9A8; }
+.act-chip-x { font-size: 16px; line-height: 1; }
+.act-chip.is-empty { color: var(--muted); opacity: 0.55; }
+.act-filter-box { display: flex; gap: 6px; }
+.act-filter-box input {
+  flex: 1; min-width: 0; min-height: 38px; padding: 6px 12px; font: inherit; font-size: 15px;
+  color: #15110C; background: #FBF8F1; border: 1px solid #15110C; border-radius: 0;
+}
+.act-filter-box input:focus-visible { outline: 3px solid #AE2012; outline-offset: 2px; }
+.act-filter-count { margin: 0; font-size: 14px; color: #4A443A; }
+.act-filter-count a { margin-left: 0.15em; }
+.actbody .act-filter + .act-filter-count, .actbody .act-filter + .act-group { margin-top: -1rem; }
+.act-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 
 /* ---------------------------------------------------------------- first view */
 
@@ -224,8 +259,6 @@
 .act-record time { font-size: 12.5px; font-weight: 700; color: var(--muted); padding-top: 0.15rem; }
 .act-record p { margin: 0; }
 .act-record a { margin-left: 0.3rem; font-size: 13px; }
-.act-record li.is-unchecked { border-left-style: dashed; }
-.act-unchecked { display: inline-block; margin-left: 0.4rem; font-size: 11px; font-weight: 700; color: #5A4300; background: #FFF2C2; padding: 0 0.4rem; }
 
 .act-tags { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 0.5rem; }
 .act-tags li { padding: 0.2rem 0.7rem; border: 1px solid #CFC7B6; border-radius: 999px; font-size: 13px; }
@@ -326,5 +359,5 @@
   .act-tut-step { opacity: 1; transform: none; }
   .act-draw, .act-strike { stroke-dashoffset: 0; }
   .act-wave { opacity: 1; }
-  .act-map-county, .act-btn { transition: none; }
+  .act-map-county, .act-btn, .act-chip { transition: none; }
 }

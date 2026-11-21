@@ -116,7 +116,7 @@ public sealed record Official
 
     /// <summary>
     /// A person has checked this entry's contact details against the office's
-    /// own site. Unchecked entries carry a "needs checking" note in development.
+    /// own site: the editors' checklist, which no page shows.
     /// </summary>
     public bool Verified { get; init; }
 

@@ -1,8 +1,6 @@
-@inject IOptions<ActOptions> Options
-
-@* Whether the seat is theirs yet, and, in development only, whether anybody
-   has checked the entry. Production never shows the second: it is a note to
-   the people editing the directory, not to readers. *@
+@* Whether the seat is theirs yet. Nothing here, or anywhere a reader looks,
+   says whether anybody has checked the entry: that is the editors' business,
+   done before the directory goes live. *@
 
 @if (Official.Status == OfficialStatus.MemberElect && (Official.TermStarts is null || Official.TermStarts > Today))
 {
@@ -11,10 +9,6 @@
 else if (Official.Status == OfficialStatus.Departing)
 {
     <p class="act-status act-status-leaving">Leaving office@(Official.TermEnds is { } end ? " " + end.ToString("MMMM d, yyyy", System.Globalization.CultureInfo.InvariantCulture) : "")</p>
-}
-@if (Options.Value.ShowUnverified && !Official.Verified)
-{
-    <p class="act-status act-status-check" role="note">Needs checking: drafted from research, not yet confirmed against the office&rsquo;s own site</p>
 }
 
 @code {

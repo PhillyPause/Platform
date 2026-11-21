@@ -2,7 +2,11 @@
 @inject OfficialsStore Officials
 
 @* The officials for a set of districts, in the Act dialog. The districts are
-   in the query string (ActPaths.Yours), never the address. *@
+   in the query string (ActPaths.Yours), never the address. One place at a
+   time, Washington first, chosen by chips that say how many each holds; a
+   Philadelphian's City Hall is the citywide officials plus the member for
+   the council district they choose (cc=), which the Census geocoder cannot
+   tell us. *@
 
 <PageMeta Title="Who represents you" Description="Your officials in Washington, Harrisburg and Greater Philadelphia, with their numbers and a script." NoIndex="true" />
 
@@ -28,44 +32,62 @@
         }
         else
         {
-            @foreach (var (arena, people, intro) in Groups())
-            {
-                <section class="act-group" aria-labelledby="group-@arena.Replace(' ', '-')">
-                    <h3 id="group-@arena.Replace(' ', '-')" class="act-section-head">@arena</h3>
-                    @if (intro is not null)
+            <div class="act-filter">
+                <FilterChips Id="f-arena" Label="Show" Chips="@ArenaChips()" />
+                @if (IsPhiladelphia && _arena == Local)
+                {
+                    <FilterChips Id="f-council" Label="Your council district" Toggle="true" Chips="@CouncilChips()" />
+                    @if (_council is null)
                     {
-                        <p class="act-small">@((MarkupString)intro)</p>
+                        <p class="act-small">Choose yours to add your district&rsquo;s member. Not sure? <a href="https://phlcouncil.com/" target="_blank" rel="noopener">City Council</a> will tell you.</p>
                     }
-                    @if (people.Count == 0)
-                    {
-                        <p class="act-empty">Nobody here yet for your districts. <a href="@ActPaths.Everyone">See everyone</a> or <a href="#by-district">change your districts</a>.</p>
-                    }
-                    else
-                    {
-                        <ul class="act-cards">
-                            @foreach (var official in people)
-                            {
-                                <OfficialCard Official="official" />
-                            }
-                        </ul>
-                    }
-                </section>
-            }
+                }
+            </div>
 
-            <p class="act-small">Start with Washington: Congress is where a pause would be decided. Then Harrisburg, then home.</p>
+            <section class="act-group" aria-labelledby="group-head">
+                <h3 id="group-head" class="act-section-head">@ArenaLabel(_arena)</h3>
+                @if (Intro() is { } intro)
+                {
+                    <p class="act-small">@intro</p>
+                }
+                @if (People(_arena) is { Count: > 0 } people)
+                {
+                    <ul class="act-cards">
+                        @foreach (var official in people)
+                        {
+                            <OfficialCard Official="official" />
+                        }
+                    </ul>
+                }
+                else
+                {
+                    <p class="act-empty">Nobody here yet for your districts. <a href="@ActPaths.Everyone">Search the directory</a> or <a href="#by-district">change your districts</a>.</p>
+                }
+            </section>
+
             <DistrictPicker />
         }
     </ActView>
 </Home>
 
 @code {
+    private const string Washington = "washington";
+    private const string Harrisburg = "harrisburg";
+    private const string Local = "local";
+
     [SupplyParameterFromQuery(Name = "cd")] private string? Congressional { get; set; }
     [SupplyParameterFromQuery(Name = "ss")] private string? StateSenate { get; set; }
     [SupplyParameterFromQuery(Name = "sh")] private string? StateHouse { get; set; }
     [SupplyParameterFromQuery(Name = "county")] private string? County { get; set; }
+    [SupplyParameterFromQuery(Name = "in")] private string? Arena { get; set; }
+    [SupplyParameterFromQuery(Name = "cc")] private string? Council { get; set; }
 
     private DistrictMatch _match = new(null, null, null, null);
     private IReadOnlyList<Official> _found = [];
+    private string _arena = Washington;
+    private string? _council;
+
+    private bool IsPhiladelphia => _match.County == "Philadelphia";
 
     protected override void OnParametersSet()
     {
@@ -75,30 +97,61 @@
             DistrictMatch.Normalise(StateHouse),
             DistrictMatch.NormaliseCounty(County));
         _found = _match.IsEmpty ? [] : Officials.For(_match, DateOnly.FromDateTime(DateTime.UtcNow));
-    }
-
-    private IEnumerable<(string Arena, IReadOnlyList<Official> People, string? Intro)> Groups()
-    {
-        yield return ("Washington", _found.Where(o => o.Level == OfficialLevel.Federal).ToArray(),
-            _match.Congressional is null
-                ? "Your two senators. Add your US House district to see your representative."
-                : null);
-
-        yield return ("Harrisburg", _found.Where(o => o.Arena == "Harrisburg").ToArray(),
-            _match.StateSenate is null || _match.StateHouse is null
-                ? "Statewide officers below. Add your State Senate and State House districts to see your own legislators."
-                : null);
-
-        var local = _found.Where(o => o.Arena == "Local").ToArray();
-        if (_match.County is not null)
+        _arena = Arena?.Trim().ToLowerInvariant() switch
         {
-            yield return (_match.County == "Philadelphia" ? "City of Philadelphia" : $"{_match.County} County", local,
-                _match.County == "Philadelphia" && local.Any(o => o.Level == OfficialLevel.City && o.District is not null)
-                    ? "Every Philadelphian has the Mayor and seven at-large members of City Council, plus one district member. "
-                      + "If you do not know your council district, <a href=\"https://phlcouncil.com/\" target=\"_blank\" rel=\"noopener\">City Council</a> will tell you."
-                    : null);
-        }
+            Harrisburg => Harrisburg,
+            Local when _match.County is not null => Local,
+            _ => Washington
+        };
+        var council = DistrictMatch.Normalise(Council);
+        _council = IsPhiladelphia && council is not null && CouncilDistricts().Contains(council) ? council : null;
     }
+
+    private IReadOnlyList<Official> People(string arena) => arena switch
+    {
+        Washington => _found.Where(o => o.Arena == "Washington").ToArray(),
+        Harrisburg => _found.Where(o => o.Arena == "Harrisburg").ToArray(),
+        // Every Philadelphian has the citywide officials; of the district
+        // members, only the one for the district they chose.
+        _ => _found.Where(o => o.Arena == "Local" && (o.Level != OfficialLevel.City || o.District is null || o.District == _council)).ToArray()
+    };
+
+    private IReadOnlyList<FilterChips.Chip> ArenaChips()
+    {
+        var arenas = _match.County is null ? new[] { Washington, Harrisburg } : [Washington, Harrisburg, Local];
+        return arenas.Select(a => new FilterChips.Chip(ArenaLabel(a), People(a).Count,
+            ActPaths.Yours(_match, a == Washington ? null : a, _council), a == _arena)).ToArray();
+    }
+
+    private IReadOnlyList<FilterChips.Chip> CouncilChips() =>
+        CouncilDistricts().Select(d => new FilterChips.Chip(d, null,
+            ActPaths.Yours(_match, Local, d == _council ? null : d), d == _council)).ToArray();
+
+    private IReadOnlyList<string> CouncilDistricts() =>
+        Officials.Current(DateOnly.FromDateTime(DateTime.UtcNow))
+            .Where(o => o.Level == OfficialLevel.City && o.District is not null)
+            .Select(o => o.District!)
+            .Distinct()
+            .OrderBy(d => int.Parse(d, System.Globalization.CultureInfo.InvariantCulture))
+            .ToArray();
+
+    private string ArenaLabel(string arena) => arena switch
+    {
+        Washington => "Washington",
+        Harrisburg => "Harrisburg",
+        _ => IsPhiladelphia ? "City Hall" : $"{_match.County} County"
+    };
+
+    private string? Intro() => _arena switch
+    {
+        Washington when _match.Congressional is null =>
+            "Your two senators. Add your US House district to see your representative.",
+        Washington => "Start here: Congress is where a pause would be decided. Then Harrisburg, then home.",
+        Harrisburg when _match.StateSenate is null || _match.StateHouse is null =>
+            "The statewide officers. Add your State Senate and State House districts to see your own legislators.",
+        Local when IsPhiladelphia => "Every Philadelphian has the Mayor, the District Attorney and seven at-large members of City Council, plus one district member.",
+        _ => null
+    };
 
     private static string Describe(DistrictMatch m)
     {

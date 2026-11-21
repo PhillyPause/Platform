@@ -11,7 +11,7 @@ namespace Website.Tests;
 
 /// <summary>
 /// The action centre is a dialog on the front page, not a section of its own:
-/// ACT NOW in the nav band and the call to action under the headline open it,
+/// ACT at the end of the nav band and the call to action under the headline open it,
 /// every /act address is the front page with it open on a view of its own,
 /// and every inner page carries the way in.
 /// </summary>
@@ -20,11 +20,13 @@ public partial class ActDialogTests(WebApplicationFactory<Program> factory) : IC
     private static readonly OfficialsStore Store = new(TestPaths.ContentRoot);
 
     [Fact]
-    public async Task The_front_page_offers_Act_now_in_the_nav_and_under_the_headline_and_opens_nothing()
+    public async Task The_front_page_offers_Act_in_the_nav_and_under_the_headline_and_opens_nothing()
     {
         var page = await factory.CreateClient().GetStringAsync("/");
 
         CheckedRadio(page).Should().Be("dlg-none");
+        NavItem().Matches(Nav().Match(page).Value).Select(m => m.Groups[1].Value.Trim()).TakeLast(2)
+            .Should().Equal(["Join", "Act"], "the nav band ends JOIN, then ACT in the corner");
         page.Should().Contain("<label class=\"actbtn\" for=\"act-open\">")
             .And.Contain("<label class=\"actcall\" for=\"act-open\">")
             .And.Contain("Tell the people who represent you", "the dialog's first view waits behind the button")
@@ -121,6 +123,12 @@ public partial class ActDialogTests(WebApplicationFactory<Program> factory) : IC
 
     [GeneratedRegex("<input type=\"radio\" name=\"dlg\" id=\"([a-z-]+)\"[^>]*>")]
     private static partial Regex Radio();
+
+    [GeneratedRegex(@"<nav class=""navband""[\s\S]*?</nav>")]
+    private static partial Regex Nav();
+
+    [GeneratedRegex(@"<label class=""[a-z ]+"" for=""[a-z-]+"">(?:<svg[\s\S]*?</svg>)?([^<]*)</label>")]
+    private static partial Regex NavItem();
 
     [GeneratedRegex("<title>([^<]*)</title>")]
     private static partial Regex Title();

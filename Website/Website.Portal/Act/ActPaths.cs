@@ -19,13 +19,21 @@ public static class ActPaths
     /// never the address, so a result can be sent to a neighbour without
     /// saying where anyone lives.
     /// </remarks>
-    public static string Yours(DistrictMatch match)
+    public static string Yours(DistrictMatch match) => Yours(match, null, null);
+
+    /// <summary>
+    /// The same, showing one of the three places (<c>in=harrisburg</c>; Washington
+    /// when unset) and, for a Philadelphian, their council district (<c>cc=</c>).
+    /// </summary>
+    public static string Yours(DistrictMatch match, string? arena, string? council)
     {
         var parts = new List<string>();
         if (match.Congressional is { } cd) parts.Add($"cd={cd}");
         if (match.StateSenate is { } ss) parts.Add($"ss={ss}");
         if (match.StateHouse is { } sh) parts.Add($"sh={sh}");
         if (match.County is { } county) parts.Add($"county={Uri.EscapeDataString(county)}");
+        if (arena is not null) parts.Add($"in={Uri.EscapeDataString(arena)}");
+        if (council is not null) parts.Add($"cc={Uri.EscapeDataString(council)}");
         return "/act/yours" + (parts.Count == 0 ? "" : "?" + string.Join('&', parts));
     }
 }

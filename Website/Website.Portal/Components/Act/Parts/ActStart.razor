@@ -6,7 +6,7 @@
 @inject IMessageDrafter Drafter
 
 @* The Act dialog's first view: find who represents you, then call or write.
-   The front page draws it behind the Act now button, and /act opens the
+   The front page draws it behind the ACT button, and /act opens the
    front page with it showing. The address form always posts to /act, never
    to the page it sits on, so a problem with the address comes back with the
    dialog open; a match lands on /act/yours with the district numbers in the
@@ -92,13 +92,13 @@
 
 <section class="act-browse" aria-labelledby="browse-head">
     <div>
-        <h3 id="browse-head" class="act-section-head">Everyone, county by county</h3>
+        <h3 id="browse-head" class="act-section-head">Anyone else</h3>
         <p>
             @Officials.All.Count people in the directory: Pennsylvania&rsquo;s senators and the House members for the
             five counties, the governor and statewide officers, the General Assembly, the City of Philadelphia
-            and the collar counties&rsquo; commissioners.
+            and the collar counties&rsquo; commissioners. Narrow them by government, county, name or district.
         </p>
-        <p><a class="act-btn act-btn-ghost" href="/act/officials">See everyone</a></p>
+        <p><a class="act-btn act-btn-ghost" href="@ActPaths.Everyone">Search the directory</a></p>
     </div>
     <CountyMap />
 </section>
