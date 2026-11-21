@@ -168,7 +168,10 @@
    that would show nobody is greyed and not a link. */
 .act-filter { display: grid; gap: 0.85rem; padding: 14px 16px; background: var(--surface); border: 1px solid var(--line); }
 .act-filter > .act-small { margin: 0; }
-.act-chiprow, .act-filter-search { display: grid; gap: 0.4rem; }
+/* minmax(0, ...) and min-width: 0 let the search box shrink to a phone:
+   left to its own width, it pushed the button out of the box. */
+.act-chiprow, .act-filter-search { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0.4rem; }
+.act-chiprow > *, .act-filter-search > * { min-width: 0; }
 @container (min-width: 40rem) {
   .act-chiprow, .act-filter-search { grid-template-columns: 9.5rem minmax(0, 1fr); align-items: center; }
   .act-filter > .act-small { padding-left: 9.5rem; }
@@ -191,7 +194,7 @@
 .act-chip.is-empty { color: var(--muted); opacity: 0.55; }
 .act-filter-box { display: flex; gap: 6px; }
 .act-filter-box input {
-  flex: 1; min-width: 0; min-height: 38px; padding: 6px 12px; font: inherit; font-size: 15px;
+  flex: 1; width: 100%; min-width: 0; min-height: 38px; padding: 6px 12px; font: inherit; font-size: 15px;
   color: #15110C; background: #FBF8F1; border: 1px solid #15110C; border-radius: 0;
 }
 .act-filter-box input:focus-visible { outline: 3px solid #AE2012; outline-offset: 2px; }
