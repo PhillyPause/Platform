@@ -1,0 +1,31 @@
+using Website.Content;
+
+namespace Website.Portal.Act;
+
+/// <summary>
+/// The action centre's addresses. Each one is the front page with the Act
+/// dialog open on a view of its own, so any of them can be bookmarked, shared
+/// or reloaded and comes back the same.
+/// </summary>
+public static class ActPaths
+{
+    public const string Start = "/act";
+    public const string Everyone = "/act/officials";
+    public const string Learn = "/act/learn";
+
+    /// <summary>The officials for a match, as the address lookup redirects to them.</summary>
+    /// <remarks>
+    /// The districts go in the query string (?cd=3&amp;ss=1&amp;sh=182&amp;county=Philadelphia),
+    /// never the address, so a result can be sent to a neighbour without
+    /// saying where anyone lives.
+    /// </remarks>
+    public static string Yours(DistrictMatch match)
+    {
+        var parts = new List<string>();
+        if (match.Congressional is { } cd) parts.Add($"cd={cd}");
+        if (match.StateSenate is { } ss) parts.Add($"ss={ss}");
+        if (match.StateHouse is { } sh) parts.Add($"sh={sh}");
+        if (match.County is { } county) parts.Add($"county={Uri.EscapeDataString(county)}");
+        return "/act/yours" + (parts.Count == 0 ? "" : "?" + string.Join('&', parts));
+    }
+}

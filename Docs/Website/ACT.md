@@ -1,32 +1,58 @@
 # Act
 
-The action centre, under `/act`: it helps a member or a visitor find who
-represents them, from Congress to City Hall, and call or write to them about
-AI in fifteen minutes. It replaces the front page's link to ControlAI's tool
-with our own, for Greater Philadelphia: Philadelphia, Bucks, Chester,
-Delaware and Montgomery counties.
+The action centre: it helps a member or a visitor find who represents them,
+from Congress to City Hall, and call or write to them about AI in fifteen
+minutes. It replaces the front page's link to ControlAI's tool with our own,
+for Greater Philadelphia: Philadelphia, Bucks, Chester, Delaware and
+Montgomery counties.
 
 It needs no database. With ManyHands on, it also keeps a log of who
 contacted whom, which is ManyHands' (below, and
 [`MANYHANDS.md`](../ManyHands/MANYHANDS.md)).
 
-## Pages
+## A dialog on the front page
 
-All static server rendering, on `ActLayout` (the site's header and footer,
-the area's nav, `act.css`). Code in `Website/Website.Portal/Components/Act`
-and `Website/Website.Portal/Act`.
+The action centre is the front page's **Act** dialog, opened like Join us by
+a hidden radio (`#act-open`) and CSS, with no script. The ways in are kept
+prominent:
 
-| Route | Page |
+- **ACT NOW** in the front page's nav band, beside JOIN US; full width under
+  the other links on a phone.
+- A band of ink under the lead story's headline, "Call or write the people
+  who represent you", the front page's one call to action.
+- Organize's "Who to call".
+- **Act now** in the header of every inner page, and "Act" in a member's nav,
+  as links to `/act`.
+
+On the plain front page the dialog holds its first view (`ActStart`). Every
+address below is the front page with the dialog open on a view of its own:
+each page passes its markup to `Home` as `ActView` and renders its own
+`PageMeta`, as `NotFound.razor` does for Not found. Links between views load
+each address in full (`data-enhance-nav="false"` on the dialog and on every
+link into it): enhanced navigation would patch the radio's `checked`
+attribute, which a radio the reader has clicked ignores, and the dialog would
+shut. Closing the dialog leaves the reader on the front page, as /join does.
+
+The dialog's three places, "Who represents you", "Everyone" and "How it
+works", are tabs under its title bar (`ActTabs`). It is styled by `act.css`,
+which re-points the tokens.css names it uses at the broadsheet's ink, ivory
+and red inside `.d-act`, and lays out by the dialog's width (container
+queries) rather than the window's.
+
+## Views
+
+All static server rendering. Code in `Website/Website.Portal/Components/Act`
+and `Website/Website.Portal/Act`; the addresses are in `ActPaths`.
+
+| Route | View |
 |---|---|
-| `/act` | Find who represents you (an address, or districts picked by hand), the three ways in, the two motion tutorials, the ask, the county map, the explainers |
+| `/act` | Find who represents you (an address, or districts picked by hand), the three ways in, the two motion tutorials, the ask, the county map, the explainers. The address form posts here from wherever it was shown, so a problem with the address comes back with the dialog open |
 | `/act/yours?cd=&ss=&sh=&county=` | The officials for those districts, grouped Washington, Harrisburg, local. District numbers in the address bar, never the address |
 | `/act/officials`, `?county=` | Everyone, or one county's share |
 | `/act/officials/{key}` | One official: contacts, bio, AI record with sources, committees |
 | `/act/call/{key}` | The numbers, a script that works as it stands, one with the reader's own name and reason, and "I called" |
 | `/act/write/{key}` | A draft to change and send from the reader's own email or the office's form, and "I sent it" |
 | `/act/learn`, `/act/learn/{page}` | The explainers: Markdown in `Content/act/learn` |
-
-The front page's Organize dialog links to `/act`.
 
 ## The directory
 

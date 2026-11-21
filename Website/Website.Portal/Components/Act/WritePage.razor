@@ -4,131 +4,136 @@
 @inject IMessageDrafter Drafter
 @inject ActThrottle Throttle
 
-@* Write to one official: the reader says who they are and why it matters to
-   them, gets a draft to change, and sends it themselves, from their own
-   email or the office's form. Nothing is sent from here, and nothing they
-   typed is kept. With a model configured (DeepInfra), the draft is written
-   with its help, and the page says so before anything leaves. *@
+@* Write to one official, in the Act dialog: the reader says who they are and
+   why it matters to them, gets a draft to change, and sends it themselves,
+   from their own email or the office's form. Nothing is sent from here, and
+   nothing they typed is kept. With a model configured (DeepInfra), the draft
+   is written with its help, and the page says so before anything leaves. *@
 
 @if (_official is { } o)
 {
     <PageMeta Title="@($"Write to {o.Name}")" Description="@($"A message to {o.Name} about AI, in your own words, in about ten minutes.")" NoIndex="true" />
 
-    <div class="wrap page-head act-task-head">
-        <OfficialAvatar Official="o" Size="sm" />
-        <div>
-            <h1>Write to @TheAsk.Salutation(o)</h1>
-            <p class="lead">@o.Office. Ten minutes: say why it matters to you, take the draft, make it yours, send it yourself.</p>
-        </div>
-    </div>
+    <Home>
+        <ActView>
+            <header class="act-task-head">
+                <OfficialAvatar Official="o" Size="sm" />
+                <div>
+                    <h2>Write to @TheAsk.Salutation(o)</h2>
+                    <p class="act-lead">@o.Office. Ten minutes: say why it matters to you, take the draft, make it yours, send it yourself.</p>
+                    <p class="act-small"><a href="/act/officials/@o.Key">About @o.Name</a></p>
+                </div>
+            </header>
 
-    <div class="wrap act-body act-task">
-        <div class="act-task-main">
-            @if (_draft is null)
-            {
-                <section class="act-panel" aria-labelledby="you-head">
-                    <h2 id="you-head">About you</h2>
-                    <EditForm Model="Input" FormName="draft" OnValidSubmit="DraftAsync" class="act-form">
-                        <DataAnnotationsValidator />
-                        <div class="act-pair">
-                            <label>
-                                <span>Your name</span>
-                                <InputText @bind-Value="Input!.Name" autocomplete="name" />
-                                <ValidationMessage For="() => Input!.Name" />
-                            </label>
-                            <label>
-                                <span>Where you live <span class="act-small">Neighbourhood or town, and zip code</span></span>
-                                <InputText @bind-Value="Input!.Place" placeholder="Fishtown, 19125" />
-                                <ValidationMessage For="() => Input!.Place" />
-                            </label>
-                        </div>
-                        <label>
-                            <span>Why does this matter to you? <span class="act-small">Optional, and the most useful thing here. A sentence or two.</span></span>
-                            <InputTextArea @bind-Value="Input!.Story" rows="4" maxlength="@DraftInput.StoryLimit"
-                                           placeholder="I teach eighth grade and my students already use these tools every day. Nobody can tell me who is checking them." />
-                            <ValidationMessage For="() => Input!.Story" />
-                        </label>
-                        <fieldset class="act-choice">
-                            <legend>How should it sound?</legend>
-                            <InputRadioGroup @bind-Value="Input!.Tone">
-                                <label><InputRadio Value="DraftTone.Personal" /> Personal: lead with my reasons</label>
-                                <label><InputRadio Value="DraftTone.Plain" /> Plain and brief</label>
-                                <label><InputRadio Value="DraftTone.Urgent" /> Urgent</label>
-                            </InputRadioGroup>
-                        </fieldset>
-                        @if (Drafter.UsesAi)
-                        {
-                            <p class="act-small act-ai-note">
-                                An AI model helps shape the draft. What you type above goes to DeepInfra, which runs it, and
-                                is not kept by us. You read and change every word before anything is sent, and you send it yourself.
-                            </p>
-                        }
-                        @if (_refused is not null)
-                        {
-                            <p class="act-error" role="alert">@_refused</p>
-                        }
-                        <button class="act-btn" type="submit">Write my draft</button>
-                    </EditForm>
-                </section>
-            }
-            else
-            {
-                <section class="act-panel act-draft" aria-labelledby="draft-head">
-                    <h2 id="draft-head">Your draft. Make it yours</h2>
-                    @if (_draft.AiAssisted)
+            <div class="act-task">
+                <div class="act-task-main">
+                    @if (_draft is null)
                     {
-                        <p class="act-small act-ai-note">Drafted with help from an AI model. Read it through: change anything that is not how you would say it.</p>
+                        <section class="act-panel" aria-labelledby="you-head">
+                            <h3 id="you-head">About you</h3>
+                            <EditForm Model="Input" FormName="draft" OnValidSubmit="DraftAsync" class="act-form">
+                                <DataAnnotationsValidator />
+                                <div class="act-pair">
+                                    <label>
+                                        <span>Your name</span>
+                                        <InputText @bind-Value="Input!.Name" autocomplete="name" />
+                                        <ValidationMessage For="() => Input!.Name" />
+                                    </label>
+                                    <label>
+                                        <span>Where you live <span class="act-small">Neighbourhood or town, and zip code</span></span>
+                                        <InputText @bind-Value="Input!.Place" placeholder="Fishtown, 19125" />
+                                        <ValidationMessage For="() => Input!.Place" />
+                                    </label>
+                                </div>
+                                <label>
+                                    <span>Why does this matter to you? <span class="act-small">Optional, and the most useful thing here. A sentence or two.</span></span>
+                                    <InputTextArea @bind-Value="Input!.Story" rows="4" maxlength="@DraftInput.StoryLimit"
+                                                   placeholder="I teach eighth grade and my students already use these tools every day. Nobody can tell me who is checking them." />
+                                    <ValidationMessage For="() => Input!.Story" />
+                                </label>
+                                <fieldset class="act-choice">
+                                    <legend>How should it sound?</legend>
+                                    <InputRadioGroup @bind-Value="Input!.Tone">
+                                        <label><InputRadio Value="DraftTone.Personal" /> Personal: lead with my reasons</label>
+                                        <label><InputRadio Value="DraftTone.Plain" /> Plain and brief</label>
+                                        <label><InputRadio Value="DraftTone.Urgent" /> Urgent</label>
+                                    </InputRadioGroup>
+                                </fieldset>
+                                @if (Drafter.UsesAi)
+                                {
+                                    <p class="act-small act-ai-note">
+                                        An AI model helps shape the draft. What you type above goes to DeepInfra, which runs it, and
+                                        is not kept by us. You read and change every word before anything is sent, and you send it yourself.
+                                    </p>
+                                }
+                                @if (_refused is not null)
+                                {
+                                    <p class="act-error" role="alert">@_refused</p>
+                                }
+                                <button class="act-btn" type="submit">Write my draft</button>
+                            </EditForm>
+                        </section>
                     }
-                    <label class="act-field">
-                        <span>Subject</span>
-                        <input id="draft-subject" type="text" value="@_draft.Subject" />
-                    </label>
-                    <label class="act-field">
-                        <span>Message</span>
-                        <textarea id="draft-body" rows="16">@_draft.Body</textarea>
-                    </label>
-                    <div class="act-send">
-                        @if (o.Email is { } email)
-                        {
-                            <a class="act-btn" data-mailto="@email" href="@MailTo(email)">Open it in my email</a>
-                        }
-                        @if (o.ContactForm is { } form)
-                        {
-                            <button class="act-btn @(o.Email is null ? null : "act-btn-ghost")" type="button" data-copy="#draft-body">Copy the message</button>
-                            <a class="act-btn act-btn-ghost" href="@form" target="_blank" rel="noopener">Open their contact form</a>
-                        }
-                        else
-                        {
-                            <button class="act-btn act-btn-ghost" type="button" data-copy="#draft-body">Copy the message</button>
-                        }
-                    </div>
-                    <p class="act-small">
-                        @if (o.ContactForm is not null)
-                        {
-                            <text>Their form asks for your address so the office knows you are a constituent; that goes to them, not to us. Paste the message into the form&rsquo;s message box.</text>
-                        }
-                        <a href="/act/write/@o.Key">Start again</a>
-                    </p>
-                </section>
-            }
+                    else
+                    {
+                        <section class="act-panel act-draft" aria-labelledby="draft-head">
+                            <h3 id="draft-head">Your draft. Make it yours</h3>
+                            @if (_draft.AiAssisted)
+                            {
+                                <p class="act-small act-ai-note">Drafted with help from an AI model. Read it through: change anything that is not how you would say it.</p>
+                            }
+                            <label class="act-field">
+                                <span>Subject</span>
+                                <input id="draft-subject" type="text" value="@_draft.Subject" />
+                            </label>
+                            <label class="act-field">
+                                <span>Message</span>
+                                <textarea id="draft-body" rows="16">@_draft.Body</textarea>
+                            </label>
+                            <div class="act-send">
+                                @if (o.Email is { } email)
+                                {
+                                    <a class="act-btn" data-mailto="@email" href="@MailTo(email)">Open it in my email</a>
+                                }
+                                @if (o.ContactForm is { } form)
+                                {
+                                    <button class="act-btn @(o.Email is null ? null : "act-btn-ghost")" type="button" data-copy="#draft-body">Copy the message</button>
+                                    <a class="act-btn act-btn-ghost" href="@form" target="_blank" rel="noopener">Open their contact form</a>
+                                }
+                                else
+                                {
+                                    <button class="act-btn act-btn-ghost" type="button" data-copy="#draft-body">Copy the message</button>
+                                }
+                            </div>
+                            <p class="act-small">
+                                @if (o.ContactForm is not null)
+                                {
+                                    <text>Their form asks for your address so the office knows you are a constituent; that goes to them, not to us. Paste the message into the form&rsquo;s message box.</text>
+                                }
+                                <a href="/act/write/@o.Key">Start again</a>
+                            </p>
+                        </section>
+                    }
 
-            <LogAction Official="o" Kind="DraftKind.Email" />
-        </div>
+                    <LogAction Official="o" Kind="DraftKind.Email" />
+                </div>
 
-        <aside class="act-task-side">
-            <HowToWrite />
-            <section class="act-panel">
-                <h2>What makes a message count</h2>
-                <ul class="act-tips">
-                    <li>Say you live there, first. Offices sort mail by whether it comes from a constituent.</li>
-                    <li>One ask. They tally what was asked for.</li>
-                    <li>Your own reason, in your own words. A form letter is counted; a personal one is read.</li>
-                    <li>Ask for an answer. Most offices reply, eventually.</li>
-                </ul>
-                <p class="act-small"><a href="/act/learn/writing">More on writing that gets read</a></p>
-            </section>
-        </aside>
-    </div>
+                <aside class="act-task-side">
+                    <HowToWrite />
+                    <section class="act-panel">
+                        <h3>What makes a message count</h3>
+                        <ul class="act-tips">
+                            <li>Say you live there, first. Offices sort mail by whether it comes from a constituent.</li>
+                            <li>One ask. They tally what was asked for.</li>
+                            <li>Your own reason, in your own words. A form letter is counted; a personal one is read.</li>
+                            <li>Ask for an answer. Most offices reply, eventually.</li>
+                        </ul>
+                        <p class="act-small"><a href="/act/learn/writing">More on writing that gets read</a></p>
+                    </section>
+                </aside>
+            </div>
+        </ActView>
+    </Home>
 }
 
 @code {

@@ -16,7 +16,7 @@
             <p class="mh-summary">Every call and message you have told us about. Offices count constituents; this is your count.</p>
         </div>
         <div class="mh-page-actions">
-            <a class="mh-btn mh-btn-primary" href="/act">Take another action</a>
+            <a class="mh-btn mh-btn-primary" href="/act" data-enhance-nav="false">Take another action</a>
         </div>
     </header>
 
@@ -24,7 +24,7 @@
     {
         <div class="mh-empty">
             <p class="mh-empty-title">Nothing yet</p>
-            <p><a href="/act">Find who represents you</a>: a call takes five minutes, and "I called" at the end puts it here.</p>
+            <p><a href="/act" data-enhance-nav="false">Find who represents you</a>: a call takes five minutes, and "I called" at the end puts it here.</p>
         </div>
     }
     else
@@ -63,7 +63,7 @@
                 <ul class="mh-list">
                     @foreach (var official in _followUps)
                     {
-                        <li><div class="mh-list-main"><a href="/act/call/@official.Key">Call @official.Name</a></div></li>
+                        <li><div class="mh-list-main"><a href="/act/call/@official.Key" data-enhance-nav="false">Call @official.Name</a></div></li>
                     }
                 </ul>
             </section>
@@ -81,7 +81,7 @@
                                 <td>
                                     @if (Officials.Find(action.OfficialKey) is { } official)
                                     {
-                                        <a href="/act/officials/@official.Key">@action.OfficialName</a>
+                                        <a href="/act/officials/@official.Key" data-enhance-nav="false">@action.OfficialName</a>
                                     }
                                     else
                                     {

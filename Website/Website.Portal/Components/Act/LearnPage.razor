@@ -5,30 +5,32 @@
 @inject NavigationManager Navigation
 @using ManyHands.Data
 
-@* The explainers: Markdown in Content/act/learn, rendered in the action
-   centre's frame rather than ContentRoute's, so the area's nav stays put.
-   A volunteer who can write Markdown can add one. *@
+@* The explainers, in the Act dialog: Markdown in Content/act/learn, rendered
+   here rather than by ContentRoute, so the reader stays in the dialog. A
+   volunteer who can write Markdown can add one. *@
 
 @if (_page is not null)
 {
     <PageMeta Title="@_page.Title" Description="@_page.Description" />
 
-    <div class="wrap page-head">
-        <p class="act-kicker">How it works</p>
-        <h1>@_page.Title</h1>
-        <p class="lead">@_page.Description</p>
-    </div>
+    <Home>
+        <ActView>
+            <header class="act-intro">
+                <p class="act-kicker">How it works</p>
+                <h2>@_page.Title</h2>
+                <p class="act-lead">@_page.Description</p>
+            </header>
 
-    <div class="wrap act-body act-learn-page">
-        <article class="prose">
-            @((MarkupString)Content.HtmlFor(_page, Configuration.IsManyHandsEnabled()))
-        </article>
-        <SourceCredit Page="_page" />
-        @if (Page is not null)
-        {
-            <p class="act-small"><a href="/act/learn">All the explainers</a> &middot; <a href="/act">Find who represents you</a></p>
-        }
-    </div>
+            <article class="prose act-prose">
+                @((MarkupString)Content.HtmlFor(_page, Configuration.IsManyHandsEnabled()))
+            </article>
+            <SourceCredit Page="_page" />
+            @if (Page is not null)
+            {
+                <p class="act-small"><a href="@ActPaths.Learn">All the explainers</a> &middot; <a href="@ActPaths.Start">Find who represents you</a></p>
+            }
+        </ActView>
+    </Home>
 }
 
 @code {

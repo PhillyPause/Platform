@@ -228,8 +228,10 @@ public sealed class DeepInfraDrafter(
               + "beginning 'Dear <salutation>,' and signed with the constituent's name and place. At most 220 words."
             : "- Format: a phone script the constituent reads aloud to a staff member, at most 110 words. "
               + "Start with their name and where they live. No stage directions, no headings.")}
-        """;
+        """.ReplaceLineEndings("\n");
 
+    // Both prompts are raw literals, whose line breaks are whatever git checked
+    // this file out with; the model gets the same text on every machine.
     public static string UserPrompt(DraftRequest r) =>
         $"""
         Official: {r.Official.Name}, {r.Official.Office}
@@ -247,7 +249,7 @@ public sealed class DeepInfraDrafter(
         <notes>
         {(string.IsNullOrWhiteSpace(r.Story) ? "(none)" : r.Story.Trim())}
         </notes>
-        """;
+        """.ReplaceLineEndings("\n");
 
     private sealed record ChatRequest(
         [property: JsonPropertyName("model")] string Model,

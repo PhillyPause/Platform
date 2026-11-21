@@ -1,0 +1,24 @@
+@inject NavigationManager Navigation
+
+@* The Act dialog's three places, under its title bar and outside the part
+   that scrolls, so they stay in reach on a long list. *@
+
+<nav class="act-tabs" aria-label="Act">
+    <a href="@ActPaths.Start" aria-current="@Here(Tab.Yours)">Who represents you</a>
+    <a href="@ActPaths.Everyone" aria-current="@Here(Tab.Everyone)">Everyone</a>
+    <a href="@ActPaths.Learn" aria-current="@Here(Tab.Learn)">How it works</a>
+</nav>
+
+@code {
+    private enum Tab { Yours, Everyone, Learn }
+
+    private string? Here(Tab tab) => Current() == tab ? "page" : null;
+
+    private Tab Current()
+    {
+        var path = "/" + Navigation.ToBaseRelativePath(Navigation.Uri).Split('?', '#')[0];
+        if (path.StartsWith(ActPaths.Everyone, StringComparison.OrdinalIgnoreCase)) return Tab.Everyone;
+        if (path.StartsWith(ActPaths.Learn, StringComparison.OrdinalIgnoreCase)) return Tab.Learn;
+        return Tab.Yours;
+    }
+}

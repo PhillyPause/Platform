@@ -15,20 +15,20 @@
     <section class="act-panel act-log" aria-labelledby="log-@Kind-head">
         @if (_done)
         {
-            <h2 id="log-@Kind-head">Thank you. That counts.</h2>
+            <h3 id="log-@Kind-head">Thank you. That counts.</h3>
             @if (_signedIn)
             {
                 <p>It is on <a href="@ManyHandsPaths.MyOutreach">your page</a> with everything else you have done.</p>
             }
             else
             {
-                <p>We counted it, with nobody&rsquo;s name on it. <a href="/join" data-enhance-nav="false">Join us</a> and we will keep a record you can see, and tell you when there is something worth calling about.</p>
+                <p>We counted it, with nobody&rsquo;s name on it. <label class="act-link" for="join-open">Join us</label> and we will keep a record you can see, and tell you when there is something worth calling about.</p>
             }
             <p><a class="act-btn act-btn-ghost" href="/act">Contact someone else</a></p>
         }
         else
         {
-            <h2 id="log-@Kind-head">@(Kind == DraftKind.Call ? "Called?" : "Sent it?") Tell us</h2>
+            <h3 id="log-@Kind-head">@(Kind == DraftKind.Call ? "Called?" : "Sent it?") Tell us</h3>
             <p class="act-small">So we know which offices are hearing from people, and which are not. We keep that it happened, never what you said.</p>
             <EditForm Model="Input" FormName="log" OnValidSubmit="LogAsync" class="act-form">
                 <DataAnnotationsValidator />

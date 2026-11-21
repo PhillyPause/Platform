@@ -1,0 +1,156 @@
+@using Website.Content
+@inject IDistrictLookup Lookup
+@inject ActThrottle Throttle
+@inject NavigationManager Navigation
+@inject OfficialsStore Officials
+@inject IMessageDrafter Drafter
+
+@* The Act dialog's first view: find who represents you, then call or write.
+   The front page draws it behind the Act now button, and /act opens the
+   front page with it showing. The address form always posts to /act, never
+   to the page it sits on, so a problem with the address comes back with the
+   dialog open; a match lands on /act/yours with the district numbers in the
+   address bar, never the address itself. *@
+
+<header class="act-intro">
+    <h2>Tell the people who represent you</h2>
+    <p class="act-lead">
+        Offices count every constituent who gets in touch. On AI, almost nobody has, so yours is not one
+        of thousands. It is one of a handful. Fifteen minutes, a phone or an email, and your address.
+    </p>
+</header>
+
+<section class="act-find" aria-labelledby="find-head">
+    <h3 id="find-head">Who represents you?</h3>
+    @if (Lookup.IsAvailable)
+    {
+        <EditForm Model="Input" FormName="find" OnValidSubmit="FindAsync" action="/act" class="act-form act-find-form">
+            <DataAnnotationsValidator />
+            <label>
+                <span>Your street address</span>
+                <InputText @bind-Value="Input!.Address" autocomplete="street-address" placeholder="1400 John F Kennedy Blvd, Philadelphia, PA 19107" />
+                <ValidationMessage For="() => Input!.Address" />
+            </label>
+            <button class="act-btn" type="submit">Find them</button>
+        </EditForm>
+        @if (_problem is not null)
+        {
+            <p class="act-error" role="alert">@_problem</p>
+        }
+        <p class="act-small">
+            The address goes to the US Census Bureau&rsquo;s geocoder to find your districts. We do not keep it,
+            and it never appears in the page&rsquo;s address. Rather not? <a href="#by-district">Pick your districts instead</a>.
+        </p>
+    }
+    <DistrictPicker />
+</section>
+
+<section class="act-ways" aria-labelledby="ways-head">
+    <h3 id="ways-head" class="act-section-head">Three ways in, smallest first</h3>
+    <ul class="act-ways-list">
+        <li>
+            <h4>Call</h4>
+            <p>Five minutes with a script. A staffer answers, writes down your name and what you asked, and adds it to the count the member sees.</p>
+        </li>
+        <li>
+            <h4>Write</h4>
+            <p>
+                Ten minutes. Tell us in a sentence why it matters to you and we lay out a first draft in your words,
+                for you to change and send yourself@(Drafter.UsesAi ? ", with help from an AI model if you want it" : "").
+            </p>
+        </li>
+        <li>
+            <h4>Meet</h4>
+            <p>An hour, and you will not be on your own. One of us has taken this to Congress more than seventy-five times. <label class="act-link" for="join-open">Join us</label> and come along.</p>
+        </li>
+    </ul>
+</section>
+
+<div class="act-tuts">
+    <HowToCall />
+    <HowToWrite />
+</div>
+
+<section class="act-ask" aria-labelledby="ask-head">
+    <h3 id="ask-head" class="act-section-head">What we are asking for</h3>
+    <div class="act-ask-grid">
+        <div>
+            <h4>In Washington</h4>
+            <p>An international pause on building ever more powerful AI systems until they can be shown to be safe, and no federal ban on states passing their own AI safety laws.</p>
+        </div>
+        <div>
+            <h4>In Harrisburg</h4>
+            <p>Binding safety rules in Pennsylvania for the companies building the most powerful systems, and a clear word to our delegation in Washington.</p>
+        </div>
+        <div>
+            <h4>Here at home</h4>
+            <p>AI safety on the public record: a resolution calling on Congress to pause, and questions put to the people who represent us there.</p>
+        </div>
+    </div>
+    <p class="act-small"><a href="/act/learn/the-ask">Why these, and how to say them &rarr;</a></p>
+</section>
+
+<section class="act-browse" aria-labelledby="browse-head">
+    <div>
+        <h3 id="browse-head" class="act-section-head">Everyone, county by county</h3>
+        <p>
+            @Officials.All.Count people in the directory: Pennsylvania&rsquo;s senators and the House members for the
+            five counties, the governor and statewide officers, the General Assembly, the City of Philadelphia
+            and the collar counties&rsquo; commissioners.
+        </p>
+        <p><a class="act-btn act-btn-ghost" href="/act/officials">See everyone</a></p>
+    </div>
+    <CountyMap />
+</section>
+
+<section class="act-learn" aria-labelledby="learn-head">
+    <h3 id="learn-head" class="act-section-head">Before you pick up the phone</h3>
+    <ul class="act-learn-list">
+        <li><a href="/act/learn/calling">What happens when you call</a><span>Who answers, what they write down, and what to do about voicemail.</span></li>
+        <li><a href="/act/learn/writing">Writing that gets read</a><span>Short, local, one ask. Why your own words beat a perfect letter.</span></li>
+        <li><a href="/act/learn/who-does-what">Who does what on AI</a><span>Congress, Harrisburg, City Hall and the counties, and what each can actually do.</span></li>
+        <li><a href="/act/learn/bills">AI bills to watch</a><span>What is moving in Washington and Harrisburg, and where your officials stand.</span></li>
+        <li><a href="/act/learn/meeting">Meeting them in person</a><span>How to ask for a meeting, what to bring, and how to follow up.</span></li>
+    </ul>
+</section>
+
+@code {
+    [CascadingParameter] private HttpContext HttpContext { get; set; } = default!;
+
+    [SupplyParameterFromForm(FormName = "find")] private FindInput? Input { get; set; }
+
+    private string? _problem;
+
+    protected override void OnInitialized() => Input ??= new();
+
+    private async Task FindAsync()
+    {
+        if (!Throttle.AllowLookup(HttpContext))
+        {
+            _problem = "That is a lot of lookups in a short time. Wait a few minutes, or pick your districts below.";
+            return;
+        }
+
+        var match = await Lookup.LookupAsync(Input!.Address.Trim(), HttpContext.RequestAborted);
+        if (match is null)
+        {
+            _problem = "We could not find that address. Check the spelling and the zip code, or pick your districts below.";
+            return;
+        }
+
+        if (!match.InPennsylvania)
+        {
+            _problem = "That address is outside Pennsylvania. This directory covers Greater Philadelphia; elsewhere, your state legislature's site will say who represents you.";
+            return;
+        }
+
+        Navigation.NavigateTo(ActPaths.Yours(match));
+    }
+
+    private sealed class FindInput
+    {
+        [Required(ErrorMessage = "Enter your street address, with the zip code.")]
+        [StringLength(200, ErrorMessage = "That is longer than any address.")]
+        public string Address { get; set; } = string.Empty;
+    }
+}

@@ -1,11 +1,19 @@
-@* One page, so no nav — just the mark and the ask, the way the postcard's
-   footer band carries them. *@
+@* One page, so no nav: just the mark, the ask, and the one thing to press,
+   which opens the front page's Act dialog. That link loads the front page in
+   full: enhanced navigation would patch the dialog's radio, which a radio
+   the reader has already clicked ignores, and the dialog would stay shut. *@
 
 <header class="site-header">
     <div class="wrap">
         <a class="brand" href="/" aria-label="PhillyPause home">
             <Logo Size="54" />
         </a>
-        <span class="header-ask">Volunteer &middot; Educate &middot; Organize</span>
+        <span class="header-end">
+            <span class="header-ask">Volunteer &middot; Educate &middot; Organize</span>
+            <a class="header-act" href="/act" data-enhance-nav="false">
+                <svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1z"></path></svg>
+                Act now
+            </a>
+        </span>
     </div>
 </header>

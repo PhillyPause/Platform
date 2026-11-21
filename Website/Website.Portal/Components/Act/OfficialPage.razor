@@ -3,173 +3,175 @@
 @inject NavigationManager Navigation
 @inject IOptions<ActOptions> Options
 
-@* One official: who they are, how to reach them, and what they have done or
-   said about AI, each item with its source. Items nobody has checked are
-   shown in development only (ActOptions.ShowUnverified). *@
+@* One official, in the Act dialog: who they are, how to reach them, and what
+   they have done or said about AI, each item with its source. Items nobody
+   has checked are shown in development only (ActOptions.ShowUnverified). *@
 
 @if (_official is { } o)
 {
     <PageMeta Title="@o.Name" Description="@($"{o.Office}. How to call or write to {o.Name} about AI, and where they stand.")" />
 
-    <div class="act-profile-head">
-        <div class="wrap">
-            <OfficialAvatar Official="o" Size="lg" />
-            <div>
-                <p class="act-kicker">@o.Arena</p>
-                <h1>@o.Name</h1>
-                <p class="act-profile-office">
-                    @o.Office
-                    @if (o.Party is not null)
-                    {
-                        <span class="act-party">&middot; @o.Party</span>
-                    }
-                </p>
-                @if (o.TermEnds is { } end && o.Status == OfficialStatus.Serving)
-                {
-                    <p class="act-small">Term ends @end.ToString("MMMM d, yyyy", System.Globalization.CultureInfo.InvariantCulture)</p>
-                }
-                <StatusNote Official="o" />
-                <p class="act-profile-actions">
-                    @if (o.MainPhone is not null)
-                    {
-                        <a class="act-btn" href="/act/call/@o.Key">Call @TheAsk.Salutation(o)</a>
-                    }
-                    @if (o.CanEmail)
-                    {
-                        <a class="act-btn act-btn-ghost" href="/act/write/@o.Key">Write</a>
-                    }
-                </p>
-            </div>
-        </div>
-    </div>
-
-    <div class="wrap act-body act-profile">
-        <div class="act-profile-main">
-            @if (o.BioHtml.Length > 0)
-            {
-                <section aria-labelledby="bio-head">
-                    <h2 id="bio-head" class="act-section-head">Who they are</h2>
-                    <div class="prose">@((MarkupString)o.BioHtml)</div>
-                </section>
-            }
-
-            <section aria-labelledby="ai-head">
-                <h2 id="ai-head" class="act-section-head">On AI</h2>
-                @if (_record.Count == 0)
-                {
-                    <p class="act-empty">
-                        Nothing on the record that we have found yet. That is worth asking about:
-                        &ldquo;Where do you stand on AI safety?&rdquo; is a fair first call.
+    <Home>
+        <ActView>
+            <header class="act-profile-head">
+                <OfficialAvatar Official="o" Size="lg" />
+                <div>
+                    <p class="act-kicker">@o.Arena</p>
+                    <h2>@o.Name</h2>
+                    <p class="act-profile-office">
+                        @o.Office
+                        @if (o.Party is not null)
+                        {
+                            <span class="act-party">&middot; @o.Party</span>
+                        }
                     </p>
-                }
-                else
-                {
-                    <ol class="act-record">
-                        @foreach (var item in _record)
+                    @if (o.TermEnds is { } end && o.Status == OfficialStatus.Serving)
+                    {
+                        <p class="act-small">Term ends @end.ToString("MMMM d, yyyy", System.Globalization.CultureInfo.InvariantCulture)</p>
+                    }
+                    <StatusNote Official="o" />
+                    <p class="act-profile-actions">
+                        @if (o.MainPhone is not null)
                         {
-                            <li class="@(item.Verified ? null : "is-unchecked")">
-                                @if (item.Date is { } date)
+                            <a class="act-btn" href="/act/call/@o.Key">Call @TheAsk.Salutation(o)</a>
+                        }
+                        @if (o.CanEmail)
+                        {
+                            <a class="act-btn act-btn-ghost" href="/act/write/@o.Key">Write</a>
+                        }
+                    </p>
+                </div>
+            </header>
+
+            <div class="act-profile">
+                <div class="act-profile-main">
+                    @if (o.BioHtml.Length > 0)
+                    {
+                        <section aria-labelledby="bio-head">
+                            <h3 id="bio-head" class="act-section-head">Who they are</h3>
+                            <div class="prose">@((MarkupString)o.BioHtml)</div>
+                        </section>
+                    }
+
+                    <section aria-labelledby="ai-head">
+                        <h3 id="ai-head" class="act-section-head">On AI</h3>
+                        @if (_record.Count == 0)
+                        {
+                            <p class="act-empty">
+                                Nothing on the record that we have found yet. That is worth asking about:
+                                &ldquo;Where do you stand on AI safety?&rdquo; is a fair first call.
+                            </p>
+                        }
+                        else
+                        {
+                            <ol class="act-record">
+                                @foreach (var item in _record)
                                 {
-                                    <time datetime="@date.ToString("yyyy-MM-dd")">@date.ToString("MMM yyyy", System.Globalization.CultureInfo.InvariantCulture)</time>
+                                    <li class="@(item.Verified ? null : "is-unchecked")">
+                                        @if (item.Date is { } date)
+                                        {
+                                            <time datetime="@date.ToString("yyyy-MM-dd")">@date.ToString("MMM yyyy", System.Globalization.CultureInfo.InvariantCulture)</time>
+                                        }
+                                        <p>
+                                            @item.Summary
+                                            @if (item.Source is { } source)
+                                            {
+                                                <a href="@source" target="_blank" rel="noopener">Source</a>
+                                            }
+                                            @if (!item.Verified)
+                                            {
+                                                <span class="act-unchecked">Not yet checked</span>
+                                            }
+                                        </p>
+                                    </li>
                                 }
-                                <p>
-                                    @item.Summary
-                                    @if (item.Source is { } source)
-                                    {
-                                        <a href="@source" target="_blank" rel="noopener">Source</a>
-                                    }
-                                    @if (!item.Verified)
-                                    {
-                                        <span class="act-unchecked">Not yet checked</span>
-                                    }
-                                </p>
-                            </li>
+                            </ol>
                         }
-                    </ol>
-                }
-                <p class="act-small">Seen something we have missed or got wrong? <a href="mailto:support@@phillypause.org?subject=@Uri.EscapeDataString($"Act directory: {o.Name}")">Tell us</a>.</p>
-            </section>
+                        <p class="act-small">Seen something we have missed or got wrong? <a href="mailto:support@@phillypause.org?subject=@Uri.EscapeDataString($"Act directory: {o.Name}")">Tell us</a>.</p>
+                    </section>
 
-            @if (o.Committees.Count > 0)
-            {
-                <section aria-labelledby="committees-head">
-                    <h2 id="committees-head" class="act-section-head">Committees</h2>
-                    <ul class="act-tags">
-                        @foreach (var committee in o.Committees)
-                        {
-                            <li>@committee</li>
-                        }
-                    </ul>
-                </section>
-            }
-        </div>
-
-        <aside class="act-profile-side" aria-labelledby="reach-head">
-            <section class="act-panel">
-                <h2 id="reach-head">How to reach them</h2>
-                @if (o.Phones.Count > 0)
-                {
-                    <ul class="act-phones">
-                        @foreach (var phone in o.Phones)
-                        {
-                            <li><span>@phone.Label</span> <a href="@phone.TelHref">@phone.Number</a></li>
-                        }
-                    </ul>
-                }
-                @if (o.Email is { } email)
-                {
-                    <p><span class="act-small">Email</span><br /><a href="mailto:@email?subject=@Uri.EscapeDataString("From a constituent")">@email</a></p>
-                }
-                @if (o.ContactForm is { } form)
-                {
-                    <p><a href="@form" target="_blank" rel="noopener">Their contact form</a> <span class="act-small">(most offices prefer it to email)</span></p>
-                }
-                @if (o.Website is { } site)
-                {
-                    <p><a href="@site" target="_blank" rel="noopener">Official website</a></p>
-                }
-                @if (o.Map is { } map)
-                {
-                    <p><a href="@map" target="_blank" rel="noopener">Map of the district</a></p>
-                }
-                @if (o.Offices.Count > 0)
-                {
-                    <h3 class="act-offices-head">Offices</h3>
-                    <ul class="act-offices">
-                        @foreach (var office in o.Offices)
-                        {
-                            <li><span>@office.Label</span> @office.Address</li>
-                        }
-                    </ul>
-                }
-                @if (o.Phones.Count == 0 && !o.CanEmail && o.Status == OfficialStatus.MemberElect)
-                {
-                    <p class="act-small">Their office&rsquo;s numbers and contact form appear here once they take the seat.</p>
-                }
-            </section>
-
-            @if (o.Sources.Count > 0 || o.PhotoCredit is not null)
-            {
-                <section class="act-panel act-sources">
-                    <h2>Where this comes from</h2>
-                    <ul>
-                        @foreach (var source in o.Sources)
-                        {
-                            <li><a href="@source" target="_blank" rel="noopener">@source.Host</a></li>
-                        }
-                    </ul>
-                    @if (o.PhotoCredit is not null)
+                    @if (o.Committees.Count > 0)
                     {
-                        <p class="act-small">Photograph: @o.PhotoCredit</p>
+                        <section aria-labelledby="committees-head">
+                            <h3 id="committees-head" class="act-section-head">Committees</h3>
+                            <ul class="act-tags">
+                                @foreach (var committee in o.Committees)
+                                {
+                                    <li>@committee</li>
+                                }
+                            </ul>
+                        </section>
                     }
-                    @if (o.Updated is { } updated)
+                </div>
+
+                <aside class="act-profile-side" aria-labelledby="reach-head">
+                    <section class="act-panel">
+                        <h3 id="reach-head">How to reach them</h3>
+                        @if (o.Phones.Count > 0)
+                        {
+                            <ul class="act-phones">
+                                @foreach (var phone in o.Phones)
+                                {
+                                    <li><span>@phone.Label</span> <a href="@phone.TelHref">@phone.Number</a></li>
+                                }
+                            </ul>
+                        }
+                        @if (o.Email is { } email)
+                        {
+                            <p><span class="act-small">Email</span><br /><a href="mailto:@email?subject=@Uri.EscapeDataString("From a constituent")">@email</a></p>
+                        }
+                        @if (o.ContactForm is { } form)
+                        {
+                            <p><a href="@form" target="_blank" rel="noopener">Their contact form</a> <span class="act-small">(most offices prefer it to email)</span></p>
+                        }
+                        @if (o.Website is { } site)
+                        {
+                            <p><a href="@site" target="_blank" rel="noopener">Official website</a></p>
+                        }
+                        @if (o.Map is { } map)
+                        {
+                            <p><a href="@map" target="_blank" rel="noopener">Map of the district</a></p>
+                        }
+                        @if (o.Offices.Count > 0)
+                        {
+                            <h4 class="act-offices-head">Offices</h4>
+                            <ul class="act-offices">
+                                @foreach (var office in o.Offices)
+                                {
+                                    <li><span>@office.Label</span> @office.Address</li>
+                                }
+                            </ul>
+                        }
+                        @if (o.Phones.Count == 0 && !o.CanEmail && o.Status == OfficialStatus.MemberElect)
+                        {
+                            <p class="act-small">Their office&rsquo;s numbers and contact form appear here once they take the seat.</p>
+                        }
+                    </section>
+
+                    @if (o.Sources.Count > 0 || o.PhotoCredit is not null)
                     {
-                        <p class="act-small">Checked @updated.ToString("MMMM d, yyyy", System.Globalization.CultureInfo.InvariantCulture)</p>
+                        <section class="act-panel act-sources">
+                            <h3>Where this comes from</h3>
+                            <ul>
+                                @foreach (var source in o.Sources)
+                                {
+                                    <li><a href="@source" target="_blank" rel="noopener">@source.Host</a></li>
+                                }
+                            </ul>
+                            @if (o.PhotoCredit is not null)
+                            {
+                                <p class="act-small">Photograph: @o.PhotoCredit</p>
+                            }
+                            @if (o.Updated is { } updated)
+                            {
+                                <p class="act-small">Checked @updated.ToString("MMMM d, yyyy", System.Globalization.CultureInfo.InvariantCulture)</p>
+                            }
+                        </section>
                     }
-                </section>
-            }
-        </aside>
-    </div>
+                </aside>
+            </div>
+        </ActView>
+    </Home>
 }
 
 @code {

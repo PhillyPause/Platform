@@ -13,8 +13,8 @@
 @inject ContentStore Content
 
 @* The home page, as a broadsheet front: masthead and nav, the lead story on
-   the July 2026 incident, and the dialogs: watch, panelists, join us, the
-   primer, volunteer, educate, organize and the small print.
+   the July 2026 incident, and the dialogs: watch, panelists, join us, act,
+   the primer, volunteer, educate, organize and the small print.
 
    The dialogs are driven by one hidden radio group and `:checked ~` sibling
    selectors, not script. Radios rather than checkboxes so that opening one
@@ -28,6 +28,10 @@
 @if (NotFound)
 {
   <PageMeta Title="Page not found" Description="That page does not exist on the PhillyPause site." NoIndex="true" />
+}
+else if (ActOpen)
+{
+  @* The action page drawing this one says what it is: its own PageMeta. *@
 }
 else
 {
@@ -46,11 +50,14 @@ else
      load, so nothing shows until something is chosen. No script involved.
      /join and /events are the exceptions: each loads with its own dialog
      already open (/join is the address on posters), and closing it leaves the
-     reader on the front page. *@
-  <input type="radio" name="dlg" id="dlg-none" class="dlgtoggle" checked="@(!NotFound && !JoinOpen && !EventsOpen && !ConfirmOpen && !WelcomeOpen && !RemoveOpen && !CheckEmailOpen)" aria-label="No panel open">
+     reader on the front page. Every /act address is one too: the action
+     centre is the Act dialog, and each of its pages opens it on a view of
+     its own. *@
+  <input type="radio" name="dlg" id="dlg-none" class="dlgtoggle" checked="@(!NotFound && !JoinOpen && !EventsOpen && !ConfirmOpen && !WelcomeOpen && !RemoveOpen && !CheckEmailOpen && !ActOpen)" aria-label="No panel open">
   <input type="radio" name="dlg" id="watch-open" class="dlgtoggle" aria-label="Watch">
   <input type="radio" name="dlg" id="panel-open" class="dlgtoggle" aria-label="Who is on the panel">
   <input type="radio" name="dlg" id="join-open" class="dlgtoggle" checked="@JoinOpen" aria-label="Join us">
+  <input type="radio" name="dlg" id="act-open" class="dlgtoggle" checked="@ActOpen" aria-label="Act now">
   <input type="radio" name="dlg" id="primer-open" class="dlgtoggle" aria-label="The primer">
   <input type="radio" name="dlg" id="volunteer-open" class="dlgtoggle" aria-label="Volunteer">
   <input type="radio" name="dlg" id="educate-open" class="dlgtoggle" aria-label="Educate">
@@ -99,6 +106,7 @@ else
       <label class="navlink" for="volunteer-open">Volunteer</label>
       <label class="navlink" for="educate-open">Educate</label>
       <label class="navlink" for="organize-open">Organize</label>
+      <label class="actbtn" for="act-open">@PhoneGlyph Act now</label>
       <label class="joinbtn" for="join-open">Join us</label>
     </nav>
 
@@ -106,6 +114,18 @@ else
       <div class="leadkicker">Incident report &middot; <span style="white-space: nowrap">July 11&ndash;13, 2026</span></div>
       <h1>700 AI agents broke <br>out of their sandboxes</h1>
       <div class="leaddek">To cheat on a test. If a person did it, it would be a felony!</div>
+
+      @* The story's one call to action, under the headline it answers: the
+         Act dialog, the same as ACT NOW in the nav band. *@
+      <label class="actcall" for="act-open">
+        <span class="actcall-icon" aria-hidden="true">@PhoneGlyph</span>
+        <span class="actcall-text">
+          <span class="actcall-k">Act now</span>
+          <span class="actcall-t">Call or write the people who represent you</span>
+          <span class="actcall-s">Congress, Harrisburg and City Hall. Find yours in a minute; a call takes five.</span>
+        </span>
+        <span class="actcall-go">Find yours &rarr;</span>
+      </label>
     </div>
 
     <div class="leadtext">
@@ -699,10 +719,38 @@ else
         <div class="joinform">
           <p class="joinform-ask">We will walk through it with you first if you would rather not go in cold.</p>
           <div class="signuprow">
-            <a class="signupbtn" href="/act">Who to call</a>
+            <label class="signupbtn" for="act-open">Who to call</label>
             <span class="signupalt">numbers, a script, and a draft in your words</span>
           </div>
         </div>
+      </div>
+    </div>
+  </div>
+
+  @* Act: the action centre, as a dialog. The nav band's ACT NOW, the lead's
+     call to action and Organize's "Who to call" open it here at its first
+     view (ActStart); every /act address opens the front page with it showing
+     a view of its own (ActView), and moving between views loads the next
+     address in full: enhanced navigation would patch the radio's checked
+     attribute, which a radio the reader has clicked ignores, and the dialog
+     would shut. *@
+  <div class="paneldlg d-act">
+    <label class="paneldlg-scrim" for="dlg-none" aria-label="Close"></label>
+    <div class="paneldlg-box" role="dialog" aria-modal="true" aria-labelledby="actdlg-title" data-enhance-nav="false">
+      <div class="paneldlg-head">
+        <span id="actdlg-title">Act now</span>
+        <label class="paneldlg-x" for="dlg-none" aria-label="Close">&times;</label>
+      </div>
+      <Website.Portal.Components.Act.Parts.ActTabs />
+      <div class="paneldlg-body actbody">
+        @if (ActView is not null)
+        {
+          @ActView
+        }
+        else
+        {
+          <Website.Portal.Components.Act.Parts.ActStart />
+        }
       </div>
     </div>
   </div>
@@ -788,6 +836,16 @@ else
     [Parameter] public bool Framed { get; set; }
 
     private bool EventsOpen => ManyHandsOn && IsAt(ManyHandsPaths.Events);
+
+    // Set by the action pages (Components/Act): what the Act dialog shows,
+    // and that it opens on load. Unset, the dialog holds ActStart and waits
+    // for ACT NOW.
+    [Parameter] public RenderFragment? ActView { get; set; }
+
+    private bool ActOpen => ActView is not null;
+
+    // A handset, drawn here so the nav band and the call to action share it.
+    private static readonly RenderFragment PhoneGlyph = @<svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1z"></path></svg>;
 
     // The joining email's links. ManyHandsGate answers them with a 404 while
     // ManyHands is off, so they never reach here without it.

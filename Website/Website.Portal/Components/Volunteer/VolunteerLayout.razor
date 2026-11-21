@@ -20,7 +20,7 @@
                 {
                     <li><a href="@ManyHandsPaths.Me" aria-current="@(IsHere(ManyHandsPaths.Me) ? "page" : null)">My page</a></li>
                     <li><a href="@ManyHandsPaths.MyOutreach" aria-current="@(IsHere(ManyHandsPaths.MyOutreach) ? "page" : null)">My outreach</a></li>
-                    <li><a href="/act">Act</a></li>
+                    <li><a href="/act" data-enhance-nav="false">Act</a></li>
                     @if (_me.IsAtLeast(VolunteerRole.Organizer))
                     {
                         <li class="mh-aside"><a href="@ManyHandsPaths.Team" data-enhance-nav="false">Team</a></li>
