@@ -734,7 +734,9 @@ else
      address in full: enhanced navigation would patch the radio's checked
      attribute, which a radio the reader has clicked ignores, and the dialog
      would shut. *@
-  <div class="paneldlg d-act">
+  @* Open on load, it does not fade in: moving between its views loads a page
+     each time, and a dialog that faded in again on every step flickered. *@
+  <div class="paneldlg d-act@(ActOpen ? " d-act-loaded" : null)">
     <label class="paneldlg-scrim" for="dlg-none" aria-label="Close"></label>
     <div class="paneldlg-box" role="dialog" aria-modal="true" aria-labelledby="actdlg-title" data-enhance-nav="false">
       <div class="paneldlg-head">

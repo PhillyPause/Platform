@@ -27,7 +27,8 @@ public partial class ActDialogTests(WebApplicationFactory<Program> factory) : IC
         CheckedRadio(page).Should().Be("dlg-none");
         page.Should().Contain("<label class=\"actbtn\" for=\"act-open\">")
             .And.Contain("<label class=\"actcall\" for=\"act-open\">")
-            .And.Contain("Tell the people who represent you", "the dialog's first view waits behind the button");
+            .And.Contain("Tell the people who represent you", "the dialog's first view waits behind the button")
+            .And.Contain("class=\"paneldlg d-act\"", "opened by the button, it fades in like the others");
     }
 
     public static TheoryData<string> Addresses()
@@ -48,7 +49,7 @@ public partial class ActDialogTests(WebApplicationFactory<Program> factory) : IC
 
         CheckedRadio(page).Should().Be("act-open");
         page.Should().Contain("class=\"masthead\"", "the front page is behind the dialog")
-            .And.Contain("class=\"paneldlg d-act\"");
+            .And.Contain("class=\"paneldlg d-act d-act-loaded\"", "a step between views must not fade the dialog in again");
     }
 
     [Fact]

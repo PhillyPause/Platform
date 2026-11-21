@@ -29,6 +29,9 @@
    contacts beside it. */
 .d-act .paneldlg-box { width: min(1040px, 100%); }
 #act-open:checked ~ .paneldlg.d-act { display: grid; }
+/* Open on load (an /act address), it is already there: no fade on every step
+   between views. */
+.d-act-loaded .paneldlg-box { animation: none; }
 
 .actbody { container-type: inline-size; display: grid; gap: 2.25rem; padding-bottom: 32px; font-size: 15px; line-height: 1.55; }
 .actbody > * { min-width: 0; margin-block: 0; }
@@ -52,6 +55,11 @@
 }
 .act-tabs a:hover, .act-tabs a:focus-visible { border-color: #15110C; color: #15110C; }
 .act-tabs a[aria-current="page"] { background: #15110C; border-color: #15110C; color: #FBF8F1; }
+/* One line on a phone, too. */
+@media (max-width: 479px) {
+  .act-tabs { gap: 4px; padding: 8px 12px; }
+  .act-tabs a { padding: 4px 8px; font-size: 11.5px; }
+}
 
 /* A label that opens another of the front page's dialogs, set as a link. */
 .act-link { color: #AE2012; font-weight: 600; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
