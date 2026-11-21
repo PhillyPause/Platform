@@ -1,0 +1,23 @@
+@* ACT in the nav band, the lead's call to action and Organize's "Who to
+   call": each opens the Act dialog on Your officials. Where the dialog holds
+   nothing yet, or one of Your officials' own views, that is its radio, and it
+   opens in place. Where it holds another view (an explainer, the directory,
+   an official), the radio would reopen that view, so the trigger loads /act
+   instead, in full, as every link into the dialog does. *@
+
+@if (InPlace)
+{
+    <label class="@Class" for="act-open">@ChildContent</label>
+}
+else
+{
+    <a class="@Class" href="@ActPaths.Start" data-enhance-nav="false">@ChildContent</a>
+}
+
+@code {
+    [Parameter, EditorRequired] public string Class { get; set; } = "";
+
+    [Parameter] public bool InPlace { get; set; }
+
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+}

@@ -13,6 +13,9 @@ public static class ActPaths
     public const string Directory = "/act/officials";
     public const string Learn = "/act/learn";
 
+    /// <summary>A set of districts' officials, before its query string (<see cref="Yours(DistrictMatch)"/>).</summary>
+    public const string YoursBase = "/act/yours";
+
     /// <summary>The officials for a match, as the address lookup redirects to them.</summary>
     /// <remarks>
     /// The districts go in the query string (?cd=3&amp;ss=1&amp;sh=182&amp;county=Philadelphia),
@@ -34,6 +37,6 @@ public static class ActPaths
         if (match.County is { } county) parts.Add($"county={Uri.EscapeDataString(county)}");
         if (arena is not null) parts.Add($"in={Uri.EscapeDataString(arena)}");
         if (council is not null) parts.Add($"cc={Uri.EscapeDataString(council)}");
-        return "/act/yours" + (parts.Count == 0 ? "" : "?" + string.Join('&', parts));
+        return YoursBase + (parts.Count == 0 ? "" : "?" + string.Join('&', parts));
     }
 }

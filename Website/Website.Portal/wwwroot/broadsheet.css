@@ -74,6 +74,7 @@ a:hover { color: #15110C; }
   padding: 9px 16px;
   background: #AE2012;
   color: #FBF8F1;
+  text-decoration: none;
   cursor: pointer;
   transition: background 140ms ease;
 }
@@ -84,7 +85,9 @@ a:hover { color: #15110C; }
 .actbtn:focus-visible svg { color: #E8714F; }
 
 /* The lead story's call to action: a band of ink under the dek, the widest
-   thing on the front that can be pressed. The whole band is the label. */
+   thing on the front that can be pressed. The whole band is the label, or,
+   behind another of the Act dialog's views, a link (ActTrigger), which must
+   not take the links' underline or their ink on hover. */
 .actcall {
   display: flex;
   align-items: center;
@@ -93,11 +96,12 @@ a:hover { color: #15110C; }
   padding: 14px 14px 14px 16px;
   background: #15110C;
   color: #FBF8F1;
+  text-decoration: none;
   border-left: 6px solid #AE2012;
   cursor: pointer;
   transition: background 140ms ease;
 }
-.actcall:hover { background: #2A241C; }
+.actcall:hover, .actcall:focus-visible { background: #2A241C; color: #FBF8F1; }
 .actcall-icon {
   flex: none;
   width: 46px; height: 46px;

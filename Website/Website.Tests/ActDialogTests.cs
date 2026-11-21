@@ -54,6 +54,31 @@ public partial class ActDialogTests(WebApplicationFactory<Program> factory) : IC
             .And.Contain("class=\"paneldlg d-act d-act-loaded\"", "a step between views must not fade the dialog in again");
     }
 
+    [Theory]
+    [InlineData("/act/learn/bills")]
+    [InlineData("/act/officials?county=Bucks")]
+    public async Task Behind_any_other_view_ACT_loads_Your_officials_rather_than_reopening_that_view(string path)
+    {
+        var page = await factory.CreateClient().GetStringAsync(path);
+
+        page.Should().NotContain("for=\"act-open\"", "the radio would reopen the view the page was loaded on")
+            .And.Contain("<a class=\"actbtn\" href=\"/act\" data-enhance-nav=\"false\">")
+            .And.Contain("<a class=\"actcall\" href=\"/act\" data-enhance-nav=\"false\">")
+            .And.Contain("<a class=\"signupbtn\" href=\"/act\" data-enhance-nav=\"false\">Who to call</a>");
+    }
+
+    [Theory]
+    [InlineData("/act")]
+    [InlineData("/act/yours?cd=3&ss=1&sh=182&county=Philadelphia")]
+    public async Task On_Your_officials_ACT_reopens_the_dialog_where_it_was(string path)
+    {
+        var page = await factory.CreateClient().GetStringAsync(path);
+
+        page.Should().Contain("<label class=\"actbtn\" for=\"act-open\">")
+            .And.Contain("<label class=\"actcall\" for=\"act-open\">")
+            .And.Contain("<label class=\"signupbtn\" for=\"act-open\">Who to call</label>");
+    }
+
     [Fact]
     public async Task The_dialogs_three_places_are_your_officials_Greater_Philly_and_how_it_works()
     {

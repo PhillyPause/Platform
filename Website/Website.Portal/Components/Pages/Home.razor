@@ -8,6 +8,7 @@
 @layout BroadsheetLayout
 @using ManyHands.Core
 @using ManyHands.Data
+@using Website.Portal.Act
 @inject NavigationManager Navigation
 @inject IConfiguration Configuration
 @inject ContentStore Content
@@ -107,7 +108,7 @@ else
       <label class="navlink" for="educate-open">Educate</label>
       <label class="navlink" for="organize-open">Organize</label>
       <label class="joinbtn" for="join-open">Join</label>
-      <label class="actbtn" for="act-open">@PhoneGlyph Act</label>
+      <Website.Portal.Components.Act.Parts.ActTrigger Class="actbtn" InPlace="@ActInPlace">@PhoneGlyph Act</Website.Portal.Components.Act.Parts.ActTrigger>
     </nav>
 
     <div class="lead">
@@ -117,7 +118,7 @@ else
 
       @* The story's one call to action, under the headline it answers: the
          Act dialog, the same as ACT in the nav band. *@
-      <label class="actcall" for="act-open">
+      <Website.Portal.Components.Act.Parts.ActTrigger Class="actcall" InPlace="@ActInPlace">
         <span class="actcall-icon" aria-hidden="true">@PhoneGlyph</span>
         <span class="actcall-text">
           <span class="actcall-k">Act</span>
@@ -125,7 +126,7 @@ else
           <span class="actcall-s">Congress, Harrisburg and City Hall. Find yours in a minute; a call takes five.</span>
         </span>
         <span class="actcall-go">Find yours &rarr;</span>
-      </label>
+      </Website.Portal.Components.Act.Parts.ActTrigger>
     </div>
 
     <div class="leadtext">
@@ -719,7 +720,7 @@ else
         <div class="joinform">
           <p class="joinform-ask">We will walk through it with you first if you would rather not go in cold.</p>
           <div class="signuprow">
-            <label class="signupbtn" for="act-open">Who to call</label>
+            <Website.Portal.Components.Act.Parts.ActTrigger Class="signupbtn" InPlace="@ActInPlace">Who to call</Website.Portal.Components.Act.Parts.ActTrigger>
             <span class="signupalt">numbers, a script, and a draft in your words</span>
           </div>
         </div>
@@ -729,8 +730,9 @@ else
 
   @* Act: the action centre, as a dialog. The nav band's ACT, the lead's
      call to action and Organize's "Who to call" open it here at its first
-     view (ActStart); every /act address opens the front page with it showing
-     a view of its own (ActView), and moving between views loads the next
+     view (ActStart), Your officials, always (ActTrigger); every /act address
+     opens the front page with it showing a view of its own (ActView), and
+     moving between views loads the next
      address in full: enhanced navigation would patch the radio's checked
      attribute, which a radio the reader has clicked ignores, and the dialog
      would shut. *@
@@ -845,6 +847,11 @@ else
     [Parameter] public RenderFragment? ActView { get; set; }
 
     private bool ActOpen => ActView is not null;
+
+    // ACT always opens on Your officials (ActTrigger): in place when the
+    // dialog holds nothing yet or one of Your officials' views, and by
+    // loading /act from any other.
+    private bool ActInPlace => ActView is null || IsAt(ActPaths.Start) || IsAt(ActPaths.YoursBase);
 
     // A handset, drawn here so the nav band and the call to action share it.
     private static readonly RenderFragment PhoneGlyph = @<svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1z"></path></svg>;
