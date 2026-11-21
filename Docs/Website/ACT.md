@@ -4,7 +4,8 @@ The action centre: it helps a member or a visitor find who represents them,
 from Congress to City Hall, and call or write to them about AI in fifteen
 minutes. It replaces the front page's link to ControlAI's tool with our own,
 for Greater Philadelphia: Philadelphia, Bucks, Chester, Delaware and
-Montgomery counties.
+Montgomery counties. Anyone outside them is sent to ControlAI's
+(`https://act.controlai.org/`), which covers everywhere.
 
 It needs no database. With ManyHands on, it also keeps a log of who
 contacted whom, which is ManyHands' (below, and
@@ -55,7 +56,7 @@ and `Website/Website.Portal/Act`; the addresses are in `ActPaths`.
 
 | Route | View |
 |---|---|
-| `/act` | Find who represents you (an address, or districts picked by hand), the three ways in, the two motion tutorials, the ask, the county map, the explainers. The address form posts here from wherever it was shown, so a problem with the address comes back with the dialog open |
+| `/act` | Find who represents you (an address, or districts picked by hand), the three ways in, the two motion tutorials, the ask, the county map, the explainers. The address form posts here from wherever it was shown, so a problem with the address comes back with the dialog open. An address outside the five counties, in Pennsylvania or not, comes back with a button to ControlAI's action page instead of a list, and a line under the finder points anyone outside them there before they type |
 | `/act/yours?cd=&ss=&sh=&county=` | The officials for those districts, one place at a time: Washington, then `in=harrisburg` or `in=local`, each a chip with its count. A Philadelphian's City Hall is the citywide officials plus the member for the council district they choose (`cc=`). District numbers in the address bar, never the address |
 | `/act/officials?body=&county=&q=` | The directory behind a filter (`DirectoryFilter`): a government (Congress, Statewide, State Senate, State House, City Hall, County), a county, and a name or a district number. A bare number is a district, so `182` is House district 182; names match without accents or punctuation. The county map's links land here with `?county=` |
 | `/act/officials/{key}` | One official: contacts, bio, AI record with sources, committees |

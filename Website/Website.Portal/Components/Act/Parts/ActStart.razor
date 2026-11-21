@@ -10,7 +10,9 @@
    front page with it showing. The address form always posts to /act, never
    to the page it sits on, so a problem with the address comes back with the
    dialog open; a match lands on /act/yours with the district numbers in the
-   address bar, never the address itself. *@
+   address bar, never the address itself. An address outside the five
+   counties gets ControlAI's action page instead, which covers everywhere,
+   and the finder says so to anyone outside them before they type. *@
 
 <header class="act-intro">
     <h2>Tell the people who represent you</h2>
@@ -37,12 +39,28 @@
         {
             <p class="act-error" role="alert">@_problem</p>
         }
+        @if (_outside)
+        {
+            <div class="act-elsewhere" role="alert">
+                <p>
+                    <strong>That address is outside Greater Philadelphia.</strong> This directory covers Philadelphia,
+                    Bucks, Chester, Delaware and Montgomery counties. ControlAI&rsquo;s action page finds your
+                    representatives anywhere in the country and gives you the script, by email, phone or post.
+                    It is their campaign and their wording, not ours.
+                </p>
+                <p><a class="act-btn" href="@ControlAi" target="_blank" rel="noopener">Act with ControlAI</a> <span class="act-small">opens in a new window</span></p>
+            </div>
+        }
         <p class="act-small">
             The address goes to the US Census Bureau&rsquo;s geocoder to find your districts. We do not keep it,
             and it never appears in the page&rsquo;s address. Rather not? <a href="#by-district">Pick your districts instead</a>.
         </p>
     }
     <DistrictPicker />
+    <p class="act-small act-elsewhere-note">
+        Outside Philadelphia and the four counties around it?
+        <a href="@ControlAi" target="_blank" rel="noopener">ControlAI&rsquo;s action page</a> finds your representatives anywhere in the US.
+    </p>
 </section>
 
 <section class="act-ways" aria-labelledby="ways-head">
@@ -119,7 +137,11 @@
 
     [SupplyParameterFromForm(FormName = "find")] private FindInput? Input { get; set; }
 
+    // ControlAI's tool, for anyone outside the five counties.
+    private const string ControlAi = "https://act.controlai.org/";
+
     private string? _problem;
+    private bool _outside;
 
     protected override void OnInitialized() => Input ??= new();
 
@@ -138,9 +160,9 @@
             return;
         }
 
-        if (!match.InPennsylvania)
+        if (!match.InServiceArea)
         {
-            _problem = "That address is outside Pennsylvania. This directory covers Greater Philadelphia; elsewhere, your state legislature's site will say who represents you.";
+            _outside = true;
             return;
         }
 

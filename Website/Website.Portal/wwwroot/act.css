@@ -129,6 +129,11 @@
 .act-find-form { display: grid; gap: 0.75rem; }
 @container (min-width: 36rem) { .act-find-form { grid-template-columns: 1fr auto; align-items: end; } }
 .act-find > .act-small { margin-top: 10px; }
+/* Outside the five counties: ControlAI's tool, as a button, after a lookup. */
+.act-elsewhere { margin-top: 14px; padding: 14px 16px; background: #FFFDF8; border: 1px solid #15110C; }
+.act-elsewhere p { margin: 0 0 0.75rem; }
+.act-elsewhere p:last-child { margin: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem 0.75rem; }
+.act-find > .act-elsewhere-note { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--line); }
 
 .act-picker { margin-top: 14px; }
 .act-picker summary { cursor: pointer; font-weight: 700; color: #15110C; }

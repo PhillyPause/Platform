@@ -106,6 +106,48 @@ public partial class ActDialogTests(WebApplicationFactory<Program> factory) : IC
             .And.NotContain("Kennedy");
     }
 
+    public static TheoryData<string, string?, bool> Elsewhere() => new()
+    {
+        { "Pittsburgh: Pennsylvania, outside the five counties", "17", true },
+        { "Camden: across the river, outside Pennsylvania", null, false }
+    };
+
+    [Theory]
+    [MemberData(nameof(Elsewhere))]
+    public async Task An_address_outside_the_five_counties_is_sent_to_ControlAI_not_shown_a_list(string where, string? congressional, bool inPennsylvania)
+    {
+        // The geocoder's answer, as Parse reads it: a county outside the five is no county.
+        var match = new DistrictMatch(congressional, null, null, null, inPennsylvania);
+        using var app = factory.WithWebHostBuilder(builder =>
+            builder.ConfigureTestServices(services => services.AddSingleton<IDistrictLookup>(new StubLookup(match))));
+        var client = app.CreateClient(new WebApplicationFactoryClientOptions { AllowAutoRedirect = false });
+        var front = await client.GetStringAsync("/");
+
+        var response = await client.PostAsync("/act", new FormUrlEncodedContent(
+        [
+            new("__RequestVerificationToken", Token().Match(front).Groups[1].Value),
+            new("_handler", "find"),
+            new("Input.Address", where)
+        ]));
+
+        response.StatusCode.Should().Be(HttpStatusCode.OK, "{0} stays on the first view rather than landing on a list", where);
+        var page = await response.Content.ReadAsStringAsync();
+        CheckedRadio(page).Should().Be("act-open");
+        page.Should().Contain("That address is outside Greater Philadelphia")
+            .And.Contain($"href=\"{ControlAi}\" target=\"_blank\" rel=\"noopener\">Act with ControlAI</a>");
+    }
+
+    [Fact]
+    public async Task Anyone_outside_the_five_counties_is_pointed_at_ControlAI_before_typing_an_address()
+    {
+        var page = await factory.CreateClient().GetStringAsync("/");
+
+        page.Should().Contain("Outside Philadelphia and the four counties around it?")
+            .And.Contain($"href=\"{ControlAi}\" target=\"_blank\" rel=\"noopener\"");
+    }
+
+    private const string ControlAi = "https://act.controlai.org/";
+
     private static string CheckedRadio(string page)
     {
         var radios = Radio().Matches(page).Where(m => m.Value.Contains("checked")).ToList();

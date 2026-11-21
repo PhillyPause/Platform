@@ -20,6 +20,13 @@ public sealed record DistrictMatch(
 {
     public bool IsEmpty => Congressional is null && StateSenate is null && StateHouse is null && County is null;
 
+    /// <summary>
+    /// In one of the five counties the directory covers. For an address the
+    /// geocoder found, a Pennsylvania county outside the five comes back as no
+    /// county at all, so this is false for Pittsburgh as for Newark.
+    /// </summary>
+    public bool InServiceArea => InPennsylvania && County is not null;
+
     /// <summary>"03" and "3" are the same district.</summary>
     public static string? Normalise(string? number) =>
         string.IsNullOrWhiteSpace(number) ? null
