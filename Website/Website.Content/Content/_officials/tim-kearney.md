@@ -21,6 +21,7 @@ phones:
     number: "(610) 544-6120"
   - label: "District office, Upper Darby"
     number: "(610) 352-3409"
+email: "senatorkearney@pasenate.com"
 contact_form: "https://www.senatorkearney.com/contact/"
 website: "https://www.senatorkearney.com/"
 committees:
@@ -50,8 +51,9 @@ sources:
   - "https://www.palegis.us/senate/members/bio/1800/sen-kearney"
   - "https://en.wikipedia.org/wiki/2026_Pennsylvania_Senate_election"
   - "https://www.altoonamirror.com/news/local-news/2026/03/pa-senate-ai-chatbot-safety-bill-passes/"
+  - "https://data.openstates.org/people/current/pa.csv"
 verified: false
-updated: 2026-11-20
+updated: 2026-11-21
 ---
 
 Architect and former borough mayor from Swarthmore representing much of Delaware County since 2019. He is the Democratic chair of Institutional Sustainability & Innovation, the committee holding the AI-in-health-care bills, and was re-elected in November 2026.

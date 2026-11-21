@@ -17,6 +17,7 @@ phones:
     number: "(717) 783-8099"
   - label: "District office"
     number: "(484) 200-1563"
+email: "hboyd@pahouse.net"
 contact_form: "https://www.pahouse.com/163/Contact/"
 website: "https://www.palegis.us/house/members/house-member-bio?memberId=2015"
 committees:
@@ -78,8 +79,9 @@ ai_record:
 sources:
   - "https://www.palegis.us/house/members/house-member-bio?memberId=2015"
   - "https://www.palegis.us/house/rss/session/members"
+  - "https://data.openstates.org/people/current/pa.csv"
 verified: false
-updated: 2026-11-20
+updated: 2026-11-21
 ---
 
 Democratic state representative for the 163rd District (Delaware County (part)); the official House biography lists the occupation as State Representative.

@@ -17,6 +17,7 @@ phones:
     number: "(717) 783-8515"
   - label: "District office"
     number: "(267) 768-3671"
+email: "repmalagari@pahouse.net"
 contact_form: "https://www.pahouse.com/53/Contact/"
 website: "https://www.pahouse.com/malagari"
 committees:
@@ -73,8 +74,9 @@ ai_record:
 sources:
   - "https://www.palegis.us/house/members/house-member-bio?memberId=1832"
   - "https://www.palegis.us/house/rss/session/members"
+  - "https://data.openstates.org/people/current/pa.csv"
 verified: false
-updated: 2026-11-20
+updated: 2026-11-21
 ---
 
 Democratic state representative for the 53rd District (Montgomery County (part)); the official House biography lists the occupation as Sales Representative, Penn Beer, Teamsters Local 830.

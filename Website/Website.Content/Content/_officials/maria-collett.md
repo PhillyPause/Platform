@@ -17,6 +17,7 @@ phones:
     number: "(717) 787-6599"
   - label: "District office, Fort Washington"
     number: "(215) 368-1429"
+email: "senatorcollett@pasenate.com"
 contact_form: "https://www.senatorcollett.com/contact/"
 website: "https://www.senatorcollett.com/"
 committees:
@@ -55,8 +56,9 @@ sources:
   - "https://www.palegis.us/senate/co-sponsorship/search-results?keywords=artificial+intelligence&dateStart=2025-01-01"
   - "https://www.altoonamirror.com/news/local-news/2026/03/pa-senate-ai-chatbot-safety-bill-passes/"
   - "https://www.cityandstatepa.com/policy/2026/11/meet-2027-28-leaders-pennsylvania-senate/417287/"
+  - "https://data.openstates.org/people/current/pa.csv"
 verified: false
-updated: 2026-11-20
+updated: 2026-11-21
 ---
 
 Registered nurse and former New Jersey deputy attorney general first elected in 2018, representing central Montgomery County; she has chaired the Senate Democratic caucus since 2024. She is the Senate's most active Democratic author of AI-safety legislation and was re-elected in November 2026.

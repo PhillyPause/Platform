@@ -17,6 +17,7 @@ phones:
     number: "(717) 783-1079"
   - label: "District office"
     number: "(215) 572-5210"
+email: "repnelson@pahouse.net"
 contact_form: "https://www.pahouse.com/154/Contact/"
 website: "https://www.palegis.us/house/members/house-member-bio?memberId=1914"
 committees:
@@ -73,8 +74,9 @@ ai_record:
 sources:
   - "https://www.palegis.us/house/members/house-member-bio?memberId=1914"
   - "https://www.palegis.us/house/rss/session/members"
+  - "https://data.openstates.org/people/current/pa.csv"
 verified: false
-updated: 2026-11-20
+updated: 2026-11-21
 ---
 
 Democratic state representative for the 154th District (Montgomery County (part)); the official House biography lists the occupation as Financier.

@@ -17,6 +17,7 @@ phones:
     number: "(717) 783-4103"
   - label: "District office"
     number: "(484) 200-8256"
+email: "dwilliams@pahouse.net"
 contact_form: "https://www.pahouse.com/74/Contact/"
 website: "https://www.pahouse.com/williams"
 committees:
@@ -65,8 +66,9 @@ ai_record:
 sources:
   - "https://www.palegis.us/house/members/house-member-bio?memberId=1837"
   - "https://www.palegis.us/house/rss/session/members"
+  - "https://data.openstates.org/people/current/pa.csv"
 verified: false
-updated: 2026-11-20
+updated: 2026-11-21
 ---
 
 Democratic state representative for the 74th District (Chester County (part)); the official House biography lists the occupation as Pastor.

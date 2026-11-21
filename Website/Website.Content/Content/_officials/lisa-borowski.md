@@ -17,6 +17,7 @@ phones:
     number: "(717) 772-2005"
   - label: "District office"
     number: "(484) 427-2884"
+email: "repborowski@pahouse.net"
 contact_form: "https://www.pahouse.com/168/Contact/"
 website: "https://www.palegis.us/house/members/house-member-bio?memberId=1977"
 committees:
@@ -78,8 +79,9 @@ ai_record:
 sources:
   - "https://www.palegis.us/house/members/house-member-bio?memberId=1977"
   - "https://www.palegis.us/house/rss/session/members"
+  - "https://data.openstates.org/people/current/pa.csv"
 verified: false
-updated: 2026-11-20
+updated: 2026-11-21
 ---
 
 Democratic state representative for the 168th District (Delaware County (part)); the official House biography lists the occupation as Healthcare Communications Professional.

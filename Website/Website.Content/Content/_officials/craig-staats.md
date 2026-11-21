@@ -17,6 +17,7 @@ phones:
     number: "(717) 783-3154"
   - label: "District office"
     number: "(215) 536-1434"
+email: "cstaats@pahousegop.com"
 contact_form: "https://RepStaats.net/Contact"
 website: "https://RepStaats.net"
 committees:
@@ -65,8 +66,9 @@ ai_record:
 sources:
   - "https://www.palegis.us/house/members/house-member-bio?memberId=1707"
   - "https://www.palegis.us/house/rss/session/members"
+  - "https://data.openstates.org/people/current/pa.csv"
 verified: false
-updated: 2026-11-20
+updated: 2026-11-21
 ---
 
 Republican state representative for the 145th District (Bucks County (part)); the official House biography lists the occupation as State Legislator.

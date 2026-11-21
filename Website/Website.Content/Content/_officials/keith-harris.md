@@ -17,6 +17,7 @@ phones:
     number: "(717) 787-3480"
   - label: "District office"
     number: "(215) 684-3738"
+email: "kharris@pahouse.net"
 contact_form: "https://www.pahouse.com/195/Contact/"
 website: "https://www.palegis.us/house/members/house-member-bio?memberId=2020"
 committees:
@@ -71,8 +72,9 @@ sources:
   - "https://www.palegis.us/house/members/house-member-bio?memberId=2020"
   - "https://www.palegis.us/house/rss/session/members"
   - "https://www.multistate.us/elections/results/pennsylvania-2026"
+  - "https://data.openstates.org/people/current/pa.csv"
 verified: false
-updated: 2026-11-20
+updated: 2026-11-21
 ---
 
 Democrat representing the 195th District in North Philadelphia, first elected in a special election. He lost the May 19, 2026 Democratic primary to Sierra McNeil, so his term ends November 30, 2026.

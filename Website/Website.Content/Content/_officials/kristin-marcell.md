@@ -17,6 +17,7 @@ phones:
     number: "(717) 772-9926"
   - label: "District office"
     number: "(215) 364-3414"
+email: "kmarcell@pahousegop.com"
 contact_form: "https://www.RepMarcell.com/Contact"
 website: "https://www.RepMarcell.com"
 committees:
@@ -68,8 +69,9 @@ ai_record:
 sources:
   - "https://www.palegis.us/house/members/house-member-bio?memberId=1979"
   - "https://www.palegis.us/house/rss/session/members"
+  - "https://data.openstates.org/people/current/pa.csv"
 verified: false
-updated: 2026-11-20
+updated: 2026-11-21
 ---
 
 Republican state representative for the 178th District (Bucks County (part)); the official House biography lists the occupation as Communications.

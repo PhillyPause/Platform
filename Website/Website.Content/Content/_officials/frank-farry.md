@@ -17,6 +17,7 @@ phones:
     number: "(717) 787-5072"
   - label: "District office, Langhorne"
     number: "(215) 638-1784"
+email: "ffarry@pasen.gov"
 contact_form: "https://senatorfarry.com/contact/"
 website: "https://senatorfarry.com"
 committees:
@@ -52,8 +53,9 @@ sources:
   - "https://whyy.org/articles/pennsylvania-democrats-trifecta/"
   - "https://www.phillyvoice.com/pennsylvania-house-senate-democrat-majority/"
   - "https://www.altoonamirror.com/news/local-news/2026/03/pa-senate-ai-chatbot-safety-bill-passes/"
+  - "https://data.openstates.org/people/current/pa.csv"
 verified: false
-updated: 2026-11-20
+updated: 2026-11-21
 ---
 
 Lower Bucks County fire chief and attorney who served seven House terms before winning the Senate seat in 2022. He lost re-election on November 3, 2026 to Democrat Eileen Hartnett Albillar, so he leaves office at the end of November 2026.

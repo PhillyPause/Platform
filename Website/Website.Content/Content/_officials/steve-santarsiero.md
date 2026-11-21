@@ -19,6 +19,7 @@ phones:
     number: "(717) 787-7305"
   - label: "District office, Newtown"
     number: "(215) 497-9490"
+email: "senatorsantarsiero@pasenate.com"
 contact_form: "https://www.senatorstevesantarsiero.com/contact/"
 website: "https://www.senatorstevesantarsiero.com/"
 committees:
@@ -52,8 +53,9 @@ sources:
   - "https://en.wikipedia.org/wiki/2026_Pennsylvania_Senate_election"
   - "https://www.altoonamirror.com/news/local-news/2026/03/pa-senate-ai-chatbot-safety-bill-passes/"
   - "https://www.cityandstatepa.com/policy/2026/11/meet-2027-28-leaders-pennsylvania-senate/417287/"
+  - "https://data.openstates.org/people/current/pa.csv"
 verified: false
-updated: 2026-11-20
+updated: 2026-11-21
 ---
 
 Former teacher, Lower Makefield supervisor and state representative who was Pennsylvania's first Chief Deputy Attorney General for Environmental Protection, representing central and lower Bucks County. He was re-elected in November 2026 with about 64% (unofficial).

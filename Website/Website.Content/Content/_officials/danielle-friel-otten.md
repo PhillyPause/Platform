@@ -17,6 +17,7 @@ phones:
     number: "(717) 783-5009"
   - label: "District office"
     number: "(484) 200-8259"
+email: "repotten@pahouse.net"
 contact_form: "https://www.pahouse.com/155/Contact/"
 website: "https://www.pahouse.com/frielotten"
 committees:
@@ -74,8 +75,9 @@ ai_record:
 sources:
   - "https://www.palegis.us/house/members/house-member-bio?memberId=1850"
   - "https://www.palegis.us/house/rss/session/members"
+  - "https://data.openstates.org/people/current/pa.csv"
 verified: false
-updated: 2026-11-20
+updated: 2026-11-21
 ---
 
 Democratic state representative for the 155th District (Chester County (part)); the official House biography lists the occupation as Marketing Consultant.

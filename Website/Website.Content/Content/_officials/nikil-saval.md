@@ -21,6 +21,7 @@ phones:
     number: "(215) 952-3119"
   - label: "District office, 1107-09 S. 6th St"
     number: "(267) 668-3550"
+email: "saval@pasenate.com"
 contact_form: "https://www.pasenatorsaval.com/contact/"
 website: "https://www.pasenatorsaval.com/"
 committees:
@@ -60,8 +61,9 @@ sources:
   - "https://www.palegis.us/senate/members/bio/1921/sen-saval"
   - "https://www.palegis.us/senate/members"
   - "https://www.altoonamirror.com/news/local-news/2026/03/pa-senate-ai-chatbot-safety-bill-passes/"
+  - "https://data.openstates.org/people/current/pa.csv"
 verified: false
-updated: 2026-11-20
+updated: 2026-11-21
 ---
 
 Former labor organizer and writer (former co-editor of the literary journal n+1) who represents central and South Philadelphia neighbourhoods. He chairs the Senate's Philadelphia delegation and is best known for creating the Whole-Home Repairs Program.

@@ -17,6 +17,7 @@ phones:
     number: "(717) 787-7112"
   - label: "District office, N. 54th St"
     number: "(215) 879-7777"
+email: "hughes@pasenate.com"
 contact_form: "https://www.senatorhughes.com/contact/"
 website: "https://www.senatorhughes.com"
 committees:
@@ -51,8 +52,9 @@ sources:
   - "https://www.palegis.us/senate/members/bio/152/sen-hughes"
   - "https://www.altoonamirror.com/news/local-news/2026/03/pa-senate-ai-chatbot-safety-bill-passes/"
   - "https://www.cityandstatepa.com/policy/2026/11/meet-2027-28-leaders-pennsylvania-senate/417287/"
+  - "https://data.openstates.org/people/current/pa.csv"
 verified: false
-updated: 2026-11-20
+updated: 2026-11-21
 ---
 
 Former state representative who has long served as the Senate Democrats' lead budget negotiator as Appropriations chair, representing West and Northwest Philadelphia and part of Montgomery County. He is known for education-funding and voter-registration legislation.

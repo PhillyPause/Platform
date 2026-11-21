@@ -85,7 +85,7 @@ counties: [Philadelphia, Bucks, Chester, Delaware, Montgomery]
 phones:
   - label: Washington office
     number: "(202) 224-4254"   # the first is the one the call page leads with
-email: null               # only an address the office publishes itself
+email: null               # see "Where contacts come from" below
 contact_form: https://...
 website: https://...
 map: https://...          # a district map elsewhere; nothing is embedded
@@ -104,6 +104,19 @@ updated: 2026-11-20
 ```
 
 A malformed file stops the site starting, as a malformed page does.
+
+**Where contacts come from.** An email is an address the office publishes
+itself (Bucks County's and Delaware County's commissioners, for instance),
+or, for a state legislator, whose own pages offer only a form, their caucus
+address from Open States' current Pennsylvania legislators
+(`https://data.openstates.org/people/current/pa.csv`: free, no key, CC0),
+with that file in `sources`. An address that breaks its caucus's pattern is
+left out rather than guessed at. Congress publishes no addresses; its
+contact forms and phones are in congress-legislators
+(`https://unitedstates.github.io/congress-legislators/legislators-current.json`,
+also free). City Council publishes none either: each member's page on
+phlcouncil.com carries their form. A member-elect has no official contact
+until they take office.
 
 **No caveats.** Nothing a reader sees says whether an entry or an item has
 been checked: the two `verified:` flags are the editors' checklist, and the

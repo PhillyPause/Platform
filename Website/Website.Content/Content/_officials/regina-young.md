@@ -21,6 +21,7 @@ phones:
     number: "(215) 952-3376"
   - label: "District office 2"
     number: "(610) 616-2003"
+email: "repyoung@pahouse.net"
 contact_form: "https://www.pahouse.com/185/Contact/"
 website: "https://www.palegis.us/house/members/house-member-bio?memberId=1917"
 committees:
@@ -73,8 +74,9 @@ ai_record:
 sources:
   - "https://www.palegis.us/house/members/house-member-bio?memberId=1917"
   - "https://www.palegis.us/house/rss/session/members"
+  - "https://data.openstates.org/people/current/pa.csv"
 verified: false
-updated: 2026-11-20
+updated: 2026-11-21
 ---
 
 Democratic state representative for the 185th District (Delaware County (part) and Philadelphia County (part)); the official House biography lists the occupation as Community Organizer.

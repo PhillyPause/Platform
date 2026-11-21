@@ -19,6 +19,7 @@ phones:
     number: "(717) 787-5881"
   - label: "District office 1"
     number: "(610) 876-6420"
+email: "repkazeem@pahouse.net"
 contact_form: "https://www.pahouse.com/159/Contact/"
 website: "https://www.palegis.us/house/members/house-member-bio?memberId=1976"
 committees:
@@ -71,8 +72,9 @@ ai_record:
 sources:
   - "https://www.palegis.us/house/members/house-member-bio?memberId=1976"
   - "https://www.palegis.us/house/rss/session/members"
+  - "https://data.openstates.org/people/current/pa.csv"
 verified: false
-updated: 2026-11-20
+updated: 2026-11-21
 ---
 
 Democratic state representative for the 159th District (Delaware County (part)); the official House biography lists the occupation as not stated.

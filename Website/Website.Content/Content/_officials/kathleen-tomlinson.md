@@ -17,6 +17,7 @@ phones:
     number: "(717) 783-7319"
   - label: "District office"
     number: "(215) 750-1017"
+email: "ktomlinson@pahousegop.com"
 contact_form: "https://www.RepTomlinson.com/Contact"
 website: "https://www.RepTomlinson.com"
 committees:
@@ -69,8 +70,9 @@ sources:
   - "https://www.palegis.us/house/members/house-member-bio?memberId=1876"
   - "https://www.palegis.us/house/rss/session/members"
   - "https://www.multistate.us/elections/results/pennsylvania-2026"
+  - "https://data.openstates.org/people/current/pa.csv"
 verified: false
-updated: 2026-11-20
+updated: 2026-11-21
 ---
 
 Republican state representative for the 18th District (Bucks County (part)); the official House biography lists the occupation as Funeral Director.

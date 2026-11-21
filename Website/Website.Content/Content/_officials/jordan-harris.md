@@ -21,6 +21,7 @@ phones:
     number: "(215) 952-3378"
   - label: "District office 2"
     number: "(215) 755-9185"
+email: "repharris@pahouse.net"
 contact_form: "https://www.pahouse.com/186/Contact/"
 website: "https://www.palegis.us/house/members/house-member-bio?memberId=1633"
 committees:
@@ -70,8 +71,9 @@ ai_record:
 sources:
   - "https://www.palegis.us/house/members/house-member-bio?memberId=1633"
   - "https://www.palegis.us/house/rss/session/members"
+  - "https://data.openstates.org/people/current/pa.csv"
 verified: false
-updated: 2026-11-20
+updated: 2026-11-21
 ---
 
 Democrat representing part of Philadelphia. He chaired the House Appropriations Committee in 2025-26.

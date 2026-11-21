@@ -17,6 +17,7 @@ phones:
     number: "(717) 783-4090"
   - label: "District office"
     number: "(610) 544-9878"
+email: "repomara@pahouse.net"
 contact_form: "https://www.pahouse.com/165/Contact/"
 website: "https://www.pahouse.com/omara"
 committees:
@@ -68,8 +69,9 @@ ai_record:
 sources:
   - "https://www.palegis.us/house/members/house-member-bio?memberId=1855"
   - "https://www.palegis.us/house/rss/session/members"
+  - "https://data.openstates.org/people/current/pa.csv"
 verified: false
-updated: 2026-11-20
+updated: 2026-11-21
 ---
 
 Democratic state representative for the 165th District (Delaware County (part)); the official House biography lists the occupation as Non-Profit Administrator.

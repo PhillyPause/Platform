@@ -17,6 +17,7 @@ phones:
     number: "(717) 787-7647"
   - label: "District office"
     number: "(610) 789-3900"
+email: "repvitali@pahouse.net"
 contact_form: "https://www.pahouse.com/166/Contact/"
 website: "https://www.pahouse.com/vitali"
 committees:
@@ -66,8 +67,9 @@ sources:
   - "https://www.palegis.us/house/members/house-member-bio?memberId=210"
   - "https://www.palegis.us/house/rss/session/members"
   - "https://www.multistate.us/elections/results/pennsylvania-2026"
+  - "https://data.openstates.org/people/current/pa.csv"
 verified: false
-updated: 2026-11-20
+updated: 2026-11-21
 ---
 
 Democrat who has represented the 166th District (Haverford/Marple, Delaware County) since 1993 and chaired the Environmental & Natural Resource Protection Committee in 2025-26. He prime-sponsored HB 2198 to repeal the data-centre equipment sales-tax exemption (passed 197-5). He lost the May 19, 2026 Democratic primary to Judy Trombetta, so his term ends November 30, 2026.

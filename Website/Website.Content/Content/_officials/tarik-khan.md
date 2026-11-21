@@ -17,6 +17,7 @@ phones:
     number: "(717) 783-4945"
   - label: "District office"
     number: "(215) 482-8726"
+email: "reptarik@pahouse.net"
 contact_form: "https://www.pahouse.com/194/Contact/"
 website: "https://www.palegis.us/house/members/house-member-bio?memberId=1983"
 committees:
@@ -77,8 +78,9 @@ ai_record:
 sources:
   - "https://www.palegis.us/house/members/house-member-bio?memberId=1983"
   - "https://www.palegis.us/house/rss/session/members"
+  - "https://data.openstates.org/people/current/pa.csv"
 verified: false
-updated: 2026-11-20
+updated: 2026-11-21
 ---
 
 Democrat representing part of Philadelphia; a family nurse practitioner by occupation. He prime-sponsored HB 811, which creates civil liability for AI deepfakes of candidates and passed the House 203-0 in June 2025, and was named among the sponsors of the AI-in-health-care bill HB 1925.

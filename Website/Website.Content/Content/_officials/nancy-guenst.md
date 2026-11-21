@@ -17,6 +17,7 @@ phones:
     number: "(717) 705-2044"
   - label: "District office"
     number: "(215) 259-5962"
+email: "repguenst@pahouse.net"
 contact_form: "https://www.pahouse.com/152/Contact/"
 website: "https://www.palegis.us/house/members/house-member-bio?memberId=1913"
 committees:
@@ -70,8 +71,9 @@ ai_record:
 sources:
   - "https://www.palegis.us/house/members/house-member-bio?memberId=1913"
   - "https://www.palegis.us/house/rss/session/members"
+  - "https://data.openstates.org/people/current/pa.csv"
 verified: false
-updated: 2026-11-20
+updated: 2026-11-21
 ---
 
 Democratic state representative for the 152nd District (Montgomery County (part)); the official House biography lists the occupation as Owner, Designs In Stone, Inc..

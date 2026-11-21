@@ -17,6 +17,7 @@ phones:
     number: "(717) 787-6740"
   - label: "District office"
     number: "(215) 330-3711"
+email: "mwhite@pahousegop.com"
 contact_form: "https://www.repwhite.com/Contact"
 website: "https://www.repwhite.com/"
 committees:
@@ -65,8 +66,9 @@ ai_record:
 sources:
   - "https://www.palegis.us/house/members/house-member-bio?memberId=1732"
   - "https://www.palegis.us/house/rss/session/members"
+  - "https://data.openstates.org/people/current/pa.csv"
 verified: false
-updated: 2026-11-20
+updated: 2026-11-21
 ---
 
 Republican state representative for the 170th District (Philadelphia County (part)); the official House biography lists the occupation as Financial Advisor.

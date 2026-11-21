@@ -17,6 +17,7 @@ phones:
     number: "(717) 783-2178"
   - label: "District office"
     number: "(215) 242-7300"
+email: "reprabb@pahouse.net"
 contact_form: "https://www.pahouse.com/200/Contact/"
 website: "https://www.palegis.us/house/members/house-member-bio?memberId=1760"
 committees:
@@ -69,8 +70,9 @@ sources:
   - "https://www.palegis.us/house/members/house-member-bio?memberId=1760"
   - "https://www.palegis.us/house/rss/session/members"
   - "https://www.multistate.us/elections/results/pennsylvania-2026"
+  - "https://data.openstates.org/people/current/pa.csv"
 verified: false
-updated: 2026-11-20
+updated: 2026-11-21
 ---
 
 Democrat representing the 200th District (northwest Philadelphia); an educator and author. He did not seek re-election in 2026 because he ran for Congress (PA-3); Christopher K. Johnson won the seat.

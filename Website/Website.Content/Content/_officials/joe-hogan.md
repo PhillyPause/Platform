@@ -21,6 +21,7 @@ phones:
     number: "(215) 752-6750"
   - label: "District office 2"
     number: "(215) 942-4067"
+email: "jhogan@pahousegop.com"
 contact_form: "https://www.RepHogan.com/Contact"
 website: "https://www.RepHogan.com"
 committees:
@@ -77,8 +78,9 @@ sources:
   - "https://www.palegis.us/house/members/house-member-bio?memberId=1971"
   - "https://www.palegis.us/house/rss/session/members"
   - "https://www.multistate.us/elections/results/pennsylvania-2026"
+  - "https://data.openstates.org/people/current/pa.csv"
 verified: false
-updated: 2026-11-20
+updated: 2026-11-21
 ---
 
 Republican who represented the 142nd District in Bucks County; an economic development professional. He co-sponsored the AI-in-health-care bill HB 1925 and was the Republican subcommittee chair for consumer protection on the Consumer Protection, Technology & Utilities Committee. He lost re-election on November 3, 2026 to Democrat Kristin Egan.

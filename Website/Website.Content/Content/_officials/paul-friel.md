@@ -17,6 +17,7 @@ phones:
     number: "(717) 772-1411"
   - label: "District office"
     number: "(610) 427-8782"
+email: "repfriel@pahouse.net"
 contact_form: "https://www.pahouse.com/26/Contact/"
 website: "https://www.palegis.us/house/members/house-member-bio?memberId=1942"
 committees:
@@ -69,8 +70,9 @@ ai_record:
 sources:
   - "https://www.palegis.us/house/members/house-member-bio?memberId=1942"
   - "https://www.palegis.us/house/rss/session/members"
+  - "https://data.openstates.org/people/current/pa.csv"
 verified: false
-updated: 2026-11-20
+updated: 2026-11-21
 ---
 
 Democrat representing part of Chester County; a business owner by occupation. He prime-sponsored HB 2496, which would give municipalities a zoning consideration period ('pause') for data-centre proposals; it passed the House 201-1 in June 2026.

@@ -17,6 +17,7 @@ phones:
     number: "(717) 787-9608"
   - label: "District office, Academy Rd"
     number: "(215) 281-2539"
+email: "jpicozzi@pasen.gov"
 contact_form: "https://senatorpicozzi.com/contact/"
 website: "https://senatorpicozzi.com"
 committees:
@@ -42,8 +43,9 @@ ai_record:
 sources:
   - "https://www.palegis.us/senate/members/bio/2036/sen-picozzi"
   - "https://www.altoonamirror.com/news/local-news/2026/03/pa-senate-ai-chatbot-safety-bill-passes/"
+  - "https://data.openstates.org/people/current/pa.csv"
 verified: false
-updated: 2026-11-20
+updated: 2026-11-21
 ---
 
 Northeast Philadelphia native elected in 2024, the first Republican to represent Philadelphia in the state Senate since 1996. He previously worked as chief of staff at the Manhattan Institute and as a congressional aide.

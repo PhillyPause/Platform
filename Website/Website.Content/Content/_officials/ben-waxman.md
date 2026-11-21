@@ -17,6 +17,7 @@ phones:
     number: "(717) 783-4072"
   - label: "District office"
     number: "(215) 246-1501"
+email: "repwaxman@pahouse.net"
 contact_form: "https://www.pahouse.com/182/Contact/"
 website: "https://pahouse.com/waxman"
 committees:
@@ -77,8 +78,9 @@ ai_record:
 sources:
   - "https://www.palegis.us/house/members/house-member-bio?memberId=1981"
   - "https://www.palegis.us/house/rss/session/members"
+  - "https://data.openstates.org/people/current/pa.csv"
 verified: false
-updated: 2026-11-20
+updated: 2026-11-21
 ---
 
 Democratic state representative for the 182nd District (Philadelphia County (part)); the official House biography lists the occupation as Publisher.

@@ -19,6 +19,7 @@ phones:
     number: "(717) 787-4712"
   - label: "District office, Chester"
     number: "(610) 447-5845"
+email: "kane@pasenate.com"
 contact_form: "https://pasenatorkane.com/contact/"
 website: "https://pasenatorkane.com/"
 committees:
@@ -58,8 +59,9 @@ sources:
   - "https://www.palegis.us/senate/members/bio/1925/sen-kane"
   - "https://www.palegis.us/senate/co-sponsorship/search-results?keywords=data+center&dateStart=2025-01-01"
   - "https://www.altoonamirror.com/news/local-news/2026/03/pa-senate-ai-chatbot-safety-bill-passes/"
+  - "https://data.openstates.org/people/current/pa.csv"
 verified: false
-updated: 2026-11-20
+updated: 2026-11-21
 ---
 
 Plumber and former five-term business manager of Plumbers Local 690, representing parts of Delaware and Chester counties. He sits on the Communications & Technology Committee and has co-sponsored most of the Senate's AI bills this session.

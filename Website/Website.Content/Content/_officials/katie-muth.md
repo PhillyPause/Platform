@@ -17,6 +17,7 @@ phones:
     number: "(717) 787-1398"
   - label: "District office, Royersford"
     number: "(610) 792-2137"
+email: "senatormuth@pasenate.com"
 contact_form: "https://www.senatormuth.com/contact/"
 website: "https://www.senatormuth.com/"
 committees:
@@ -54,8 +55,9 @@ sources:
   - "https://www.palegis.us/senate/members/bio/1802/sen-muth"
   - "https://en.wikipedia.org/wiki/2026_Pennsylvania_Senate_election"
   - "https://www.altoonamirror.com/news/local-news/2026/03/pa-senate-ai-chatbot-safety-bill-passes/"
+  - "https://data.openstates.org/people/current/pa.csv"
 verified: false
-updated: 2026-11-20
+updated: 2026-11-21
 ---
 
 Senator since 2019 representing parts of Montgomery, Chester and Berks counties, and the Democratic chair of Veterans Affairs & Emergency Preparedness. She is the Senate's leading sponsor of data-centre restrictions, including a proposed statewide moratorium, and was re-elected in November 2026.

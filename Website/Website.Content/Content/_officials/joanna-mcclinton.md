@@ -17,6 +17,7 @@ phones:
     number: "(717) 772-9850"
   - label: "District office"
     number: "(215) 748-6712"
+email: "repmcclinton@pahouse.net"
 contact_form: "https://www.pahouse.com/191/Contact/"
 website: "https://www.palegis.us/house/members/house-member-bio?memberId=1734"
 committees:
@@ -65,8 +66,9 @@ ai_record:
 sources:
   - "https://www.palegis.us/house/members/house-member-bio?memberId=1734"
   - "https://www.palegis.us/house/rss/session/members"
+  - "https://data.openstates.org/people/current/pa.csv"
 verified: false
-updated: 2026-11-20
+updated: 2026-11-21
 ---
 
 Democrat representing parts of Philadelphia and Delaware County; an attorney. She served as Speaker of the House in the 2025-26 session.

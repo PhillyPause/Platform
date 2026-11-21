@@ -17,6 +17,7 @@ phones:
     number: "(717) 783-4088"
   - label: "District office"
     number: "(610) 251-1070"
+email: "khoward@pahouse.net"
 contact_form: "https://www.pahouse.com/167/Contact/"
 website: "https://www.pahouse.com/howard"
 committees:
@@ -73,8 +74,9 @@ ai_record:
 sources:
   - "https://www.palegis.us/house/members/house-member-bio?memberId=1856"
   - "https://www.palegis.us/house/rss/session/members"
+  - "https://data.openstates.org/people/current/pa.csv"
 verified: false
-updated: 2026-11-20
+updated: 2026-11-21
 ---
 
 Democratic state representative for the 167th District (Chester County (part)); the official House biography lists the occupation as Legislator.

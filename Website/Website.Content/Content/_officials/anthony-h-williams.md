@@ -21,6 +21,7 @@ phones:
     number: "(215) 492-2980"
   - label: "District office, Snyder Ave"
     number: "(215) 489-5200"
+email: "williams@pasenate.com"
 contact_form: "https://senatoranthonyhwilliams.com/contact/"
 website: "https://senatoranthonyhwilliams.com"
 committees:
@@ -41,8 +42,9 @@ sources:
   - "https://www.palegis.us/senate/members/bio/153/sen-a-williams"
   - "https://en.wikipedia.org/wiki/2026_Pennsylvania_Senate_election"
   - "https://www.altoonamirror.com/news/local-news/2026/03/pa-senate-ai-chatbot-safety-bill-passes/"
+  - "https://data.openstates.org/people/current/pa.csv"
 verified: false
-updated: 2026-11-20
+updated: 2026-11-21
 ---
 
 Senator since 1999 after a decade in the state House, representing Southwest and South Philadelphia and part of Delaware County. A former Senate Democratic caucus chair and charter-school founder, he was re-elected unopposed in November 2026.

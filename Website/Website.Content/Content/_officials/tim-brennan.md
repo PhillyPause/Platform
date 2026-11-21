@@ -17,6 +17,7 @@ phones:
     number: "(717) 772-2361"
   - label: "District office"
     number: "(267) 884-0395"
+email: "repbrennan@pahouse.net"
 contact_form: "https://www.pahouse.com/29/Contact/"
 website: "https://www.palegis.us/house/members/house-member-bio?memberId=1943"
 committees:
@@ -70,8 +71,9 @@ ai_record:
 sources:
   - "https://www.palegis.us/house/members/house-member-bio?memberId=1943"
   - "https://www.palegis.us/house/rss/session/members"
+  - "https://data.openstates.org/people/current/pa.csv"
 verified: false
-updated: 2026-11-20
+updated: 2026-11-21
 ---
 
 Democratic state representative for the 29th District (Bucks County (part)); the official House biography lists the occupation as Attorney.

@@ -21,6 +21,7 @@ phones:
     number: "(610) 965-5830"
   - label: "District office 2"
     number: "(215) 679-3152"
+email: "mmackenzie@pahousegop.com"
 contact_form: "https://www.RepMilouMackenziePA.com/Contact"
 website: "https://www.RepMilouMackenziePA.com"
 committees:
@@ -73,8 +74,9 @@ sources:
   - "https://www.palegis.us/house/members/house-member-bio?memberId=1909"
   - "https://www.palegis.us/house/rss/session/members"
   - "https://www.multistate.us/elections/results/pennsylvania-2026"
+  - "https://data.openstates.org/people/current/pa.csv"
 verified: false
-updated: 2026-11-20
+updated: 2026-11-21
 ---
 
 Republican state representative for the 131st District (Lehigh County (part), Montgomery County (part) and Northampton County (part)); the official House biography lists the occupation as Interior Designer - Small Business Owner.

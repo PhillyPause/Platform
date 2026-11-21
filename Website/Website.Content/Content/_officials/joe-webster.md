@@ -17,6 +17,7 @@ phones:
     number: "(717) 787-0419"
   - label: "District office"
     number: "(484) 200-8263"
+email: "repwebster@pahouse.net"
 contact_form: "https://www.pahouse.com/150/Contact/"
 website: "https://www.pahouse.com/webster"
 committees:
@@ -73,8 +74,9 @@ ai_record:
 sources:
   - "https://www.palegis.us/house/members/house-member-bio?memberId=1848"
   - "https://www.palegis.us/house/rss/session/members"
+  - "https://data.openstates.org/people/current/pa.csv"
 verified: false
-updated: 2026-11-20
+updated: 2026-11-21
 ---
 
 Democrat representing part of Montgomery County. He prime-sponsored HB 2650, which would write Gov. Shapiro's GRID standards for data centres seeking state tax breaks into law; it passed the House 134-68 in June 2026.

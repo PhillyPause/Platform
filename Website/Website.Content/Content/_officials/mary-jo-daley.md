@@ -17,6 +17,7 @@ phones:
     number: "(717) 787-9475"
   - label: "District office"
     number: "(610) 832-1679"
+email: "repmaryjodaley@pahouse.net"
 contact_form: "https://www.pahouse.com/148/Contact/"
 website: "https://www.palegis.us/house/members/house-member-bio?memberId=1622"
 committees:
@@ -72,8 +73,9 @@ sources:
   - "https://www.palegis.us/house/members/house-member-bio?memberId=1622"
   - "https://www.palegis.us/house/rss/session/members"
   - "https://www.multistate.us/elections/results/pennsylvania-2026"
+  - "https://data.openstates.org/people/current/pa.csv"
 verified: false
-updated: 2026-11-20
+updated: 2026-11-21
 ---
 
 Democrat representing the 148th District (Montgomery County); she chaired the Tourism, Recreation & Economic Development Committee in 2025-26. She did not seek re-election in 2026; Megan Griffin-Shelley won the seat.

@@ -21,6 +21,7 @@ phones:
     number: "(610) 270-1150"
   - label: "District office 2"
     number: "(610) 222-3490"
+email: "repbradford@pahouse.net"
 contact_form: "https://www.pahouse.com/70/Contact/"
 website: "https://www.pahouse.com/Bradford"
 committees:
@@ -69,8 +70,9 @@ ai_record:
 sources:
   - "https://www.palegis.us/house/members/house-member-bio?memberId=1161"
   - "https://www.palegis.us/house/rss/session/members"
+  - "https://data.openstates.org/people/current/pa.csv"
 verified: false
-updated: 2026-11-20
+updated: 2026-11-21
 ---
 
 Democrat representing part of Montgomery County; an attorney. He was House Majority Leader and chaired the Rules Committee in 2025-26.

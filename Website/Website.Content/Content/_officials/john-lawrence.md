@@ -17,6 +17,7 @@ phones:
     number: "(717) 260-6117"
   - label: "District office"
     number: "(610) 869-1602"
+email: "jlawrenc@pahousegop.com"
 contact_form: "https://www.replawrence.com/Contact"
 website: "https://www.replawrence.com"
 committees:
@@ -68,8 +69,9 @@ sources:
   - "https://www.palegis.us/house/members/house-member-bio?memberId=1215"
   - "https://www.palegis.us/house/rss/session/members"
   - "https://www.multistate.us/elections/results/pennsylvania-2026"
+  - "https://data.openstates.org/people/current/pa.csv"
 verified: false
-updated: 2026-11-20
+updated: 2026-11-21
 ---
 
 Republican state representative for the 13th District (Chester County (part)); the official House biography lists the occupation as Financial Professional.

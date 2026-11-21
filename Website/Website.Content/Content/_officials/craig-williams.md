@@ -17,6 +17,7 @@ phones:
     number: "(717) 783-3038"
   - label: "District office"
     number: "(610) 358-5925"
+email: "craig.williams@pahousegop.com"
 contact_form: "https://www.RepCraigWilliams.com/Contact"
 website: "https://www.RepCraigWilliams.com"
 committees:
@@ -70,8 +71,9 @@ sources:
   - "https://www.palegis.us/house/members/house-member-bio?memberId=1916"
   - "https://www.palegis.us/house/rss/session/members"
   - "https://www.multistate.us/elections/results/pennsylvania-2026"
+  - "https://data.openstates.org/people/current/pa.csv"
 verified: false
-updated: 2026-11-20
+updated: 2026-11-21
 ---
 
 Republican who represented the 160th District (parts of Delaware and Chester counties); an attorney. He co-sponsored HB 811 (election deepfakes) and HB 2496 (data-centre zoning pause). He lost re-election on November 3, 2026 to Democrat Elizabeth Moro.

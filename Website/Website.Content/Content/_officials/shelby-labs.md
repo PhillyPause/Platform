@@ -17,6 +17,7 @@ phones:
     number: "(717) 787-8556"
   - label: "District office"
     number: "(215) 489-2126"
+email: "slabs@pahousegop.com"
 website: "https://www.RepShelbyLabsPA.com"
 committees:
   - "Aging & Older Adult Services (Republican Secretary)"
@@ -68,8 +69,9 @@ sources:
   - "https://www.palegis.us/house/members/house-member-bio?memberId=1911"
   - "https://www.palegis.us/house/rss/session/members"
   - "https://www.multistate.us/elections/results/pennsylvania-2026"
+  - "https://data.openstates.org/people/current/pa.csv"
 verified: false
-updated: 2026-11-20
+updated: 2026-11-21
 ---
 
 Republican state representative for the 143rd District (Bucks County (part)); the official House biography lists the occupation as not stated.

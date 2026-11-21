@@ -17,6 +17,7 @@ phones:
     number: "(717) 787-5709"
   - label: "District office, West Chester"
     number: "(610) 692-2112"
+email: "senatorcomitta@pasenate.com"
 contact_form: "https://www.pasenatorcomitta.com/contact/"
 website: "https://www.pasenatorcomitta.com/"
 committees:
@@ -44,8 +45,9 @@ ai_record:
 sources:
   - "https://www.palegis.us/senate/members/bio/1790/sen-comitta"
   - "https://www.altoonamirror.com/news/local-news/2026/03/pa-senate-ai-chatbot-safety-bill-passes/"
+  - "https://data.openstates.org/people/current/pa.csv"
 verified: false
-updated: 2026-11-20
+updated: 2026-11-21
 ---
 
 Former teacher, town planner and mayor of West Chester (2010-2017) who served in the state House before winning the Senate seat in 2020. She is the Democratic chair of the Environmental Resources & Energy Committee, where data-centre siting and water bills are referred.

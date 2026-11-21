@@ -17,6 +17,7 @@ phones:
     number: "(717) 783-7619"
   - label: "District office"
     number: "(215) 517-6800"
+email: "repsanchez@pahouse.net"
 contact_form: "https://www.pahouse.com/153/Contact/"
 website: "https://www.pahouse.com/sanchez"
 committees:
@@ -79,8 +80,9 @@ ai_record:
 sources:
   - "https://www.palegis.us/house/members/house-member-bio?memberId=1849"
   - "https://www.palegis.us/house/rss/session/members"
+  - "https://data.openstates.org/people/current/pa.csv"
 verified: false
-updated: 2026-11-20
+updated: 2026-11-21
 ---
 
 Democratic state representative for the 153rd District (Montgomery County (part)); the official House biography lists the occupation as Attorney.

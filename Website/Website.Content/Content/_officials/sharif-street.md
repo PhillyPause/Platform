@@ -21,6 +21,7 @@ phones:
     number: "(215) 227-6161"
   - label: "District office, 4458 A Germantown Ave"
     number: "(215) 457-5200"
+email: "street@pasenate.com"
 contact_form: "https://www.senatorsharifstreet.com/contact/"
 website: "https://www.senatorsharifstreet.com/"
 committees:
@@ -46,8 +47,9 @@ sources:
   - "https://ballotpedia.org/Pennsylvania's_3rd_Congressional_District_election,_2026_(May_19_Democratic_primary)"
   - "https://www.altoonamirror.com/news/local-news/2026/03/pa-senate-ai-chatbot-safety-bill-passes/"
   - "https://www.cityandstatepa.com/policy/2026/11/meet-2027-28-leaders-pennsylvania-senate/417287/"
+  - "https://data.openstates.org/people/current/pa.csv"
 verified: false
-updated: 2026-11-20
+updated: 2026-11-21
 ---
 
 Attorney and housing advocate representing North Philadelphia, and a former chair of the Pennsylvania Democratic Party. He ran for the open PA-3 congressional seat in 2026 but lost the May primary to Chris Rabb, so he remains in the Senate.

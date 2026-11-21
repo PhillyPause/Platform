@@ -17,6 +17,7 @@ phones:
     number: "(717) 787-5774"
   - label: "District office"
     number: "(215) 271-9190"
+email: "repfiedler@pahouse.net"
 contact_form: "https://www.pahouse.com/184/Contact/"
 website: "https://www.pahouse.com/fiedler"
 committees:
@@ -66,8 +67,9 @@ ai_record:
 sources:
   - "https://www.palegis.us/house/members/house-member-bio?memberId=1861"
   - "https://www.palegis.us/house/rss/session/members"
+  - "https://data.openstates.org/people/current/pa.csv"
 verified: false
-updated: 2026-11-20
+updated: 2026-11-21
 ---
 
 Democrat representing part of South Philadelphia; a former reporter. In 2025-26 she chaired the House Energy Committee, which reported the data-centre bills HB 1834 and HB 2151.

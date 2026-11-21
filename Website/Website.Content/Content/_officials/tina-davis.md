@@ -17,6 +17,7 @@ phones:
     number: "(717) 783-4903"
   - label: "District office"
     number: "(267) 580-2660"
+email: "repdavis@pahouse.net"
 contact_form: "https://www.pahouse.com/141/Contact/"
 website: "https://www.pahouse.com/davis"
 committees:
@@ -69,8 +70,9 @@ ai_record:
 sources:
   - "https://www.palegis.us/house/members/house-member-bio?memberId=1204"
   - "https://www.palegis.us/house/rss/session/members"
+  - "https://data.openstates.org/people/current/pa.csv"
 verified: false
-updated: 2026-11-20
+updated: 2026-11-21
 ---
 
 Democratic state representative for the 141st District (Bucks County (part)); the official House biography lists the occupation as Owner Trucking Business.

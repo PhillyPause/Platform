@@ -17,6 +17,7 @@ phones:
     number: "(717) 787-3181"
   - label: "District office"
     number: "(215) 849-6592"
+email: "repcarroll@pahouse.net"
 contact_form: "https://www.pahouse.com/201/Contact/"
 website: "https://www.palegis.us/house/members/house-member-bio?memberId=2019"
 committees:
@@ -70,8 +71,9 @@ ai_record:
 sources:
   - "https://www.palegis.us/house/members/house-member-bio?memberId=2019"
   - "https://www.palegis.us/house/rss/session/members"
+  - "https://data.openstates.org/people/current/pa.csv"
 verified: false
-updated: 2026-11-20
+updated: 2026-11-21
 ---
 
 Democratic state representative for the 201st District (Philadelphia County (part)); the official House biography lists the occupation as Organizer.

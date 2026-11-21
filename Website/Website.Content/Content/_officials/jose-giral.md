@@ -17,6 +17,7 @@ phones:
     number: "(717) 787-1407"
   - label: "District office"
     number: "(215) 291-5643"
+email: "repgiral@pahouse.net"
 contact_form: "https://www.pahouse.com/180/Contact/"
 website: "https://www.palegis.us/house/members/house-member-bio?memberId=1980"
 committees:
@@ -73,8 +74,9 @@ ai_record:
 sources:
   - "https://www.palegis.us/house/members/house-member-bio?memberId=1980"
   - "https://www.palegis.us/house/rss/session/members"
+  - "https://data.openstates.org/people/current/pa.csv"
 verified: false
-updated: 2026-11-20
+updated: 2026-11-21
 ---
 
 Democratic state representative for the 180th District (Philadelphia County (part)); the official House biography lists the occupation as State Representative.

@@ -21,6 +21,7 @@ phones:
     number: "(484) 861-4964"
   - label: "District office, Quakertown"
     number: "(267) 551-3744"
+email: "jcoleman@pasen.gov"
 contact_form: "https://senatorcoleman.com/contact/"
 website: "https://senatorcoleman.com"
 committees:
@@ -48,8 +49,9 @@ sources:
   - "https://www.palegis.us/senate/members/bio/2008/sen-coleman"
   - "https://whyy.org/articles/pennsylvania-democrats-trifecta/"
   - "https://www.altoonamirror.com/news/local-news/2026/03/pa-senate-ai-chatbot-safety-bill-passes/"
+  - "https://data.openstates.org/people/current/pa.csv"
 verified: false
-updated: 2026-11-20
+updated: 2026-11-21
 ---
 
 Airline pilot and former Parkland School Board member elected in 2022 to a district covering upper Bucks and part of Lehigh County. He lost re-election on November 3, 2026 to Democrat Mark Pinsley.

@@ -17,6 +17,7 @@ phones:
     number: "(717) 783-4086"
   - label: "District office"
     number: "(484) 200-8265"
+email: "jciresi@pahouse.net"
 contact_form: "https://www.pahouse.com/146/Contact/"
 website: "https://www.pahouse.com/ciresi"
 committees:
@@ -74,8 +75,9 @@ sources:
   - "https://www.palegis.us/house/members/house-member-bio?memberId=1847"
   - "https://www.palegis.us/house/rss/session/members"
   - "https://www.multistate.us/elections/results/pennsylvania-2026"
+  - "https://data.openstates.org/people/current/pa.csv"
 verified: false
-updated: 2026-11-20
+updated: 2026-11-21
 ---
 
 Democrat representing the 146th District in Montgomery County. In 2025-26 he chaired the House Communications & Technology Committee, which handled most of the session's AI bills (HB 95, HB 811, HB 1925, HB 2006, HB 2314, HR 425). With Republican chair Jason Ortitay he prime-sponsored HB 2314, an AI public-education campaign bill that passed 198-3.

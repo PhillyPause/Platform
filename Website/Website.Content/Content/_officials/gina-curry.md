@@ -17,6 +17,7 @@ phones:
     number: "(717) 783-4907"
   - label: "District office"
     number: "(610) 259-7016"
+email: "repcurry@pahouse.net"
 contact_form: "https://www.pahouse.com/164/Contact/"
 website: "https://www.palegis.us/house/members/house-member-bio?memberId=1932"
 committees:
@@ -69,8 +70,9 @@ ai_record:
 sources:
   - "https://www.palegis.us/house/members/house-member-bio?memberId=1932"
   - "https://www.palegis.us/house/rss/session/members"
+  - "https://data.openstates.org/people/current/pa.csv"
 verified: false
-updated: 2026-11-20
+updated: 2026-11-21
 ---
 
 Democratic state representative for the 164th District (Delaware County (part)); the official House biography lists the occupation as Training Consultant.

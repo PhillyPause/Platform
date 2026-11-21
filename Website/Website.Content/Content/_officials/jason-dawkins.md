@@ -17,6 +17,7 @@ phones:
     number: "(717) 787-1354"
   - label: "District office"
     number: "(215) 744-7901"
+email: "jdawkins@pahouse.net"
 contact_form: "https://www.pahouse.com/179/Contact/"
 website: "https://www.palegis.us/house/members/house-member-bio?memberId=1685"
 committees:
@@ -66,8 +67,9 @@ ai_record:
 sources:
   - "https://www.palegis.us/house/members/house-member-bio?memberId=1685"
   - "https://www.palegis.us/house/rss/session/members"
+  - "https://data.openstates.org/people/current/pa.csv"
 verified: false
-updated: 2026-11-20
+updated: 2026-11-21
 ---
 
 Democratic state representative for the 179th District (Philadelphia County (part)); the official House biography lists the occupation as Legislator.

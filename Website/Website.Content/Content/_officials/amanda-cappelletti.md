@@ -21,6 +21,7 @@ phones:
     number: "(610) 768-4200"
   - label: "District office, Wynnewood"
     number: "(610) 896-2832"
+email: "cappelletti@pasenate.com"
 contact_form: "https://www.pasenatorcappelletti.com/contact/"
 website: "https://www.pasenatorcappelletti.com/"
 committees:
@@ -60,8 +61,9 @@ sources:
   - "https://www.palegis.us/senate/members/bio/1923/sen-cappelletti"
   - "https://www.palegis.us/senate/committees/39/judiciary"
   - "https://www.altoonamirror.com/news/local-news/2026/03/pa-senate-ai-chatbot-safety-bill-passes/"
+  - "https://data.openstates.org/people/current/pa.csv"
 verified: false
-updated: 2026-11-20
+updated: 2026-11-21
 ---
 
 Attorney and former East Norriton supervisor with a public-health background who represents the Main Line and central Montgomery County. She is the Democratic chair of the Judiciary Committee, which handled the deepfake/digital-forgery bill.

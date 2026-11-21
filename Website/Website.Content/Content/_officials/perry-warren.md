@@ -17,6 +17,7 @@ phones:
     number: "(717) 787-5475"
   - label: "District office"
     number: "(215) 493-5420"
+email: "repwarren@pahouse.net"
 contact_form: "https://www.pahouse.com/31/Contact/"
 website: "https://www.pahouse.com/Warren/"
 committees:
@@ -65,8 +66,9 @@ ai_record:
 sources:
   - "https://www.palegis.us/house/members/house-member-bio?memberId=1743"
   - "https://www.palegis.us/house/rss/session/members"
+  - "https://data.openstates.org/people/current/pa.csv"
 verified: false
-updated: 2026-11-20
+updated: 2026-11-21
 ---
 
 Democrat representing part of Bucks County; an attorney. In 2025-26 he chaired the House Insurance Committee.

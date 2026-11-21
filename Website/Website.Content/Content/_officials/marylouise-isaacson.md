@@ -17,6 +17,7 @@ phones:
     number: "(717) 783-8098"
   - label: "District office"
     number: "(215) 503-3245"
+email: "misaacson@pahouse.net"
 contact_form: "https://www.pahouse.com/175/Contact/"
 website: "https://www.pahouse.com/isaacson"
 committees:
@@ -74,8 +75,9 @@ ai_record:
 sources:
   - "https://www.palegis.us/house/members/house-member-bio?memberId=1857"
   - "https://www.palegis.us/house/rss/session/members"
+  - "https://data.openstates.org/people/current/pa.csv"
 verified: false
-updated: 2026-11-20
+updated: 2026-11-21
 ---
 
 Democratic state representative for the 175th District (Philadelphia County (part)); the official House biography lists the occupation as Legislator.

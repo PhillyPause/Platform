@@ -21,6 +21,7 @@ phones:
     number: "(215) 517-1434"
   - label: "District office, Philadelphia (Germantown Ave)"
     number: "(215) 242-8171"
+email: "senatorhaywood@pasenate.com"
 contact_form: "https://www.senatorhaywood.com/contact/"
 website: "https://www.senatorhaywood.com"
 committees:
@@ -61,8 +62,9 @@ sources:
   - "https://patch.com/pennsylvania/abington/haywood-wins-contested-democratic-senate-race-unofficial-results"
   - "https://en.wikipedia.org/wiki/2026_Pennsylvania_Senate_election"
   - "https://www.altoonamirror.com/news/local-news/2026/03/pa-senate-ai-chatbot-safety-bill-passes/"
+  - "https://data.openstates.org/people/current/pa.csv"
 verified: false
-updated: 2026-11-20
+updated: 2026-11-21
 ---
 
 Housing attorney and former Cheltenham Township commissioner first elected to the Senate in 2014, representing northwest Philadelphia and eastern Montgomery County. He won a contested 2026 primary and was re-elected in November 2026.

@@ -17,6 +17,7 @@ phones:
     number: "(717) 705-7011"
   - label: "District office"
     number: "(610) 768-3135"
+email: "repbriggs@pahouse.net"
 contact_form: "https://www.pahouse.com/149/Contact/"
 website: "https://www.pahouse.com/Briggs"
 committees:
@@ -65,8 +66,9 @@ ai_record:
 sources:
   - "https://www.palegis.us/house/members/house-member-bio?memberId=1159"
   - "https://www.palegis.us/house/rss/session/members"
+  - "https://data.openstates.org/people/current/pa.csv"
 verified: false
-updated: 2026-11-20
+updated: 2026-11-21
 ---
 
 Democrat representing part of Montgomery County. In 2025-26 he chaired the House Judiciary Committee, which handles criminal-law measures such as deepfake offences.

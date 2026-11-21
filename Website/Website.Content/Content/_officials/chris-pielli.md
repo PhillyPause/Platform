@@ -17,6 +17,7 @@ phones:
     number: "(717) 705-2075"
   - label: "District office"
     number: "(610) 696-4990"
+email: "reppielli@pahouse.net"
 contact_form: "https://www.pahouse.com/156/Contact/"
 website: "https://www.palegis.us/house/members/house-member-bio?memberId=1975"
 committees:
@@ -74,8 +75,9 @@ ai_record:
 sources:
   - "https://www.palegis.us/house/members/house-member-bio?memberId=1975"
   - "https://www.palegis.us/house/rss/session/members"
+  - "https://data.openstates.org/people/current/pa.csv"
 verified: false
-updated: 2026-11-20
+updated: 2026-11-21
 ---
 
 Democrat representing part of Chester County; his official biography lists him as a former Chester County Recorder of Deeds. He is prime sponsor of HB 95, which would require disclosure of AI-generated advertising content and passed the House 124-78 in June 2026.

@@ -17,6 +17,7 @@ phones:
     number: "(717) 787-3110"
   - label: "District office, Red Hill"
     number: "(215) 541-2388"
+email: "tpennycuick@pasen.gov"
 contact_form: "https://senatorpennycuick.com/contact/"
 website: "https://senatorpennycuick.com"
 committees:
@@ -63,8 +64,9 @@ sources:
   - "https://www.palegis.us/senate/members/bio/1912/sen-pennycuick"
   - "https://www.palegis.us/senate/committees/5/communications-and-technology"
   - "https://whyy.org/articles/pennsylvania-democrats-trifecta/"
+  - "https://data.openstates.org/people/current/pa.csv"
 verified: false
-updated: 2026-11-20
+updated: 2026-11-21
 ---
 
 Retired U.S. Army lieutenant colonel and helicopter pilot, former Montgomery County veterans-affairs director, elected in 2022. As Communications & Technology chair she authored Pennsylvania's deepfake law and the Senate's AI-chatbot bill; she lost re-election on November 3, 2026 to Democrat Chris Thomas in a race dominated by data-centre policy.

@@ -17,6 +17,7 @@ phones:
     number: "(717) 705-2567"
   - label: "District office"
     number: "(610) 534-6880"
+email: "repkrueger@pahouse.net"
 contact_form: "https://www.pahouse.com/161/Contact/"
 website: "https://www.palegis.us/house/members/house-member-bio?memberId=1735"
 committees:
@@ -65,8 +66,9 @@ ai_record:
 sources:
   - "https://www.palegis.us/house/members/house-member-bio?memberId=1735"
   - "https://www.palegis.us/house/rss/session/members"
+  - "https://data.openstates.org/people/current/pa.csv"
 verified: false
-updated: 2026-11-20
+updated: 2026-11-21
 ---
 
 Democratic state representative for the 161st District (Delaware County (part)); the official House biography lists the occupation as State Representative.

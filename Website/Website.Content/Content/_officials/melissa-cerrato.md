@@ -17,6 +17,7 @@ phones:
     number: "(717) 772-1999"
   - label: "District office"
     number: "(267) 282-6695"
+email: "repcerrato@pahouse.net"
 contact_form: "https://www.pahouse.com/151/Contact/"
 website: "https://www.pahouse.com/Cerrato"
 committees:
@@ -73,8 +74,9 @@ ai_record:
 sources:
   - "https://www.palegis.us/house/members/house-member-bio?memberId=1974"
   - "https://www.palegis.us/house/rss/session/members"
+  - "https://data.openstates.org/people/current/pa.csv"
 verified: false
-updated: 2026-11-20
+updated: 2026-11-21
 ---
 
 Democratic state representative for the 151st District (Montgomery County (part)); the official House biography lists the occupation as not stated.

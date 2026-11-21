@@ -21,6 +21,7 @@ phones:
     number: "(215) 533-0440"
   - label: "District office, 400 W. Allegheny Ave"
     number: "(215) 291-4653"
+email: "tartaglione@pasenate.com"
 contact_form: "https://www.senatortartaglione.com/contact/"
 website: "https://www.senatortartaglione.com"
 committees:
@@ -61,8 +62,9 @@ sources:
   - "https://en.wikipedia.org/wiki/2026_Pennsylvania_Senate_election"
   - "https://www.altoonamirror.com/news/local-news/2026/03/pa-senate-ai-chatbot-safety-bill-passes/"
   - "https://www.cityandstatepa.com/policy/2026/11/meet-2027-28-leaders-pennsylvania-senate/417287/"
+  - "https://data.openstates.org/people/current/pa.csv"
 verified: false
-updated: 2026-11-20
+updated: 2026-11-21
 ---
 
 Senator since 1995 representing parts of North and Northeast Philadelphia, and the Senate Democrats' whip in 2025-26. She has long served in Democratic caucus leadership and was re-elected unopposed in November 2026.

@@ -17,6 +17,7 @@ phones:
     number: "(717) 787-7524"
   - label: "District office"
     number: "(484) 200-8260"
+email: "repshusterman@pahouse.net"
 contact_form: "https://www.pahouse.com/157/Contact/"
 website: "https://www.pahouse.com/shusterman"
 committees:
@@ -74,8 +75,9 @@ ai_record:
 sources:
   - "https://www.palegis.us/house/members/house-member-bio?memberId=1851"
   - "https://www.palegis.us/house/rss/session/members"
+  - "https://data.openstates.org/people/current/pa.csv"
 verified: false
-updated: 2026-11-20
+updated: 2026-11-21
 ---
 
 Democrat representing part of Chester County; her official biography lists her as a small-business owner and video director. She is prime sponsor of HB 2006 (safety rules for AI companion apps, passed the House 133-70 in September 2026) and HB 2175 (AI chatbot consumer protections, still in committee).

@@ -17,6 +17,7 @@ phones:
     number: "(717) 772-2004"
   - label: "District office"
     number: "(215) 223-1890"
+email: "dburgos@pahouse.net"
 contact_form: "https://www.pahouse.com/197/Contact/"
 website: "https://www.pahouse.com/burgos"
 committees:
@@ -65,8 +66,9 @@ ai_record:
 sources:
   - "https://www.palegis.us/house/members/house-member-bio?memberId=1863"
   - "https://www.palegis.us/house/rss/session/members"
+  - "https://data.openstates.org/people/current/pa.csv"
 verified: false
-updated: 2026-11-20
+updated: 2026-11-21
 ---
 
 Democrat representing part of Philadelphia. In 2025-26 he chaired the House Consumer Protection, Technology & Utilities Committee, where the AI chatbot bill HB 2175 has sat since March 2026.
