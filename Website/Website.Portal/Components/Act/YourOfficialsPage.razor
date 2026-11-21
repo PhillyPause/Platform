@@ -58,6 +58,13 @@
                             <OfficialCard Official="official" />
                         }
                     </ul>
+                    @if (Writable(people) is { Count: > 1 } writable)
+                    {
+                        <p class="act-merge-cta">
+                            <a class="act-btn" href="@ActPaths.WriteTo(writable)">Write to all @writable.Count at once</a>
+                            <span class="act-small">One message, a copy to each, with their names filled in.</span>
+                        </p>
+                    }
                 }
                 else
                 {
@@ -115,6 +122,11 @@
         // members, only the one for the district they chose.
         _ => _found.Where(o => o.Arena == "Local" && (o.Level != OfficialLevel.City || o.District is null || o.District == _council)).ToArray()
     };
+
+    // Everyone in this place who takes a message, but not someone leaving
+    // office: a merge goes to the people who will still be there to act.
+    private static IReadOnlyList<Official> Writable(IReadOnlyList<Official> people) =>
+        people.Where(o => o.CanEmail && o.Status != OfficialStatus.Departing).Take(MailMerge.Most).ToArray();
 
     private IReadOnlyList<FilterChips.Chip> ArenaChips()
     {

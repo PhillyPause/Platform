@@ -238,7 +238,8 @@ public partial class ActTests(WebApplicationFactory<Program> factory) : IClassFi
             "/act/yours", "/act/yours?cd=3&ss=1&sh=182&county=Philadelphia",
             "/act/yours?cd=3&ss=1&sh=182&county=Philadelphia&in=harrisburg",
             "/act/yours?cd=3&ss=1&sh=182&county=Philadelphia&in=local&cc=5",
-            "/act/learn"
+            "/act/learn",
+            ActPaths.WriteTo(Store.All.Where(o => o.CanEmail).Take(3))
         };
         foreach (var learn in Directory.EnumerateFiles(Path.Combine(TestPaths.ContentRoot, "act", "learn"), "*.md"))
         {

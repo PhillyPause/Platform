@@ -1,0 +1,112 @@
+@using ManyHands.Core
+@using ManyHands.Data
+@using Microsoft.Extensions.DependencyInjection
+@inject IConfiguration Configuration
+@inject IServiceProvider Services
+@inject ActThrottle Throttle
+
+@* "I sent them": the outreach log for one message to several, with ManyHands
+   on. One action for each official ticked, by the way it would have gone
+   (their email, else their form). Off, this renders nothing and nothing on
+   the page mentions it (CLAUDE.md). Like LogAction, it keeps that each
+   happened, never what was said. *@
+
+@if (_outreach is not null)
+{
+    <section class="act-panel act-log" aria-labelledby="log-many-head">
+        @if (_logged > 0)
+        {
+            <h3 id="log-many-head">Thank you. @(_logged == 1 ? "That counts." : $"All {_logged} count.")</h3>
+            @if (_signedIn)
+            {
+                <p>They are on <a href="@ManyHandsPaths.MyOutreach">your page</a> with everything else you have done.</p>
+            }
+            else
+            {
+                <p>We counted them, with nobody&rsquo;s name on them. <label class="act-link" for="join-open">Join us</label> and we will keep a record you can see, and tell you when there is something worth calling about.</p>
+            }
+            <p><a class="act-btn act-btn-ghost" href="/act">Contact someone else</a></p>
+        }
+        else
+        {
+            <h3 id="log-many-head">Sent them? Tell us</h3>
+            <p class="act-small">So we know which offices are hearing from people, and which are not. We keep that it happened, never what you said.</p>
+            <EditForm Model="Input" FormName="log" OnValidSubmit="LogAsync" class="act-form">
+                <DataAnnotationsValidator />
+                <fieldset class="act-choice">
+                    <legend>Which did you send?</legend>
+                    @foreach (var o in Officials)
+                    {
+                        <label><input type="checkbox" name="Input.Sent[@o.Key]" value="true" checked /> @o.Name</label>
+                    }
+                </fieldset>
+                <label>
+                    <span>Anything we should know? <span class="act-small">Optional. What any of them said, if anything.</span></span>
+                    <InputTextArea @bind-Value="Input!.Note" rows="2" maxlength="@OutreachRepository.NoteLimit" />
+                    <ValidationMessage For="() => Input!.Note" />
+                </label>
+                @if (_refused is not null)
+                {
+                    <p class="act-error" role="alert">@_refused</p>
+                }
+                <button class="act-btn" type="submit">I sent them</button>
+            </EditForm>
+        }
+    </section>
+}
+
+@code {
+    [CascadingParameter] private HttpContext? HttpContext { get; set; }
+
+    [Parameter, EditorRequired] public required IReadOnlyList<Official> Officials { get; set; }
+
+    [SupplyParameterFromForm(FormName = "log")] private LogInput? Input { get; set; }
+
+    private OutreachRepository? _outreach;
+    private bool _signedIn;
+    private int _logged;
+    private string? _refused;
+
+    protected override void OnInitialized()
+    {
+        if (Configuration.IsManyHandsEnabled())
+            _outreach = Services.GetService<OutreachRepository>();
+
+        _signedIn = HttpContext?.User.VolunteerId() is not null;
+        Input ??= new LogInput();
+    }
+
+    private async Task LogAsync()
+    {
+        if (_outreach is null || HttpContext is null) return;
+
+        // Only the page's own officials, whatever else the form carries.
+        var sent = Officials.Where(o => Input!.Sent.GetValueOrDefault(o.Key)).ToArray();
+        if (sent.Length == 0)
+        {
+            _refused = "Tick the ones you sent.";
+            return;
+        }
+        if (!Throttle.AllowLog(HttpContext))
+        {
+            _refused = "That is a lot in a short time. Wait a few minutes and try again.";
+            return;
+        }
+
+        var volunteer = HttpContext.User.VolunteerId();
+        foreach (var o in sent)
+        {
+            var channel = o.Email is not null ? OutreachChannel.Email : OutreachChannel.ContactForm;
+            await _outreach.LogAsync(volunteer, o.Key, o.Name, channel, OutreachOutcome.Sent, Input!.Note);
+        }
+        _logged = sent.Length;
+    }
+
+    private sealed class LogInput
+    {
+        public Dictionary<string, bool> Sent { get; set; } = [];
+
+        [StringLength(OutreachRepository.NoteLimit, ErrorMessage = "Keep it to a few sentences.")]
+        public string? Note { get; set; }
+    }
+}

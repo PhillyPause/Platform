@@ -16,6 +16,13 @@ public static class ActPaths
     /// <summary>A set of districts' officials, before its query string (<see cref="Yours(DistrictMatch)"/>).</summary>
     public const string YoursBase = "/act/yours";
 
+    /// <summary>One message to several officials, before its query string (<see cref="WriteTo"/>).</summary>
+    public const string WriteMany = "/act/write";
+
+    /// <summary>One message to all of these, a copy each (<see cref="MailMerge"/>): ?to=key&amp;to=key.</summary>
+    public static string WriteTo(IEnumerable<Official> officials) =>
+        WriteMany + "?" + string.Join('&', officials.Select(o => "to=" + Uri.EscapeDataString(o.Key)));
+
     /// <summary>The officials for a match, as the address lookup redirects to them.</summary>
     /// <remarks>
     /// The districts go in the query string (?cd=3&amp;ss=1&amp;sh=182&amp;county=Philadelphia),

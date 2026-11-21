@@ -302,6 +302,38 @@
 .act-faq dd { margin: 0.2rem 0 0; color: var(--muted); }
 .act-log { border-color: #15110C; border-width: 2px; }
 
+/* One message to several (WriteManyPage): three numbered steps, the ones
+   ahead named but quiet, the one behind folded to a line; then a row per
+   official, ticked off as each copy is opened (act.js). */
+.act-steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 1.25rem; counter-reset: act-step; }
+.act-step { counter-increment: act-step; }
+.act-step > h3::before { content: counter(act-step) ". "; color: #AE2012; }
+.act-step.is-ahead, .act-step.is-done { padding: 0 18px; }
+.act-step.is-ahead { opacity: 0.6; }
+.act-step.is-ahead h3, .act-step.is-done h3 { margin-bottom: 0.2rem; }
+.act-step.is-ahead p, .act-step.is-done p { margin: 0; }
+.act-step.is-done h3::after { content: " \2713"; color: #2F6B3A; }
+.act-merge-key code { font-size: 0.95em; background: #F5F0E4; padding: 0 0.25em; }
+.act-merge { list-style: none; margin: 0.8rem 0; padding: 0; display: grid; gap: 0.6rem; }
+.act-merge-row {
+  display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 0.4rem 0.8rem; align-items: center;
+  padding: 0.6rem 0.7rem; border: 1px solid var(--line); background: #FBF8F1;
+}
+.act-merge-who strong { display: block; }
+.act-merge-who span { font-size: 13px; color: var(--muted); }
+.act-merge-do { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; }
+@container (min-width: 34rem) {
+  .act-merge-row { grid-template-columns: auto minmax(0, 1fr) auto; }
+  .act-merge-do { grid-column: auto; justify-content: flex-end; }
+}
+.act-merge-done { display: none; font-size: 13px; font-weight: 700; color: #2F6B3A; }
+.act-merge-done::before { content: "\2713  "; }
+.act-merge-row.is-opened { border-color: #2F6B3A; }
+.act-merge-row.is-opened .act-merge-done { display: inline; }
+.act-merge-progress { margin: 0 0 0.6rem; font-weight: 700; color: #15110C; }
+.act-merge-progress:empty { display: none; }
+.act-merge-cta { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem 0.8rem; margin: 0.9rem 0 0; }
+
 /* ---------------------------------------------------------------- tutorials
    Four steps light in turn on a twelve-second loop, and each icon does one
    small thing while its step is lit. Every value is a transform, an opacity
@@ -334,7 +366,8 @@
 }
 
 .act-tut-step .act-bounce, .act-tut-step .act-ring, .act-tut-step .act-wave,
-.act-tut-step .act-draw, .act-tut-step .act-strike, .act-tut-step .act-scribble, .act-tut-step .act-fly {
+.act-tut-step .act-draw, .act-tut-step .act-strike, .act-tut-step .act-scribble, .act-tut-step .act-fly,
+.act-tut-step .act-fan-l, .act-tut-step .act-fan-r {
   animation-duration: 12s; animation-iteration-count: infinite; animation-delay: calc(var(--i) * 3s); animation-fill-mode: both;
 }
 .act-bounce { animation-name: act-bounce; }
@@ -344,6 +377,11 @@
 .act-strike { stroke-dasharray: 1; animation-name: act-draw; stroke: #AE2012; }
 .act-scribble { animation-name: act-scribble; }
 .act-fly { animation-name: act-fly; }
+/* One letter fans into a copy for each: at rest, and with motion reduced,
+   the three sit fanned; the loop stacks them and deals them out. */
+.act-sheet { fill: #F5F0E4; }
+.act-fan-l { transform: translate(-9px, 4px) rotate(-12deg); animation-name: act-fan-l; }
+.act-fan-r { transform: translate(9px, 4px) rotate(12deg); animation-name: act-fan-r; }
 
 @keyframes act-bounce { 0% { transform: translateY(0); } 4% { transform: translateY(-6px); } 8%, 100% { transform: translateY(0); } }
 @keyframes act-ring {
@@ -359,6 +397,14 @@
 @keyframes act-fly {
   0%, 4% { transform: translate(0, 0); opacity: 1; } 16% { transform: translate(14px, -12px) rotate(-8deg); opacity: 0; }
   17% { transform: translate(-10px, 6px); opacity: 0; } 26%, 100% { transform: translate(0, 0); opacity: 1; }
+}
+@keyframes act-fan-l {
+  0%, 3% { transform: translate(0, 0) rotate(0); } 10%, 24% { transform: translate(-9px, 4px) rotate(-12deg); }
+  30%, 100% { transform: translate(0, 0) rotate(0); }
+}
+@keyframes act-fan-r {
+  0%, 5% { transform: translate(0, 0) rotate(0); } 12%, 24% { transform: translate(9px, 4px) rotate(12deg); }
+  30%, 100% { transform: translate(0, 0) rotate(0); }
 }
 
 /* Reduced motion: no loop, no wiggle, every step lit and every line drawn. */

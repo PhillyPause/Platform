@@ -62,6 +62,7 @@ and `Website/Website.Portal/Act`; the addresses are in `ActPaths`.
 | `/act/officials/{key}` | One official: contacts, bio, AI record with sources, committees |
 | `/act/call/{key}` | The numbers, a script that works as it stands, one with the reader's own name and reason, and "I called" |
 | `/act/write/{key}` | A draft to change and send from the reader's own email or the office's form, and "I sent it" |
+| `/act/write?to=&to=` | One message to several, a copy each (`WriteManyPage`): reached from "Write to all of them" on each place in Your officials. Each recipient is a chip whose cross drops them; one left is the ordinary write page |
 | `/act/learn`, `/act/learn/{page}` | The explainers: Markdown in `Content/act/learn` |
 
 ## The directory
@@ -158,6 +159,29 @@ what the reader types goes to DeepInfra.
   `DeepInfra:DailyLimit` model calls a day across everyone (`ModelBudget`),
   because each one costs money.
 
+## Writing to several at once
+
+Your officials offers "Write to all of them" for each place with more than
+one to write to, leaving out anyone departing, up to `MailMerge.Most`. The
+reader answers About you once and gets one draft (one model call), which
+greets and asks with tokens: `{salutation}` ("Senator Fetterman",
+"Commissioner Reuther") and `{ask}` (what `TheAsk` asks of that office),
+with `{name}` for the full name. The form of address and the ask both
+change with the office, so a copy is filled for each. A model's reply that
+dropped either token is refused for the template.
+
+The page is its own walkthrough: three numbered steps, the ones ahead named
+before they are reached, and the last a row per official. A row is "Email
+Senator X", or, for an office with only a form, "Copy theirs" and "Open
+their form"; each copy is filled from the edited text at the moment of the
+click (`act.js`, which must fill exactly as `MailMerge.Fill` does). Each row
+is ticked off as it is opened, and a line under the list says how many are
+done and who is next. Without script, each link carries the draft as
+written, filled for its official. Nothing is sent from here and nothing
+typed is kept; with ManyHands on, "I sent them" logs one action per official
+ticked (`LogMany`). There is no "copy an earlier message": that would mean
+keeping what people wrote.
+
 ## The ask
 
 What each level is asked to do is in `Website/Website.Portal/Act/TheAsk.cs`,
@@ -167,7 +191,8 @@ which every draft and script uses, and in words on
 ## Motion
 
 `HowToCall` and `HowToWrite`: four steps each, lit in turn on a twelve-second
-loop, each icon doing one small thing. Hand-drawn SVG and CSS keyframes in
+loop, each icon doing one small thing; on the page that writes to several,
+`HowToWrite`'s last step fans one letter into three. Hand-drawn SVG and CSS keyframes in
 `act.css`, transforms, opacity and stroke offsets only. Under
 `prefers-reduced-motion: reduce` nothing moves and every step shows; a test
 holds that.

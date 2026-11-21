@@ -31,7 +31,17 @@ public sealed record DraftRequest(
     string SenderName,
     string Place,
     string? Story,
-    DraftTone Tone);
+    DraftTone Tone)
+{
+    /// <summary>
+    /// Everyone an email goes to when it is a merge (<see cref="MailMerge"/>):
+    /// the draft then greets and asks with tokens, and each copy fills them.
+    /// <see cref="Official"/> is the first of them.
+    /// </summary>
+    public IReadOnlyList<Official> Recipients { get; init; } = [];
+
+    public bool IsMerge => Kind == DraftKind.Email && Recipients.Count > 1;
+}
 
 /// <summary>A message to send or a script to read. <see cref="Subject"/> is null for a call.</summary>
 public sealed record Draft(string? Subject, string Body, bool AiAssisted);
@@ -58,8 +68,8 @@ public sealed class TemplateDrafter : IMessageDrafter
 
     public static Draft Write(DraftRequest r)
     {
-        var salutation = TheAsk.Salutation(r.Official);
-        var ask = TheAsk.For(r.Official);
+        var salutation = r.IsMerge ? MailMerge.Salutation : TheAsk.Salutation(r.Official);
+        var ask = r.IsMerge ? MailMerge.Ask : TheAsk.For(r.Official);
         var story = Tidy(r.Story);
 
         if (r.Kind == DraftKind.Call)
@@ -207,7 +217,11 @@ public sealed class DeepInfraDrafter(
 
         var subject = lines[0]["Subject:".Length..].Trim();
         var body = string.Join('\n', lines.Skip(1)).Trim();
-        return subject.Length is 0 or > 200 || body.Length == 0 ? null : new Draft(subject, body, AiAssisted: true);
+        if (subject.Length is 0 or > 200 || body.Length == 0) return null;
+
+        // A merge whose tokens the model dropped would send each official
+        // someone else's greeting, or nobody's ask.
+        return request.IsMerge && !MailMerge.Carries(body) ? null : new Draft(subject, body, AiAssisted: true);
     }
 
     public static string SystemPrompt(DraftKind kind) =>
@@ -234,9 +248,7 @@ public sealed class DeepInfraDrafter(
     // this file out with; the model gets the same text on every machine.
     public static string UserPrompt(DraftRequest r) =>
         $"""
-        Official: {r.Official.Name}, {r.Official.Office}
-        Salutation: {TheAsk.Salutation(r.Official)}
-        The ask: I am asking you to {TheAsk.For(r.Official)}.
+        {(r.IsMerge ? MergeLines(r) : SingleLines(r))}
         Background fact you may use: {TheAsk.Why}
         Constituent's name: {r.SenderName}
         Where they live: {r.Place}
@@ -249,6 +261,22 @@ public sealed class DeepInfraDrafter(
         <notes>
         {(string.IsNullOrWhiteSpace(r.Story) ? "(none)" : r.Story.Trim())}
         </notes>
+        """.ReplaceLineEndings("\n");
+
+    private static string SingleLines(DraftRequest r) =>
+        $"""
+        Official: {r.Official.Name}, {r.Official.Office}
+        Salutation: {TheAsk.Salutation(r.Official)}
+        The ask: I am asking you to {TheAsk.For(r.Official)}.
+        """.ReplaceLineEndings("\n");
+
+    // One letter, a copy to each: the greeting and the ask stay tokens, which
+    // each copy fills for its own office. Parse refuses a reply without them.
+    private static string MergeLines(DraftRequest r) =>
+        $"""
+        Officials: each gets their own copy of this one letter. They are {string.Join("; ", r.Recipients.Select(o => $"{o.Name}, {o.Office}"))}.
+        Salutation: write exactly {MailMerge.Salutation}, braces included, so the letter begins "Dear {MailMerge.Salutation},". Each copy fills in its own.
+        The ask: write exactly the sentence "I am asking you to {MailMerge.Ask}.", braces included. Each copy fills in what that office is asked. Do not name any one official or office anywhere else.
         """.ReplaceLineEndings("\n");
 
     private sealed record ChatRequest(

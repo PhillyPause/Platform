@@ -1,0 +1,43 @@
+@* What the write pages ask before drafting, inside the page's own form: name,
+   place, the reason, the tone, and, with a model, where the words go. One
+   message or a copy to each of several, the questions are the same. *@
+
+<div class="act-pair">
+    <label>
+        <span>Your name</span>
+        <InputText @bind-Value="Input.Name" autocomplete="name" />
+        <ValidationMessage For="() => Input.Name" />
+    </label>
+    <label>
+        <span>Where you live <span class="act-small">Neighbourhood or town, and zip code</span></span>
+        <InputText @bind-Value="Input.Place" placeholder="Fishtown, 19125" />
+        <ValidationMessage For="() => Input.Place" />
+    </label>
+</div>
+<label>
+    <span>Why does this matter to you? <span class="act-small">Optional, and the most useful thing here. A sentence or two.</span></span>
+    <InputTextArea @bind-Value="Input.Story" rows="4" maxlength="@DraftInput.StoryLimit"
+                   placeholder="I teach eighth grade and my students already use these tools every day. Nobody can tell me who is checking them." />
+    <ValidationMessage For="() => Input.Story" />
+</label>
+<fieldset class="act-choice">
+    <legend>How should it sound?</legend>
+    <InputRadioGroup @bind-Value="Input.Tone">
+        <label><InputRadio Value="DraftTone.Personal" /> Personal: lead with my reasons</label>
+        <label><InputRadio Value="DraftTone.Plain" /> Plain and brief</label>
+        <label><InputRadio Value="DraftTone.Urgent" /> Urgent</label>
+    </InputRadioGroup>
+</fieldset>
+@if (UsesAi)
+{
+    <p class="act-small act-ai-note">
+        An AI model helps shape the draft. What you type above goes to DeepInfra, which runs it, and
+        is not kept by us. You read and change every word before anything is sent, and you send it yourself.
+    </p>
+}
+
+@code {
+    [Parameter, EditorRequired] public required DraftInput Input { get; set; }
+
+    [Parameter] public bool UsesAi { get; set; }
+}

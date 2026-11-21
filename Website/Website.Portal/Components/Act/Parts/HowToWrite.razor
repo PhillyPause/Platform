@@ -27,12 +27,32 @@
             <strong>Make it yours</strong>
             <span>Change anything. A message in your own voice counts for more than a perfect one.</span>
         </li>
-        <li class="act-tut-step" style="--i: 3">
-            <svg class="act-tut-icon" viewBox="0 0 64 64" aria-hidden="true">
-                <g class="act-fly"><rect x="8" y="18" width="44" height="30" rx="2" /><path d="M8 20l22 16 22-16" /></g>
-            </svg>
-            <strong>Send it yourself</strong>
-            <span>From your own email or the office&rsquo;s form. It comes from you, not from us.</span>
-        </li>
+        @if (Merge)
+        {
+            <li class="act-tut-step" style="--i: 3">
+                <svg class="act-tut-icon" viewBox="0 0 64 64" aria-hidden="true">
+                    <g class="act-fan-l"><rect class="act-sheet" x="14" y="20" width="36" height="24" rx="2" /><path d="M14 22l18 13 18-13" /></g>
+                    <g class="act-fan-r"><rect class="act-sheet" x="14" y="20" width="36" height="24" rx="2" /><path d="M14 22l18 13 18-13" /></g>
+                    <g><rect class="act-sheet" x="14" y="20" width="36" height="24" rx="2" /><path d="M14 22l18 13 18-13" /></g>
+                </svg>
+                <strong>Send each one yourself</strong>
+                <span>A copy to each, with their own name and their office&rsquo;s ask filled in, from your own email or their form.</span>
+            </li>
+        }
+        else
+        {
+            <li class="act-tut-step" style="--i: 3">
+                <svg class="act-tut-icon" viewBox="0 0 64 64" aria-hidden="true">
+                    <g class="act-fly"><rect x="8" y="18" width="44" height="30" rx="2" /><path d="M8 20l22 16 22-16" /></g>
+                </svg>
+                <strong>Send it yourself</strong>
+                <span>From your own email or the office&rsquo;s form. It comes from you, not from us.</span>
+            </li>
+        }
     </ol>
 </figure>
+
+@code {
+    /// <summary>One letter to several: the last step fans it out into a copy for each.</summary>
+    [Parameter] public bool Merge { get; set; }
+}

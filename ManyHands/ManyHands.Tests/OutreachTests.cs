@@ -161,6 +161,26 @@ public sealed class OutreachTests(DatabaseFixture db) : IAsyncLifetime
         page.Should().Contain("Sent it? Tell us").And.Contain("name=\"_handler\" value=\"log\"");
     }
 
+    [Fact]
+    public async Task I_sent_them_logs_each_official_ticked_and_no_other()
+    {
+        var (volunteer, browser) = await SignedInAsync(VolunteerRole.Member, "Merger");
+        const string other = "dave-mccormick";
+        var path = $"/act/write?to={Official}&to={other}";
+
+        var page = await browser.GetStringAsync(path);
+        page.Should().Contain("Sent them? Tell us").And.Contain($"name=\"Input.Sent[{other}]\"");
+
+        var response = await Forms.SubmitAsync(browser, path, "log",
+            ($"Input.Sent[{Official}]", "true"), ("Input.Sent[someone-not-on-the-page]", "true"), ("Input.Note", "Both forms"));
+
+        (await response.Content.ReadAsStringAsync()).Should().Contain("That counts");
+        var mine = await Repo.ForVolunteerAsync(volunteer.Id);
+        mine.Should().ContainSingle("only the one ticked, and only the page's own")
+            .Which.Should().Match<OutreachAction>(a => a.OfficialKey == Official
+                && a.Channel == OutreachChannel.ContactForm && a.Outcome == OutreachOutcome.Sent && a.Note == "Both forms");
+    }
+
     // Dapper maps records, never value tuples (MANYHANDS.md section 4).
     private sealed record KeptRow(Guid? VolunteerId, string? Note);
 }
