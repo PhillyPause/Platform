@@ -5,10 +5,12 @@ using ManyHands.Data;
 
 namespace Website.Portal.Volunteer;
 
-/// <summary>The team's one download: who came to what.</summary>
+/// <summary>The team's downloads: who came to what, and who has joined.</summary>
 public static class TeamEndpoints
 {
     public const string ParticipationPath = "/team/participation.csv";
+
+    public const string MembersPath = "/team/members.csv";
 
     /// <summary>Where the mail provider posts outreach replies.</summary>
     public const string InboundMailPath = "/team/mail/inbound";
@@ -63,13 +65,34 @@ public static class TeamEndpoints
                     r.CheckedInAt is null ? "no" : "yes"
                 }));
 
-            return Results.File(Encoding.UTF8.GetPreamble().Concat(Encoding.UTF8.GetBytes(csv)).ToArray(),
-                "text/csv", "participation.csv");
+            return File(csv, "participation.csv");
+        })
+        .RequireAuthorization(TeamPolicies.Organizer);
+
+        // The members page as a file, newest first like the page, for the
+        // same organizers who can see the page.
+        app.MapGet(MembersPath, async (VolunteerRepository volunteers, CancellationToken ct) =>
+        {
+            var members = await volunteers.GetMembersAsync(ct);
+            var csv = Csv.Build(
+                ["Name", "Email", "Joined (Eastern)", "Status", "Role", "Likes doing"],
+                members.OrderByDescending(m => m.CreatedAt).Select(m => new[]
+                {
+                    m.DisplayName, m.Email ?? string.Empty,
+                    LocalTime.ToLocal(m.CreatedAt).ToString("yyyy-MM-dd", CultureInfo.InvariantCulture),
+                    m.Status, m.Role.ToString(), string.Join(", ", m.Interests)
+                }));
+
+            return File(csv, "members.csv");
         })
         .RequireAuthorization(TeamPolicies.Organizer);
 
         return app;
     }
+
+    // With a byte-order mark, so Excel reads the file as UTF-8 and a name with an accent survives.
+    private static IResult File(string csv, string name) =>
+        Results.File(Encoding.UTF8.GetPreamble().Concat(Encoding.UTF8.GetBytes(csv)).ToArray(), "text/csv", name);
 
     /// <summary>Constant time: a shared secret must not leak through how long the comparison takes.</summary>
     internal static bool SameSecret(string presented, string expected)
