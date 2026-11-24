@@ -54,6 +54,14 @@ public class ManyHandsGateTests(WebApplicationFactory<Program> factory)
     }
 
     [Fact]
+    public async Task While_it_is_off_the_next_events_RSVP_opens_Join_us()
+    {
+        var page = await factory.CreateClient().GetStringAsync("/");
+
+        page.Should().Contain("<label class=\"boxlink\" for=\"join-open\">join us</label>");
+    }
+
+    [Fact]
     public async Task The_home_page_needs_no_database()
     {
         var response = await factory.CreateClient().GetAsync("/");
