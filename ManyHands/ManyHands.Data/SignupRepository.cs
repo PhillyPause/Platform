@@ -158,6 +158,7 @@ public sealed class SignupRepository(NpgsqlDataSource db)
             """
             SELECT g.id   AS signup_id,
                    a.id   AS activity_id,
+                   a.slug AS activity_slug,
                    a.title,
                    a.location,
                    a.starts_at,

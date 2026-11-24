@@ -128,7 +128,7 @@ public sealed class TrackingCodeFlowTests(DatabaseFixture db) : IAsyncLifetime
         var email = TestData.NewEmail();
         var browser = _portal.Browser();
 
-        await Forms.SubmitAsync(browser, $"{ManyHandsPaths.Activity(activity)}?{TrackingCode.QueryName}={Code}", "signup",
+        await Forms.SubmitAsync(browser, $"{await TestData.PathAsync(db.DataSource, activity)}?{TrackingCode.QueryName}={Code}", "signup",
             ("Input.DisplayName", "Rally Goer"), ("Input.Email", email));
 
         await using var conn = await db.DataSource.OpenConnectionAsync();
@@ -149,7 +149,7 @@ public sealed class TrackingCodeFlowTests(DatabaseFixture db) : IAsyncLifetime
 
         var page = await _portal.Browser().GetStringAsync($"{ManyHandsPaths.Events}?{TrackingCode.QueryName}={Code}");
 
-        Assert.Contains($"href=\"{ManyHandsPaths.Activity(activity)}?src={Code}\"", page);
+        Assert.Contains($"href=\"{await TestData.PathAsync(db.DataSource, activity)}?src={Code}\"", page);
     }
 
     [Fact]

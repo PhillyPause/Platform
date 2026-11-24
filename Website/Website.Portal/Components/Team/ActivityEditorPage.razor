@@ -30,6 +30,26 @@
             <ValidationMessage For="() => Input!.Title" />
         </label>
 
+        @if (_draft is { SlugFrozen: true })
+        {
+            <p class="vol-small">
+                Its address is <strong>@Address(_draft.Slug)</strong>, and stays so now that it has been
+                published: it is in emails and on posters.
+            </p>
+        }
+        else if (_draft is not null)
+        {
+            <label>
+                <span>Its address</span>
+                <InputText @bind-Value="Input!.Slug" />
+                <span class="vol-small">
+                    @Address(_draft.Slug). It follows the title until you type your own, and is fixed once
+                    you publish.
+                </span>
+                <ValidationMessage For="() => Input!.Slug" />
+            </label>
+        }
+
         <label>
             <span>What it involves</span>
             <InputTextArea @bind-Value="Input!.Description" rows="6" />
@@ -93,8 +113,12 @@
 
     private IReadOnlyList<ActivityType> _types = [];
     private IReadOnlyCollection<short> _selected = [];
+    private ActivityDraft? _draft;
     private bool _isNew;
     private bool _missing;
+
+    private string Address(string slug) =>
+        $"{HttpContext.Request.Host}{ManyHandsPaths.Activity(slug)}";
 
     protected override async Task OnInitializedAsync()
     {
@@ -102,19 +126,25 @@
         _isNew = Id is null;
         _types = await Types.GetActiveAsync();
 
+        if (!_isNew)
+        {
+            _draft = await Admin.GetAsync(Id!.Value);
+            if (_draft is null)
+            {
+                _missing = true;
+                HttpContext.Response.StatusCode = StatusCodes.Status404NotFound;
+                return;
+            }
+        }
+
         if (_isNew || !HttpMethods.IsGet(HttpContext.Request.Method))
         {
             _selected = InterestChoices.Read(HttpContext);
             return;
         }
 
-        if (await Admin.GetAsync(Id!.Value) is not { } draft)
-        {
-            _missing = true;
-            HttpContext.Response.StatusCode = StatusCodes.Status404NotFound;
-            return;
-        }
-
+        var draft = _draft!;
+        Input.Slug = draft.Slug;
         Input.Title = draft.Title;
         Input.Description = draft.Description;
         Input.Kind = draft.Kind;
@@ -139,7 +169,8 @@
             ongoing || Input.StartsAt is not { } starts ? null : LocalTime.FromLocal(starts),
             ongoing || Input.EndsAt is not { } ends ? null : LocalTime.FromLocal(ends),
             Input.Capacity,
-            InterestChoices.Read(HttpContext));
+            InterestChoices.Read(HttpContext),
+            Blank(Input.Slug));
 
         if (_isNew)
         {
@@ -156,6 +187,10 @@
 
     private sealed class ActivityInput : IValidatableObject
     {
+        /// <summary>The readable address; tidied into one (<see cref="ActivitySlug"/>) when saved.</summary>
+        [StringLength(ActivitySlug.MaxLength, ErrorMessage = "Keep the address to 60 characters.")]
+        public string? Slug { get; set; }
+
         [Required(ErrorMessage = "Give it a title volunteers will recognise.")]
         [StringLength(200, ErrorMessage = "That title is too long.")]
         public string Title { get; set; } = string.Empty;

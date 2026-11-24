@@ -35,7 +35,7 @@ else
             @foreach (var activity in _activities)
             {
                 <li>
-                    <h3><a href="@TrackingCode.Append(ManyHandsPaths.Activity(activity.Id), Source)">@activity.Title</a></h3>
+                    <h3><a href="@TrackingCode.Append(ManyHandsPaths.Activity(activity.Slug), Source)">@activity.Title</a></h3>
                     <p class="evmeta">
                         <span>@Show.When(activity.StartsAt)</span>
                         <span>@Show.Where(activity.Location)</span>

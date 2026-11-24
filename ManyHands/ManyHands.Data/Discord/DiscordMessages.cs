@@ -94,7 +94,7 @@ public static class DiscordMessages
     /// <summary>The channel post for a newly published activity.</summary>
     public static string Announcement(ActivityListItem activity, string baseUrl)
     {
-        var tail = $"\n\nSign up: {baseUrl}{ManyHandsPaths.Activity(activity.Id)}";
+        var tail = $"\n\nSign up: {baseUrl}{ManyHandsPaths.Activity(activity.Slug)}";
         return Compose(Details($"**{activity.Title}**", activity), activity.Description, tail);
     }
 
@@ -116,7 +116,7 @@ public static class DiscordMessages
     public static string InterestPing(ActivityListItem activity, string baseUrl)
     {
         var tail =
-            $"\n\nSign up: {baseUrl}{ManyHandsPaths.Activity(activity.Id)}" +
+            $"\n\nSign up: {baseUrl}{ManyHandsPaths.Activity(activity.Slug)}" +
             $"\nChange what you get pinged about: {baseUrl}{ManyHandsPaths.Me}";
         return Compose(Details($"New, and it matches what you said you like doing:\n**{activity.Title}**", activity),
             activity.Description, tail);
@@ -153,7 +153,7 @@ public static class DiscordMessages
         if (!string.IsNullOrWhiteSpace(activity.Location)) line.Append(" · ").Append(activity.Location);
         if (activity.IsFull) line.Append(" · waitlist only");
         else if (activity.SpotsRemaining is int spots) line.Append(" · ").Append(spots).Append(" places left");
-        return line.Append("\n  ").Append(baseUrl).Append(ManyHandsPaths.Activity(activity.Id)).ToString();
+        return line.Append("\n  ").Append(baseUrl).Append(ManyHandsPaths.Activity(activity.Slug)).ToString();
     }
 
     /// <summary>One line of the <c>/mysignups</c> reply.</summary>
@@ -162,7 +162,7 @@ public static class DiscordMessages
         var line = new StringBuilder("• **").Append(signup.Title).Append("** — ").Append(When(signup.StartsAt));
         if (signup.Status == SignupStatus.Waitlisted) line.Append(" · waitlisted");
         if (!string.IsNullOrWhiteSpace(signup.Location)) line.Append(" · ").Append(signup.Location);
-        return line.Append("\n  ").Append(baseUrl).Append(ManyHandsPaths.Activity(signup.ActivityId)).ToString();
+        return line.Append("\n  ").Append(baseUrl).Append(ManyHandsPaths.Activity(signup.ActivitySlug)).ToString();
     }
 
     /// <summary>When a Discord account has no volunteer behind it: the one thing that fixes it.</summary>

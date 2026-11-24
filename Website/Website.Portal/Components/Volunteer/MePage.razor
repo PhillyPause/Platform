@@ -40,7 +40,7 @@
                     @foreach (var signup in _upcoming)
                     {
                         <li>
-                            <h3><a href="@ManyHandsPaths.Activity(signup.ActivityId)">@signup.Title</a></h3>
+                            <h3><a href="@ManyHandsPaths.Activity(signup.ActivitySlug)">@signup.Title</a></h3>
                             <p class="vol-meta">
                                 <span>@Show.When(signup.StartsAt)</span>
                                 <span>@Show.Where(signup.Location)</span>

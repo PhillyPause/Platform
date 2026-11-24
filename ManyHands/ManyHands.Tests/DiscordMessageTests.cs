@@ -9,7 +9,7 @@ public sealed class DiscordMessageTests
     private const string BaseUrl = "https://phillypause.org";
 
     private static ActivityListItem Activity(string title = "Saturday flyering", string? description = null) => new(
-        Guid.NewGuid(), title, description, ActivityKind.OneTime, "Clark Park",
+        Guid.NewGuid(), title, ActivitySlug.From(title), description, ActivityKind.OneTime, "Clark Park",
         DateTimeOffset.UtcNow.AddDays(3), DateTimeOffset.UtcNow.AddDays(3).AddHours(2), null,
         SignupCount: 2, Capacity: 10, Tags: ["Flyering"]);
 
@@ -21,7 +21,7 @@ public sealed class DiscordMessageTests
         var post = DiscordMessages.Announcement(activity, BaseUrl);
 
         Assert.True(post.Length <= DiscordMessages.MaxMessageLength);
-        Assert.EndsWith($"Sign up: {BaseUrl}{ManyHandsPaths.Activity(activity.Id)}", post);
+        Assert.EndsWith($"Sign up: {BaseUrl}{ManyHandsPaths.Activity(activity.Slug)}", post);
     }
 
     [Fact]

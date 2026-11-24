@@ -278,7 +278,7 @@ public sealed class OutboxDispatcher(
 
             var (subject, body) = EmailTemplates.InterestPing(
                 volunteer.DisplayName, activity.Title, activity.StartsAt, activity.Location,
-                activityUrl: email.Link(ManyHandsPaths.Activity(activityId)),
+                activityUrl: email.Link(ManyHandsPaths.Activity(activity.Slug)),
                 unsubscribeUrl: email.UnsubscribeUrl(volunteer.CommsKey));
 
             var status = await email.SendAsync(volunteer, subject, body, "interest.ping", ct: ct);

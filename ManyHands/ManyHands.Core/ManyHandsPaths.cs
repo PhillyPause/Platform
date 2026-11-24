@@ -16,7 +16,15 @@ public static class ManyHandsPaths
     /// </summary>
     public const string Events = "/events";
 
-    public static string Activity(Guid activityId) => $"/volunteer/activity/{activityId}";
+    /// <summary>One activity and its signup form, at its readable address (<see cref="ActivitySlug"/>).</summary>
+    public static string Activity(string slug) => $"{Events}/{slug}";
+
+    /// <summary>
+    /// Where activities lived before they had readable addresses. Emails and
+    /// Discord posts already sent carry it, so it answers with a permanent
+    /// redirect to <see cref="Activity"/>, for good.
+    /// </summary>
+    public const string LegacyActivity = "/volunteer/activity/{id:guid}";
 
     /// <summary>A volunteer's own signups and interests.</summary>
     public const string Me = "/volunteer/me";

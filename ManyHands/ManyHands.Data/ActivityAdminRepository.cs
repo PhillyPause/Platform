@@ -30,7 +30,11 @@ public sealed record ActivityDraft(
     DateTimeOffset? EndsAt,
     int? Capacity,
     bool IsPublished,
-    short[] TypeIds);
+    short[] TypeIds,
+    /// <summary>Its readable address (<see cref="ManyHandsPaths.Activity"/>).</summary>
+    string Slug,
+    /// <summary>Published at least once, so the address no longer changes.</summary>
+    bool SlugFrozen);
 
 /// <summary>What an organizer fills in. Times are instants; the page converts from Philadelphia's clock.</summary>
 public sealed record ActivityFields(
@@ -42,7 +46,9 @@ public sealed record ActivityFields(
     DateTimeOffset? StartsAt,
     DateTimeOffset? EndsAt,
     int? Capacity,
-    IReadOnlyCollection<short> TypeIds);
+    IReadOnlyCollection<short> TypeIds,
+    /// <summary>The readable address an organizer typed; blank follows the title. Ignored once published.</summary>
+    string? Slug = null);
 
 public sealed record RosterEntry(
     Guid SignupId,
@@ -70,8 +76,8 @@ public sealed class ActivityAdminRepository(NpgsqlDataSource db)
         var id = await conn.ExecuteScalarAsync<Guid>(new CommandDefinition(
             """
             INSERT INTO activities
-              (title, description, kind, location, meeting_url, starts_at, ends_at, capacity, is_published)
-            VALUES (@Title, @Description, @kind, @Location, @MeetingUrl, @StartsAt, @EndsAt, @Capacity, false)
+              (title, description, kind, location, meeting_url, starts_at, ends_at, capacity, is_published, slug)
+            VALUES (@Title, @Description, @kind, @Location, @MeetingUrl, @StartsAt, @EndsAt, @Capacity, false, @Slug)
             RETURNING id
             """,
             Parameters(fields), tx, cancellationToken: ct));
@@ -94,7 +100,8 @@ public sealed class ActivityAdminRepository(NpgsqlDataSource db)
             UPDATE activities
             SET title = @Title, description = @Description, kind = @kind,
                 location = @Location, meeting_url = @MeetingUrl,
-                starts_at = @StartsAt, ends_at = @EndsAt, capacity = @Capacity
+                starts_at = @StartsAt, ends_at = @EndsAt, capacity = @Capacity,
+                slug = COALESCE(@Slug, slug)
             WHERE id = @id
             """,
             parameters, tx, cancellationToken: ct));
@@ -121,7 +128,14 @@ public sealed class ActivityAdminRepository(NpgsqlDataSource db)
         await using var tx = await conn.BeginTransactionAsync(ct);
 
         var changed = await conn.ExecuteAsync(new CommandDefinition(
-            "UPDATE activities SET is_published = @published WHERE id = @id AND is_published <> @published",
+            // The first publish freezes the readable address: from here on it
+            // is in emails and on posters.
+            """
+            UPDATE activities
+            SET is_published = @published,
+                published_at = COALESCE(published_at, CASE WHEN @published THEN now() END)
+            WHERE id = @id AND is_published <> @published
+            """,
             new { id, published }, tx, cancellationToken: ct));
 
         if (changed == 0)
@@ -162,7 +176,8 @@ public sealed class ActivityAdminRepository(NpgsqlDataSource db)
             SELECT a.id, a.title, a.description, a.kind, a.location, a.meeting_url,
                    a.starts_at, a.ends_at, a.capacity, a.is_published,
                    COALESCE((SELECT array_agg(t.activity_type_id ORDER BY t.activity_type_id)
-                               FROM activity_tags t WHERE t.activity_id = a.id), '{}'::smallint[]) AS type_ids
+                               FROM activity_tags t WHERE t.activity_id = a.id), '{}'::smallint[]) AS type_ids,
+                   a.slug, a.published_at IS NOT NULL AS slug_frozen
             FROM activities a
             WHERE a.id = @id
             """,
@@ -256,6 +271,9 @@ public sealed class ActivityAdminRepository(NpgsqlDataSource db)
         parameters.Add("StartsAt", fields.StartsAt?.ToUniversalTime());
         parameters.Add("EndsAt", fields.EndsAt?.ToUniversalTime());
         parameters.Add("Capacity", fields.Capacity);
+        // Blank means "from the title"; the database's trigger tidies and
+        // de-duplicates whatever comes, and ignores it once published.
+        parameters.Add("Slug", string.IsNullOrWhiteSpace(fields.Slug) ? null : ActivitySlug.From(fields.Slug));
         return parameters;
     }
 
