@@ -29,6 +29,7 @@ public sealed class ResendEmailSender(
             To: [email.ToAddress],
             Subject: email.Subject,
             Text: email.BodyText,
+            Html: email.BodyHtml,
             ReplyTo: email.ReplyTo ?? _options.ReplyToAddress,
             Headers: BuildHeaders(email));
 
@@ -93,6 +94,8 @@ public sealed class ResendEmailSender(
         [property: JsonPropertyName("to")] string[] To,
         [property: JsonPropertyName("subject")] string Subject,
         [property: JsonPropertyName("text")] string Text,
+        [property: JsonPropertyName("html"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        string? Html,
         [property: JsonPropertyName("reply_to"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         string? ReplyTo,
         [property: JsonPropertyName("headers"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]

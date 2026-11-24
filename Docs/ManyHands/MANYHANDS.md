@@ -145,6 +145,12 @@ and doing nothing is a fine answer.
   sends nothing to anyone who has confirmed, removed themselves or
   unsubscribed by then. Joining again before confirming sends the email
   again, never a second reminder.
+- **The joining emails are the only HTML mail**, because the click they ask
+  for is the whole point of them. Each sends the logo, a "Confirm my email"
+  button and the link written out, alongside the same words as plain text.
+  `email_messages` records the text. Everything else ManyHands sends is text
+  only. The logo is `wwwroot/img/email-logo.png`, since mail clients do not
+  draw SVG (BRAND.md).
 - **Every joining email carries a removal link** as plainly as the confirm
   link: `/volunteer/remove/{key}` deletes the person outright, with no
   sign-in, because someone else may have typed the address.
@@ -176,7 +182,7 @@ request.
 | `/team/activity/new`, `/team/activity/{id}/edit` | The editor. Times are typed in Philadelphia's clock and stored as instants | Organizers |
 | `/team/activity/{id}` | Publish or unpublish; the roster, one big button per name for check-in; walk-ins | Organizers |
 | `/team/activity/{id}/check-in` | The QR code for the door | Organizers |
-| `/team/members` | Everyone, newest first, one line each, as a grid: a filter row that narrows the list as you type, sorting, a page at a time. Email, the day they joined (MM/dd/yyyy, Philadelphia's clock), whether they have confirmed, their role, and what they like doing as two-letter codes with the full name on hover (`InterestCodes`). Icon buttons send the joining email again, change a role and delete | Organizers see and resend; admins change and delete |
+| `/team/members` | Everyone, newest first, one line each, as a grid: a filter row that narrows the list as you type, sorting, a page at a time. Email, the day they joined (MM/dd/yyyy, Philadelphia's clock), whether they have confirmed, their role, and what they like doing as two-letter codes with the full name on hover (`InterestCodes`). Icon buttons send the joining email again, change a role and delete. "Download the list" is `/team/members.csv`: the same people and columns, newest first, the interests written out | Organizers see, download and resend; admins change and delete |
 | `/team/invites` | The join link, invitations by email, and their state | Organizers |
 
 Two public pages come with them: `/volunteer/join/{token}`, where an
@@ -201,7 +207,7 @@ leads.
   twice in fifteen minutes.
 - **A walk-in** is confirmed and checked in on the spot, past capacity if need
   be, with or without an email.
-- **The participation CSV defuses formulas.** Names in it were typed into
+- **Both CSVs defuse formulas.** Names in them were typed into
   public forms, so a cell starting with `=`, `+`, `-` or `@` gets a leading
   apostrophe before a spreadsheet can run it.
 

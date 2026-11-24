@@ -125,16 +125,43 @@ public sealed class EmailTextTests
     [Fact]
     public void Both_joining_emails_offer_removal_as_plainly_as_the_confirmation()
     {
-        const string confirm = "https://example.test/volunteer/confirm/abc";
-        const string remove = "https://example.test/volunteer/remove/def";
+        var bodies = JoiningEmails("M").SelectMany(e => new[] { e.Body, e.Html }).ToArray();
 
-        var bodies = new[]
-        {
-            EmailTemplates.ConfirmJoin("M", confirm, remove, TimeSpan.FromDays(30)).Body,
-            EmailTemplates.ConfirmNudge("M", confirm, remove).Body,
-        };
-
-        bodies.Should().AllSatisfy(body => body.Should().Contain(confirm).And.Contain(remove));
-        bodies[1].Should().Contain("last reminder");
+        bodies.Should().AllSatisfy(body => body.Should().Contain(ConfirmUrl).And.Contain(RemoveUrl));
+        JoiningEmails("M")[1].Body.Should().Contain("last reminder");
     }
+
+    /// <summary>
+    /// The click is the point of a joining email, so the HTML makes it a
+    /// button, with the link written out for a client that will not follow it.
+    /// </summary>
+    [Fact]
+    public void Both_joining_emails_make_the_confirm_link_a_button_under_the_logo()
+    {
+        JoiningEmails("Maya").Should().AllSatisfy(e => e.Html.Should()
+            .Contain($"""<img src="{LogoUrl}" """)
+            .And.Contain("""alt="PhillyPause" """)
+            .And.Contain($"""<a href="{ConfirmUrl}" target="_blank" style="display:inline-block;""")
+            .And.Contain("Confirm my email</a>")
+            .And.Contain("Copy this link into your browser")
+            .And.Contain("Hi Maya,"));
+    }
+
+    [Fact]
+    public void A_display_name_cannot_write_html_into_a_joining_email()
+    {
+        JoiningEmails("<b>Maya</b> & co").Should().AllSatisfy(e => e.Html.Should()
+            .Contain("Hi &lt;b&gt;Maya&lt;/b&gt; &amp; co,")
+            .And.NotContain("<b>Maya"));
+    }
+
+    private const string ConfirmUrl = "https://example.test/volunteer/confirm/abc";
+    private const string RemoveUrl = "https://example.test/volunteer/remove/def";
+    private const string LogoUrl = "https://example.test/img/email-logo.png";
+
+    private static (string Subject, string Body, string Html)[] JoiningEmails(string name) =>
+    [
+        EmailTemplates.ConfirmJoin(name, ConfirmUrl, RemoveUrl, TimeSpan.FromDays(30), LogoUrl),
+        EmailTemplates.ConfirmNudge(name, ConfirmUrl, RemoveUrl, LogoUrl),
+    ];
 }

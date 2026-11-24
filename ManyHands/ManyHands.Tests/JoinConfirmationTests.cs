@@ -1,6 +1,9 @@
 using Dapper;
 using ManyHands.Core;
 using ManyHands.Data;
+using ManyHands.Data.Email;
+using Microsoft.Extensions.Logging.Abstractions;
+using Microsoft.Extensions.Options;
 
 namespace ManyHands.Tests;
 
@@ -158,5 +161,27 @@ public sealed class JoinConfirmationTests(DatabaseFixture db)
         var raw = await TestData.ConfirmTokenSentToAsync(db.DataSource, email);
         Assert.NotNull(raw);
         Assert.IsType<MagicLinkResult.Ok>(await Tokens.ConfirmAsync(raw));
+    }
+
+    [Theory]
+    [InlineData(OutboxKinds.MemberConfirm)]
+    [InlineData(OutboxKinds.MemberNudge)]
+    public async Task Both_joining_emails_go_out_with_the_button_and_the_logo(string kind)
+    {
+        var (id, _) = await JoinAsync();
+        var sender = new RecordingEmailSender();
+        var options = new EmailOptions();
+        var mail = new EmailDispatcher(sender, new EmailMessageRepository(db.DataSource),
+            Options.Create(options), NullLogger<EmailDispatcher>.Instance);
+
+        await TestData.Dispatcher(db.DataSource, mail).DispatchAsync(
+            TestData.Message(kind, new { volunteerId = id }), CancellationToken.None);
+
+        var sent = Assert.Single(sender.Sent);
+        var confirmLink = sent.BodyText.Split('\n').Select(l => l.Trim())
+            .Single(l => l.Contains("/volunteer/confirm/", StringComparison.Ordinal));
+        Assert.NotNull(sent.BodyHtml);
+        Assert.Contains($"href=\"{confirmLink}\"", sent.BodyHtml);
+        Assert.Contains($"src=\"{options.PublicBaseUrl}{EmailTemplates.LogoPath}\"", sent.BodyHtml);
     }
 }

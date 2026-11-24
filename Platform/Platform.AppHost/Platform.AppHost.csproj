@@ -1,5 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <Sdk Name="Aspire.AppHost.Sdk" Version="13.5.0" />
+  <Sdk Name="Aspire.AppHost.Sdk" Version="13.6.5" />
 
   <!-- Local development only: Postgres in Docker and the site, wired together,
        with the Aspire dashboard. Never deployed — the buildpack publishes the

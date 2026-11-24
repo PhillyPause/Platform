@@ -34,6 +34,7 @@ public sealed class EmailDispatcher(
         string body,
         string kind,
         bool bypassOptIn = false,
+        string? html = null,
         CancellationToken ct = default)
     {
         if (string.IsNullOrWhiteSpace(volunteer.Email) || volunteer.IsDeleted)
@@ -50,9 +51,14 @@ public sealed class EmailDispatcher(
 
         return await SendRawAsync(
             volunteer.Id, volunteer.Email, subject, body, kind,
-            unsubscribeUrl: bypassOptIn ? null : Link(ManyHandsPaths.OneClickUnsubscribe(volunteer.CommsKey)), ct);
+            unsubscribeUrl: bypassOptIn ? null : Link(ManyHandsPaths.OneClickUnsubscribe(volunteer.CommsKey)),
+            html, ct);
     }
 
+    /// <param name="html">
+    /// An HTML version to send alongside <paramref name="body"/>. Only the text
+    /// is recorded: it says the same thing.
+    /// </param>
     public async Task<EmailStatus> SendRawAsync(
         Guid? volunteerId,
         string toAddress,
@@ -60,6 +66,7 @@ public sealed class EmailDispatcher(
         string body,
         string kind,
         string? unsubscribeUrl = null,
+        string? html = null,
         CancellationToken ct = default)
     {
         // Defence in depth behind the per-IP rate limits: no address receives
@@ -82,7 +89,8 @@ public sealed class EmailDispatcher(
         var result = await sender.SendAsync(
             new OutgoingEmail(toAddress, subject, body,
                 ReplyTo: _options.ReplyToAddress,
-                ListUnsubscribeUrl: unsubscribeUrl),
+                ListUnsubscribeUrl: unsubscribeUrl,
+                BodyHtml: html),
             ct);
 
         var status = result.Delivered

@@ -3,9 +3,11 @@ using ManyHands.Core;
 namespace ManyHands.Data.Email;
 
 /// <summary>
-/// Plain-text email bodies. Text only on purpose: it renders everywhere, never
-/// lands in a spam folder for HTML reasons, and is honest about what this is —
-/// volunteers organizing, not a marketing list.
+/// Email bodies, in plain text: it renders everywhere and is honest about what
+/// this is — volunteers organizing, not a marketing list. The two joining
+/// emails add an HTML version with the logo and a button, because the click
+/// they ask for is the whole point of them, and a bare link in a paragraph
+/// was mostly not clicked.
 /// </summary>
 public static class EmailTemplates
 {
@@ -13,6 +15,11 @@ public static class EmailTemplates
 
     /// <summary>The joining email's subject, which the Check your email dialog quotes.</summary>
     public const string ConfirmJoinSubject = $"One click to finish joining {Org}";
+
+    /// <summary>The logo the HTML emails show, on the site: mail clients do not draw SVG, so it is a PNG.</summary>
+    public const string LogoPath = "/img/email-logo.png";
+
+    private const string ConfirmButton = "Confirm my email";
 
     public static (string Subject, string Body) MagicLink(
         string displayName, string linkUrl, TimeSpan validFor)
@@ -226,38 +233,61 @@ public static class EmailTemplates
     /// one small thing and offers the way out just as plainly: volunteers owe
     /// us nothing, and someone else may have typed this address.
     /// </summary>
-    public static (string Subject, string Body) ConfirmJoin(
-        string displayName, string confirmUrl, string removeUrl, TimeSpan validFor)
+    public static (string Subject, string Body, string Html) ConfirmJoin(
+        string displayName, string confirmUrl, string removeUrl, TimeSpan validFor, string logoUrl)
     {
+        var days = (int)validFor.TotalDays;
+
         var body =
             $"""
              Hi {displayName},
 
-             Thanks for joining {Org}. One click tells us this address is
-             really yours, and then you will hear from us when something comes
-             up that matches what you ticked:
+             Thanks for joining {Org}. We are glad you are here.
+
+             One click tells us this address is really yours, and then you
+             will hear from us when something comes up that matches what you
+             ticked:
 
              {confirmUrl}
 
              That is all. Until you click it, this is the only email we send,
              apart from one reminder in a few days. The link works for
-             {(int)validFor.TotalDays} days.
+             {days} days.
 
              Not you, or changed your mind? This takes your name and address
              off our list, no questions asked:
              {removeUrl}
              """;
 
-        return (ConfirmJoinSubject, body);
+        var html = EmailHtml.Page(
+            ConfirmJoinSubject,
+            preheader: "One click and you are in. That is all we need.",
+            logoUrl,
+            EmailHtml.Greeting($"Hi {displayName},"),
+            EmailHtml.Paragraph($"Thanks for joining {Org}. We are glad you are here."),
+            EmailHtml.Paragraph(
+                "One click tells us this address is really yours, and then you will hear " +
+                "from us when something comes up that matches what you ticked."),
+            EmailHtml.Button(ConfirmButton, confirmUrl),
+            EmailHtml.Quiet(
+                "That is all. Until you click, this is the only email we send, apart from " +
+                $"one reminder in a few days. The button works for {days} days."),
+            EmailHtml.Fallback(confirmUrl),
+            EmailHtml.Footnote("Not you, or changed your mind? ", "Remove my details", removeUrl,
+                ", no questions asked."));
+
+        return (ConfirmJoinSubject, body, html);
     }
 
     /// <summary>
     /// The one reminder for someone who has not confirmed. It says it is the
     /// last, and means it: doing nothing is a fine answer.
     /// </summary>
-    public static (string Subject, string Body) ConfirmNudge(
-        string displayName, string confirmUrl, string removeUrl)
+    public static (string Subject, string Body, string Html) ConfirmNudge(
+        string displayName, string confirmUrl, string removeUrl, string logoUrl)
     {
+        var subject = $"Still want to hear from {Org}?";
+
         var body =
             $"""
              Hi {displayName},
@@ -273,7 +303,23 @@ public static class EmailTemplates
              {removeUrl}
              """;
 
-        return ($"Still want to hear from {Org}?", body);
+        var html = EmailHtml.Page(
+            subject,
+            preheader: "No rush and no pressure. One click, if you would still like to hear from us.",
+            logoUrl,
+            EmailHtml.Greeting($"Hi {displayName},"),
+            EmailHtml.Paragraph(
+                $"A few days ago this address joined {Org}, and we have not heard back. " +
+                "No rush and no pressure."),
+            EmailHtml.Paragraph(
+                "If you would still like to hear when something matches what you ticked, " +
+                "one click does it."),
+            EmailHtml.Button(ConfirmButton, confirmUrl),
+            EmailHtml.Quiet("If not, there is nothing to do. This is the last reminder we will send."),
+            EmailHtml.Fallback(confirmUrl),
+            EmailHtml.Footnote("Or ", "take your details off our list", removeUrl, " now."));
+
+        return (subject, body, html);
     }
 
     /// <summary>The first thing someone receives when they join: what is on, and where their page is.</summary>

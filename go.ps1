@@ -45,47 +45,72 @@ if ((git config --local user.email) -ne $CommitEmail) {
 Step "commits as $CommitName <$CommitEmail>"
 
 # ------------------------------------------------------------- 2. credentials
-# Git Credential Manager may hold a different GitHub account for this machine,
-# and a push would then authenticate as the wrong one. Ask the gh CLI instead,
-# for this repo only.
-git config --local 'credential.https://github.com.helper' '' | Out-Null
-git config --local --add 'credential.https://github.com.helper' '!gh auth git-credential'
-Step "pushes authenticate through the gh CLI"
+# Pushes authenticate as $GitHubLogin, using that account's token from the gh
+# CLI, whichever account gh has active. A machine can then keep another
+# account active for other work without breaking pushes here.
+#
+# Git Credential Manager is switched off for this repo: it is asked first, and
+# it may hold only a different GitHub account. An empty helper is what clears
+# the list. It goes through --% because Windows PowerShell 5.1 drops an empty
+# '' argument, which turns `git config key ''` into a read that changes nothing.
+$helperKey = 'credential.https://github.com.helper'
+$helper = ('!f() { case $1 in get) t=$(gh auth token --user LOGIN) && ' +
+           'echo username=LOGIN && echo password=$t;; esac; }; f').Replace('LOGIN', $GitHubLogin)
+$current = @(git config --local --get-all $helperKey)
+if ($current.Count -ne 2 -or $current[0] -ne '' -or $current[1] -ne $helper) {
+    git config --local --unset-all $helperKey
+    git --% config --local --add credential.https://github.com.helper ""
+    git config --local --add $helperKey $helper
+}
+
+# Git LFS checks file locks before every push, and sends that check without
+# credentials unless told to authenticate. GitHub answers 403 and the push stops.
+$lfsKey = 'lfs.https://github.com/PhillyPause/Platform.git/info/lfs.access'
+if ((git config --local $lfsKey) -ne 'basic') {
+    git config --local $lfsKey basic
+}
+Step "pushes authenticate as $GitHubLogin through the gh CLI, LFS included"
 
 # -------------------------------------------------------------- 3. gh account
+# gh holds any number of accounts, one active at a time. Pushes need only that
+# it holds $GitHubLogin; gh's own commands (pr, run) act as the active one.
 $ghOk = $true
-$who = $null
-try { $who = (gh api user --jq .login 2>$null) } catch { }
+$token = $null
+try { $token = (gh auth token --user $GitHubLogin 2>$null) } catch { }
 
-if (-not $who) {
+if (-not $token) {
     $ghOk = $false
-    Warn "gh is not logged in. Run these two, then .\go.ps1 again:"
-    Write-Host "      gh auth login"
+    Warn "gh holds no login for '$GitHubLogin'. Run these two, then .\go.ps1 again:"
+    Write-Host "      gh auth login                                  # as $GitHubLogin"
     Write-Host "      gh auth refresh -h github.com -s workflow"
 }
 else {
-    if ($who -ne $GitHubLogin) {
-        Warn "gh is logged in as '$who', not '$GitHubLogin'."
-        Warn "That account may not be able to push to the org. To switch:"
-        Write-Host "      gh auth switch --user $GitHubLogin"
-    }
-    else {
-        Step "gh account $who"
+    Step "gh holds $GitHubLogin"
+
+    $active = $null
+    try { $active = (gh api user --jq .login 2>$null) } catch { }
+    if ($active -and $active -ne $GitHubLogin) {
+        Step "gh commands act as '$active'. For a PR from this terminal, first run:"
+        Write-Host ('      $env:GH_TOKEN = gh auth token --user ' + $GitHubLogin)
     }
 
     # The repo contains .github/workflows/ci.yml, and GitHub refuses any push
     # that touches a workflow file unless the token carries the workflow scope.
     $scopes = ''
+    $savedToken = $env:GH_TOKEN
     try {
+        $env:GH_TOKEN = $token
         $scopes = (gh api -i user 2>$null |
             Select-String -Pattern '^X-Oauth-Scopes:' |
             ForEach-Object { $_.Line }) -join ''
     } catch { }
+    finally { $env:GH_TOKEN = $savedToken }
 
     if ($scopes -and $scopes -notmatch 'workflow') {
         $ghOk = $false
-        Warn "token is missing the 'workflow' scope, so a push that touches"
-        Warn ".github/workflows/ will be rejected. Fix with:"
+        Warn "$GitHubLogin's token is missing the 'workflow' scope, so a push that"
+        Warn "touches .github/workflows/ will be rejected. Fix with:"
+        Write-Host "      gh auth switch --user $GitHubLogin"
         Write-Host "      gh auth refresh -h github.com -s workflow"
     }
 }
