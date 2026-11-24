@@ -314,7 +314,10 @@ it; `ManyHandsGateTests` holds that, and `SiteWiringTests` the flag-on side.
 
 **The front page's Next event box is not ManyHands'.** It is hand-edited in
 `Home.razor` and shows what PhillyPause chooses to lead with, flag on or off.
-A published activity never replaces it; `SiteWiringTests` holds that.
+A published activity never replaces it; `SiteWiringTests` holds that. Its
+RSVP link opens Events (Join us when ManyHands is off), so the event should
+also be published as an activity for people to sign up to. When it is over,
+it moves to the Past events dialog the box links to.
 
 A file in `Content/_manyhands/` supplements the page with the same slug,
 at its `<!-- manyhands -->` marker or else at the end, only while ManyHands is

@@ -13,7 +13,8 @@ namespace ManyHands.Tests;
 [Collection(DatabaseCollection.Name)]
 public sealed class SiteWiringTests(DatabaseFixture db) : IAsyncLifetime
 {
-    private const string StaticEventDay = "Wednesday 28 October";
+    private const string StaticEventDay = "Saturday 30 January";
+    private const string StaticEventName = "Stop AI Rally";
 
     private PortalFactory _portal = null!;
 
@@ -36,8 +37,17 @@ public sealed class SiteWiringTests(DatabaseFixture db) : IAsyncLifetime
 
         var home = await _portal.Browser().GetStringAsync("/");
 
-        home.Should().Contain(StaticEventDay).And.Contain("The AI Doc")
+        home.Should().Contain(StaticEventDay).And.Contain(StaticEventName)
             .And.NotContain("Tomorrow's leafleting");
+    }
+
+    /// <summary>RSVPs for the hand-written event are ManyHands signups, so its RSVP link opens Events.</summary>
+    [Fact]
+    public async Task The_next_events_RSVP_opens_events()
+    {
+        var home = await _portal.Browser().GetStringAsync("/");
+
+        home.Should().Contain("<label class=\"boxlink\" for=\"events-open\">sign up</label>");
     }
 
     [Fact]
