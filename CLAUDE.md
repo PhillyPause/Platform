@@ -61,8 +61,14 @@ a doc under `Docs/`, not a README of its own.
 - Test: `dotnet test Platform.slnx` — **Docker must be running**: ManyHands'
   tests start their own Postgres
 - New machine: `git pull` then `.\go.ps1` — sets the repo-local commit
-  identity, points pushes at the `gh` CLI, checks the account, scope and SDK,
-  then runs the site. Idempotent. README has the detail.
+  identity, makes pushes authenticate as `louis-phillypause` through the `gh`
+  CLI whichever account is active, checks the account, scope and SDK, then
+  runs the site. Idempotent. README has the detail.
+- `gh` commands here act as `louis-phillypause`, never the machine's active
+  account (it may be another one with no access to the org): prefix each with
+  `$env:GH_TOKEN = gh auth token --user louis-phillypause;` in PowerShell, or
+  `GH_TOKEN=$(gh auth token --user louis-phillypause)` in bash. Never
+  `gh auth switch`: that changes the account for the user's other work.
 
 ## Switching machines: `pickup`
 
@@ -181,6 +187,9 @@ mail arrives pre-sorted — a bare `mailto:` is a bug.
 - **Quote git config keys in PowerShell.** `credential."https://github.com".helper`
   as a bare argument starts a string and swallows the line; write
   `'credential.https://github.com.helper'`.
+- **Windows PowerShell 5.1 drops an empty `''` argument** to a native command,
+  so `git config key ''` becomes a read and changes nothing, silently. Pass it
+  through the stop-parsing token: `git --% config key ""`.
 - `TreatWarningsAsErrors` is on. A warning is a build break, by choice.
 - Central package management is on: versions go in `Directory.Packages.props`,
   never in a `.csproj`. A version attribute on a `PackageReference` is NU1008.
