@@ -14,7 +14,7 @@ namespace ManyHands.Tests;
 public sealed class SiteWiringTests(DatabaseFixture db) : IAsyncLifetime
 {
     private const string StaticEventDay = "Saturday 30 January";
-    private const string StaticEventName = "Stop AI Rally";
+    private const string StaticEventName = "Philly Says Pause";
 
     private PortalFactory _portal = null!;
 
