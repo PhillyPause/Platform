@@ -97,7 +97,8 @@ Static SSR Razor components in `Website/Website.Portal/Components/Volunteer`, on
 | Route | Page |
 |---|---|
 | `/events` | Not a page here: the front page's Events dialog (`EventsList`), what is coming up, filterable by type, with the public calendar feed. Its filters link back to `/events?type=...` |
-| `/volunteer/activity/{id}` | One activity and its signup form |
+| `/events/{slug}` | One activity and its signup form, at its readable address (`/events/philly-says-pause`). The slug comes from the title, gets the date added when the title's is taken, follows the title while a draft (or takes one an organizer types in the editor), and is frozen from the first publish, since emails and posters carry it. The database keeps the rule (`0004_activity_slugs.sql`); `ActivitySlug.From` mirrors it so the editor can show the address |
+| `/volunteer/activity/{id}` | Where activities lived before slugs. It answers with a permanent redirect to `/events/{slug}`, keeping `?src=`, because emails and Discord posts already sent carry it. A draft or unknown id is a 404 |
 | `/join` | Joining is not a page here: it is the front page's Join us dialog (On the site, below). Every Join link goes to it |
 | `/volunteer/sign-in` | Ask for a sign-in link |
 | `/volunteer/sign-in/{token}` | Opening the link shows a button; **pressing it** spends the token and lands on the front page, not `/volunteer/me`, until the volunteer pages are ready for readers |
@@ -354,7 +355,7 @@ Postgres, one schema (`public`), defined by
 |---|---|
 | `volunteers` | Everyone, with their `role` (member, organizer, admin) and the tracking code they first came by (`source`). Deletion anonymises the row |
 | `activity_types` | The interest vocabulary. Reference data, inserted by the schema |
-| `activities`, `activity_tags` | What needs doing, and which types each is |
+| `activities`, `activity_tags` | What needs doing, and which types each is. `slug` is its readable address and `published_at` when it was first published, which freezes the slug |
 | `volunteer_interests` | What each person likes doing |
 | `signups` | Who said they would come, their status, whether they checked in, and the tracking code on the link they used (`referral`) |
 | `auth_tokens` | Sign-in link hashes |

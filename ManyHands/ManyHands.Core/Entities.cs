@@ -46,6 +46,8 @@ public sealed record ActivityType(
 public sealed record ActivityListItem(
     Guid Id,
     string Title,
+    /// <summary>Its readable address: <see cref="ManyHandsPaths.Activity"/>.</summary>
+    string Slug,
     string? Description,
     ActivityKind Kind,
     string? Location,
@@ -97,6 +99,7 @@ public static class MemberStatus
 public sealed record MyActivity(
     Guid SignupId,
     Guid ActivityId,
+    string ActivitySlug,
     string Title,
     string? Location,
     DateTimeOffset? StartsAt,

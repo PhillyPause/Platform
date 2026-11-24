@@ -14,6 +14,7 @@ public sealed class ActivityRepository(NpgsqlDataSource db)
     internal sealed record ListRow(
         Guid Id,
         string Title,
+        string Slug,
         string? Description,
         ActivityKind Kind,
         string? Location,
@@ -28,6 +29,7 @@ public sealed class ActivityRepository(NpgsqlDataSource db)
         """
         SELECT a.id,
                a.title,
+               a.slug,
                a.description,
                a.kind,
                a.location,
@@ -45,7 +47,7 @@ public sealed class ActivityRepository(NpgsqlDataSource db)
         """;
 
     private static ActivityListItem ToItem(ListRow r) => new(
-        r.Id, r.Title, r.Description, r.Kind, r.Location,
+        r.Id, r.Title, r.Slug, r.Description, r.Kind, r.Location,
         r.StartsAt, r.EndsAt, r.MeetingUrl, r.SignupCount, r.Capacity, r.Tags);
 
     /// <summary>
@@ -84,5 +86,30 @@ public sealed class ActivityRepository(NpgsqlDataSource db)
             new { id },
             cancellationToken: ct));
         return row is null ? null : ToItem(row);
+    }
+
+    /// <summary>One published activity by its readable address, or null for a draft or an unknown one.</summary>
+    public async Task<ActivityListItem?> GetPublishedBySlugAsync(string slug, CancellationToken ct = default)
+    {
+        if (!ActivitySlug.IsWellFormed(slug)) return null;
+
+        await using var conn = await db.OpenConnectionAsync(ct);
+        var row = await conn.QuerySingleOrDefaultAsync<ListRow>(new CommandDefinition(
+            $"""
+             {ListSelect}
+             WHERE a.slug = @slug AND a.is_published
+             """,
+            new { slug },
+            cancellationToken: ct));
+        return row is null ? null : ToItem(row);
+    }
+
+    /// <summary>A published activity's readable address, for the old links by id.</summary>
+    public async Task<string?> GetPublishedSlugAsync(Guid id, CancellationToken ct = default)
+    {
+        await using var conn = await db.OpenConnectionAsync(ct);
+        return await conn.QuerySingleOrDefaultAsync<string?>(new CommandDefinition(
+            "SELECT slug FROM activities WHERE id = @id AND is_published",
+            new { id }, cancellationToken: ct));
     }
 }

@@ -52,7 +52,7 @@ public sealed class DiscordTests(DatabaseFixture db)
         await dispatcher.DispatchAsync(Published(activity), CancellationToken.None);
 
         var post = Assert.Single(discord.Announcements);
-        Assert.Contains(ManyHandsPaths.Activity(activity), post);
+        Assert.Contains(await TestData.PathAsync(db.DataSource, activity), post);
         Assert.Equal(RecordingDiscordSender.ThreadId, await Queries.GetAnnouncementThreadAsync(activity));
     }
 
