@@ -24,8 +24,10 @@ public sealed class SignupRepository(NpgsqlDataSource db)
         IReadOnlyCollection<short> interestIds,
         SignupSource source = SignupSource.Web,
         string? note = null,
+        string? referral = null,
         CancellationToken ct = default)
     {
+        referral = TrackingCode.Normalize(referral);
         var normalizedEmail = email?.Trim() ?? string.Empty;
         if (!EmailAddress.LooksValid(normalizedEmail))
             return new SignupResult.InvalidEmail();
@@ -60,13 +62,13 @@ public sealed class SignupRepository(NpgsqlDataSource db)
 
         var volunteerId = await conn.ExecuteScalarAsync<Guid>(new CommandDefinition(
             """
-            INSERT INTO volunteers (display_name, email)
-            VALUES (@name, @normalizedEmail)
+            INSERT INTO volunteers (display_name, email, source)
+            VALUES (@name, @normalizedEmail, @referral)
             ON CONFLICT (lower(email)) WHERE email IS NOT NULL
             DO UPDATE SET display_name = COALESCE(NULLIF(volunteers.display_name, ''), EXCLUDED.display_name)
             RETURNING id
             """,
-            new { name, normalizedEmail }, tx, cancellationToken: ct));
+            new { name, normalizedEmail, referral }, tx, cancellationToken: ct));
 
         if (interestIds.Count > 0)
         {
@@ -103,8 +105,8 @@ public sealed class SignupRepository(NpgsqlDataSource db)
         var signup = await conn.QuerySingleAsync<SignupRow>(new CommandDefinition(
             """
             WITH ins AS (
-              INSERT INTO signups (activity_id, volunteer_id, status, source, note)
-              VALUES (@activityId, @volunteerId, @status, @source, @note)
+              INSERT INTO signups (activity_id, volunteer_id, status, source, note, referral)
+              VALUES (@activityId, @volunteerId, @status, @source, @note, @referral)
               ON CONFLICT DO NOTHING
               RETURNING id, status
             )
@@ -118,7 +120,7 @@ public sealed class SignupRepository(NpgsqlDataSource db)
                AND activity_id = @activityId
             LIMIT 1
             """,
-            new { activityId, volunteerId, status = (int)status, source = (int)source, note },
+            new { activityId, volunteerId, status = (int)status, source = (int)source, note, referral },
             tx, cancellationToken: ct));
 
         var alreadySignedUp = !signup.Inserted;

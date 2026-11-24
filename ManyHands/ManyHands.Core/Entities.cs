@@ -69,6 +69,8 @@ public sealed record Member(
     string? Email,
     VolunteerRole Role,
     DateTimeOffset CreatedAt,
+    /// <summary>The tracking code on the link they first joined through, if any (<see cref="TrackingCode"/>).</summary>
+    string? Source,
     bool CanEmail,
     /// <summary>Clicked the link in their joining email, signed in, or came by invite.</summary>
     bool Confirmed,
