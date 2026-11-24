@@ -25,6 +25,7 @@ Simplicity is the point: nothing here exists to serve a second organisation.
 | Organizing | Create, edit and publish activities; the roster; QR check-in at the door; invite people by email; change who is an organizer; export participation |
 | CRM | Organizations, contacts, a timeline of interactions, an engagement pipeline, tasks |
 | Outreach email | Compose, send, and receive replies inside ManyHands, threaded; unrecognised mail is kept for triage |
+| Partners | The Outreach Kit's partners: priority, where outreach stands, the ask ladder, each one's tracking link and what it has brought, how organisations know each other; the Partner Tracker sheet pasted in, and out as a file |
 | Officials | The members of Congress, refreshed weekly from a public dataset, importable into the CRM |
 | Discord | Announce on publish, a thread per activity, a DM on signup, slash commands, interest pings, role sync |
 
@@ -261,6 +262,43 @@ Also under `/team`, also for organizers: `Components/Team/Crm` and
   a reply carries In-Reply-To and References, so threads hold in both
   directions.
 
+### Partner outreach
+
+The Outreach Kit's way of growing the list: ask organisations whose members
+already care about AI to share PhillyPause with them. A partner is a CRM
+organization with an outreach status; offices and venues without one are
+untouched by any of this.
+
+| Route | Page |
+|---|---|
+| `/team/partners` | Every partner as a grid (in the organizers' app): priority, status, audience, how many people its link brought and how many confirmed, the last touch, and the next step. Above it, confirmed members against the goal of 1,000, split into partners' links, other links and no code. "Download the list" is `/team/partners.csv` |
+| `/team/partners/import` | The Partner Tracker sheet, pasted in: a tab's cells with their heading row, or a CSV's text. Partners, and the links between organisations |
+| `/team/crm/organization/{id}` | Gains an Outreach section: status, priority, audience, the highest rung of the ask ladder they have said yes to, their tracking link with a QR code for flyers, who joined through it, and how they connect to other organisations |
+
+Settled, from the kit:
+
+- **We never import anyone's list.** Partners share our link; people join
+  themselves and confirm their own address. Nothing here holds a partner's
+  members.
+- **One email at a time, written for that organisation, one ask in it.**
+  There is no bulk send.
+- **Follow up once, seven days after the first email, then stop.** The next
+  step says when; a partner that does not answer the follow-up is No reply.
+- **Work the list A first.** A: AI-risk groups that already agree. B: unions,
+  creatives, libraries and parents with an AI fight of their own. C: broader
+  civic, tech and media.
+- **The ask ladder, one rung at a time:** share our link; let us table; a
+  speaker slot; co-host an event; a shared action.
+- **PauseAI US is never contacted** (CLAUDE.md). `NeverContact` refuses it in
+  the import, on its organization page and in what is saved; a test holds it.
+
+The import is safe to run again. It finds an organization by name, ignoring
+case, and fills only what is blank on one that exists, so nothing an
+organizer has set is overwritten by an old copy of the sheet. A tracking code
+another organization holds is left off, and the report says so. A link whose
+ends are neither of them an organization here is left out; one end that is
+not (a hearing, a coalition) is kept by name.
+
 #### The inbound webhook
 
 Whatever receives mail for the outreach address — a Cloudflare Email Worker,
@@ -363,7 +401,7 @@ Postgres, one schema (`public`), defined by
 | `email_messages` | Volunteers' transactional mail, as sent |
 | `data_protection_keys` | The keys that sign the sign-in cookie and form tokens |
 | `external_publications`, `activity_pings`, `discord_role_grants` | What has been announced, who has been pinged, which Discord roles the bot granted |
-| `crm_*` | The CRM and outreach mail |
+| `crm_*` | The CRM and outreach mail. A partner's outreach lives on its `crm_organizations` row (`outreach_status`, `priority`, `audience`, `ask_rung`, `tracking_code`, unique among live rows), and `crm_organization_links` holds how organisations know each other |
 | `federal_officials`, `sync_runs` | The officials directory and its refreshes |
 
 ### The outbox

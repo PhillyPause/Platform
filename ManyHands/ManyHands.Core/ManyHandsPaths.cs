@@ -112,6 +112,15 @@ public static class ManyHandsPaths
 
     public const string CrmOfficials = "/team/crm/officials";
 
+    /// <summary>Partner outreach: every partner, where it stands, and what each has brought.</summary>
+    public const string TeamPartners = "/team/partners";
+
+    /// <summary>The Partner Tracker sheet, pasted in.</summary>
+    public const string TeamPartnersImport = "/team/partners/import";
+
+    /// <summary>The path a partner shares: the front page, with their code on it.</summary>
+    public static string PartnerLink(string trackingCode) => TrackingCode.Append("/", trackingCode);
+
     /// <summary>Outreach mail, every thread.</summary>
     public const string Inbox = "/team/inbox";
 
