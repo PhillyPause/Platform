@@ -54,6 +54,9 @@
                        value="@_joinedFilter" @onchange="FilterJoinedAsync" />
             </FilterTemplate>
         </GridColumn>
+        @* The tracking code on the link they first joined through (?src=newsguild): which partner or poster brought them. *@
+        <GridColumn Field="@nameof(Row.CameVia)" HeaderText="Came via" Width="130" ClipMode="ClipMode.EllipsisWithTooltip"
+                    FilterSettings="Contains" HideAtMedia="(min-width: 1100px)" />
         @* Icons on screen; the words underneath are what sorting, filtering and a screen reader see. *@
         <GridColumn Field="@nameof(Row.Status)" HeaderText="Status" Width="112" TextAlign="TextAlign.Center"
                     HideAtMedia="(min-width: 720px)">
@@ -182,7 +185,7 @@
 
     /// <summary>One grid row: flat, so every column sorts and filters on a plain value.</summary>
     private sealed record Row(
-        Guid Id, string Name, string Email, DateTime Joined, string Status, string Role, string Interests,
+        Guid Id, string Name, string Email, DateTime Joined, string CameVia, string Status, string Role, string Interests,
         VolunteerRole RoleValue, bool HasEmail, bool CanResend, IReadOnlyList<Interest> Codes);
 
     private sealed record Interest(string Code, string Label);
@@ -234,7 +237,7 @@
         var status = m.Status;
 
         return new Row(
-            m.Id, m.DisplayName, m.Email ?? string.Empty, LocalTime.ToLocal(m.CreatedAt).Date, status,
+            m.Id, m.DisplayName, m.Email ?? string.Empty, LocalTime.ToLocal(m.CreatedAt).Date, m.Source ?? string.Empty, status,
             m.Role.ToString(), string.Join(", ", m.Interests), m.Role,
             HasEmail: m.Email is not null, CanResend: status == NotConfirmed,
             Codes: [.. m.Interests.Select(label => new Interest(Code(label), label))]);

@@ -169,6 +169,28 @@ and doing nothing is a fine answer.
 
 `volunteers.email_verified_at` is the state: set, the address is confirmed.
 
+### Tracking codes
+
+Every link we hand out can carry a code saying who handed it out:
+`phillypause.org/?src=newsguild` for a partner, `?src=rally-flyer` for a
+poster. `TrackingCode` decides what counts: lower-case letters, digits and
+dashes, at most 40. Anything else is ignored, never refused, so a mangled link
+still lets someone join.
+
+- **The code rides on the address, not in a cookie.** The Join us form posts
+  to `/join?src=…`, and the Events dialog adds it to each activity's link, so
+  the activity page's signup carries it too. The privacy page's one cookie
+  stays one.
+- **The first link counts.** `volunteers.source` is written when the row is
+  created and never after: joining again, or signing up later through another
+  partner's link, does not move someone. Each signup also keeps the code it
+  came with, in `signups.referral`; `signups.source` is the channel (web,
+  Discord, organizer) and means something else.
+- **Organizers see it** as "Came via" on `/team/members` and in its file, and
+  the person sees it in their own download. Deleting someone leaves the code,
+  as it leaves their signups: a partner who brought twelve people still
+  brought twelve.
+
 ### The team pages
 
 Under `/team`, in `Website/Website.Portal/Components/Team`, all behind
@@ -182,7 +204,7 @@ request.
 | `/team/activity/new`, `/team/activity/{id}/edit` | The editor. Times are typed in Philadelphia's clock and stored as instants | Organizers |
 | `/team/activity/{id}` | Publish or unpublish; the roster, one big button per name for check-in; walk-ins | Organizers |
 | `/team/activity/{id}/check-in` | The QR code for the door | Organizers |
-| `/team/members` | Everyone, newest first, one line each, as a grid: a filter row that narrows the list as you type, sorting, a page at a time. Email, the day they joined (MM/dd/yyyy, Philadelphia's clock), whether they have confirmed, their role, and what they like doing as two-letter codes with the full name on hover (`InterestCodes`). Icon buttons send the joining email again, change a role and delete. "Download the list" is `/team/members.csv`: the same people and columns, newest first, the interests written out | Organizers see, download and resend; admins change and delete |
+| `/team/members` | Everyone, newest first, one line each, as a grid: a filter row that narrows the list as you type, sorting, a page at a time. Email, the day they joined (MM/dd/yyyy, Philadelphia's clock), which tracking code brought them ("Came via"), whether they have confirmed, their role, and what they like doing as two-letter codes with the full name on hover (`InterestCodes`). Icon buttons send the joining email again, change a role and delete. "Download the list" is `/team/members.csv`: the same people and columns, newest first, the interests written out | Organizers see, download and resend; admins change and delete |
 | `/team/invites` | The join link, invitations by email, and their state | Organizers |
 
 Two public pages come with them: `/volunteer/join/{token}`, where an
@@ -330,11 +352,11 @@ Postgres, one schema (`public`), defined by
 
 | Table | Holds |
 |---|---|
-| `volunteers` | Everyone, with their `role` (member, organizer, admin). Deletion anonymises the row |
+| `volunteers` | Everyone, with their `role` (member, organizer, admin) and the tracking code they first came by (`source`). Deletion anonymises the row |
 | `activity_types` | The interest vocabulary. Reference data, inserted by the schema |
 | `activities`, `activity_tags` | What needs doing, and which types each is |
 | `volunteer_interests` | What each person likes doing |
-| `signups` | Who said they would come, their status, and whether they checked in |
+| `signups` | Who said they would come, their status, whether they checked in, and the tracking code on the link they used (`referral`) |
 | `auth_tokens` | Sign-in link hashes |
 | `invites`, `invite_tokens` | Emailed invitations, and their link hashes, apart |
 | `outbox` | Everything waiting to be sent |

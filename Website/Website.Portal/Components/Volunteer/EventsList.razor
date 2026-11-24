@@ -35,7 +35,7 @@ else
             @foreach (var activity in _activities)
             {
                 <li>
-                    <h3><a href="@ManyHandsPaths.Activity(activity.Id)">@activity.Title</a></h3>
+                    <h3><a href="@TrackingCode.Append(ManyHandsPaths.Activity(activity.Id), Source)">@activity.Title</a></h3>
                     <p class="evmeta">
                         <span>@Show.When(activity.StartsAt)</span>
                         <span>@Show.Where(activity.Location)</span>
@@ -61,6 +61,12 @@ else
 
 @code {
     [SupplyParameterFromQuery(Name = "type")] private string? TypeSlug { get; set; }
+
+    // Carried on to the activity page, so a signup there still counts for the
+    // link that brought the reader (?src=newsguild).
+    [SupplyParameterFromQuery(Name = TrackingCode.QueryName)] private string? SourceQuery { get; set; }
+
+    private string? Source => TrackingCode.Normalize(SourceQuery);
 
     private IReadOnlyList<ActivityType> _types = [];
     private IReadOnlyList<ActivityListItem> _activities = [];

@@ -68,7 +68,7 @@ public sealed class VolunteerRepository(NpgsqlDataSource db)
     /// </summary>
     public async Task<JoinResult> JoinAsync(
         string displayName, string email, IReadOnlyCollection<short> interestIds,
-        CancellationToken ct = default)
+        string? source = null, CancellationToken ct = default)
     {
         var address = email?.Trim() ?? string.Empty;
         if (!EmailAddress.LooksValid(address)) return new JoinResult.InvalidEmail();
@@ -78,7 +78,8 @@ public sealed class VolunteerRepository(NpgsqlDataSource db)
         await using var conn = await db.OpenConnectionAsync(ct);
         await using var tx = await conn.BeginTransactionAsync(ct);
 
-        var joined = await JoinCoreAsync(conn, tx, name, address, interestIds, addressProven: false, ct);
+        var joined = await JoinCoreAsync(conn, tx, name, address, interestIds, addressProven: false, ct,
+            TrackingCode.Normalize(source));
 
         if (!joined.Confirmed)
         {
@@ -99,24 +100,27 @@ public sealed class VolunteerRepository(NpgsqlDataSource db)
     /// What both doors share — the join page and an accepted invite: upsert the
     /// person and record what they like doing. An invite proves the address,
     /// since it was mailed there, so it confirms the person and welcomes them
-    /// the first time; the join page leaves the asking to its caller.
+    /// the first time; the join page leaves the asking to its caller. The
+    /// tracking code is written only on a new row: the first link that brought
+    /// someone is the one that counts.
     /// </summary>
     internal static async Task<JoinResult.Ok> JoinCoreAsync(
         NpgsqlConnection conn, NpgsqlTransaction tx, string name, string address,
-        IReadOnlyCollection<short> interestIds, bool addressProven, CancellationToken ct)
+        IReadOnlyCollection<short> interestIds, bool addressProven, CancellationToken ct,
+        string? source = null)
     {
         // xmax is zero only on a row this statement inserted, which is how the
         // upsert says whether the person is new.
         var joined = await conn.QuerySingleAsync<JoinedRow>(new CommandDefinition(
             """
-            INSERT INTO volunteers (display_name, email, email_verified_at)
-            VALUES (@name, @address, CASE WHEN @addressProven THEN now() END)
+            INSERT INTO volunteers (display_name, email, email_verified_at, source)
+            VALUES (@name, @address, CASE WHEN @addressProven THEN now() END, @source)
             ON CONFLICT (lower(email)) WHERE email IS NOT NULL
             DO UPDATE SET display_name = COALESCE(NULLIF(volunteers.display_name, ''), EXCLUDED.display_name),
                           email_verified_at = COALESCE(volunteers.email_verified_at, EXCLUDED.email_verified_at)
             RETURNING id, (xmax = 0) AS inserted, email_verified_at IS NOT NULL AS confirmed
             """,
-            new { name, address, addressProven }, tx, cancellationToken: ct));
+            new { name, address, addressProven, source }, tx, cancellationToken: ct));
 
         if (interestIds.Count > 0)
         {
@@ -209,7 +213,7 @@ public sealed class VolunteerRepository(NpgsqlDataSource db)
         await using var conn = await db.OpenConnectionAsync(ct);
         var rows = await conn.QueryAsync<Member>(new CommandDefinition(
             """
-            SELECT v.id, v.display_name, v.email, v.role, v.created_at,
+            SELECT v.id, v.display_name, v.email, v.role, v.created_at, v.source,
                    (v.email_opt_in AND v.unsubscribed_at IS NULL) AS can_email,
                    v.email_verified_at IS NOT NULL AS confirmed,
                    COALESCE((SELECT array_agg(a.label ORDER BY a.sort_order)

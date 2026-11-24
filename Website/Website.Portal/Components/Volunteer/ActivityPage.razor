@@ -129,8 +129,11 @@
             return;
         }
 
+        // The form posts back to this page's own address, so a link that
+        // arrived with ?src= still carries it.
         var result = await Signups.SignUpAsync(
-            Id, Input!.DisplayName ?? string.Empty, Input.Email, InterestChoices.Read(HttpContext));
+            Id, Input!.DisplayName ?? string.Empty, Input.Email, InterestChoices.Read(HttpContext),
+            referral: TrackingCode.Normalize(HttpContext.Request.Query[TrackingCode.QueryName]));
 
         switch (result)
         {

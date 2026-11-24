@@ -75,11 +75,12 @@ public static class TeamEndpoints
         {
             var members = await volunteers.GetMembersAsync(ct);
             var csv = Csv.Build(
-                ["Name", "Email", "Joined (Eastern)", "Status", "Role", "Likes doing"],
+                ["Name", "Email", "Joined (Eastern)", "Came via", "Status", "Role", "Likes doing"],
                 members.OrderByDescending(m => m.CreatedAt).Select(m => new[]
                 {
                     m.DisplayName, m.Email ?? string.Empty,
                     LocalTime.ToLocal(m.CreatedAt).ToString("yyyy-MM-dd", CultureInfo.InvariantCulture),
+                    m.Source ?? string.Empty,
                     m.Status, m.Role.ToString(), string.Join(", ", m.Interests)
                 }));
 
