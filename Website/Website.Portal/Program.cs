@@ -71,11 +71,9 @@ if (manyHandsEnabled)
     app.Services.MigrateManyHands();
 }
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseWebAssemblyDebugging();
-}
-else
+// Debugging the WebAssembly side needs nothing here: Visual Studio and VS Code
+// launch it themselves.
+if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error", createScopeForErrors: true);
     app.UseHsts();
