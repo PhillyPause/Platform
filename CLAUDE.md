@@ -181,9 +181,10 @@ mail arrives pre-sorted — a bare `mailto:` is a bug.
 - `main` is protected; all work on `feature/*` / `fix/*` / `docs/*` / `chore/*`
   branches, merged via PR. Conventional commits (`feat:`, `fix:`, `chore:`, `docs:`).
 - **Push as `louis-phillypause`.** A PC's `gh` may also hold `squideyes`, which
-  can only read this repo: a push fails with 403 and GitHub hides the merge
-  button. Check `gh auth status` before pushing, and if `squideyes` is active,
-  say so and let the user switch (`gh auth switch --user louis-phillypause`).
+  can only read this repo: as `squideyes` a push fails with 403 and GitHub
+  hides the merge button. `go.ps1` makes pushes use `louis-phillypause`
+  whichever account is active, and `gh` commands take its token (Commands,
+  above), so the active account never needs switching.
 - Windows is case-insensitive: `docs` and `Docs` are the SAME directory.
   Case-only renames must bounce through a temp name; never `rm -rf` without
   listing contents first.
