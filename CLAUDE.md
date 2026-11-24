@@ -89,11 +89,21 @@ from any branch, even one older than the rule. Run the tests for the area,
 then report where things stand in a few lines and carry on with what is
 outstanding, asking only about decisions that are the user's.
 
+The two PCs are at **Drexel Hill** and **Conowingo**. "Pick up here (Drexel
+Hill)", or either town named on its own, means the same as **pickup**. Only
+the repo travels between them: Claude's memory, settings and user-level
+`CLAUDE.md` live in `~/.claude` on each PC, so a rule both machines need goes
+in this file.
+
 ## Deploying
 
 **The site is live at `phillypause.org`**, on DigitalOcean App Platform behind
 Cloudflare. Shipping is merging to `main` — the spec sets `deploy_on_push`, and
 `main` requires `build-and-test`, so nothing ships that has not passed CI.
+
+So **ask before merging**. Take a finished change as far as a green PR, give
+its URL, and wait for the user's word. "ship" or `/ship` is that word: run the
+`ship` skill end to end without asking again.
 
 `Deploy/digitalocean/app.yaml` **is** the deployed configuration. Change it
 there and `doctl apps update`; never touch the control panel, or the two drift
@@ -168,11 +178,24 @@ mail arrives pre-sorted — a bare `mailto:` is a bug.
 ## Git — non-negotiable
 
 - **Never leave work uncommitted.** Commit before any restructure, rename or delete.
-- `main` is protected; all work on `feature/*` / `fix/*` / `docs/*` branches,
-  merged via PR. Conventional commits (`feat:`, `fix:`, `chore:`, `docs:`).
+- `main` is protected; all work on `feature/*` / `fix/*` / `docs/*` / `chore/*`
+  branches, merged via PR. Conventional commits (`feat:`, `fix:`, `chore:`, `docs:`).
+- **Push as `louis-phillypause`.** A PC's `gh` may also hold `squideyes`, which
+  can only read this repo: as `squideyes` a push fails with 403 and GitHub
+  hides the merge button. `go.ps1` makes pushes use `louis-phillypause`
+  whichever account is active, and `gh` commands take its token (Commands,
+  above), so the active account never needs switching.
 - Windows is case-insensitive: `docs` and `Docs` are the SAME directory.
   Case-only renames must bounce through a temp name; never `rm -rf` without
   listing contents first.
+
+## Steps for the user
+
+When the user has several things to do themselves (a setting, an account,
+clicks in another app), give them one at a time as an `AskUserQuestion` card:
+number it ("Task 2 of 4"), put the exact clicks or command in the question,
+offer the likely outcomes as options, and act on each answer before giving
+the next.
 
 ## Sharp edges
 
