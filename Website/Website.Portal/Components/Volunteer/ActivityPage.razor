@@ -1,4 +1,4 @@
-@page "/volunteer/activity/{Id:guid}"
+@page "/events/{Slug}"
 @inject ActivityRepository Activities
 @inject ActivityTypeRepository Types
 @inject SignupRepository Signups
@@ -84,7 +84,7 @@
 </div>
 
 @code {
-    [Parameter] public Guid Id { get; set; }
+    [Parameter] public string Slug { get; set; } = string.Empty;
 
     [CascadingParameter] private HttpContext HttpContext { get; set; } = default!;
 
@@ -101,7 +101,7 @@
     protected override async Task OnInitializedAsync()
     {
         Input ??= new();
-        _activity = await Activities.GetPublishedByIdAsync(Id);
+        _activity = await Activities.GetPublishedBySlugAsync(Slug);
         if (_activity is null)
         {
             HttpContext.Response.StatusCode = StatusCodes.Status404NotFound;
@@ -123,14 +123,19 @@
 
     private async Task SignUpAsync()
     {
+        if (_activity is null) return;
+
         if (!Throttle.AllowPublicWrite(HttpContext))
         {
             _refused = "That is a lot of signups from one place. Wait a few minutes and try again.";
             return;
         }
 
+        // The form posts back to this page's own address, so a link that
+        // arrived with ?src= still carries it.
         var result = await Signups.SignUpAsync(
-            Id, Input!.DisplayName ?? string.Empty, Input.Email, InterestChoices.Read(HttpContext));
+            _activity.Id, Input!.DisplayName ?? string.Empty, Input.Email, InterestChoices.Read(HttpContext),
+            referral: TrackingCode.Normalize(HttpContext.Request.Query[TrackingCode.QueryName]));
 
         switch (result)
         {

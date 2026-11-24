@@ -277,9 +277,26 @@ public sealed partial class TeamPagesTests(DatabaseFixture db) : IAsyncLifetime
             .Split('\n').Select(l => l.TrimEnd('\r')).ToArray();
 
         Assert.Contains($"href=\"{Website.Portal.Volunteer.TeamEndpoints.MembersPath}\"", page);
-        Assert.Equal("Name,Email,Joined (Eastern),Status,Role,Likes doing", lines[0]);
+        Assert.Equal("Name,Email,Joined (Eastern),Came via,Status,Role,Likes doing", lines[0]);
         Assert.Contains(lines, l => l.StartsWith($"{name},{email},", StringComparison.Ordinal)
                                     && l.Contains($",{MemberStatus.NotConfirmed},Member,", StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public async Task The_members_page_and_file_say_which_link_brought_someone()
+    {
+        const string code = "newsguild";
+        var email = TestData.NewEmail();
+        var name = $"Referred {Guid.NewGuid():N}";
+        await new VolunteerRepository(db.DataSource).JoinAsync(name, email, [], source: code);
+        var organizer = await SignedInAsync(VolunteerRole.Organizer);
+
+        var page = await organizer.GetStringAsync(ManyHandsPaths.TeamMembers);
+        var csv = await organizer.GetStringAsync(Website.Portal.Volunteer.TeamEndpoints.MembersPath);
+
+        Assert.Contains("Came via", page);
+        Assert.Contains($"{name},{email},", csv);
+        Assert.Matches($@"{Regex.Escape(name)},{Regex.Escape(email)},\d{{4}}-\d{{2}}-\d{{2}},{code},", csv);
     }
 
     [Fact]

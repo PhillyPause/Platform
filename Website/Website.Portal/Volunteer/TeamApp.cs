@@ -16,7 +16,8 @@ public static class TeamApp
     private static readonly HashSet<string> Pages = new(StringComparer.OrdinalIgnoreCase)
     {
         ManyHands.Core.ManyHandsPaths.Team,
-        ManyHands.Core.ManyHandsPaths.TeamMembers
+        ManyHands.Core.ManyHandsPaths.TeamMembers,
+        ManyHands.Core.ManyHandsPaths.TeamPartners
     };
 
     /// <summary>The render mode for a request: interactive for the app's pages, static (null) for the rest.</summary>

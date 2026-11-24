@@ -1,0 +1,128 @@
+@page "/team/partners"
+@layout Website.Portal.Components.Layout.TeamAppLayout
+@using Syncfusion.Blazor.Grids
+@inject PartnerRepository Partners
+
+@* Partner outreach, the Outreach Kit's sheet as a grid: every partner, where
+   outreach stands, and how many people each one's link has brought. Above it,
+   the path to 1,000 confirmed members. Part of the organizers' app (TeamApp),
+   so it runs interactive. Each partner's own page (its CRM organization) is
+   where the outreach is done. *@
+
+<PageMeta Title="Partners" Description="Partner outreach." NoIndex="true" />
+
+<div class="team-page-head">
+    <div>
+        <h1>Partners</h1>
+        <p class="team-stats">
+            @_goal.Confirmed.ToString("N0", Culture) of @MemberGoal.Target.ToString("N0", Culture) confirmed members
+            &middot; @_goal.ViaPartners through partners&rsquo; links
+            &middot; @_goal.ViaOtherCodes through other links
+            &middot; @_goal.NoCode with no code
+        </p>
+        <p class="team-stats">
+            @_rows.Count partners &middot; @_rows.Count(r => r.Status == PartnerText.Status(OutreachStatus.NotContacted)) not contacted yet
+            &middot; work them A first, one email at a time
+        </p>
+    </div>
+    <div class="team-actions">
+        <a class="e-btn" href="@ManyHandsPaths.TeamPartnersImport" target="_top">Import the sheet</a>
+        @* A file, so a plain link: the browser downloads it. *@
+        <a class="e-btn" href="@TeamEndpoints.PartnersPath" target="_top">Download the list</a>
+    </div>
+</div>
+
+<SfGrid @ref="_grid" TValue="Row" DataSource="_rows" AllowPaging="true" AllowSorting="true" AllowFiltering="true"
+        GridLines="GridLine.Horizontal" RowHeight="44" CssClass="team-partners">
+    <GridPageSettings PageSize="25" PageSizes="PageSizes" />
+    <GridFilterSettings Type="Syncfusion.Blazor.Grids.FilterType.FilterBar" Mode="FilterBarMode.Immediate" ImmediateModeDelay="250" />
+    <GridColumns>
+        <GridColumn Field="@nameof(Row.Name)" HeaderText="Organization" ClipMode="ClipMode.EllipsisWithTooltip" FilterSettings="Contains">
+            <Template>
+                @{ var row = (Row)context; }
+                <a href="@ManyHandsPaths.CrmOrganization(row.Id)" target="_top">@row.Name</a>
+            </Template>
+        </GridColumn>
+        <GridColumn Field="@nameof(Row.Priority)" HeaderText="Priority" Width="104" TextAlign="TextAlign.Center">
+            <FilterTemplate>
+                <ChoiceFilter Label="Show priority" Choices="Priorities" Value="@_priorityFilter"
+                              OnChange="value => FilterChoiceAsync(nameof(Row.Priority), value)" />
+            </FilterTemplate>
+        </GridColumn>
+        <GridColumn Field="@nameof(Row.Status)" HeaderText="Status" Width="150">
+            <FilterTemplate>
+                <ChoiceFilter Label="Show status" Choices="Statuses" Value="@_statusFilter"
+                              OnChange="value => FilterChoiceAsync(nameof(Row.Status), value)" />
+            </FilterTemplate>
+        </GridColumn>
+        <GridColumn Field="@nameof(Row.Audience)" HeaderText="Audience" Width="170" ClipMode="ClipMode.EllipsisWithTooltip"
+                    HideAtMedia="(min-width: 960px)">
+            <FilterTemplate>
+                <ChoiceFilter Label="Show audience" Choices="Audiences" Value="@_audienceFilter"
+                              OnChange="value => FilterChoiceAsync(nameof(Row.Audience), value)" />
+            </FilterTemplate>
+        </GridColumn>
+        @* Everyone the partner's link brought, and of those, how many confirmed. *@
+        <GridColumn Field="@nameof(Row.Brought)" HeaderText="Brought" Width="104" TextAlign="TextAlign.Right" AllowFiltering="false">
+            <FilterTemplate></FilterTemplate>
+        </GridColumn>
+        <GridColumn Field="@nameof(Row.Confirmed)" HeaderText="Confirmed" Width="116" TextAlign="TextAlign.Right" AllowFiltering="false"
+                    HideAtMedia="(min-width: 720px)">
+            <FilterTemplate></FilterTemplate>
+        </GridColumn>
+        <GridColumn Field="@nameof(Row.LastTouch)" HeaderText="Last touch" Type="ColumnType.Date" Format="MM/dd/yyyy" Width="130"
+                    AllowFiltering="false" HideAtMedia="(min-width: 1100px)">
+            <FilterTemplate></FilterTemplate>
+        </GridColumn>
+        <GridColumn Field="@nameof(Row.NextStep)" HeaderText="Next step" Width="190" ClipMode="ClipMode.EllipsisWithTooltip" AllowFiltering="false">
+            <FilterTemplate></FilterTemplate>
+        </GridColumn>
+    </GridColumns>
+</SfGrid>
+
+@code {
+    private static readonly System.Globalization.CultureInfo Culture = System.Globalization.CultureInfo.InvariantCulture;
+    private static readonly string[] PageSizes = ["25", "50", "100", "All"];
+    private static readonly string[] Priorities = ["A", "B", "C"];
+    private static readonly string[] Statuses = [.. Enum.GetValues<OutreachStatus>().Select(PartnerText.Status)];
+    private static readonly string[] Audiences = [.. Enum.GetValues<Audience>().Select(PartnerText.Audience)];
+    private static readonly FilterSettings Contains = new() { Operator = Syncfusion.Blazor.Operator.Contains };
+
+    /// <summary>One grid row: flat, so every column sorts and filters on a plain value.</summary>
+    private sealed record Row(
+        Guid Id, string Name, string Priority, string Status, string Audience, int Brought, int Confirmed,
+        DateTime? LastTouch, string NextStep);
+
+    private SfGrid<Row>? _grid;
+    private List<Row> _rows = [];
+    private MemberGoal _goal = new(0, 0, 0, 0);
+    private string _priorityFilter = string.Empty;
+    private string _statusFilter = string.Empty;
+    private string _audienceFilter = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var now = DateTimeOffset.UtcNow;
+        _goal = await Partners.GetGoalAsync();
+        _rows = [.. (await Partners.GetPartnersAsync()).Select(p => new Row(
+            p.Id, p.Name, p.Priority ?? string.Empty, PartnerText.Status(p.OutreachStatus),
+            p.Audience is { } audience ? PartnerText.Audience(audience) : string.Empty,
+            p.Members, p.ConfirmedMembers,
+            p.LastTouchAt is { } touched ? LocalTime.ToLocal(touched).Date : null,
+            PartnerText.NextStep(p.OutreachStatus, p.FirstContactedAt, now)))];
+    }
+
+    private async Task FilterChoiceAsync(string field, string value)
+    {
+        switch (field)
+        {
+            case nameof(Row.Priority): _priorityFilter = value; break;
+            case nameof(Row.Status): _statusFilter = value; break;
+            default: _audienceFilter = value; break;
+        }
+
+        if (_grid is null) return;
+        if (value.Length == 0) await _grid.ClearFilteringAsync(field);
+        else await _grid.FilterByColumnAsync(field, "equal", value);
+    }
+}

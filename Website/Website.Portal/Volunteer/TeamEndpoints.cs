@@ -12,6 +12,8 @@ public static class TeamEndpoints
 
     public const string MembersPath = "/team/members.csv";
 
+    public const string PartnersPath = "/team/partners.csv";
+
     /// <summary>Where the mail provider posts outreach replies.</summary>
     public const string InboundMailPath = "/team/mail/inbound";
 
@@ -75,15 +77,37 @@ public static class TeamEndpoints
         {
             var members = await volunteers.GetMembersAsync(ct);
             var csv = Csv.Build(
-                ["Name", "Email", "Joined (Eastern)", "Status", "Role", "Likes doing"],
+                ["Name", "Email", "Joined (Eastern)", "Came via", "Status", "Role", "Likes doing"],
                 members.OrderByDescending(m => m.CreatedAt).Select(m => new[]
                 {
                     m.DisplayName, m.Email ?? string.Empty,
                     LocalTime.ToLocal(m.CreatedAt).ToString("yyyy-MM-dd", CultureInfo.InvariantCulture),
+                    m.Source ?? string.Empty,
                     m.Status, m.Role.ToString(), string.Join(", ", m.Interests)
                 }));
 
             return File(csv, "members.csv");
+        })
+        .RequireAuthorization(TeamPolicies.Organizer);
+
+        // The partners page as a file, in the Partner Tracker sheet's own
+        // headings, so it pastes back into the sheet or into the import page.
+        app.MapGet(PartnersPath, async (PartnerRepository partners, CancellationToken ct) =>
+        {
+            var now = DateTimeOffset.UtcNow;
+            var rows = await partners.GetPartnersAsync(ct);
+            var csv = Csv.Build(
+                ["Organization", "Priority", "Status", "Category", "Audience", "Tracking code", "Brought", "Confirmed", "Next step"],
+                rows.Select(p => new[]
+                {
+                    p.Name, p.Priority ?? string.Empty, PartnerText.Status(p.OutreachStatus), p.Category ?? string.Empty,
+                    p.Audience is { } audience ? PartnerText.Audience(audience) : string.Empty,
+                    p.TrackingCode ?? string.Empty,
+                    p.Members.ToString(CultureInfo.InvariantCulture), p.ConfirmedMembers.ToString(CultureInfo.InvariantCulture),
+                    PartnerText.NextStep(p.OutreachStatus, p.FirstContactedAt, now)
+                }));
+
+            return File(csv, "partners.csv");
         })
         .RequireAuthorization(TeamPolicies.Organizer);
 

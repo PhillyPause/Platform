@@ -45,6 +45,20 @@ public static class VolunteerEndpoints
         })
         .DisableAntiforgery();
 
+        // Activities used to live at /volunteer/activity/{id}, and emails,
+        // Discord posts and calendars already carry those links. Each answers
+        // for good with a permanent redirect to the readable address, keeping
+        // a tracking code. A draft or an unknown id is the ordinary 404.
+        app.MapGet(ManyHandsPaths.LegacyActivity, async (
+            Guid id, HttpContext http, ActivityRepository activities, CancellationToken ct) =>
+        {
+            var slug = await activities.GetPublishedSlugAsync(id, ct);
+            if (slug is null) return Results.NotFound();
+
+            var code = TrackingCode.Normalize(http.Request.Query[TrackingCode.QueryName]);
+            return Results.Redirect(TrackingCode.Append(ManyHandsPaths.Activity(slug), code), permanent: true);
+        });
+
         app.MapGet(ManyHandsPaths.Calendar, async (
             HttpContext http, CalendarRepository calendar, CancellationToken ct) =>
         {

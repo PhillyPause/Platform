@@ -37,7 +37,7 @@
         <a class="btn btn-ghost" href="@ManyHandsPaths.TeamEditActivity(Id)">Edit</a>
         @if (_activity.IsPublished)
         {
-            <a class="btn btn-ghost" href="@ManyHandsPaths.Activity(Id)">See the public page</a>
+            <a class="btn btn-ghost" href="@ManyHandsPaths.Activity(_activity.Slug)">See the public page</a>
             <a class="btn btn-ghost" href="@ManyHandsPaths.TeamCheckInCode(Id)">Check-in code for the door</a>
         }
     </div>

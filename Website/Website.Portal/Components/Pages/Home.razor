@@ -13,7 +13,7 @@
 @inject ContentStore Content
 
 @* The home page, as a broadsheet front: masthead and nav, the lead story on
-   the July 2026 incident, and the dialogs: watch, panelists, join us, the
+   the July 2026 incident, and the dialogs: watch, speakers, past events, join us, the
    primer, volunteer, educate, organize and the small print.
 
    The dialogs are driven by one hidden radio group and `:checked ~` sibling
@@ -49,7 +49,8 @@ else
      reader on the front page. *@
   <input type="radio" name="dlg" id="dlg-none" class="dlgtoggle" checked="@(!NotFound && !JoinOpen && !EventsOpen && !ConfirmOpen && !WelcomeOpen && !RemoveOpen && !CheckEmailOpen)" aria-label="No panel open">
   <input type="radio" name="dlg" id="watch-open" class="dlgtoggle" aria-label="Watch">
-  <input type="radio" name="dlg" id="panel-open" class="dlgtoggle" aria-label="Who is on the panel">
+  <input type="radio" name="dlg" id="panel-open" class="dlgtoggle" aria-label="Who is speaking">
+  <input type="radio" name="dlg" id="past-open" class="dlgtoggle" aria-label="Past events">
   <input type="radio" name="dlg" id="join-open" class="dlgtoggle" checked="@JoinOpen" aria-label="Join us">
   <input type="radio" name="dlg" id="primer-open" class="dlgtoggle" aria-label="The primer">
   <input type="radio" name="dlg" id="volunteer-open" class="dlgtoggle" aria-label="Volunteer">
@@ -119,28 +120,35 @@ else
       <div style="padding: 16px">
         @* Hand-edited, and always this: the next event is what PhillyPause
            says it is, never whatever happens to be published in ManyHands. *@
-        <div style="font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 800; line-height: 1.12; letter-spacing: -0.015em">Wednesday 28 October</div>
-        <div style="font-size: 14px; font-weight: 600; color: #AE2012; margin-top: 4px">7:00 &ndash; 9:00 pm</div>
-
-        <div style="font-size: 13px; line-height: 1.55; color: #4A443A; margin-top: 13px; padding-top: 13px; border-top: 1px solid #CFC7B6">
-          <span style="color: #15110C; font-weight: 600">The Pen and Pencil Club</span><br>
-          <a href="https://www.google.com/maps/search/?api=1&amp;query=1522+Latimer+St+Philadelphia+PA" target="_blank" rel="noopener" style="text-decoration: none; color: #4A443A">1522 Latimer St, Philadelphia, PA</a>
-          <div style="margin-top: 7px; font-weight: 600; color: #15110C">Open to the public</div>
-          <div>Registration suggested &mdash; <a href="https://www.penandpencil.org/content.aspx?page_id=4091&amp;club_id=877257&amp;item_id=3073129" target="_blank" rel="noopener" style="text-decoration: none; font-weight: 600">book a seat</a></div>
-        </div>
-
-        <p style="font-size: 13px; line-height: 1.55; color: #4A443A; margin: 13px 0 0; padding-top: 13px; border-top: 1px solid #CFC7B6">
-          A screening of <a href="https://theaidocgetinvolved.com/" target="_blank" rel="noopener" style="font-weight: 600"><i>The AI Doc: Or How I Became an Apocaloptimist</i></a> &mdash; the Sundance documentary from the Academy Award-winning team behind <i>Everything Everywhere All at Once</i> and <i>Navalny</i>, on the pull between how fast AI is moving and how little anyone can say about where it lands.
-        </p>
-        <p style="font-size: 13px; line-height: 1.55; color: #4A443A; margin: 10px 0 0">
-          A live panel and audience questions follow the film. PhillyPause is co-hosting.
-        </p>
+        <div style="font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 800; line-height: 1.12; letter-spacing: -0.015em">Saturday 30 January</div>
+        <div style="font-size: 14px; font-weight: 600; color: #AE2012; margin-top: 4px">Noon &ndash; 1:30 pm</div>
 
         <div style="margin-top: 13px; padding-top: 13px; border-top: 1px solid #CFC7B6">
-          <div style="font-size: 10px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: #AE2012; margin-bottom: 7px">On the panel</div>
+          <div style="font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 800; letter-spacing: -0.01em">Philly Says Pause</div>
+          <div style="font-size: 13px; font-weight: 600; color: #AE2012; margin-top: 2px">Stop the AI death race</div>
+          <p style="font-size: 13px; line-height: 1.55; color: #4A443A; margin: 6px 0 0">AI is being developed at an ever faster pace, and our government has neither regulated the industry nor required safeguards. We will demand an immediate pause on building artificial superintelligence, and a treaty with China to keep it paused until it can be made safe.</p>
+          <p style="font-size: 13px; line-height: 1.55; color: #4A443A; margin: 8px 0 0">Corporate profits must not come before the safety of humanity. Hear from AI safety experts, and make your voice heard on the most important issue of our lifetime.</p>
+        </div>
+
+        <div style="font-size: 13px; line-height: 1.55; color: #4A443A; margin-top: 13px; padding-top: 13px; border-top: 1px solid #CFC7B6">
+          <span style="color: #15110C; font-weight: 600">City Hall, Southwest Plaza</span><br>
+          <a href="https://www.google.com/maps/search/?api=1&amp;query=15th+and+Market+Streets+Philadelphia+PA" target="_blank" rel="noopener" style="text-decoration: none; color: #4A443A">15th &amp; Market Streets, Philadelphia</a>
+          <div style="margin-top: 7px; font-weight: 600; color: #15110C">Open to the public</div>
+          @* RSVPs are ManyHands signups: the rally is published as an activity
+             under /team, and Events is where people say they are coming. Off,
+             Join us is the nearest thing. *@
+          <div>RSVP recommended &mdash; <label class="boxlink" for="@(ManyHandsOn ? "events-open" : "join-open")">@(ManyHandsOn ? "sign up" : "join us")</label></div>
+        </div>
+
+        <div style="margin-top: 13px; padding-top: 13px; border-top: 1px solid #CFC7B6">
+          <div style="font-size: 10px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: #AE2012; margin-bottom: 7px">Speaking</div>
           <div style="font-size: 13px; line-height: 1.7"><span style="color: #15110C; font-weight: 600">Louis Berman</span> <span style="color: #6A6254">(PhillyPause, Author)</span><label for="panel-open" class="flyicon" title="Who they are"><svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="square" aria-hidden="true"><path d="M6.8 1.5h3.7v3.7"></path><path d="M10.5 1.5 5.6 6.4"></path><path d="M9 7.1v3.4H1.5V3h3.4"></path></svg></label></div>
           <div style="font-size: 13px; line-height: 1.7"><span style="color: #15110C; font-weight: 600">Joel S. Rosen</span> <span style="color: #6A6254">(PhillyPause)</span><label for="panel-open" class="flyicon" title="Who they are"><svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="square" aria-hidden="true"><path d="M6.8 1.5h3.7v3.7"></path><path d="M10.5 1.5 5.6 6.4"></path><path d="M9 7.1v3.4H1.5V3h3.4"></path></svg></label></div>
-          <div style="font-size: 13px; line-height: 1.7"><span style="color: #15110C; font-weight: 600">Malcolm Harris</span> <span style="color: #6A6254">(Journalist; Author)</span><label for="panel-open" class="flyicon" title="Who they are"><svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="square" aria-hidden="true"><path d="M6.8 1.5h3.7v3.7"></path><path d="M10.5 1.5 5.6 6.4"></path><path d="M9 7.1v3.4H1.5V3h3.4"></path></svg></label></div>
+          <div style="font-size: 12px; line-height: 1.55; color: #6A6254; margin-top: 4px">More speakers to be announced as the day gets closer.</div>
+        </div>
+
+        <div style="margin-top: 13px; padding-top: 11px; border-top: 1px solid #CFC7B6; font-size: 12px">
+          <label class="boxlink" for="past-open">Past events</label>
         </div>
       </div>
     </div>
@@ -345,7 +353,7 @@ else
     <label class="paneldlg-scrim" for="dlg-none" aria-label="Close"></label>
     <div class="paneldlg-box" role="dialog" aria-modal="true" aria-labelledby="paneldlg-title">
       <div class="paneldlg-head">
-        <span id="paneldlg-title">Panelists</span>
+        <span id="paneldlg-title">Speakers</span>
         <label class="paneldlg-x" for="dlg-none" aria-label="Close">&times;</label>
       </div>
       <div class="paneldlg-body">
@@ -354,15 +362,30 @@ else
           <div class="flyrole">PhillyPause (Co-founder)</div>
           <p class="flybio">Author of <i>Catastrophe: The Unstoppable Threat of AI</i>, and a constituent lobbyist who has taken the case for AI safety to Congress more than seventy-five times. <a href="https://xriskbooks.com" target="_blank" rel="noopener" style="text-decoration: none; font-weight: 600">xriskbooks.com</a></p>
         </div>
-        <div style="margin-bottom: 18px; padding-top: 16px; border-top: 1px solid #CFC7B6">
+        <div style="padding-top: 16px; border-top: 1px solid #CFC7B6">
           <div class="flyname">Joel S. Rosen</div>
           <div class="flyrole">PhillyPause (Co-founder)</div>
           <p class="flybio">A homicide prosecutor who rose to chief of the Major Trials Unit at the Philadelphia District Attorney&rsquo;s Office and led the prosecution in the Ira Einhorn case. Later a partner at Cohen, Placitella &amp; Roth, acting for people hurt by defective vehicles and for injured first responders.</p>
         </div>
-        <div style="padding-top: 16px; border-top: 1px solid #CFC7B6">
-          <div class="flyname">Malcolm Harris</div>
-          <div class="flyrole">Journalist; Author</div>
-          <p class="flybio">Journalist and critic, and author of the bestselling <i>Palo Alto: A History of California, Capitalism, and the World</i>, a Los Angeles Times Book Prize finalist, and of <i>Kids These Days</i>. A contributing editor at <i>The New Inquiry</i>, he writes on history, culture and labour &mdash; the forces behind the industry now building AI.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Past events, newest first, opened from the foot of the Next event box.
+       When an event is over it moves here, in the past tense. -->
+  <div class="paneldlg d-past">
+    <label class="paneldlg-scrim" for="dlg-none" aria-label="Close"></label>
+    <div class="paneldlg-box" role="dialog" aria-modal="true" aria-labelledby="pastdlg-title">
+      <div class="paneldlg-head">
+        <span id="pastdlg-title">Past events</span>
+        <label class="paneldlg-x" for="dlg-none" aria-label="Close">&times;</label>
+      </div>
+      <div class="paneldlg-body">
+        <div class="pastevent">
+          <div class="flyrole">Wednesday 28 October 2026</div>
+          <div class="flyname">Screening: <i>The AI Doc</i></div>
+          <p class="flybio">At The Pen and Pencil Club, 1522 Latimer St. PhillyPause co-hosted a screening of <a href="https://theaidocgetinvolved.com/" target="_blank" rel="noopener" style="font-weight: 600"><i>The AI Doc: Or How I Became an Apocaloptimist</i></a>, the Sundance documentary from the Academy Award-winning team behind <i>Everything Everywhere All at Once</i> and <i>Navalny</i>, followed by a live panel and audience questions.</p>
+          <p class="flybio" style="margin-top: 8px">On the panel: Louis Berman (PhillyPause, Author), Joel S. Rosen (PhillyPause) and Malcolm Harris (Journalist; Author).</p>
         </div>
       </div>
     </div>

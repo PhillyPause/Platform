@@ -27,6 +27,15 @@ internal static class TestData
     /// A published activity starting <paramref name="startsInHours"/> from now
     /// and lasting two hours. Null start means ongoing work with no time at all.
     /// </summary>
+    /// <summary>An activity's public page, at the readable address the database gave it.</summary>
+    public static async Task<string> PathAsync(NpgsqlDataSource db, Guid activityId)
+    {
+        await using var conn = await db.OpenConnectionAsync();
+        var slug = await conn.ExecuteScalarAsync<string>(
+            "SELECT slug FROM activities WHERE id = @activityId", new { activityId });
+        return ManyHandsPaths.Activity(slug!);
+    }
+
     public static async Task<Guid> ActivityAsync(
         NpgsqlDataSource db,
         string title = "Saturday flyering",

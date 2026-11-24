@@ -12,6 +12,8 @@ public sealed record VolunteerExport(
     string? DiscordAccount,
     string Role,
     DateTimeOffset JoinedAt,
+    /// <summary>The tracking code on the link they first joined through, if any.</summary>
+    string? JoinedVia,
     bool EmailOptIn,
     DateTimeOffset? UnsubscribedAt,
     IReadOnlyList<string> Interests,
@@ -34,7 +36,7 @@ public sealed record ExportedMessage(string Subject, string Kind, DateTimeOffset
 public sealed class VolunteerDataRepository(NpgsqlDataSource db)
 {
     private sealed record ExportHeader(
-        Guid Id, string DisplayName, string? Email, int Role, DateTimeOffset CreatedAt,
+        Guid Id, string DisplayName, string? Email, int Role, DateTimeOffset CreatedAt, string? Source,
         bool EmailOptIn, DateTimeOffset? UnsubscribedAt, ulong? DiscordUserId);
 
     public async Task<VolunteerExport?> ExportAsync(Guid volunteerId, CancellationToken ct = default)
@@ -43,7 +45,7 @@ public sealed class VolunteerDataRepository(NpgsqlDataSource db)
 
         var volunteer = await conn.QuerySingleOrDefaultAsync<ExportHeader>(new CommandDefinition(
             """
-            SELECT id, display_name, email, role, created_at, email_opt_in, unsubscribed_at, discord_user_id
+            SELECT id, display_name, email, role, created_at, source, email_opt_in, unsubscribed_at, discord_user_id
             FROM volunteers WHERE id = @volunteerId AND NOT is_deleted
             """,
             new { volunteerId }, cancellationToken: ct));
@@ -86,7 +88,7 @@ public sealed class VolunteerDataRepository(NpgsqlDataSource db)
 
         return new VolunteerExport(
             volunteer.Id, volunteer.DisplayName, volunteer.Email, volunteer.DiscordUserId?.ToString(),
-            ((Core.VolunteerRole)volunteer.Role).ToString(), volunteer.CreatedAt,
+            ((Core.VolunteerRole)volunteer.Role).ToString(), volunteer.CreatedAt, volunteer.Source,
             volunteer.EmailOptIn, volunteer.UnsubscribedAt,
             interests, signups, messages);
     }

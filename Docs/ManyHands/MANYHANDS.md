@@ -25,6 +25,7 @@ Simplicity is the point: nothing here exists to serve a second organisation.
 | Organizing | Create, edit and publish activities; the roster; QR check-in at the door; invite people by email; change who is an organizer; export participation |
 | CRM | Organizations, contacts, a timeline of interactions, an engagement pipeline, tasks |
 | Outreach email | Compose, send, and receive replies inside ManyHands, threaded; unrecognised mail is kept for triage |
+| Partners | The Outreach Kit's partners: priority, where outreach stands, the ask ladder, each one's tracking link and what it has brought, how organisations know each other; the Partner Tracker sheet pasted in, and out as a file |
 | Officials | The members of Congress, refreshed weekly from a public dataset, importable into the CRM |
 | Discord | Announce on publish, a thread per activity, a DM on signup, slash commands, interest pings, role sync |
 
@@ -97,7 +98,8 @@ Static SSR Razor components in `Website/Website.Portal/Components/Volunteer`, on
 | Route | Page |
 |---|---|
 | `/events` | Not a page here: the front page's Events dialog (`EventsList`), what is coming up, filterable by type, with the public calendar feed. Its filters link back to `/events?type=...` |
-| `/volunteer/activity/{id}` | One activity and its signup form |
+| `/events/{slug}` | One activity and its signup form, at its readable address (`/events/philly-says-pause`). The slug comes from the title, gets the date added when the title's is taken, follows the title while a draft (or takes one an organizer types in the editor), and is frozen from the first publish, since emails and posters carry it. The database keeps the rule (`0004_activity_slugs.sql`); `ActivitySlug.From` mirrors it so the editor can show the address |
+| `/volunteer/activity/{id}` | Where activities lived before slugs. It answers with a permanent redirect to `/events/{slug}`, keeping `?src=`, because emails and Discord posts already sent carry it. A draft or unknown id is a 404 |
 | `/join` | Joining is not a page here: it is the front page's Join us dialog (On the site, below). Every Join link goes to it |
 | `/volunteer/sign-in` | Ask for a sign-in link |
 | `/volunteer/sign-in/{token}` | Opening the link shows a button; **pressing it** spends the token and lands on the front page, not `/volunteer/me`, until the volunteer pages are ready for readers |
@@ -169,6 +171,28 @@ and doing nothing is a fine answer.
 
 `volunteers.email_verified_at` is the state: set, the address is confirmed.
 
+### Tracking codes
+
+Every link we hand out can carry a code saying who handed it out:
+`phillypause.org/?src=newsguild` for a partner, `?src=rally-flyer` for a
+poster. `TrackingCode` decides what counts: lower-case letters, digits and
+dashes, at most 40. Anything else is ignored, never refused, so a mangled link
+still lets someone join.
+
+- **The code rides on the address, not in a cookie.** The Join us form posts
+  to `/join?src=…`, and the Events dialog adds it to each activity's link, so
+  the activity page's signup carries it too. The privacy page's one cookie
+  stays one.
+- **The first link counts.** `volunteers.source` is written when the row is
+  created and never after: joining again, or signing up later through another
+  partner's link, does not move someone. Each signup also keeps the code it
+  came with, in `signups.referral`; `signups.source` is the channel (web,
+  Discord, organizer) and means something else.
+- **Organizers see it** as "Came via" on `/team/members` and in its file, and
+  the person sees it in their own download. Deleting someone leaves the code,
+  as it leaves their signups: a partner who brought twelve people still
+  brought twelve.
+
 ### The team pages
 
 Under `/team`, in `Website/Website.Portal/Components/Team`, all behind
@@ -182,7 +206,7 @@ request.
 | `/team/activity/new`, `/team/activity/{id}/edit` | The editor. Times are typed in Philadelphia's clock and stored as instants | Organizers |
 | `/team/activity/{id}` | Publish or unpublish; the roster, one big button per name for check-in; walk-ins | Organizers |
 | `/team/activity/{id}/check-in` | The QR code for the door | Organizers |
-| `/team/members` | Everyone, newest first, one line each, as a grid: a filter row that narrows the list as you type, sorting, a page at a time. Email, the day they joined (MM/dd/yyyy, Philadelphia's clock), whether they have confirmed, their role, and what they like doing as two-letter codes with the full name on hover (`InterestCodes`). Icon buttons send the joining email again, change a role and delete. "Download the list" is `/team/members.csv`: the same people and columns, newest first, the interests written out | Organizers see, download and resend; admins change and delete |
+| `/team/members` | Everyone, newest first, one line each, as a grid: a filter row that narrows the list as you type, sorting, a page at a time. Email, the day they joined (MM/dd/yyyy, Philadelphia's clock), which tracking code brought them ("Came via"), whether they have confirmed, their role, and what they like doing as two-letter codes with the full name on hover (`InterestCodes`). Icon buttons send the joining email again, change a role and delete. "Download the list" is `/team/members.csv`: the same people and columns, newest first, the interests written out | Organizers see, download and resend; admins change and delete |
 | `/team/invites` | The join link, invitations by email, and their state | Organizers |
 
 Two public pages come with them: `/volunteer/join/{token}`, where an
@@ -238,6 +262,43 @@ Also under `/team`, also for organizers: `Components/Team/Crm` and
 - **Outreach goes from `Email:OutreachAddress`** with our own Message-ID, and
   a reply carries In-Reply-To and References, so threads hold in both
   directions.
+
+### Partner outreach
+
+The Outreach Kit's way of growing the list: ask organisations whose members
+already care about AI to share PhillyPause with them. A partner is a CRM
+organization with an outreach status; offices and venues without one are
+untouched by any of this.
+
+| Route | Page |
+|---|---|
+| `/team/partners` | Every partner as a grid (in the organizers' app): priority, status, audience, how many people its link brought and how many confirmed, the last touch, and the next step. Above it, confirmed members against the goal of 1,000, split into partners' links, other links and no code. "Download the list" is `/team/partners.csv` |
+| `/team/partners/import` | The Partner Tracker sheet, pasted in: a tab's cells with their heading row, or a CSV's text. Partners, and the links between organisations |
+| `/team/crm/organization/{id}` | Gains an Outreach section: status, priority, audience, the highest rung of the ask ladder they have said yes to, their tracking link with a QR code for flyers, who joined through it, and how they connect to other organisations |
+
+Settled, from the kit:
+
+- **We never import anyone's list.** Partners share our link; people join
+  themselves and confirm their own address. Nothing here holds a partner's
+  members.
+- **One email at a time, written for that organisation, one ask in it.**
+  There is no bulk send.
+- **Follow up once, seven days after the first email, then stop.** The next
+  step says when; a partner that does not answer the follow-up is No reply.
+- **Work the list A first.** A: AI-risk groups that already agree. B: unions,
+  creatives, libraries and parents with an AI fight of their own. C: broader
+  civic, tech and media.
+- **The ask ladder, one rung at a time:** share our link; let us table; a
+  speaker slot; co-host an event; a shared action.
+- **PauseAI US is never contacted** (CLAUDE.md). `NeverContact` refuses it in
+  the import, on its organization page and in what is saved; a test holds it.
+
+The import is safe to run again. It finds an organization by name, ignoring
+case, and fills only what is blank on one that exists, so nothing an
+organizer has set is overwritten by an old copy of the sheet. A tracking code
+another organization holds is left off, and the report says so. A link whose
+ends are neither of them an organization here is left out; one end that is
+not (a hearing, a coalition) is kept by name.
 
 #### The inbound webhook
 
@@ -314,7 +375,10 @@ it; `ManyHandsGateTests` holds that, and `SiteWiringTests` the flag-on side.
 
 **The front page's Next event box is not ManyHands'.** It is hand-edited in
 `Home.razor` and shows what PhillyPause chooses to lead with, flag on or off.
-A published activity never replaces it; `SiteWiringTests` holds that.
+A published activity never replaces it; `SiteWiringTests` holds that. Its
+RSVP link opens Events (Join us when ManyHands is off), so the event should
+also be published as an activity for people to sign up to. When it is over,
+it moves to the Past events dialog the box links to.
 
 A file in `Content/_manyhands/` supplements the page with the same slug,
 at its `<!-- manyhands -->` marker or else at the end, only while ManyHands is
@@ -327,18 +391,18 @@ Postgres, one schema (`public`), defined by
 
 | Table | Holds |
 |---|---|
-| `volunteers` | Everyone, with their `role` (member, organizer, admin). Deletion anonymises the row |
+| `volunteers` | Everyone, with their `role` (member, organizer, admin) and the tracking code they first came by (`source`). Deletion anonymises the row |
 | `activity_types` | The interest vocabulary. Reference data, inserted by the schema |
-| `activities`, `activity_tags` | What needs doing, and which types each is |
+| `activities`, `activity_tags` | What needs doing, and which types each is. `slug` is its readable address and `published_at` when it was first published, which freezes the slug |
 | `volunteer_interests` | What each person likes doing |
-| `signups` | Who said they would come, their status, and whether they checked in |
+| `signups` | Who said they would come, their status, whether they checked in, and the tracking code on the link they used (`referral`) |
 | `auth_tokens` | Sign-in link hashes |
 | `invites`, `invite_tokens` | Emailed invitations, and their link hashes, apart |
 | `outbox` | Everything waiting to be sent |
 | `email_messages` | Volunteers' transactional mail, as sent |
 | `data_protection_keys` | The keys that sign the sign-in cookie and form tokens |
 | `external_publications`, `activity_pings`, `discord_role_grants` | What has been announced, who has been pinged, which Discord roles the bot granted |
-| `crm_*` | The CRM and outreach mail |
+| `crm_*` | The CRM and outreach mail. A partner's outreach lives on its `crm_organizations` row (`outreach_status`, `priority`, `audience`, `ask_rung`, `tracking_code`, unique among live rows), and `crm_organization_links` holds how organisations know each other |
 | `federal_officials`, `sync_runs` | The officials directory and its refreshes |
 
 ### The outbox
