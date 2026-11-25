@@ -14,9 +14,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # The SDK App Platform's buildpack resolves (HOSTING.md, "No
+      # Dockerfile"), so CI compiles as the deploy does: an older SDK's Razor
+      # compiler rejects what a newer one accepts. Pinned with a global.json
+      # made here, or the runner's newest preinstalled SDK would win.
       - uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '10.0.x'
+          dotnet-version: '10.0.201'
+
+      - name: Pin the deploy's SDK
+        run: dotnet new globaljson --sdk-version 10.0.201 --force && dotnet --version
 
       - name: Restore
         run: dotnet restore Platform.slnx

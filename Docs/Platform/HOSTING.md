@@ -62,8 +62,12 @@ SDK and the publish. Three things it imposes:
   [Heroku inventory](https://github.com/heroku/buildpacks-dotnet/blob/main/buildpacks/dotnet/inventory.toml),
   which runs ahead of it. Its buildpack (v0.50.5) has no 11.0 SDK: a build
   targeting `net11.0` stops with "Unsupported .NET SDK version", and the live
-  site stays on the last good release. CI cannot catch this, because it
-  installs its own SDK. Move to a new .NET only once that page lists it.
+  site stays on the last good release. Move to a new .NET only once that page
+  lists it. Within 10.0 it resolves **10.0.201**, and CI's `build-and-test`
+  pins the same SDK, because an older Razor compiler rejects what a newer one
+  accepts: 10.0.201 reads `@section.Heading` as the `@section` directive,
+  where 10.0.4xx and 11.0 do not. When a build log shows App Platform
+  resolving a newer SDK ("Resolved .NET SDK version"), move `ci.yml` to it.
 - **`SOLUTION_FILE` must be a bare filename.** It rejects anything containing
   a path separator, so the buildpack cannot be aimed at a single project — it
   publishes the whole solution. That is why `Website.Client` and

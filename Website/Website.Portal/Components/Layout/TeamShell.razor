@@ -50,12 +50,15 @@
 
     <div class="mh-frame">
         <nav id="mh-sidebar" class="mh-sidebar" aria-label="Team">
-            @foreach (var section in TeamNav.Sections)
+            @* Loop variable is not called "section": the SDK App Platform builds
+               with (10.0.201) parses "@section.Heading" as the @section
+               directive (RZ2005), though newer SDKs do not. *@
+            @foreach (var group in TeamNav.Sections)
             {
                 <div class="mh-nav-section">
-                    <span class="mh-nav-heading" aria-hidden="true">@section.Heading</span>
-                    <ul class="mh-nav-list" aria-label="@section.Heading">
-                        @foreach (var link in section.Links)
+                    <span class="mh-nav-heading" aria-hidden="true">@group.Heading</span>
+                    <ul class="mh-nav-list" aria-label="@group.Heading">
+                        @foreach (var link in group.Links)
                         {
                             <li>
                                 <a class="mh-nav-link" href="@link.Path" target="@Target(link.Path)"
