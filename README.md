@@ -16,7 +16,7 @@ Blazor WebAssembly. MIT licensed; fork away.
 
 ## Stack
 
-C# 15 / .NET 11 · **Blazor Web App** with `InteractiveWebAssembly` render mode and
+C# / .NET 10 · **Blazor Web App** with `InteractiveWebAssembly` render mode and
 prerendering · Markdown content compiled at build time (Markdig) · no database
 · DigitalOcean App Platform.
 
@@ -28,7 +28,7 @@ in [`Docs/PLAN.md`](Docs/PLAN.md) §2.1.
 
 ## Getting started
 
-Prereqs: .NET 11 SDK. That is all — no Docker, no database, no API keys.
+Prereqs: .NET 10 SDK. That is all — no Docker, no database, no API keys.
 
 ```powershell
 git clone https://github.com/PhillyPause/Platform.git
@@ -53,7 +53,7 @@ It takes care of:
 | Commit identity | `Louis S. Berman <louis@phillypause.org>`, set **repo-local** so it never leaks into other work on that machine |
 | Push credentials | pushes from this repo authenticate as `louis-phillypause`, with that account's token from the `gh` CLI, **whichever account `gh` has active** — so another account can stay active for other work. Git Credential Manager is off for this repo, because it may hold only a different GitHub account. Git LFS is told to authenticate too, or its lock check before a push gets a 403 |
 | `gh` account | checks `gh` holds `louis-phillypause`, and that its token carries the `workflow` scope — without it, any push touching `.github/workflows/` is rejected |
-| SDK | checks .NET 11 is on `PATH` |
+| SDK | checks .NET 10 is on `PATH` |
 
 If `gh` does not hold `louis-phillypause` it tells you the two commands to
 run, which need a browser and so cannot be scripted. Logging in adds the

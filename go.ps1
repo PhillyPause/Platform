@@ -120,11 +120,11 @@ $sdk = $null
 try { $sdk = (dotnet --version 2>$null) } catch { }
 
 if (-not $sdk) {
-    Fail "no .NET SDK on PATH. Install .NET 11: https://dotnet.microsoft.com/download"
+    Fail "no .NET SDK on PATH. Install .NET 10: https://dotnet.microsoft.com/download"
     exit 1
 }
-if ($sdk -notmatch '^11\.') {
-    Warn "dotnet $sdk is on PATH; this solution targets net11.0."
+if ($sdk -notmatch '^10\.') {
+    Warn "dotnet $sdk is on PATH; this solution targets net10.0."
 }
 else {
     Step "dotnet $sdk"
