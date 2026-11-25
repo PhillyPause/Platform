@@ -884,3 +884,48 @@ html:has(.dlgtoggle:checked:not(#dlg-none)) { overflow: hidden; }
 @media (max-width: 400px) {
   .navband { letter-spacing: 0.06em; }
 }
+
+/* ---- The pages a member moves between, on this same paper --------------
+   VolunteerLayout: the account bar, then PaperMast (the masthead and nav
+   band made small), then the page in ManyHands' parts. The bell, the double
+   rule, Join and Act are the front page's own classes above; only the sizes
+   and the page around them are here. */
+.paper {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #FBF8F1;
+  color: #15110C;
+  font-family: Archivo, sans-serif;
+}
+.paper > main { flex: 1 0 auto; }
+.paper-mast { padding: 18px 0 12px; }
+.paper-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 16px;
+  color: #15110C;
+  text-decoration: none;
+}
+.paper-mark { --s: 0.34; }
+.paper-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(22px, 1.6vw + 14px, 34px);
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.022em;
+}
+.paper-brand:hover .paper-title { color: #AE2012; }
+.paper-nav { margin-bottom: 28px; }
+.paper-nav a { text-decoration: none; }
+.paper-nav .navlink[aria-current="page"] { color: #AE2012; box-shadow: inset 0 -2px 0 #AE2012; }
+/* Signed in there is no Join, so Act takes its place at the right edge.
+   Narrower, the band is the front page's grid and Act spans it. */
+@media (min-width: 760px) {
+  .paper-nav .paper-push { margin-left: auto; }
+}
+.paper .site-footer { border-top-color: #CFC7B6; color: #6A6254; }
+@media (max-width: 560px) {
+  .paper-mark { --s: 0.26; }
+  .paper-title { font-size: 20px; }
+}

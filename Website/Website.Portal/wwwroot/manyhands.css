@@ -9,13 +9,17 @@
 
    Light only, like the front page and the printed card it comes from.
 
+   Panels, cards and fields are the front page's own paper, not white: a box
+   there is ruled off from the page around it (#CFC7B6, its rule colour),
+   never lifted off it, and these follow.
+
    Contrast, checked against the grounds each is used on:
      ink        on cream     17.7:1   body text
-     muted      on cream      5.7:1   secondary text (6.0:1 on paper)
-     red        on paper      7.0:1   links, the primary button's ground
+     muted      on cream      5.7:1   secondary text
+     red        on cream      6.6:1   links, the primary button's ground
      red        on red-wash   6.0:1
      green      on its wash   5.6:1   badges: amber 6.6, blue 7.3, muted 6.0
-     edge       on paper      3.8:1   field borders (3:1 is the bar)
+     edge       on cream      3.6:1   field borders (3:1 is the bar)
      cream-dim  on ink       12.3:1   the app bar's quieter words */
 
 :root {
@@ -24,9 +28,9 @@
   --mh-muted: #6A6254;
   --mh-cream: #FBF8F1;
   --mh-cream-dim: #D9D0BE;
-  --mh-paper: #FFFFFF;
+  --mh-paper: #FBF8F1;
   --mh-sand: #F3EEE3;
-  --mh-line: #E4DDCF;
+  --mh-line: #CFC7B6;
   --mh-edge: #8C8273;
   --mh-red: #AE2012;
   --mh-red-deep: #8E190E;
@@ -236,18 +240,10 @@ html:has(.mh-app), html:has(.mh-app) body { background: var(--mh-cream); }
 }
 
 /* --- a member's pages (VolunteerLayout) ----------------------------------- */
+/* Their header and nav are the front page's, made small (PaperMast, in
+   broadsheet.css). */
 
 .mh-member { padding-bottom: var(--mh-7); }
-.mh-member-nav { border-bottom: 1px solid var(--mh-line); margin-bottom: var(--mh-6); }
-.mh-member-nav ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0 var(--mh-5); }
-.mh-member-nav li.mh-aside { margin-left: auto; }
-.mh .mh-member-nav a {
-  display: inline-block; padding: var(--mh-3) 0 10px; border-bottom: 3px solid transparent;
-  font-size: var(--mh-text-xs); font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
-  color: var(--mh-ink); text-decoration: none;
-}
-.mh .mh-member-nav a:hover { color: var(--mh-red); }
-.mh .mh-member-nav a[aria-current="page"] { border-bottom-color: var(--mh-red); }
 
 /* --- the page header ------------------------------------------------------ */
 /* Title, one line saying what is here, and the page's main actions. The

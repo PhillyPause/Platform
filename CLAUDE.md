@@ -133,8 +133,10 @@ direction.
   should assume otherwise.
 - **ManyHands serves PhillyPause and nothing else.** One organisation: no
   chapters, tenants, "national" tier or row-level security, ever. Simplicity
-  is the point; MANYHANDS.md §2 has the rest of its rules. Until it is enabled
-  in production, no page links to it or mentions it to a reader.
+  is the point; MANYHANDS.md §2 has the rest of its rules. It is part of the
+  site, not a product beside it: its pages take the front page's paper,
+  masthead and parts, signing in is a front-page dialog like Join, and
+  readers never see its name.
 - **The old logo is retired, not cleared.** PauseAI US's mark with a Liberty
   Bell flag swapped in is a derivative of another organisation's identity, and
   one we have no affiliation with. It appears nowhere in this repo, not even as
@@ -242,8 +244,10 @@ the next.
   version in `Directory.Packages.props` (transitive pinning is on). Drop a
   pin once its parent brings a version past it, or the build fails as a
   downgrade (NU1109).
-- **ManyHands is behind `ManyHands:Enabled`, off by default.** Off, nothing of
-  it is registered and the site needs no database. A prerender must never fail
+- **ManyHands is behind `ManyHands:Enabled`, off by default.** It is on in
+  production for good; the flag stays so the site runs without Docker or a
+  database for editing content. Off, nothing of it is registered and the site
+  needs no database. A prerender must never fail
   for want of it: any page that shows ManyHands data falls back to static
   content when it is off or unreachable.
 - **Dapper and Npgsql fail at runtime, not compile time** — value tuples never

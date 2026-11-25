@@ -1,0 +1,51 @@
+@inherits LayoutComponentBase
+@using ManyHands.Core
+@using ManyHands.Data
+@using Website.Portal.Volunteer
+
+@* Here rather than beside the pages it lays out: their folder's _Imports
+   makes every component in it take this layout, and this file would take
+   itself, forever (as TeamLayout notes).
+
+   Every volunteer page, on the front page's paper: the account bar, the
+   masthead and nav band made small (PaperMast), then the page in ManyHands'
+   parts (manyhands.css), which take the broadsheet's ink, ivory and red. No
+   parent layout: the site's inner-page header is the postcard's navy, and a
+   member moving from the front page to their own page should not see the
+   site change underneath them. manyhands.css loads here and nowhere else on
+   the public side, so the rest of the site never pays for it. In the body
+   rather than a <HeadContent>, because only the last <HeadContent> on a
+   page is shown and PageMeta's is that one; a stylesheet link is valid in
+   the body. *@
+
+<link rel="stylesheet" href="@Assets["manyhands.css"]" />
+
+<div class="paper">
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <AccountBar />
+
+    <div class="paper-top wrap">
+        <PaperMast Me="_me" />
+    </div>
+
+    <main id="main" tabindex="-1" class="mh mh-member">
+        @Body
+    </main>
+
+    <SiteFooter />
+</div>
+
+@code {
+    [CascadingParameter] private HttpContext? HttpContext { get; set; }
+
+    [Inject] private VolunteerRepository Volunteers { get; set; } = default!;
+
+    private Volunteer? _me;
+
+    protected override async Task OnParametersSetAsync() =>
+        _me = HttpContext?.User.VolunteerId() is Guid id
+              && await Volunteers.GetByIdAsync(id) is { IsDeleted: false } volunteer
+            ? volunteer
+            : null;
+}
