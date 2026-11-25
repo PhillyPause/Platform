@@ -1,0 +1,91 @@
+@page "/team/partners/import"
+@inject PartnerRepository Partners
+
+@* The Partner Tracker sheet, brought in by pasting: select a tab's cells
+   with their heading row, copy, paste. A CSV saved from the sheet works the
+   same. Running it again is safe: organizations are found by name, and what
+   an organizer has set on one is kept. PauseAI US is refused (CLAUDE.md). *@
+
+<PageMeta Title="Import partners" Description="Bring the Partner Tracker sheet into ManyHands." NoIndex="true" />
+
+<header class="mh-page-head">
+    <div>
+        <h1>Import partners</h1>
+        <p class="mh-summary">
+            In the Partner Tracker sheet, select a tab&rsquo;s cells, heading row included, copy, and paste
+            them here. A CSV file&rsquo;s text works too. Running it again changes nothing that is already set.
+        </p>
+    </div>
+</header>
+
+@if (_report is { } report)
+{
+    <div class="mh-notice" role="status">
+        <p>
+            @report.Added added, @report.Updated already here (only their blanks filled),
+            @report.LinksAdded @(report.LinksAdded == 1 ? "link" : "links") between organizations added.
+            <a href="@ManyHandsPaths.TeamPartners">See the partners</a>.
+        </p>
+        @if (report.Refused.Count > 0)
+        {
+            <p>Left out, because PhillyPause does not contact them: @string.Join(", ", report.Refused).</p>
+        }
+        @if (report.Problems.Count > 0)
+        {
+            <ul>
+                @foreach (var problem in report.Problems)
+                {
+                    <li>@problem</li>
+                }
+            </ul>
+        }
+    </div>
+}
+
+<section class="mh-panel" aria-label="The sheet">
+    <EditForm Model="Input" FormName="import" OnValidSubmit="ImportAsync" class="mh-form mh-form-wide">
+        <DataAnnotationsValidator />
+        <label class="mh-field">
+            <span class="mh-label">Partners tab</span>
+            <InputTextArea @bind-Value="Input!.Partners" rows="10" spellcheck="false" />
+            <span class="mh-help">Organization, Priority, Status, Category, Contact channel, Why they fit, Link, Found via, Tracking code, Notes</span>
+        </label>
+        <label class="mh-field">
+            <span class="mh-label">Org links tab</span>
+            <InputTextArea @bind-Value="Input!.Links" rows="6" spellcheck="false" />
+            <span class="mh-help">From, Connection, To, Source</span>
+        </label>
+        <ValidationMessage For="() => Input!.Partners" />
+        <div class="mh-form-actions">
+            <button class="mh-btn mh-btn-primary" type="submit">Import</button>
+        </div>
+    </EditForm>
+</section>
+
+@code {
+    [CascadingParameter] private HttpContext HttpContext { get; set; } = default!;
+
+    [SupplyParameterFromForm(FormName = "import")] private ImportInput? Input { get; set; }
+
+    private PartnerImportReport? _report;
+
+    protected override void OnInitialized() => Input ??= new();
+
+    private async Task ImportAsync()
+    {
+        _report = await Partners.ImportAsync(Input!.Partners, Input.Links, HttpContext.User.VolunteerId());
+        Input = new();
+    }
+
+    private sealed class ImportInput : IValidatableObject
+    {
+        [StringLength(500_000)] public string? Partners { get; set; }
+        [StringLength(200_000)] public string? Links { get; set; }
+
+        public IEnumerable<ValidationResult> Validate(ValidationContext context)
+        {
+            if (string.IsNullOrWhiteSpace(Partners) && string.IsNullOrWhiteSpace(Links))
+                yield return new("Paste at least one tab.", [nameof(Partners)]);
+        }
+    }
+}

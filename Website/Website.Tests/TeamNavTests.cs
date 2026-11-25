@@ -11,12 +11,13 @@ namespace Website.Tests;
 public class TeamNavTests
 {
     [Fact]
-    public void The_sidebar_is_volunteering_lobbying_mail_then_the_site()
+    public void The_sidebar_is_volunteering_lobbying_partners_mail_then_the_site()
     {
-        TeamNav.Sections.Select(s => s.Heading).Should().Equal("Volunteering", "Lobbying", "Mail", "Site");
+        TeamNav.Sections.Select(s => s.Heading).Should().Equal("Volunteering", "Lobbying", "Partners", "Mail", "Site");
         TeamNav.Sections[0].Links.Select(l => l.Label).Should().Equal("Activities", "Members", "Invites");
         TeamNav.Sections[1].Links.Select(l => l.Label).Should().StartWith(["Organizations", "Pipeline", "Officials"]);
-        TeamNav.Sections[2].Links.Select(l => l.Label).Should().Equal("Inbox", "Write", "Templates");
+        TeamNav.Sections[2].Links.Select(l => l.Label).Should().Equal("Partners", "Import");
+        TeamNav.Sections[3].Links.Select(l => l.Label).Should().Equal("Inbox", "Write", "Templates");
         TeamNav.Sections[^1].Links.Should().BeSameAs(TeamNav.SiteLinks);
     }
 
@@ -33,6 +34,8 @@ public class TeamNavTests
     [InlineData(ManyHandsPaths.Crm + "?kind=Venue", "Organizations")]
     [InlineData(ManyHandsPaths.CrmPipeline, "Pipeline")]
     [InlineData(ManyHandsPaths.CrmOfficials, "Officials")]
+    [InlineData(ManyHandsPaths.TeamPartners, "Partners")]
+    [InlineData(ManyHandsPaths.TeamPartnersImport, "Import")]
     [InlineData(ManyHandsPaths.Inbox, "Inbox")]
     [InlineData(ManyHandsPaths.InboxCompose, "Write")]
     [InlineData(ManyHandsPaths.InboxTemplates, "Templates")]

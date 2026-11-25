@@ -51,16 +51,25 @@ It takes care of:
 | | |
 |---|---|
 | Commit identity | `Louis S. Berman <louis@phillypause.org>`, set **repo-local** so it never leaks into other work on that machine |
-| Push credentials | points this repo at the `gh` CLI, because Git Credential Manager may hold a different GitHub account |
-| `gh` account | checks you are `louis-phillypause`, and that the token carries the `workflow` scope — without it, any push touching `.github/workflows/` is rejected |
+| Push credentials | pushes from this repo authenticate as `louis-phillypause`, with that account's token from the `gh` CLI, **whichever account `gh` has active** — so another account can stay active for other work. Git Credential Manager is off for this repo, because it may hold only a different GitHub account. Git LFS is told to authenticate too, or its lock check before a push gets a 403 |
+| `gh` account | checks `gh` holds `louis-phillypause`, and that its token carries the `workflow` scope — without it, any push touching `.github/workflows/` is rejected |
 | SDK | checks .NET 10 is on `PATH` |
 
-If `gh` is not logged in it tells you the two commands to run, which need a
-browser and so cannot be scripted:
+If `gh` does not hold `louis-phillypause` it tells you the two commands to
+run, which need a browser and so cannot be scripted. Logging in adds the
+account alongside any others; it does not replace them:
 
 ```powershell
 gh auth login                                  # choose louis-phillypause
 gh auth refresh -h github.com -s workflow
+```
+
+`gh`'s own commands (`gh pr`, `gh run`) act as whichever account is active.
+To act as `louis-phillypause` from one terminal without switching the
+machine's active account:
+
+```powershell
+$env:GH_TOKEN = gh auth token --user louis-phillypause
 ```
 
 `.\go.ps1 -NoRun` does the setup without starting the site.

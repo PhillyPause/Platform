@@ -59,6 +59,7 @@ public static class ManyHandsServiceCollectionExtensions
         services.AddSingleton<SelfCheckInRepository>();
         services.AddSingleton<CrmRepository>();
         services.AddSingleton<CrmEmailRepository>();
+        services.AddSingleton<PartnerRepository>();
         services.AddSingleton<FederalOfficialsRepository>();
         services.AddSingleton<OutreachRepository>();
 

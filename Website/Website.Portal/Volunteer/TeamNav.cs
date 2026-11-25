@@ -50,6 +50,11 @@ public static class TeamNav
             new("Officials", ManyHandsPaths.CrmOfficials, Symbols.AccountBalance),
             new("Outreach", ManyHandsPaths.TeamOutreach, Symbols.Campaign)
         ]),
+        new("Partners",
+        [
+            new("Partners", ManyHandsPaths.TeamPartners, Symbols.Handshake),
+            new("Import", ManyHandsPaths.TeamPartnersImport, Symbols.UploadFile)
+        ]),
         new("Mail",
         [
             new("Inbox", ManyHandsPaths.Inbox, Symbols.Inbox) { Owns = [$"{ManyHandsPaths.Inbox}/"] },

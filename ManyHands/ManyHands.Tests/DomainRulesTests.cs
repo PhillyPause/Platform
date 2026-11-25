@@ -14,6 +14,7 @@ public sealed class DomainRulesTests
     private static ActivityListItem Item(int? capacity, int signups) => new(
         Id: Guid.NewGuid(),
         Title: "Saturday flyering",
+        Slug: "saturday-flyering",
         Description: null,
         Kind: ActivityKind.OneTime,
         Location: "Clark Park",

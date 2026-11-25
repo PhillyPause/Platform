@@ -28,7 +28,9 @@ else if (_unavailable)
 }
 else
 {
-    <EditForm Model="Input" FormName="join" OnValidSubmit="JoinAsync" action="@(ManyHandsPaths.Join + "#" + Anchor)" class="signup joinfields">
+    @* The tracking code rides on the form's own address, so the post carries
+       whichever link brought the reader here (?src=newsguild). No cookie. *@
+    <EditForm Model="Input" FormName="join" OnValidSubmit="JoinAsync" action="@(TrackingCode.Append(ManyHandsPaths.Join, Source) + "#" + Anchor)" class="signup joinfields">
         <DataAnnotationsValidator />
         <label>
             <span>Your name</span>
@@ -64,6 +66,8 @@ else
 
     [SupplyParameterFromForm(FormName = "join")] private JoinInput? Input { get; set; }
 
+    private string? Source => TrackingCode.Normalize(HttpContext.Request.Query[TrackingCode.QueryName]);
+
     private IReadOnlyList<ActivityType> _types = [];
     private JoinResult.Ok? _joined;
     private string? _refused;
@@ -95,7 +99,7 @@ else
         }
 
         var result = await Volunteers.JoinAsync(
-            Input!.DisplayName, Input.Email, InterestChoices.Read(HttpContext));
+            Input!.DisplayName, Input.Email, InterestChoices.Read(HttpContext), Source);
 
         if (result is JoinResult.Ok { Confirmed: false } pending)
             Navigation.NavigateTo(pending.AlreadyMember ? $"{ManyHandsPaths.CheckEmail}?again=true" : ManyHandsPaths.CheckEmail);

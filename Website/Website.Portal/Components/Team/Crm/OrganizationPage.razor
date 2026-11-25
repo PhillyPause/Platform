@@ -1,6 +1,8 @@
 @page "/team/crm/organization/{Id:guid}"
 @inject CrmRepository Crm
 @inject CrmEmailRepository Emails
+@inject PartnerRepository Partners
+@inject ManyHands.Data.Email.EmailDispatcher Links
 @inject NavigationManager Navigation
 
 <PageMeta Title="@(_org?.Name ?? "Organization")" Description="An organization in the CRM." NoIndex="true" />
@@ -33,6 +35,127 @@
 
 <div class="mh-columns">
     <div class="mh-stack">
+        @* Partner outreach (the Outreach Kit): where it stands, the link they
+           share and who it has brought, and how they know other organizations. *@
+        <section class="mh-panel" aria-labelledby="outreach-head">
+            <h2 id="outreach-head">Outreach</h2>
+            @if (NeverContact.Matches(_org.Name, _org.Website))
+            {
+                <p class="mh-small">PhillyPause does not contact this organisation.</p>
+            }
+            else
+            {
+                @if (_partner?.OutreachStatus is { } status)
+                {
+                    <p class="mh-meta mh-meta-lead">
+                        <span>@PartnerText.Status(status)</span>
+                        @if (_partner.Priority is { } priority) { <span>Priority @priority</span> }
+                        @if (_partner.AskRung is { } rung) { <span>Said yes to: @PartnerText.Rung(rung)</span> }
+                        @if (PartnerText.NextStep(status, _partner.FirstContactedAt, DateTimeOffset.UtcNow) is { Length: > 0 } next) { <span>Next: @next</span> }
+                    </p>
+                    @if (_partner.WhyTheyFit is { } why)
+                    {
+                        <p>@why</p>
+                    }
+                    @if (_partner.TrackingCode is { } code)
+                    {
+                        <div class="mh-qr">
+                            <div class="mh-qr-code">@((MarkupString)CheckInLinks.QrSvg(PartnerUrl(code)))</div>
+                            <p>
+                                Their link: <a href="@PartnerUrl(code)" target="_blank" rel="noopener">@PartnerUrl(code)</a><br />
+                                <span class="mh-small">Put it in every email to them, and the code on flyers for their events.</span>
+                            </p>
+                        </div>
+                        <p>
+                            <strong>@_referred.Count</strong> @(_referred.Count == 1 ? "person has" : "people have") joined through it,
+                            @_referred.Count(r => r.Confirmed) confirmed.
+                        </p>
+                        @if (_referred.Count > 0)
+                        {
+                            <ul class="mh-list">
+                                @foreach (var person in _referred.Take(20))
+                                {
+                                    <li>
+                                        <div class="mh-list-main">
+                                            @person.DisplayName
+                                            <div class="mh-meta"><span>@Show.Stamp(person.JoinedAt)</span>@if (!person.Confirmed) { <span>not confirmed yet</span> }</div>
+                                        </div>
+                                    </li>
+                                }
+                            </ul>
+                        }
+                    }
+                }
+
+                <div class="mh-panel-foot">
+                    <EditForm Model="Partner" FormName="partner" OnValidSubmit="SavePartnerAsync" class="mh-form">
+                        <DataAnnotationsValidator />
+                        <div class="mh-pair">
+                            <label class="mh-field">
+                                <span class="mh-label">Status</span>
+                                <InputSelect @bind-Value="Partner!.Status">
+                                    @foreach (var s in Enum.GetValues<OutreachStatus>()) { <option value="@s">@PartnerText.Status(s)</option> }
+                                </InputSelect>
+                            </label>
+                            <label class="mh-field">
+                                <span class="mh-label">Priority</span>
+                                <InputSelect @bind-Value="Partner!.Priority">
+                                    <option value="">None</option>
+                                    <option value="A">A: already agree with us</option>
+                                    <option value="B">B: a live AI fight of their own</option>
+                                    <option value="C">C: broader civic, tech, media</option>
+                                </InputSelect>
+                            </label>
+                        </div>
+                        <div class="mh-pair">
+                            <label class="mh-field">
+                                <span class="mh-label">Audience (picks the email template)</span>
+                                <InputSelect @bind-Value="Partner!.Audience">
+                                    @foreach (var a in Enum.GetValues<Audience>()) { <option value="@a">@PartnerText.Audience(a)</option> }
+                                </InputSelect>
+                            </label>
+                            <label class="mh-field">
+                                <span class="mh-label">Highest rung they have said yes to</span>
+                                <InputSelect @bind-Value="Partner!.AskRung">
+                                    <option value="">None yet</option>
+                                    @foreach (var r in Enum.GetValues<AskRung>()) { <option value="@r">@PartnerText.Rung(r)</option> }
+                                </InputSelect>
+                            </label>
+                        </div>
+                        <div class="mh-pair">
+                            <label class="mh-field"><span class="mh-label">Tracking code</span><InputText @bind-Value="Partner!.TrackingCode" placeholder="newsguild" /><ValidationMessage For="() => Partner!.TrackingCode" /></label>
+                            <label class="mh-field"><span class="mh-label">Category</span><InputText @bind-Value="Partner!.Category" placeholder="Labor / journalism" /></label>
+                        </div>
+                        <label class="mh-field"><span class="mh-label">How to reach them</span><InputText @bind-Value="Partner!.ContactChannel" placeholder="Contact form on website" /></label>
+                        <label class="mh-field"><span class="mh-label">Why they fit</span><InputTextArea @bind-Value="Partner!.WhyTheyFit" rows="2" /></label>
+                        <label class="mh-field"><span class="mh-label">Found via</span><InputText @bind-Value="Partner!.FoundVia" placeholder="Pen & Pencil Club" /></label>
+                        <button class="mh-btn mh-btn-primary" type="submit">@(_partner?.OutreachStatus is null ? "Make them a partner" : "Save outreach")</button>
+                    </EditForm>
+                </div>
+            }
+
+            @if (_links.Count > 0)
+            {
+                <h3 class="mh-panel-sub">How they connect</h3>
+                <ul class="mh-list">
+                    @foreach (var link in _links)
+                    {
+                        <li>
+                            <div class="mh-list-main">
+                                @if (link.Outgoing) { <text>@_org.Name @link.Connection </text> }
+                                @if (link.OtherId is Guid other) { <a href="@ManyHandsPaths.CrmOrganization(other)">@link.OtherName</a> } else { @link.OtherName }
+                                @if (!link.Outgoing) { <text> @link.Connection @_org.Name</text> }
+                            </div>
+                            @if (Show.SafeLink(link.SourceUrl) is { } source)
+                            {
+                                <div class="mh-list-end"><a class="mh-small" href="@source" target="_blank" rel="noopener">source</a></div>
+                            }
+                        </li>
+                    }
+                </ul>
+            }
+        </section>
+
         <section class="mh-panel" aria-labelledby="people-head">
             <h2 id="people-head">People</h2>
             @if (_contacts.Count == 0)
@@ -198,6 +321,59 @@
     [SupplyParameterFromForm(FormName = "task")] private TaskInput? NewTask { get; set; }
     [SupplyParameterFromForm(FormName = "details")] private DetailsInput? Details { get; set; }
     [SupplyParameterFromForm(FormName = "remove")] private IdInput? Remove { get; set; }
+    [SupplyParameterFromForm(FormName = "partner")] private PartnerInput? Partner { get; set; }
+
+    private PartnerDetails? _partner;
+    private IReadOnlyList<OrganizationLink> _links = [];
+    private IReadOnlyList<ReferredMember> _referred = [];
+
+    private string PartnerUrl(string code) => Links.Link(ManyHandsPaths.PartnerLink(code));
+
+    private async Task SavePartnerAsync()
+    {
+        var result = await Partners.SavePartnerAsync(Id, new PartnerFields(
+            Blank(Partner!.Priority), Partner.Status, Partner.Audience, Partner.AskRung, Blank(Partner.Category),
+            Blank(Partner.TrackingCode), Blank(Partner.ContactChannel), Blank(Partner.FoundVia), Blank(Partner.WhyTheyFit)));
+
+        _notice = result switch
+        {
+            PartnerSaveResult.Saved => "Outreach saved.",
+            PartnerSaveResult.CodeTaken => "Another organization already has that tracking code. Pick another.",
+            PartnerSaveResult.NeverContact => "PhillyPause does not contact this organisation.",
+            _ => "That organization is not here any more."
+        };
+        await ReloadAsync();
+        if (result == PartnerSaveResult.Saved) Partner = PartnerInput.From(_partner);
+    }
+
+    private sealed class PartnerInput
+    {
+        public OutreachStatus Status { get; set; }
+        public string? Priority { get; set; }
+        public Audience Audience { get; set; } = Audience.Civic;
+        public AskRung? AskRung { get; set; }
+
+        [RegularExpression("^[A-Za-z0-9-]{1,40}$", ErrorMessage = "Letters, digits and dashes, at most 40.")]
+        public string? TrackingCode { get; set; }
+
+        [StringLength(200)] public string? Category { get; set; }
+        [StringLength(500)] public string? ContactChannel { get; set; }
+        [StringLength(500)] public string? FoundVia { get; set; }
+        [StringLength(2000)] public string? WhyTheyFit { get; set; }
+
+        public static PartnerInput From(PartnerDetails? p) => p is null ? new() : new()
+        {
+            Status = p.OutreachStatus ?? OutreachStatus.NotContacted,
+            Priority = p.Priority,
+            Audience = p.Audience ?? Audience.Civic,
+            AskRung = p.AskRung,
+            TrackingCode = p.TrackingCode,
+            Category = p.Category,
+            ContactChannel = p.ContactChannel,
+            FoundVia = p.FoundVia,
+            WhyTheyFit = p.WhyTheyFit
+        };
+    }
 
     private CrmOrganization? _org;
     private IReadOnlyList<CrmContact> _contacts = [];
@@ -224,6 +400,7 @@
 
         Details ??= DetailsInput.From(_org);
         await ReloadAsync();
+        Partner ??= PartnerInput.From(_partner);
     }
 
     private async Task ReloadAsync()
@@ -234,6 +411,9 @@
         _tasks = await Crm.GetTasksAsync(CrmTaskStatus.Open, organizationId: Id);
         _timeline = await Crm.GetTimelineAsync(organizationId: Id);
         _emails = await Emails.GetForOrganizationAsync(Id);
+        _partner = await Partners.GetPartnerAsync(Id);
+        _links = await Partners.GetLinksAsync(Id);
+        _referred = _partner?.TrackingCode is { } code ? await Partners.GetReferredAsync(code) : [];
     }
 
     private async Task AddContactAsync()

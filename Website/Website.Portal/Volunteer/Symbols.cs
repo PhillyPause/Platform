@@ -22,6 +22,7 @@ public static class Symbols
     public const string Edit = "edit";
     public const string Event = "event";
     public const string Group = "group";
+    public const string Handshake = "handshake";
     public const string Home = "home";
     public const string Inbox = "inbox";
     public const string Person = "person";
@@ -31,13 +32,14 @@ public static class Symbols
     public const string Send = "send";
     public const string ShieldPerson = "shield_person";
     public const string Unsubscribe = "unsubscribe";
+    public const string UploadFile = "upload_file";
     public const string ViewKanban = "view_kanban";
 
     public static IReadOnlyList<string> All { get; } =
     [
         AccountBalance, Apartment, ArrowDownward, ArrowUpward, Badge, Campaign, CheckCircle, Delete, Description,
-        DoNotDisturb, Edit, Event, Group, Home, Inbox, Person, PersonAdd, Public, Schedule, Send,
-        ShieldPerson, Unsubscribe, ViewKanban
+        DoNotDisturb, Edit, Event, Group, Handshake, Home, Inbox, Person, PersonAdd, Public, Schedule, Send,
+        ShieldPerson, Unsubscribe, UploadFile, ViewKanban
     ];
 
     /// <summary>

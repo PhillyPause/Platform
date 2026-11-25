@@ -319,6 +319,17 @@ html:has(.dlgtoggle:checked:not(#dlg-none)) { overflow: hidden; }
 .flyicon:hover { background: #AE2012; color: #FBF8F1; border-color: #AE2012; }
 .flyicon svg { display: block; }
 
+/* A link inside the event box that opens a dialog rather than a page (RSVP,
+   Past events): a label, set like the box's own links. */
+.boxlink {
+  color: #AE2012;
+  font-weight: 600;
+  cursor: pointer;
+}
+.boxlink:hover { text-decoration: underline; }
+
+.pastevent + .pastevent { margin-top: 18px; padding-top: 16px; border-top: 1px solid #CFC7B6; }
+
 .paneldlg {
   display: none;
   place-items: center;
@@ -331,6 +342,7 @@ html:has(.dlgtoggle:checked:not(#dlg-none)) { overflow: hidden; }
    checked one shows its own and nothing else can be checked at the same time. */
 #watch-open:checked ~ .paneldlg.d-watch { display: grid; }
 #panel-open:checked ~ .paneldlg.d-panel { display: grid; }
+#past-open:checked ~ .paneldlg.d-past { display: grid; }
 #join-open:checked ~ .paneldlg.d-join { display: grid; }
 #primer-open:checked ~ .paneldlg.d-primer { display: grid; }
 #volunteer-open:checked ~ .paneldlg.d-volunteer { display: grid; }

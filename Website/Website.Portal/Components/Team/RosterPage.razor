@@ -42,7 +42,7 @@
         @if (_activity.IsPublished)
         {
             <a class="mh-btn mh-btn-secondary" href="@ManyHandsPaths.TeamCheckInCode(Id)">Check-in code for the door</a>
-            <a class="mh-btn mh-btn-secondary" href="@ManyHandsPaths.Activity(Id)">See the public page</a>
+            <a class="mh-btn mh-btn-secondary" href="@ManyHandsPaths.Activity(_activity.Slug)">See the public page</a>
         }
     </div>
 </header>

@@ -45,7 +45,7 @@ public sealed class VolunteerPagesTests(DatabaseFixture db) : IAsyncLifetime
     [Fact]
     public async Task An_unknown_activity_is_a_404()
     {
-        var response = await _portal.Browser().GetAsync(ManyHandsPaths.Activity(Guid.NewGuid()));
+        var response = await _portal.Browser().GetAsync(ManyHandsPaths.Activity("no-such-event"));
 
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
     }
@@ -56,7 +56,7 @@ public sealed class VolunteerPagesTests(DatabaseFixture db) : IAsyncLifetime
         var activity = await TestData.ActivityAsync(db.DataSource);
         var email = TestData.NewEmail();
 
-        var response = await Forms.SubmitAsync(_portal.Browser(), ManyHandsPaths.Activity(activity), "signup",
+        var response = await Forms.SubmitAsync(_portal.Browser(), await TestData.PathAsync(db.DataSource, activity), "signup",
             ("Input.DisplayName", "Form Filler"), ("Input.Email", email),
             ("interest", TestData.Tabling.ToString()));
 

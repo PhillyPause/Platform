@@ -540,6 +540,8 @@ html:has(.mh-app), html:has(.mh-app) body { background: var(--mh-cream); }
 .mh-qr { display: grid; gap: var(--mh-4); justify-items: start; }
 .mh-qr-code { width: min(26rem, 100%); background: #fff; padding: var(--mh-4); border: 1px solid var(--mh-line); border-radius: var(--mh-radius); }
 .mh-qr-code svg { display: block; width: 100%; height: auto; }
+/* In a panel beside other things (a partner's link), a code to scan, not a poster. */
+.mh-panel .mh-qr-code { width: min(10rem, 100%); padding: var(--mh-2); }
 
 /* --- the CRM: tasks, timeline, pipeline ----------------------------------- */
 

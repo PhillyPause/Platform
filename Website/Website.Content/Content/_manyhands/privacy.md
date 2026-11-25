@@ -9,6 +9,10 @@ tell you what is on and know who is coming. It holds:
   about things that match.
 - **What you signed up for**, whether you were on the waitlist, and whether
   you were checked in at the door.
+- **Which of our links brought you**, if it carried a code such as
+  `?src=newsguild`, so we know which partners and posters work. It is a
+  word on the link we handed out, not a cookie, and says nothing else about
+  you.
 - **The emails we sent you**: the subject, when, and whether it was
   delivered. Not whether you opened them; we cannot tell, and do not try.
 - **Your Discord account**, only if you link it, so we can message you there

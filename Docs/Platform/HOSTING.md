@@ -53,8 +53,17 @@ through a PR; the revert deploys like anything else.
 ## No Dockerfile
 
 App Platform's native .NET buildpack detects `Platform.slnx` and handles the
-SDK and the publish. Two things it imposes:
+SDK and the publish. Three things it imposes:
 
+- **The SDK is whatever its inventory has for the `TargetFramework`**, here
+  `net10.0`; there is no `global.json`. DigitalOcean's
+  [buildpack page](https://docs.digitalocean.com/products/app-platform/reference/buildpacks/dotnet/)
+  is what counts, not the upstream
+  [Heroku inventory](https://github.com/heroku/buildpacks-dotnet/blob/main/buildpacks/dotnet/inventory.toml),
+  which runs ahead of it. Its buildpack (v0.50.5) has no 11.0 SDK: a build
+  targeting `net11.0` stops with "Unsupported .NET SDK version", and the live
+  site stays on the last good release. CI cannot catch this, because it
+  installs its own SDK. Move to a new .NET only once that page lists it.
 - **`SOLUTION_FILE` must be a bare filename.** It rejects anything containing
   a path separator, so the buildpack cannot be aimed at a single project — it
   publishes the whole solution. That is why `Website.Client` and

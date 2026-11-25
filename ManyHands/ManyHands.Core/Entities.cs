@@ -46,6 +46,8 @@ public sealed record ActivityType(
 public sealed record ActivityListItem(
     Guid Id,
     string Title,
+    /// <summary>Its readable address: <see cref="ManyHandsPaths.Activity"/>.</summary>
+    string Slug,
     string? Description,
     ActivityKind Kind,
     string? Location,
@@ -69,15 +71,35 @@ public sealed record Member(
     string? Email,
     VolunteerRole Role,
     DateTimeOffset CreatedAt,
+    /// <summary>The tracking code on the link they first joined through, if any (<see cref="TrackingCode"/>).</summary>
+    string? Source,
     bool CanEmail,
     /// <summary>Clicked the link in their joining email, signed in, or came by invite.</summary>
     bool Confirmed,
-    string[] Interests);
+    string[] Interests)
+{
+    /// <summary>Whether mail reaches them, in the words the members page and its file both show.</summary>
+    public string Status => Email is null ? MemberStatus.NoEmail
+        : !CanEmail ? MemberStatus.Unsubscribed
+        : Confirmed ? MemberStatus.Confirmed
+        : MemberStatus.NotConfirmed;
+}
+
+public static class MemberStatus
+{
+    public const string Confirmed = "Confirmed";
+    public const string NotConfirmed = "Not confirmed";
+    public const string Unsubscribed = "Unsubscribed";
+    public const string NoEmail = "No email";
+
+    public static readonly string[] All = [Confirmed, NotConfirmed, Unsubscribed, NoEmail];
+}
 
 /// <summary>What a volunteer sees on their own page.</summary>
 public sealed record MyActivity(
     Guid SignupId,
     Guid ActivityId,
+    string ActivitySlug,
     string Title,
     string? Location,
     DateTimeOffset? StartsAt,
