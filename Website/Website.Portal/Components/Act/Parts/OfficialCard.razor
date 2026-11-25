@@ -1,0 +1,34 @@
+@* One official in a list: who, what seat, and the two things to do. *@
+
+<li class="act-card">
+    <OfficialAvatar Official="Official" />
+    <div class="act-card-body">
+        <h4 class="act-card-name"><a href="/act/officials/@Official.Key">@Official.Name</a></h4>
+        <p class="act-card-office">
+            @Official.Office
+            @if (Official.PartyInitial.Length > 0)
+            {
+                <span class="act-party" title="@Official.Party">(@Official.PartyInitial)</span>
+            }
+        </p>
+        <StatusNote Official="Official" />
+        <p class="act-card-actions">
+            @if (Official.MainPhone is { } phone)
+            {
+                <a class="act-btn act-btn-small" href="/act/call/@Official.Key">Call</a>
+            }
+            @if (Official.CanEmail)
+            {
+                <a class="act-btn act-btn-small act-btn-ghost" href="/act/write/@Official.Key">Write</a>
+            }
+            @if (Official.MainPhone is { } main)
+            {
+                <a class="act-card-phone" href="@main.TelHref">@main.Number</a>
+            }
+        </p>
+    </div>
+</li>
+
+@code {
+    [Parameter, EditorRequired] public required Official Official { get; set; }
+}

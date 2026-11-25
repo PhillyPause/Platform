@@ -11,38 +11,51 @@
     return;
 }
 
-<div class="wrap page-head">
-    <h1>@(_isNew ? "New activity" : "Edit activity")</h1>
-    <p class="lead">
-        @(_isNew
-            ? "It stays a draft until you publish it, so nothing goes out while you are still writing."
-            : "Changes show on the public page straight away. People who signed up are not emailed about them.")
-    </p>
-</div>
+<header class="mh-page-head">
+    <div>
+        <p class="mh-crumb">
+            @if (_isNew)
+            {
+                <a href="@ManyHandsPaths.Team" data-enhance-nav="false">Activities</a>
+            }
+            else
+            {
+                <a href="@ManyHandsPaths.TeamActivity(Id!.Value)">Back to the activity</a>
+            }
+        </p>
+        <h1>@(_isNew ? "New activity" : "Edit activity")</h1>
+        <p class="mh-summary">
+            @(_isNew
+                ? "It stays a draft until you publish it, so nothing goes out while you are still writing."
+                : "Changes show on the public page straight away. People who signed up are not emailed about them.")
+        </p>
+    </div>
+</header>
 
-<div class="wrap vol-body">
-    <EditForm Model="Input" FormName="activity" OnValidSubmit="SaveAsync" class="vol-form vol-editor">
-        <DataAnnotationsValidator />
+<EditForm Model="Input" FormName="activity" OnValidSubmit="SaveAsync" class="mh-editor">
+    <DataAnnotationsValidator />
 
-        <label>
-            <span>Title</span>
+    <section class="mh-panel mh-form" aria-labelledby="what-head">
+        <h2 id="what-head">What</h2>
+        <label class="mh-field">
+            <span class="mh-label">Title</span>
             <InputText @bind-Value="Input!.Title" />
             <ValidationMessage For="() => Input!.Title" />
         </label>
 
         @if (_draft is { SlugFrozen: true })
         {
-            <p class="vol-small">
+            <p class="mh-help">
                 Its address is <strong>@Address(_draft.Slug)</strong>, and stays so now that it has been
                 published: it is in emails and on posters.
             </p>
         }
         else if (_draft is not null)
         {
-            <label>
-                <span>Its address</span>
+            <label class="mh-field">
+                <span class="mh-label">Its address</span>
                 <InputText @bind-Value="Input!.Slug" />
-                <span class="vol-small">
+                <span class="mh-help">
                     @Address(_draft.Slug). It follows the title until you type your own, and is fixed once
                     you publish.
                 </span>
@@ -50,13 +63,18 @@
             </label>
         }
 
-        <label>
-            <span>What it involves</span>
+        <label class="mh-field">
+            <span class="mh-label">What it involves</span>
             <InputTextArea @bind-Value="Input!.Description" rows="6" />
-            <span class="vol-small">Plain text. Leave a blank line between paragraphs.</span>
+            <span class="mh-help">Plain text. Leave a blank line between paragraphs.</span>
         </label>
 
-        <fieldset class="vol-choice">
+        <InterestChoices Types="_types" Selected="_selected" Legend="What kind of thing is it? People who like these are told when you publish." />
+    </section>
+
+    <section class="mh-panel mh-form" aria-labelledby="when-head">
+        <h2 id="when-head">When and where</h2>
+        <fieldset class="mh-choices">
             <legend>Is it at a set time?</legend>
             <InputRadioGroup @bind-Value="Input!.Kind">
                 <label><InputRadio Value="ActivityKind.OneTime" /><span>Yes, it is at a set time</span></label>
@@ -64,45 +82,48 @@
             </InputRadioGroup>
         </fieldset>
 
-        <div class="vol-pair">
-            <label>
-                <span>Starts (Philadelphia time)</span>
+        <div class="mh-pair">
+            <label class="mh-field">
+                <span class="mh-label">Starts (Philadelphia time)</span>
                 <InputDate Type="InputDateType.DateTimeLocal" @bind-Value="Input!.StartsAt" />
                 <ValidationMessage For="() => Input!.StartsAt" />
             </label>
-            <label>
-                <span>Ends</span>
+            <label class="mh-field">
+                <span class="mh-label">Ends</span>
                 <InputDate Type="InputDateType.DateTimeLocal" @bind-Value="Input!.EndsAt" />
                 <ValidationMessage For="() => Input!.EndsAt" />
             </label>
         </div>
+        <p class="mh-help">Something people do whenever they can has no time: anything typed here is left out.</p>
 
-        <label>
-            <span>Where</span>
+        <label class="mh-field">
+            <span class="mh-label">Where <span class="mh-optional">(optional)</span></span>
             <InputText @bind-Value="Input!.Location" />
         </label>
 
-        <label>
-            <span>Online meeting link</span>
+        <label class="mh-field">
+            <span class="mh-label">Online meeting link <span class="mh-optional">(optional)</span></span>
             <InputText @bind-Value="Input!.MeetingUrl" type="url" placeholder="https://" />
+            <span class="mh-help">A full https:// address: it goes into emails and calendars.</span>
             <ValidationMessage For="() => Input!.MeetingUrl" />
         </label>
+    </section>
 
-        <label>
-            <span>How many people, at most</span>
+    <section class="mh-panel mh-form" aria-labelledby="who-head">
+        <h2 id="who-head">How many</h2>
+        <label class="mh-field">
+            <span class="mh-label">How many people, at most <span class="mh-optional">(optional)</span></span>
             <InputNumber @bind-Value="Input!.Capacity" min="1" />
-            <span class="vol-small">Leave blank for no limit. Past the limit, people join a waitlist.</span>
+            <span class="mh-help">Leave blank for no limit. Past the limit, people join a waitlist.</span>
             <ValidationMessage For="() => Input!.Capacity" />
         </label>
+    </section>
 
-        <InterestChoices Types="_types" Selected="_selected" Legend="What kind of thing is it? People who like these are told when you publish." />
-
-        <p class="vol-actions">
-            <button class="btn" type="submit">@(_isNew ? "Save as a draft" : "Save")</button>
-            <a class="btn btn-ghost" href="@(_isNew ? ManyHandsPaths.Team : ManyHandsPaths.TeamActivity(Id!.Value))" data-enhance-nav="false">Cancel</a>
-        </p>
-    </EditForm>
-</div>
+    <div class="mh-form-actions">
+        <button class="mh-btn mh-btn-primary" type="submit">@(_isNew ? "Save as a draft" : "Save")</button>
+        <a class="mh-btn mh-btn-secondary" href="@(_isNew ? ManyHandsPaths.Team : ManyHandsPaths.TeamActivity(Id!.Value))" data-enhance-nav="false">Cancel</a>
+    </div>
+</EditForm>
 
 @code {
     [Parameter] public Guid? Id { get; set; }

@@ -15,19 +15,21 @@
     return;
 }
 
-<div class="wrap page-head">
-    <h1>Check in: @_activity.Title</h1>
-    <p class="lead">Scan with your phone&rsquo;s camera, then give the email you signed up with.</p>
-</div>
+<header class="mh-page-head">
+    <div>
+        <p class="mh-crumb"><a href="@ManyHandsPaths.TeamActivity(Id)">Back to the roster</a></p>
+        <h1>Check in: @_activity.Title</h1>
+        <p class="mh-summary">Scan with your phone&rsquo;s camera, then give the email you signed up with.</p>
+    </div>
+</header>
 
-<div class="wrap vol-body vol-qr">
-    <div class="vol-qr-code">@((MarkupString)_svg)</div>
-    <p class="vol-small">
+<section class="mh-qr" aria-label="The check-in code">
+    <div class="mh-qr-code">@((MarkupString)_svg)</div>
+    <p class="mh-small">
         Or open <a href="@_url">this link</a>. The code works for @((int)CheckInLinks.Lifetime.TotalHours) hours;
         make a fresh one by reloading this page.
     </p>
-    <p><a href="@ManyHandsPaths.TeamActivity(Id)">Back to the roster</a></p>
-</div>
+</section>
 
 @code {
     [Parameter] public Guid Id { get; set; }

@@ -59,6 +59,19 @@ a:hover { color: var(--heading); }
   font-size: 0.78rem; font-weight: 700; letter-spacing: 0.14em;
   text-transform: uppercase; color: var(--muted);
 }
+.header-end { display: flex; align-items: center; flex-wrap: wrap; gap: 0.6rem 1.25rem; }
+/* The front page's ACT, on every inner page. */
+.header-act {
+  display: inline-flex; align-items: center; gap: 0.45rem;
+  min-height: 44px; padding: 0.55rem 1.1rem;
+  background: var(--navy); color: var(--cream);
+  font-size: 0.8rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+  text-decoration: none;
+}
+.header-act svg { color: var(--alarm); }
+.header-act:hover, .header-act:focus-visible { background: var(--alarm-ink); color: #fff; }
+.header-act:hover svg, .header-act:focus-visible svg { color: #fff; }
+@media (max-width: 30rem) { .header-ask { display: none; } }
 
 /* --- hero ---------------------------------------------------------------- */
 

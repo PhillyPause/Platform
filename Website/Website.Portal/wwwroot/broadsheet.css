@@ -16,7 +16,7 @@ a:hover { color: #15110C; }
 .broadsheet h2,
 .broadsheet h3 { color: inherit; }
 
-/* The nav band: five links and the JOIN US button on one rule-bounded line.
+/* The nav band: five links and the JOIN and ACT buttons on one rule-bounded line.
    The first link's negative margin puts its text, not its hover field, on
    the column edge. */
 .navband {
@@ -50,18 +50,91 @@ a:hover { color: #15110C; }
 .navwatch { display: inline-flex; align-items: center; gap: 7px; }
 .navwatch svg { color: #AE2012; }
 
+/* JOIN and ACT, a pair in opposite colours: JOIN ink, turning red under the
+   pointer; ACT red, the louder of the two, turning ink. JOIN takes the push
+   to the right edge, and ACT holds the corner. */
 .joinbtn {
   margin-left: auto;
   padding: 9px 16px;
-  background: #AE2012;
+  background: #15110C;
   color: #FBF8F1;
   cursor: pointer;
   transition: background 140ms ease;
 }
 .joinbtn:hover,
 .joinbtn:focus-visible {
+  background: #AE2012;
+  color: #FBF8F1;
+}
+/* An ivory handset on the red; on the ink, a red one. */
+.actbtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 16px;
+  background: #AE2012;
+  color: #FBF8F1;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 140ms ease;
+}
+.actbtn svg { color: #FBF8F1; transition: color 140ms ease; }
+.actbtn:hover,
+.actbtn:focus-visible { background: #15110C; color: #FBF8F1; }
+.actbtn:hover svg,
+.actbtn:focus-visible svg { color: #E8714F; }
+
+/* The lead story's call to action: a band of ink under the dek, the widest
+   thing on the front that can be pressed. The whole band is the label, or,
+   behind another of the Act dialog's views, a link (ActTrigger), which must
+   not take the links' underline or their ink on hover. */
+.actcall {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 22px;
+  padding: 14px 14px 14px 16px;
   background: #15110C;
   color: #FBF8F1;
+  text-decoration: none;
+  border-left: 6px solid #AE2012;
+  cursor: pointer;
+  transition: background 140ms ease;
+}
+.actcall:hover, .actcall:focus-visible { background: #2A241C; color: #FBF8F1; }
+.actcall-icon {
+  flex: none;
+  width: 46px; height: 46px;
+  display: grid; place-items: center;
+  border-radius: 50%;
+  background: #AE2012;
+  color: #FBF8F1;
+}
+.actcall-icon svg { width: 22px; height: 22px; }
+.actcall-text { flex: 1 1 auto; min-width: 0; display: grid; gap: 3px; }
+.actcall-k {
+  font-size: 10.5px; font-weight: 700; letter-spacing: 0.18em;
+  text-transform: uppercase; color: #E8714F;
+}
+.actcall-t {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(19px, 2vw, 25px); font-weight: 800; line-height: 1.12; letter-spacing: -0.01em;
+}
+.actcall-s { font-size: 13px; line-height: 1.45; color: #D6CEC0; }
+.actcall-go {
+  flex: none;
+  padding: 11px 16px;
+  background: #AE2012;
+  font-size: 12.5px; font-weight: 700; letter-spacing: 0.1em;
+  text-transform: uppercase; white-space: nowrap;
+  transition: background 140ms ease, color 140ms ease;
+}
+.actcall:hover .actcall-go { background: #FBF8F1; color: #AE2012; }
+@media (max-width: 559px) {
+  .actcall { flex-wrap: wrap; padding: 14px; }
+  .actcall-icon { width: 38px; height: 38px; }
+  .actcall-text { flex-basis: calc(100% - 54px); }
+  .actcall-go { width: 100%; text-align: center; }
 }
 
 /* The front, as one grid. Three equal columns on a desktop: the masthead, the
@@ -95,7 +168,7 @@ a:hover { color: #15110C; }
 }
 
 /* Pushed right, so the title and the strapline end on the same vertical as
-   the JOIN US button. The title is sized from the room it actually has
+   the ACT button. The title is sized from the room it actually has
    (container units on .mastline), never from the viewport, so it holds one
    line at every width: it measures about 9.8em, so 9.6cqi leaves it a little
    air. The strapline is 0.3 of the title's size, which is the ratio at which
@@ -283,11 +356,11 @@ html:has(.dlgtoggle:checked:not(#dlg-none)) { overflow: hidden; }
 #check-open:checked ~ .paneldlg.d-check { display: grid; }
 #notfound-open:checked ~ .paneldlg.d-notfound { display: grid; }
 /* What we keep is a checkbox, not one of the radios, so it opens over Join
-   us and closing it leaves Join us where it was. Later in the DOM and one
+   and closing it leaves Join where it was. Later in the DOM and one
    z-index up, so it is the one on top. */
 #privacy-open:checked ~ .paneldlg.d-privacy { display: grid; z-index: 110; }
 
-/* Join us dialog. Plain ivory, like the panel — nothing here needs a colour
+/* Join dialog. Plain ivory, like the panel — nothing here needs a colour
    field of its own. Its job is to make the case for joining: the four things
    we do, then the one field that starts it. */
 .joinbody h2 {
@@ -336,10 +409,10 @@ html:has(.dlgtoggle:checked:not(#dlg-none)) { overflow: hidden; }
 .d-join .paneldlg-box,
 .d-notices .paneldlg-box { width: min(840px, 100%); }
 /* Events (EventsList.razor): the kinds as small pills, then one event per
-   row on the same hairlines as the four ways in Join us. */
+   row on the same hairlines as the four ways in Join. */
 .d-events .paneldlg-box { width: min(760px, 100%); }
 /* Joining's dialogs (CheckEmailDialog, ConfirmJoinDialog, WelcomeDialog,
-   RemoveDialog) and Not found: the short ones are narrower than Join us. */
+   RemoveDialog) and Not found: the short ones are narrower than Join. */
 .d-confirm .paneldlg-box,
 .d-remove .paneldlg-box,
 .d-notfound .paneldlg-box { width: min(600px, 100%); }
@@ -421,7 +494,7 @@ html:has(.dlgtoggle:checked:not(#dlg-none)) { overflow: hidden; }
   box-shadow: 0 18px 50px rgba(21, 17, 12, 0.4);
   animation: dlg-in 200ms cubic-bezier(0.16, 1, 0.3, 1) both;
 }
-/* A short laptop screen gets the dialog closer to its edges, so Join us
+/* A short laptop screen gets the dialog closer to its edges, so Join
    still fits without scrolling. */
 @media (max-height: 760px) {
   .paneldlg { padding-block: 12px; }
@@ -552,7 +625,7 @@ html:has(.dlgtoggle:checked:not(#dlg-none)) { overflow: hidden; }
   .watchplay::after { animation: none; display: none; }
 }
 
-/* Mailing list. Lives in the Join us dialog, on ivory. 46px minimum target
+/* Mailing list. Lives in the Join dialog, on ivory. 46px minimum target
    height on the field and the button. */
 .signup { display: flex; gap: 10px; flex-wrap: wrap; align-items: flex-end; }
 .signup label {
@@ -600,7 +673,7 @@ html:has(.dlgtoggle:checked:not(#dlg-none)) { overflow: hidden; }
 .signupbtn:hover, .signupbtn:focus-visible { background: #AE2012; border-color: #AE2012; color: #FBF8F1; }
 .signup-note { margin: 16px 0 0; font-size: 12.5px; line-height: 1.55; color: #6A6254; }
 
-/* The join form in the Join us dialog (JoinForm.razor), with ManyHands on. */
+/* The join form in the Join dialog (JoinForm.razor), with ManyHands on. */
 /* It borrows .signup's field and button; the labels keep .signup's small
    red capitals, the ticks below go back to ordinary text. */
 /* Compact on purpose: on a laptop the whole dialog should fit without a
@@ -618,7 +691,7 @@ html:has(.dlgtoggle:checked:not(#dlg-none)) { overflow: hidden; }
 .signup .joinnote-link:hover { color: #AE2012; }
 
 /* What we keep: the privacy page's Markdown, set in the dialog's type.
-   Narrower and shorter than Join us, so it plainly sits on top of it. */
+   Narrower and shorter than Join, so it plainly sits on top of it. */
 .d-privacy .paneldlg-box {
   width: min(680px, 100%);
   max-height: calc(100vh - 120px); max-height: calc(100dvh - 120px);
@@ -749,20 +822,30 @@ html:has(.dlgtoggle:checked:not(#dlg-none)) { overflow: hidden; }
   .stat:nth-child(n+3) { border-top: 1px solid #CFC7B6; }
 }
 
-/* Under 680px the six nav items no longer fit one line, and wrapping them
-   strands JOIN US on a line of its own. They become a three-by-two grid
-   instead, JOIN US as the last cell. */
-@media (max-width: 679px) {
+/* A little tighter on a tablet, so the five links and both buttons hold one
+   line down to where the grid below takes over. */
+@media (max-width: 859px) {
+  .navlink { padding-inline: 10px; }
+  .navlink:first-child { margin-left: -10px; }
+  .actbtn, .joinbtn { padding-inline: 12px; }
+}
+
+/* Under 760px the seven nav items no longer fit one line, and wrapping them
+   strands the buttons on a line of their own. They become a three-column
+   grid instead: the five links and JOIN in two rows, and ACT across
+   the full width beneath them, directly above the story it answers. */
+@media (max-width: 759px) {
   .navband {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 0;
     padding: 0;
   }
-  .navlink, .joinbtn { margin: 0; padding: 13px 4px; text-align: center; }
+  .navlink, .joinbtn, .actbtn { margin: 0; padding: 13px 4px; text-align: center; }
   .navlink:first-child { margin-left: 0; }
-  .navwatch { justify-content: center; }
+  .navwatch, .actbtn { justify-content: center; }
   .navband > :nth-child(-n+3) { border-bottom: 1px solid #CFC7B6; }
+  .actbtn { order: 1; grid-column: 1 / -1; }
 }
 
 /* Phone. One column; the nameplate stacks and centres, the way a paper's does

@@ -12,38 +12,46 @@
 
 @if (_landing is null)
 {
-    <div class="wrap page-head">
-        <h1>That invitation has run out</h1>
-        <p class="lead">
-            It may have expired, been used, or been cancelled. You can still
-            <a href="@ManyHandsPaths.Join" data-enhance-nav="false">join the ordinary way</a>.
-        </p>
+    <div class="wrap">
+        <header class="mh-page-head">
+            <div>
+                <h1>That invitation has run out</h1>
+                <p class="mh-summary">
+                    It may have expired, been used, or been cancelled. You can still
+                    <a href="@ManyHandsPaths.Join" data-enhance-nav="false">join the ordinary way</a>.
+                </p>
+            </div>
+        </header>
     </div>
     return;
 }
 
-<div class="wrap page-head">
-    <h1>Join us</h1>
-    <p class="lead">
-        @(_landing.InvitedByName is { } by ? $"{by} invited you" : "You have been invited") to join PhillyPause,
-        as @_landing.Email.
-    </p>
+<div class="wrap">
+    <header class="mh-page-head">
+        <div>
+            <h1>Join us</h1>
+            <p class="mh-summary">
+                @(_landing.InvitedByName is { } by ? $"{by} invited you" : "You have been invited") to join PhillyPause,
+                as @_landing.Email.
+            </p>
+        </div>
+    </header>
 </div>
 
-<div class="wrap vol-body">
-    <section class="vol-card vol-narrow">
+<div class="wrap">
+    <section class="mh-panel mh-narrow">
         @if (!string.IsNullOrWhiteSpace(_landing.Note))
         {
-            <blockquote class="vol-note">@_landing.Note</blockquote>
+            <blockquote class="mh-quote">@_landing.Note</blockquote>
         }
-        <EditForm Model="Input" FormName="accept" OnValidSubmit="AcceptAsync" class="vol-form">
+        <EditForm Model="Input" FormName="accept" OnValidSubmit="AcceptAsync" class="mh-form">
             <DataAnnotationsValidator />
-            <label>
-                <span>Your name</span>
+            <label class="mh-field">
+                <span class="mh-label">Your name</span>
                 <InputText @bind-Value="Input!.DisplayName" autocomplete="name" />
             </label>
             <InterestChoices Types="_types" />
-            <button class="btn" type="submit">Join</button>
+            <button class="mh-btn mh-btn-primary" type="submit">Join</button>
         </EditForm>
     </section>
 </div>

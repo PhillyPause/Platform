@@ -8,13 +8,14 @@
 @layout BroadsheetLayout
 @using ManyHands.Core
 @using ManyHands.Data
+@using Website.Portal.Act
 @inject NavigationManager Navigation
 @inject IConfiguration Configuration
 @inject ContentStore Content
 
 @* The home page, as a broadsheet front: masthead and nav, the lead story on
-   the July 2026 incident, and the dialogs: watch, speakers, past events, join us, the
-   primer, volunteer, educate, organize and the small print.
+   the July 2026 incident, and the dialogs: watch, speakers, past events,
+   join us, act, the primer, volunteer, educate, organize and the small print.
 
    The dialogs are driven by one hidden radio group and `:checked ~` sibling
    selectors, not script. Radios rather than checkboxes so that opening one
@@ -28,6 +29,10 @@
 @if (NotFound)
 {
   <PageMeta Title="Page not found" Description="That page does not exist on the PhillyPause site." NoIndex="true" />
+}
+else if (ActOpen)
+{
+  @* The action page drawing this one says what it is: its own PageMeta. *@
 }
 else
 {
@@ -46,19 +51,22 @@ else
      load, so nothing shows until something is chosen. No script involved.
      /join and /events are the exceptions: each loads with its own dialog
      already open (/join is the address on posters), and closing it leaves the
-     reader on the front page. *@
-  <input type="radio" name="dlg" id="dlg-none" class="dlgtoggle" checked="@(!NotFound && !JoinOpen && !EventsOpen && !ConfirmOpen && !WelcomeOpen && !RemoveOpen && !CheckEmailOpen)" aria-label="No panel open">
+     reader on the front page. Every /act address is one too: the action
+     centre is the Act dialog, and each of its pages opens it on a view of
+     its own. *@
+  <input type="radio" name="dlg" id="dlg-none" class="dlgtoggle" checked="@(!NotFound && !JoinOpen && !EventsOpen && !ConfirmOpen && !WelcomeOpen && !RemoveOpen && !CheckEmailOpen && !ActOpen)" aria-label="No panel open">
   <input type="radio" name="dlg" id="watch-open" class="dlgtoggle" aria-label="Watch">
   <input type="radio" name="dlg" id="panel-open" class="dlgtoggle" aria-label="Who is speaking">
   <input type="radio" name="dlg" id="past-open" class="dlgtoggle" aria-label="Past events">
   <input type="radio" name="dlg" id="join-open" class="dlgtoggle" checked="@JoinOpen" aria-label="Join us">
+  <input type="radio" name="dlg" id="act-open" class="dlgtoggle" checked="@ActOpen" aria-label="Act">
   <input type="radio" name="dlg" id="primer-open" class="dlgtoggle" aria-label="The primer">
   <input type="radio" name="dlg" id="volunteer-open" class="dlgtoggle" aria-label="Volunteer">
   <input type="radio" name="dlg" id="educate-open" class="dlgtoggle" aria-label="Educate">
   <input type="radio" name="dlg" id="organize-open" class="dlgtoggle" aria-label="Organize">
   <input type="radio" name="dlg" id="notices-open" class="dlgtoggle" aria-label="Small Print">
   <input type="radio" name="dlg" id="notfound-open" class="dlgtoggle" checked="@NotFound" aria-label="Page not found">
-  @* Not one of the radios: What we keep opens on top of Join us rather
+  @* Not one of the radios: What we keep opens on top of Join rather
      than in its place, so closing it puts the reader back in the form. *@
   @if (ManyHandsOn)
   {
@@ -100,13 +108,26 @@ else
       <label class="navlink" for="volunteer-open">Volunteer</label>
       <label class="navlink" for="educate-open">Educate</label>
       <label class="navlink" for="organize-open">Organize</label>
-      <label class="joinbtn" for="join-open">Join us</label>
+      <label class="joinbtn" for="join-open">Join</label>
+      <Website.Portal.Components.Act.Parts.ActTrigger Class="actbtn" InPlace="@ActInPlace">@PhoneGlyph Act</Website.Portal.Components.Act.Parts.ActTrigger>
     </nav>
 
     <div class="lead">
       <div class="leadkicker">Incident report &middot; <span style="white-space: nowrap">July 11&ndash;13, 2026</span></div>
       <h1>700 AI agents broke <br>out of their sandboxes</h1>
       <div class="leaddek">To cheat on a test. If a person did it, it would be a felony!</div>
+
+      @* The story's one call to action, under the headline it answers: the
+         Act dialog, the same as ACT in the nav band. *@
+      <Website.Portal.Components.Act.Parts.ActTrigger Class="actcall" InPlace="@ActInPlace">
+        <span class="actcall-icon" aria-hidden="true">@PhoneGlyph</span>
+        <span class="actcall-text">
+          <span class="actcall-k">Act</span>
+          <span class="actcall-t">Call or write the people who represent you</span>
+          <span class="actcall-s">Congress, Harrisburg and City Hall. Find yours in a minute; a call takes five.</span>
+        </span>
+        <span class="actcall-go">Find yours &rarr;</span>
+      </Website.Portal.Components.Act.Parts.ActTrigger>
     </div>
 
     <div class="leadtext">
@@ -412,7 +433,7 @@ else
             <div class="signuprow">
               <a class="signupbtn" href="/">Go to the front page</a>
               <label class="signupalt confirm-alt" for="primer-open">Learn</label>
-              <label class="signupalt confirm-alt" for="join-open">Join us</label>
+              <label class="signupalt confirm-alt" for="join-open">Join</label>
             </div>
           </div>
         </div>
@@ -426,7 +447,7 @@ else
     <label class="paneldlg-scrim" for="dlg-none" aria-label="Close"></label>
     <div class="paneldlg-box" role="dialog" aria-modal="true" aria-labelledby="joindlg-title">
       <div class="paneldlg-head">
-        <span id="joindlg-title">Join us</span>
+        <span id="joindlg-title">Join</span>
         <label class="paneldlg-x" for="dlg-none" aria-label="Close">&times;</label>
       </div>
       <div class="paneldlg-body joinbody">
@@ -466,7 +487,7 @@ else
     </div>
   </div>
 
-  @* What we keep, over Join us: the privacy page itself, ManyHands' part
+  @* What we keep, over Join: the privacy page itself, ManyHands' part
      included, so the dialog and /privacy can never disagree. *@
   @if (ManyHandsOn && Content.Find("privacy") is { } privacy)
   {
@@ -651,7 +672,7 @@ else
 
         <div class="joinform">
           <p class="joinform-ask">Our next event is always in the box at the top of this page. Come to that one, or say hello now and we will look out for you.</p>
-          @* On, the Events dialog. Off, the Join us dialog. Labels, like
+          @* On, the Events dialog. Off, the Join dialog. Labels, like
              every other link between dialogs. *@
           <div class="signuprow">
             @if (ManyHandsOn)
@@ -716,16 +737,47 @@ else
         </div>
         <div class="joinway">
           <div class="joinway-k">Who to call, and what to say</div>
-          <p>ControlAI&rsquo;s tool finds your representatives from your state and gives you the script, by email, phone or post. It is their campaign and their wording, not ours, and it is the best of its kind.</p>
+          <p>Our action centre finds your officials, from Congress to City Hall, with their numbers, a thirty-second script, and help putting a message in your own words. Then you call or send it yourself.</p>
         </div>
 
         <div class="joinform">
           <p class="joinform-ask">We will walk through it with you first if you would rather not go in cold.</p>
           <div class="signuprow">
-            <a class="signupbtn" href="https://act.controlai.org/" target="_blank" rel="noopener">Who to call</a>
-            <span class="signupalt">opens ControlAI, in a new window</span>
+            <Website.Portal.Components.Act.Parts.ActTrigger Class="signupbtn" InPlace="@ActInPlace">Who to call</Website.Portal.Components.Act.Parts.ActTrigger>
+            <span class="signupalt">numbers, a script, and a draft in your words</span>
           </div>
         </div>
+      </div>
+    </div>
+  </div>
+
+  @* Act: the action centre, as a dialog. The nav band's ACT, the lead's
+     call to action and Organize's "Who to call" open it here at its first
+     view (ActStart), Your officials, always (ActTrigger); every /act address
+     opens the front page with it showing a view of its own (ActView), and
+     moving between views loads the next
+     address in full: enhanced navigation would patch the radio's checked
+     attribute, which a radio the reader has clicked ignores, and the dialog
+     would shut. *@
+  @* Open on load, it does not fade in: moving between its views loads a page
+     each time, and a dialog that faded in again on every step flickered. *@
+  <div class="paneldlg d-act@(ActOpen ? " d-act-loaded" : null)">
+    <label class="paneldlg-scrim" for="dlg-none" aria-label="Close"></label>
+    <div class="paneldlg-box" role="dialog" aria-modal="true" aria-labelledby="actdlg-title" data-enhance-nav="false">
+      <div class="paneldlg-head">
+        <span id="actdlg-title">Act</span>
+        <label class="paneldlg-x" for="dlg-none" aria-label="Close">&times;</label>
+      </div>
+      <Website.Portal.Components.Act.Parts.ActTabs />
+      <div class="paneldlg-body actbody">
+        @if (ActView is not null)
+        {
+          @ActView
+        }
+        else
+        {
+          <Website.Portal.Components.Act.Parts.ActStart />
+        }
       </div>
     </div>
   </div>
@@ -811,6 +863,21 @@ else
     [Parameter] public bool Framed { get; set; }
 
     private bool EventsOpen => ManyHandsOn && IsAt(ManyHandsPaths.Events);
+
+    // Set by the action pages (Components/Act): what the Act dialog shows,
+    // and that it opens on load. Unset, the dialog holds ActStart and waits
+    // for ACT.
+    [Parameter] public RenderFragment? ActView { get; set; }
+
+    private bool ActOpen => ActView is not null;
+
+    // ACT always opens on Your officials (ActTrigger): in place when the
+    // dialog holds nothing yet or one of Your officials' views, and by
+    // loading /act from any other.
+    private bool ActInPlace => ActView is null || IsAt(ActPaths.Start) || IsAt(ActPaths.YoursBase);
+
+    // A handset, drawn here so the nav band and the call to action share it.
+    private static readonly RenderFragment PhoneGlyph = @<svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1z"></path></svg>;
 
     // The joining email's links. ManyHandsGate answers them with a 404 while
     // ManyHands is off, so they never reach here without it.

@@ -7,12 +7,16 @@
 
 <PageMeta Title="Sign out" Description="Sign out of PhillyPause." NoIndex="true" />
 
-<div class="wrap page-head">
-    <h1>Sign out</h1>
+<div class="wrap">
+    <header class="mh-page-head">
+        <div>
+            <h1>Sign out</h1>
+        </div>
+    </header>
 </div>
 
-<div class="wrap vol-body">
-    <section class="vol-card vol-narrow">
+<div class="wrap">
+    <section class="mh-panel mh-narrow">
         @if (HttpContext.User.VolunteerId() is null)
         {
             <p>You are signed out. <a href="/">Back to the front page</a></p>
@@ -20,8 +24,8 @@
         else
         {
             <p>Sign out of PhillyPause on this device?</p>
-            <EditForm Model="Input" FormName="sign-out-page" OnSubmit="SignOutAsync" class="vol-form">
-                <button class="btn" type="submit">Sign out</button>
+            <EditForm Model="Input" FormName="sign-out-page" OnSubmit="SignOutAsync" class="mh-form">
+                <button class="mh-btn mh-btn-primary" type="submit">Sign out</button>
             </EditForm>
         }
     </section>

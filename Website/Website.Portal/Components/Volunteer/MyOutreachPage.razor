@@ -1,0 +1,137 @@
+@page "/volunteer/outreach"
+@attribute [Authorize]
+@inject OutreachRepository Outreach
+@inject Website.Content.OfficialsStore Officials
+
+@* A volunteer's own record of contacting officials from the action centre:
+   how much, whom, and who is worth a follow-up call. Only what happened;
+   never what was said. *@
+
+<PageMeta Title="My outreach" Description="The officials you have called and written to, and how it went." NoIndex="true" />
+
+<div class="wrap">
+    <header class="mh-page-head">
+        <div>
+            <h1>Your outreach</h1>
+            <p class="mh-summary">Every call and message you have told us about. Offices count constituents; this is your count.</p>
+        </div>
+        <div class="mh-page-actions">
+            <a class="mh-btn mh-btn-primary" href="/act" data-enhance-nav="false">Take another action</a>
+        </div>
+    </header>
+
+    @if (_actions.Count == 0)
+    {
+        <div class="mh-empty">
+            <p class="mh-empty-title">Nothing yet</p>
+            <p><a href="/act" data-enhance-nav="false">Find your officials</a>: a call takes five minutes, and "I called" at the end puts it here.</p>
+        </div>
+    }
+    else
+    {
+        <section aria-labelledby="totals-head">
+            <h2 id="totals-head" class="mh-sr">So far</h2>
+            <div class="mh-cards mh-cards-compact">
+                <div class="mh-card">
+                    <span class="mh-card-label">In all</span>
+                    <p class="mh-card-figure">@_actions.Count</p>
+                    <p class="mh-card-text">@(_actions.Count == 1 ? "action" : "actions") you have told us about</p>
+                </div>
+                <div class="mh-card">
+                    <span class="mh-card-label">Calls</span>
+                    <p class="mh-card-figure">@_actions.Count(a => a.Channel == OutreachChannel.Call)</p>
+                    <p class="mh-card-text">to an office</p>
+                </div>
+                <div class="mh-card">
+                    <span class="mh-card-label">Messages</span>
+                    <p class="mh-card-figure">@_actions.Count(a => a.Channel != OutreachChannel.Call)</p>
+                    <p class="mh-card-text">by email, form or post</p>
+                </div>
+                <div class="mh-card">
+                    <span class="mh-card-label">Officials</span>
+                    <p class="mh-card-figure">@_actions.Select(a => a.OfficialKey).Distinct().Count()</p>
+                    <p class="mh-card-text">different people reached</p>
+                </div>
+            </div>
+        </section>
+
+        @if (_followUps.Count > 0)
+        {
+            <section class="mh-section mh-panel" aria-labelledby="next-head">
+                <div class="mh-panel-head"><h2 id="next-head">Worth a follow-up</h2></div>
+                <p>You wrote to these offices more than two weeks ago. A short call asking whether they got it, and for a reply, is often what gets one.</p>
+                <ul class="mh-list">
+                    @foreach (var official in _followUps)
+                    {
+                        <li><div class="mh-list-main"><a href="/act/call/@official.Key" data-enhance-nav="false">Call @official.Name</a></div></li>
+                    }
+                </ul>
+            </section>
+        }
+
+        <section class="mh-section" aria-labelledby="log-head">
+            <div class="mh-section-head"><h2 id="log-head">What you have done</h2></div>
+            <div class="mh-table-wrap">
+                <table class="mh-table mh-table-stack">
+                    <thead><tr><th scope="col">Who</th><th scope="col">When</th><th scope="col">How</th><th scope="col">Notes</th></tr></thead>
+                    <tbody>
+                        @foreach (var action in _actions)
+                        {
+                            <tr>
+                                <td>
+                                    @if (Officials.Find(action.OfficialKey) is { } official)
+                                    {
+                                        <a href="/act/officials/@official.Key" data-enhance-nav="false">@action.OfficialName</a>
+                                    }
+                                    else
+                                    {
+                                        @action.OfficialName
+                                    }
+                                </td>
+                                <td data-label="When">@LocalTime.FormatShort(action.OccurredAt)</td>
+                                <td data-label="How">
+                                    @action.Channel.Label()@if (action.Channel == OutreachChannel.Call && action.Outcome is { } outcome)
+                                    {
+                                        <span class="mh-small"> &middot; @outcome.Label()</span>
+                                    }
+                                </td>
+                                <td data-label="Notes" class="mh-small">@action.Note</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    }
+</div>
+
+@code {
+    [CascadingParameter] private HttpContext HttpContext { get; set; } = default!;
+
+    private IReadOnlyList<OutreachAction> _actions = [];
+    private IReadOnlyList<Website.Content.Official> _followUps = [];
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (HttpContext.User.VolunteerId() is not Guid me) return;
+
+        _actions = await Outreach.ForVolunteerAsync(me);
+
+        // Written to more than two weeks ago and not called since: the follow-up
+        // call is the cheapest way to get an answer.
+        var cutoff = DateTimeOffset.UtcNow.AddDays(-14);
+        _followUps = _actions
+            .GroupBy(a => a.OfficialKey)
+            .Where(g =>
+            {
+                var lastMessage = g.Where(a => a.Channel != OutreachChannel.Call).Select(a => (DateTimeOffset?)a.OccurredAt).Max();
+                return lastMessage is { } sent && sent < cutoff
+                       && !g.Any(a => a.Channel == OutreachChannel.Call && a.OccurredAt >= sent);
+            })
+            .Select(g => Officials.Find(g.Key))
+            .OfType<Website.Content.Official>()
+            .Where(o => o.Phones.Count > 0)
+            .Take(5)
+            .ToArray();
+    }
+}

@@ -5,55 +5,65 @@
 
 <PageMeta Title="Members of Congress" Description="The federal directory, for importing offices into the CRM." NoIndex="true" />
 
-<div class="wrap page-head">
-    <h1>Members of Congress</h1>
-    <p class="lead">
-        From the public congress-legislators dataset, refreshed weekly. Import an office and it
-        becomes an organization in the CRM; importing it again finds the same one.
-    </p>
-</div>
-
-<div class="wrap vol-body">
-    <nav class="vol-filter" aria-label="State">
-        @foreach (var state in States)
-        {
-            <a href="@($"{ManyHandsPaths.CrmOfficials}?state={state}")" aria-current="@(State == state ? "page" : null)">@state</a>
-        }
-    </nav>
-
-    @if (_officials.Count == 0)
-    {
-        <p class="vol-empty">
-            Nobody here. The directory fills itself once a week when <code>FederalOfficials:Enabled</code>
-            is on; until the first refresh it is empty.
+<header class="mh-page-head">
+    <div>
+        <h1>Members of Congress</h1>
+        <p class="mh-summary">
+            From the public congress-legislators dataset, refreshed weekly. Import an office and it
+            becomes an organization in the CRM; importing it again finds the same one.
         </p>
-    }
-    else
+    </div>
+</header>
+
+<nav class="mh-filter" aria-label="State">
+    <span class="mh-filter-label" aria-hidden="true">State</span>
+    @foreach (var state in States)
     {
-        <EditForm Model="Import" FormName="import" OnSubmit="ImportAsync">
-            <table class="vol-table">
-                <thead><tr><th scope="col">Member</th><th scope="col">Seat</th><th scope="col">Office</th><th scope="col"><span class="vol-sr">Import</span></th></tr></thead>
+        <a href="@($"{ManyHandsPaths.CrmOfficials}?state={state}")" aria-current="@(State == state ? "page" : null)">@state</a>
+    }
+</nav>
+
+@if (_officials.Count == 0)
+{
+    <div class="mh-empty">
+        <p class="mh-empty-title">Nobody here yet</p>
+        <p>
+            The directory fills itself once a week when <code>FederalOfficials:Enabled</code>
+            is on; until the first refresh it is empty. Meanwhile, add an office by hand on
+            <a href="@ManyHandsPaths.Crm">Organizations</a>.
+        </p>
+    </div>
+}
+else
+{
+    <EditForm Model="Import" FormName="import" OnSubmit="ImportAsync">
+        <div class="mh-table-wrap">
+            <table class="mh-table mh-table-stack">
+                <thead><tr><th scope="col">Member</th><th scope="col">Seat</th><th scope="col">Office</th><th scope="col" class="mh-end"><span class="mh-sr">Import</span></th></tr></thead>
                 <tbody>
                     @foreach (var official in _officials)
                     {
                         <tr>
                             <td>
                                 <strong>@official.FullName</strong>
-                                <div class="vol-small">@official.Party</div>
+                                <span class="mh-small">@official.Party</span>
                             </td>
-                            <td>@Seat(official)</td>
-                            <td class="vol-small">
+                            <td data-label="Seat">@Seat(official)</td>
+                            <td data-label="Office" class="mh-small">
                                 @official.Office
                                 @if (official.Phone is { } phone) { <div>@phone</div> }
                             </td>
-                            <td><button class="vol-link-button" type="submit" name="Import.BioguideId" value="@official.BioguideId">Import</button></td>
+                            <td class="mh-end">
+                                <button class="mh-btn mh-btn-secondary mh-btn-small" type="submit" name="Import.BioguideId" value="@official.BioguideId"
+                                        aria-label="@($"Import {official.FullName}")">Import</button>
+                            </td>
                         </tr>
                     }
                 </tbody>
             </table>
-        </EditForm>
-    }
-</div>
+        </div>
+    </EditForm>
+}
 
 @code {
     // Philadelphia first, and its neighbours: whose offices PhillyPause calls.

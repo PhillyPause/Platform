@@ -27,6 +27,7 @@ Simplicity is the point: nothing here exists to serve a second organisation.
 | Outreach email | Compose, send, and receive replies inside ManyHands, threaded; unrecognised mail is kept for triage |
 | Partners | The Outreach Kit's partners: priority, where outreach stands, the ask ladder, each one's tracking link and what it has brought, how organisations know each other; the Partner Tracker sheet pasted in, and out as a file |
 | Officials | The members of Congress, refreshed weekly from a public dataset, importable into the CRM |
+| Outreach | A log of members and visitors contacting their officials from the action centre (`/act`): their own record, and the organizers' view of who is reaching whom |
 | Discord | Announce on publish, a thread per activity, a DM on signup, slash commands, interest pings, role sync |
 
 Not here, and not coming back: multiple chapters or a "national" tier,
@@ -91,9 +92,9 @@ registered.
 ### The volunteer pages
 
 Static SSR Razor components in `Website/Website.Portal/Components/Volunteer`, on
-`VolunteerLayout` (the site's own header and footer, plus the area's nav and
-`volunteer.css`). Helpers that are not components live in
-`Website/Website.Portal/Volunteer`.
+`VolunteerLayout`: the site's own header and footer, the area's nav, and the
+same parts as the team pages (`manyhands.css`, below). Helpers that are not
+components live in `Website/Website.Portal/Volunteer`.
 
 | Route | Page |
 |---|---|
@@ -103,13 +104,14 @@ Static SSR Razor components in `Website/Website.Portal/Components/Volunteer`, on
 | `/join` | Joining is not a page here: it is the front page's Join us dialog (On the site, below). Every Join link goes to it |
 | `/volunteer/sign-in` | Ask for a sign-in link |
 | `/volunteer/sign-in/{token}` | Opening the link shows a button; **pressing it** spends the token and lands on the front page, not `/volunteer/me`, until the volunteer pages are ready for readers |
-| `/volunteer/me` | Signups and cancelling, interests and email, Discord unlink, the personal calendar feed, export, delete, sign out |
+| `/volunteer/me` | A summary at the top (coming up, done, what they like, how news reaches them), then a section each, listed at the side: My signups (coming up, with cancelling, and done), What I like doing, Email and notifications (one form with the interests, so either Save saves both), Discord unlink, Calendar feed, My data (export, delete). Sign out and Events head the page |
 | `/volunteer/check-email` | The front page with the Check your email dialog, where joining redirects someone not yet confirmed: what the email looks like, and what to do if it does not come. `?again=true` when it was sent again |
 | `/volunteer/confirm/{token}` | Not a page here: the front page with the Finish joining dialog, where the link in a joining email lands. It greets them by name; **pressing** "Yes, that's me" confirms the address and signs them in, and "That's not me" is a link to removal |
 | `/volunteer/welcome` | The front page with the Welcome dialog, where confirming redirects: what happens now, the primer, back to the front page. It does not link to their page yet |
 | `/volunteer/remove/{key}` | The front page with the Leave the list dialog: "Not you, or changed your mind?" Asks, then deletes them, as the button on their page does, and signs this device out if it was them. Never an organizer |
 | `/volunteer/unsubscribe/{key}` | Asks, then unsubscribes |
 | `/volunteer/link-discord/{token}` | Where `/link` in Discord sends someone: signed in, one press links the account |
+| `/volunteer/outreach` | The officials they have called and written to from `/act`, how it went, and who is worth a follow-up call |
 
 Endpoints that are not pages: `/volunteer/calendar.ics`,
 `/volunteer/calendar/{key}.ics`, `/volunteer/me/export.json`, and
@@ -136,7 +138,7 @@ Three things about signing in:
 
 ### Joining
 
-Anyone can type any address into the Join us form, so joining asks the
+Anyone can type any address into the Join form, so joining asks the
 person to confirm the address is theirs before ManyHands counts them as a
 member who hears about new activities. It asks gently. These are volunteers,
 and doing nothing is a fine answer.
@@ -200,9 +202,29 @@ Under `/team`, in `Website/Website.Portal/Components/Team`, all behind
 there is nothing there for them. The role is read from the database on every
 request.
 
+- **One frame, static or in the app.** Every team page sits in `TeamShell`:
+  an app bar (who is signed in, My page, Sign out) and a sidebar grouped
+  Volunteering, Lobbying, Mail and Site, with the page's place marked, a
+  record's own page under the place it belongs to. `TeamAppLayout` (the
+  app's pages) and `TeamLayout` (the rest) both wrap it, and neither sits
+  under the public site's header. It is plain markup, so a static page
+  downloads nothing for it; on a phone the sidebar is a menu opened by a
+  hidden checkbox and CSS, as the front page opens its dialogs. A link
+  between the app and a static page loads the page in full.
+- **The sidebar is one list**, `TeamNav`: a place added to its section there
+  is on every team page. `SiteLinks` is where a public area joins.
+- **One look, both sides.** `manyhands.css` holds the parts the team pages
+  and a member's pages share: a page header (title, a line saying what is
+  here, the main actions), panels, tables that become cards on a phone,
+  badges that say a state in a word, primary, secondary and danger buttons,
+  labelled fields with help, and empty states that say what to do next.
+  Light only, in the front page's ink, cream and red, checked for contrast in
+  its header. `team-app.css` gives Syncfusion's grid and dialogs the same
+  look, on the app's pages only.
+
 | Route | Page | Who |
 |---|---|---|
-| `/team` | Every activity, drafts included, with the numbers; the participation CSV | Organizers |
+| `/team` | At a glance: what is next and how full, who joined this week, who has not confirmed, open and overdue CRM tasks, mail waiting to be identified (`ReportingRepository.GetOverviewAsync`, counts only). Then every activity, drafts included, with the numbers; the participation CSV | Organizers |
 | `/team/activity/new`, `/team/activity/{id}/edit` | The editor. Times are typed in Philadelphia's clock and stored as instants | Organizers |
 | `/team/activity/{id}` | Publish or unpublish; the roster, one big button per name for check-in; walk-ins | Organizers |
 | `/team/activity/{id}/check-in` | The QR code for the door | Organizers |
@@ -242,11 +264,12 @@ Also under `/team`, also for organizers: `Components/Team/Crm` and
 
 | Route | Page |
 |---|---|
-| `/team/crm` | Organizations, filterable by kind; every open task |
+| `/team/crm` | Organizations, filterable by kind; every open task; adding one |
 | `/team/crm/organization/{id}` | People, engagements, tasks, the timeline and its mail; details |
 | `/team/crm/pipeline` | Every engagement as a card in its column, moved with arrows |
 | `/team/crm/engagement/{id}` | Tasks, the timeline, and details: status, category, owner, when |
 | `/team/crm/officials` | Members of Congress for PA and its neighbours; import one as an organization |
+| `/team/outreach` | Calls and messages from the action centre: this week and month, by official, the most active members, federal offices nobody has reached, the latest; the log as a CSV |
 | `/team/inbox` | Every outreach thread, and the ones from senders nobody has identified |
 | `/team/inbox/{conversation}` | A thread, a reply, and "who is this?" for a stranger |
 | `/team/inbox/new`, `/team/inbox/templates` | Writing, from a template if one fits |
@@ -262,6 +285,14 @@ Also under `/team`, also for organizers: `Components/Team/Crm` and
 - **Outreach goes from `Email:OutreachAddress`** with our own Message-ID, and
   a reply carries In-Reply-To and References, so threads hold in both
   directions.
+- **The outreach log keeps that it happened, never what was said.** "I
+  called" and "I sent it" on the action centre's pages (`LogAction`) record
+  the official (by the directory's key and their name at the time), the
+  channel, how a call went, and an optional note of at most 500 characters.
+  Signed in, it is the member's; not signed in, it is nobody's and still
+  counted. It is in the member's export, and deleting them clears their
+  notes and keeps the count, as signups do. The CSV defuses formulas like
+  the participation file.
 
 ### Partner outreach
 
@@ -367,9 +398,9 @@ it; `ManyHandsGateTests` holds that, and `SiteWiringTests` the flag-on side.
 | Where | On | Off |
 |---|---|---|
 | The account bar, top of every page | Signed out: Events, Join, **Sign in**. Signed in: "Signed in as *name*", My page, Events, **Team** for organizers, Sign out. Events and Join load the page in full (`data-enhance-nav="false"`): enhanced navigation would leave the dialog shut | Not rendered |
-| Join us dialog, front page | The signup form itself (`JoinForm`): name, email, interests. Pressing Join first checks the connection (`join.js`), and without one keeps the form and says so. It posts to `/join`; someone new is redirected to Check your email, a member already confirmed is answered in the dialog; if the database is unreachable it says so | No form and no email signup: the dialog says what joining means |
+| Join dialog, front page | The signup form itself (`JoinForm`): name, email, interests. Pressing Join first checks the connection (`join.js`), and without one keeps the form and says so. It posts to `/join`; someone new is redirected to Check your email, a member already confirmed is answered in the dialog; if the database is unreachable it says so | No form and no email signup: the dialog says what joining means |
 | Events dialog, front page | What is coming up; if the database is unreachable it says so | Not rendered, and `/events` is a 404 |
-| I can help | Opens Events | Opens Join us |
+| I can help | Opens Events | Opens Join |
 | Small Print, cookies | Adds the sign-in cookie | One cookie |
 | `/privacy` | Adds what ManyHands holds, from `Content/_manyhands/privacy.md` | The base page |
 
@@ -404,6 +435,7 @@ Postgres, one schema (`public`), defined by
 | `external_publications`, `activity_pings`, `discord_role_grants` | What has been announced, who has been pinged, which Discord roles the bot granted |
 | `crm_*` | The CRM and outreach mail. A partner's outreach lives on its `crm_organizations` row (`outreach_status`, `priority`, `audience`, `ask_rung`, `tracking_code`, unique among live rows), and `crm_organization_links` holds how organisations know each other |
 | `federal_officials`, `sync_runs` | The officials directory and its refreshes |
+| `outreach_actions` | Who contacted which official from `/act`, how and when (`0005_outreach.sql`) |
 
 ### The outbox
 

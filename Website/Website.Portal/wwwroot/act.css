@@ -1,0 +1,417 @@
+/* The action centre: the front page's Act dialog (Home.razor, Components/Act).
+   It sits on the broadsheet, so it takes the broadsheet's ink, ivory and red:
+   the tokens.css names this file was written against are re-pointed at those
+   inside the dialog, so the parts keep one vocabulary. The dialog body is a
+   size container, and its layouts follow the dialog's width rather than the
+   window's. Motion is CSS alone, and prefers-reduced-motion stops all of it
+   (PLAN.md section 6). */
+
+/* ---------------------------------------------------------------- frame */
+
+.d-act {
+  --bg: #F5F0E4;
+  --surface: #FFFDF8;
+  --ink: #15110C;
+  --heading: #15110C;
+  --muted: #6A6254;
+  --line: #CFC7B6;
+  --rule: #15110C;
+  --alarm: #AE2012;
+  --alarm-ink: #AE2012;
+  --navy: #15110C;
+  --cream: #FBF8F1;
+  --radius: 0;
+  --measure: 40rem;
+  --step-h3: 1.15rem;
+  color: var(--ink);
+}
+/* Wide: the directory runs three cards across, and a profile keeps its
+   contacts beside it. */
+.d-act .paneldlg-box { width: min(1040px, 100%); }
+#act-open:checked ~ .paneldlg.d-act { display: grid; }
+/* Open on load (an /act address), it is already there: no fade on every step
+   between views. */
+.d-act-loaded .paneldlg-box { animation: none; }
+
+.actbody { container-type: inline-size; display: grid; gap: 2.25rem; padding-bottom: 32px; font-size: 15px; line-height: 1.55; }
+.actbody > * { min-width: 0; margin-block: 0; }
+.actbody p { margin: 0 0 0.75em; }
+.actbody p:last-child { margin-bottom: 0; }
+.actbody a { color: #AE2012; }
+.actbody a:hover { color: #15110C; }
+
+/* The three places, as the Events dialog's pills, on a strip that stays put
+   while the body scrolls. */
+.act-tabs {
+  flex: none;
+  display: flex; flex-wrap: wrap; gap: 6px;
+  padding: 10px 24px;
+  background: #F5F0E4;
+  border-bottom: 1px solid #CFC7B6;
+}
+.act-tabs a {
+  padding: 4px 12px; border: 1px solid #CFC7B6; border-radius: 999px;
+  font-size: 12.5px; font-weight: 600; line-height: 1.4; text-decoration: none; color: #4A443A;
+}
+.act-tabs a:hover, .act-tabs a:focus-visible { border-color: #15110C; color: #15110C; }
+.act-tabs a[aria-current="page"] { background: #15110C; border-color: #15110C; color: #FBF8F1; }
+/* One line on a phone, too. */
+@media (max-width: 479px) {
+  .act-tabs { gap: 4px; padding: 8px 12px; }
+  .act-tabs a { padding: 4px 8px; font-size: 11.5px; }
+}
+
+/* A label that opens another of the front page's dialogs, set as a link. */
+.act-link { color: #AE2012; font-weight: 600; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+.act-link:hover { color: #15110C; }
+
+/* ---------------------------------------------------------------- type */
+
+.act-intro { display: grid; gap: 0.4rem; }
+.act-intro h2, .act-profile-head h2, .act-task-head h2 {
+  margin: 0;
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(25px, 4cqi, 34px); font-weight: 800; letter-spacing: -0.02em; line-height: 1.08;
+}
+.act-lead { max-width: var(--measure); margin: 0; font-size: 15.5px; line-height: 1.6; color: #4A443A; }
+.act-kicker {
+  margin: 0 0 2px; font-size: 10.5px; font-weight: 700; letter-spacing: 0.18em;
+  text-transform: uppercase; color: #AE2012;
+}
+/* Section heads as the primer's: small capitals on a rule. */
+.act-section-head {
+  margin: 0 0 14px; padding-bottom: 6px;
+  border-bottom: 1px solid #15110C;
+  font-family: Archivo, sans-serif; font-size: 11px; font-weight: 700;
+  letter-spacing: 0.18em; text-transform: uppercase; color: #15110C;
+}
+.act-small { font-size: 13px; line-height: 1.5; color: var(--muted); }
+.act-empty { color: var(--muted); }
+.act-error { color: #AE2012; font-weight: 600; }
+
+/* ---------------------------------------------------------------- forms */
+
+.act-form { display: grid; gap: 1rem; }
+.act-form label, .act-field { display: grid; gap: 0.35rem; font-size: 10.5px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #AE2012; }
+.act-form label > span .act-small, .act-field .act-small { font-weight: 400; letter-spacing: 0; text-transform: none; }
+.act-form input[type="text"], .act-form input:not([type]), .act-form input[type="number"], .act-form select, .act-form textarea,
+.act-field input, .act-field textarea {
+  width: 100%; min-height: 46px; padding: 10px 14px; font: inherit; font-size: 15px; font-weight: 400;
+  letter-spacing: 0; text-transform: none;
+  color: #15110C; background: #FBF8F1; border: 1px solid #15110C; border-radius: 0;
+}
+.act-field textarea, .act-form textarea { line-height: 1.55; resize: vertical; }
+.act-form input:focus-visible, .act-form select:focus-visible, .act-form textarea:focus-visible,
+.act-field input:focus-visible, .act-field textarea:focus-visible { outline: 3px solid #AE2012; outline-offset: 2px; }
+.act-pair { display: grid; gap: 1rem; }
+@container (min-width: 36rem) { .act-pair { grid-template-columns: 1fr 1fr; } }
+.act-choice { border: 0; padding: 0; margin: 0; display: grid; gap: 0.4rem; }
+.act-choice legend { font-size: 10.5px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #AE2012; margin-bottom: 0.4rem; }
+.act-form .act-choice label { display: flex; gap: 0.6rem; align-items: center; min-height: 32px; font-size: 14.5px; font-weight: 400; letter-spacing: 0; text-transform: none; color: #15110C; }
+.act-choice input { width: 1.1rem; height: 1.1rem; accent-color: #15110C; }
+
+/* The broadsheet's buttons: square, ink, red under the pointer. */
+.act-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem;
+  min-height: 46px; padding: 10px 22px; border-radius: 0; border: 1px solid #15110C;
+  background: #15110C; color: #FBF8F1; font: inherit; font-size: 13px; font-weight: 700;
+  letter-spacing: 0.08em; text-transform: uppercase; text-decoration: none; cursor: pointer;
+  transition: background 140ms ease, color 140ms ease, border-color 140ms ease;
+}
+.actbody a.act-btn { color: #FBF8F1; }
+.act-btn:hover, .act-btn:focus-visible, .actbody a.act-btn:hover { background: #AE2012; border-color: #AE2012; color: #FBF8F1; }
+.act-btn-ghost, .actbody a.act-btn-ghost { background: transparent; color: #15110C; }
+.act-btn-small { min-height: 36px; padding: 6px 14px; font-size: 11.5px; }
+
+/* The finder: the one box on the first view with a ground of its own. */
+.act-find { padding: 20px 22px 22px; background: #F5F0E4; border: 1px solid #15110C; border-left: 6px solid #AE2012; }
+.act-find h3 { margin: 0 0 12px; font-family: 'Playfair Display', serif; font-size: 21px; font-weight: 800; }
+.act-find-form { display: grid; gap: 0.75rem; }
+@container (min-width: 36rem) { .act-find-form { grid-template-columns: 1fr auto; align-items: end; } }
+.act-find > .act-small { margin-top: 10px; }
+/* Outside the five counties: ControlAI's tool, as a button, after a lookup. */
+.act-elsewhere { margin-top: 14px; padding: 14px 16px; background: #FFFDF8; border: 1px solid #15110C; }
+.act-elsewhere p { margin: 0 0 0.75rem; }
+.act-elsewhere p:last-child { margin: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem 0.75rem; }
+.act-find > .act-elsewhere-note { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--line); }
+
+.act-picker { margin-top: 14px; }
+.act-picker summary { cursor: pointer; font-weight: 700; color: #15110C; }
+.act-picker[open] summary { margin-bottom: 0.6rem; }
+.act-picker-form { grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr)); align-items: end; }
+
+/* ---------------------------------------------------------------- cards */
+
+.act-cards { list-style: none; padding: 0; margin: 0; display: grid; gap: 12px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 18rem), 1fr)); }
+.act-card { display: flex; gap: 12px; padding: 14px; background: var(--surface); border: 1px solid var(--line); }
+.act-card-body { min-width: 0; }
+.act-card-name { margin: 0; font-family: 'Playfair Display', serif; font-size: 17px; font-weight: 800; line-height: 1.2; }
+.actbody .act-card-name a { color: #15110C; text-decoration: none; }
+.actbody .act-card-name a:hover, .actbody .act-card-name a:focus-visible { color: #AE2012; text-decoration: underline; }
+.act-card-office { margin: 0.2rem 0 0.5rem; font-size: 13px; line-height: 1.45; color: var(--muted); }
+.act-card-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; margin: 0.4rem 0 0; }
+.act-card-phone { font-size: 13px; font-variant-numeric: tabular-nums; }
+.act-party { white-space: nowrap; margin-left: 0.3em; }
+
+.act-avatar { flex: none; border-radius: 50%; object-fit: cover; background: var(--line); }
+.act-avatar-sm { width: 48px; height: 48px; font-size: 1rem; }
+.act-avatar-md { width: 64px; height: 64px; font-size: 1.25rem; }
+.act-avatar-lg { width: 112px; height: 112px; font-size: 2.1rem; }
+.act-avatar-initials { display: inline-grid; place-items: center; background: #15110C; color: #FBF8F1; font-family: 'Playfair Display', serif; font-weight: 800; letter-spacing: 0.02em; }
+
+.act-status { display: inline-block; margin: 0 0.4rem 0.4rem 0; padding: 0.1rem 0.55rem; border-radius: 999px; font-size: 11.5px; font-weight: 700; }
+.act-status-elect { background: #EBE3D2; color: #15110C; }
+.act-status-leaving { background: #E6DFCE; color: #4A443A; }
+
+.act-group + .act-group { margin-top: 0.5rem; }
+
+/* ---------------------------------------------------------------- filters */
+
+/* The directory and "Your officials" narrow by chips rather than list
+   dozens: a row each, its label on the left once there is room. A chip is a
+   link that says how many it would show; the chosen one is ink, and one
+   that would show nobody is greyed and not a link. */
+.act-filter { display: grid; gap: 0.85rem; padding: 14px 16px; background: var(--surface); border: 1px solid var(--line); }
+.act-filter > .act-small { margin: 0; }
+/* minmax(0, ...) and min-width: 0 let the search box shrink to a phone:
+   left to its own width, it pushed the button out of the box. */
+.act-chiprow, .act-filter-search { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0.4rem; }
+.act-chiprow > *, .act-filter-search > * { min-width: 0; }
+@container (min-width: 40rem) {
+  .act-chiprow, .act-filter-search { grid-template-columns: 9.5rem minmax(0, 1fr); align-items: center; }
+  .act-filter > .act-small { padding-left: 9.5rem; }
+}
+.act-chiprow-label { font-size: 10.5px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #AE2012; }
+.act-chips { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+.act-chip {
+  display: inline-flex; align-items: center; gap: 0.45em;
+  min-height: 34px; padding: 4px 13px; border: 1px solid var(--line); border-radius: 999px;
+  background: #FFFDF8; color: #15110C; font-size: 13px; font-weight: 600; line-height: 1.2;
+  white-space: nowrap; transition: border-color 140ms ease, background 140ms ease;
+}
+.actbody a.act-chip { color: #15110C; text-decoration: none; }
+.actbody a.act-chip:hover, .actbody a.act-chip:focus-visible { border-color: #15110C; color: #15110C; }
+.actbody a.act-chip[aria-current] { background: #15110C; border-color: #15110C; color: #FBF8F1; }
+.actbody a.act-chip[aria-current]:hover { background: #AE2012; border-color: #AE2012; }
+.act-chip-n { font-size: 11.5px; font-weight: 700; color: var(--muted); font-variant-numeric: tabular-nums; }
+.act-chip[aria-current] .act-chip-n { color: #E8C9A8; }
+.act-chip-x { font-size: 16px; line-height: 1; }
+.act-chip.is-empty { color: var(--muted); opacity: 0.55; }
+.act-filter-box { display: flex; gap: 6px; }
+.act-filter-box input {
+  flex: 1; width: 100%; min-width: 0; min-height: 38px; padding: 6px 12px; font: inherit; font-size: 15px;
+  color: #15110C; background: #FBF8F1; border: 1px solid #15110C; border-radius: 0;
+}
+.act-filter-box input:focus-visible { outline: 3px solid #AE2012; outline-offset: 2px; }
+.act-filter-count { margin: 0; font-size: 14px; color: #4A443A; }
+.act-filter-count a { margin-left: 0.15em; }
+.actbody .act-filter + .act-filter-count, .actbody .act-filter + .act-group { margin-top: -1rem; }
+.act-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+/* ---------------------------------------------------------------- first view */
+
+.act-ways-list { list-style: none; padding: 0; margin: 0; display: grid; gap: 1.25rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr)); }
+.act-ways-list h4, .act-ask-grid h4 { margin: 0 0 0.3rem; font-family: 'Playfair Display', serif; font-size: 19px; font-weight: 800; }
+.act-ways-list p { margin: 0; font-size: 14px; color: #4A443A; }
+.act-ways-list li { border-top: 3px solid #AE2012; padding-top: 0.7rem; }
+
+.act-ask-grid { display: grid; gap: 1.25rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr)); margin-bottom: 0.75rem; }
+.act-ask-grid p { margin: 0; font-family: 'Source Serif 4', Georgia, serif; font-size: 15.5px; }
+
+.act-browse { display: grid; gap: 1.5rem; align-items: center; }
+@container (min-width: 44rem) { .act-browse { grid-template-columns: 1fr 1fr; } }
+
+.act-learn-list { list-style: none; padding: 0; margin: 0; display: grid; }
+.act-learn-list li { display: grid; gap: 0.1rem; padding: 0.6rem 0; border-bottom: 1px solid var(--line); }
+.actbody .act-learn-list a { font-weight: 700; color: #15110C; }
+.actbody .act-learn-list a:hover { color: #AE2012; }
+.act-learn-list span { font-size: 13.5px; color: var(--muted); }
+
+/* ---------------------------------------------------------------- map */
+
+.act-map { margin: 0; }
+.act-map svg { width: 100%; height: auto; max-width: 30rem; display: block; }
+.act-map-county { fill: #EBE3D2; stroke: #15110C; stroke-width: 1.5; transition: fill 150ms ease; }
+.act-map a:hover .act-map-county, .act-map a:focus-visible .act-map-county, .act-map a.is-on .act-map-county { fill: #AE2012; }
+.act-map a:hover text, .act-map a.is-on text { fill: #FBF8F1; }
+.act-map a:focus-visible { outline: none; }
+.act-map a:focus-visible .act-map-county { stroke-width: 4; }
+.act-map text { font: 600 12px Archivo, sans-serif; fill: #15110C; pointer-events: none; }
+.act-map-river { fill: none; stroke: #CFC7B6; stroke-width: 6; stroke-linecap: round; }
+.act-map figcaption { font-size: 12.5px; color: var(--muted); margin-top: 0.4rem; }
+
+/* ---------------------------------------------------------------- profile */
+
+.act-profile-head { display: flex; flex-wrap: wrap; gap: 1.25rem; align-items: center; padding-bottom: 1.5rem; border-bottom: 3px double #15110C; }
+.act-profile-office { margin: 0.3rem 0 0.5rem; font-size: 15px; color: var(--muted); }
+.act-profile-actions { display: flex; flex-wrap: wrap; gap: 0.6rem; margin: 0.6rem 0 0; }
+.act-profile { display: grid; gap: 2rem; }
+@container (min-width: 48rem) { .act-profile { grid-template-columns: minmax(0, 1fr) 19rem; align-items: start; } }
+.act-profile-main { display: grid; gap: 2rem; min-width: 0; }
+.act-profile-side { display: grid; gap: 1rem; }
+.actbody .prose { max-width: var(--measure); padding-bottom: 0; font-family: 'Source Serif 4', Georgia, serif; font-size: 16px; line-height: 1.6; }
+.actbody .prose h2 { font-family: 'Playfair Display', serif; font-size: 21px; font-weight: 800; margin: 1.6em 0 0.4em; }
+.actbody .prose h3 { font-size: 16px; margin: 1.4em 0 0.3em; }
+
+.act-panel { background: var(--surface); border: 1px solid var(--line); padding: 16px 18px; }
+.act-panel h3 { margin: 0 0 0.7rem; font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 800; }
+
+.act-phones { list-style: none; padding: 0; margin: 0 0 1rem; display: grid; gap: 0.5rem; }
+.act-phones li { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0.25rem 1rem; align-items: center; }
+.act-phones span { font-size: 12.5px; color: var(--muted); }
+.act-phones a { font-weight: 700; font-variant-numeric: tabular-nums; }
+.act-phones-big a.act-btn { font-size: 15px; letter-spacing: 0.04em; }
+
+.act-record { list-style: none; padding: 0; margin: 0 0 1rem; display: grid; gap: 1rem; }
+.act-record li { display: grid; grid-template-columns: 5rem 1fr; gap: 0.9rem; border-left: 3px solid #AE2012; padding-left: 0.9rem; }
+.act-record time { font-size: 12.5px; font-weight: 700; color: var(--muted); padding-top: 0.15rem; }
+.act-record p { margin: 0; }
+.act-record a { margin-left: 0.3rem; font-size: 13px; }
+
+.act-tags { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.act-tags li { padding: 0.2rem 0.7rem; border: 1px solid #CFC7B6; border-radius: 999px; font-size: 13px; }
+
+.act-sources ul { padding-left: 1.1rem; margin: 0 0 0.6rem; }
+.act-sources li { font-size: 13px; overflow-wrap: anywhere; }
+
+.act-offices-head { font-size: 13px; font-weight: 700; margin: 1rem 0 0.4rem; }
+.act-offices { list-style: none; padding: 0; margin: 0; display: grid; gap: 0.5rem; font-size: 13.5px; }
+.act-offices span { display: block; font-size: 11.5px; color: var(--muted); }
+
+/* ---------------------------------------------------------------- write / call */
+
+.act-task-head { display: flex; gap: 1rem; align-items: flex-start; }
+.act-task-head .act-avatar { margin-top: 0.3rem; }
+.act-task-head .act-lead { margin-top: 0.4rem; }
+.act-task-head .act-small { margin: 0.3rem 0 0; }
+.act-task { display: grid; gap: 1.5rem; }
+@container (min-width: 50rem) { .act-task { grid-template-columns: minmax(0, 1fr) 20rem; align-items: start; } }
+.act-task-main, .act-task-side { display: grid; gap: 1.25rem; min-width: 0; }
+
+.act-draft .act-field { margin-bottom: 1rem; }
+.act-send { display: flex; flex-wrap: wrap; gap: 0.6rem; margin: 0.5rem 0 0.8rem; }
+.act-ai-note { border-left: 3px solid #15110C; padding-left: 0.7rem; }
+
+.act-script-text { margin: 0 0 0.5rem; padding: 14px 18px; font-family: 'Source Serif 4', Georgia, serif; font-size: 17px; line-height: 1.6; background: #F5F0E4; border-left: 4px solid #AE2012; white-space: pre-line; }
+.act-personalise { margin-top: 1rem; }
+.act-personalise summary { cursor: pointer; font-weight: 700; color: #15110C; margin-bottom: 0.8rem; }
+
+.act-tips { padding-left: 1.1rem; margin: 0 0 0.8rem; display: grid; gap: 0.4rem; font-size: 14px; }
+.act-faq { margin: 0 0 0.8rem; font-size: 14px; }
+.act-faq dt { font-weight: 700; margin-top: 0.7rem; }
+.act-faq dd { margin: 0.2rem 0 0; color: var(--muted); }
+.act-log { border-color: #15110C; border-width: 2px; }
+
+/* One message to several (WriteManyPage): three numbered steps, the ones
+   ahead named but quiet, the one behind folded to a line; then a row per
+   official, ticked off as each copy is opened (act.js). */
+.act-steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 1.25rem; counter-reset: act-step; }
+.act-step { counter-increment: act-step; }
+.act-step > h3::before { content: counter(act-step) ". "; color: #AE2012; }
+.act-step.is-ahead, .act-step.is-done { padding: 0 18px; }
+.act-step.is-ahead { opacity: 0.6; }
+.act-step.is-ahead h3, .act-step.is-done h3 { margin-bottom: 0.2rem; }
+.act-step.is-ahead p, .act-step.is-done p { margin: 0; }
+.act-step.is-done h3::after { content: " \2713"; color: #2F6B3A; }
+.act-merge-key code { font-size: 0.95em; background: #F5F0E4; padding: 0 0.25em; }
+.act-merge { list-style: none; margin: 0.8rem 0; padding: 0; display: grid; gap: 0.6rem; }
+.act-merge-row {
+  display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 0.4rem 0.8rem; align-items: center;
+  padding: 0.6rem 0.7rem; border: 1px solid var(--line); background: #FBF8F1;
+}
+.act-merge-who strong { display: block; }
+.act-merge-who span { font-size: 13px; color: var(--muted); }
+.act-merge-do { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; }
+@container (min-width: 34rem) {
+  .act-merge-row { grid-template-columns: auto minmax(0, 1fr) auto; }
+  .act-merge-do { grid-column: auto; justify-content: flex-end; }
+}
+.act-merge-done { display: none; font-size: 13px; font-weight: 700; color: #2F6B3A; }
+.act-merge-done::before { content: "\2713  "; }
+.act-merge-row.is-opened { border-color: #2F6B3A; }
+.act-merge-row.is-opened .act-merge-done { display: inline; }
+.act-merge-progress { margin: 0 0 0.6rem; font-weight: 700; color: #15110C; }
+.act-merge-progress:empty { display: none; }
+.act-merge-cta { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem 0.8rem; margin: 0.9rem 0 0; }
+
+/* ---------------------------------------------------------------- tutorials
+   Four steps light in turn on a twelve-second loop, and each icon does one
+   small thing while its step is lit. Every value is a transform, an opacity
+   or a stroke offset, which the browser can run off the main thread. */
+
+.act-tuts { display: grid; gap: 1.25rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr)); }
+.act-tut { margin: 0; padding: 16px 18px; background: var(--surface); border: 1px solid var(--line); }
+.act-tut-title { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 800; color: #15110C; margin-bottom: 0.9rem; }
+.act-tut-title span { font-family: Archivo, sans-serif; font-weight: 400; font-size: 12.5px; color: var(--muted); margin-left: 0.4rem; }
+.act-tut-steps { list-style: none; padding: 0; margin: 0; display: grid; gap: 0.8rem; counter-reset: step; }
+.act-tut-step {
+  counter-increment: step;
+  display: grid; grid-template-columns: 3rem 1fr; column-gap: 0.9rem; align-items: start;
+  opacity: 0.62; transform: translateX(0);
+  animation: act-step 12s infinite both; animation-delay: calc(var(--i) * 3s);
+}
+.act-tut-step strong { grid-column: 2; display: block; font-size: 14.5px; }
+.act-tut-step strong::before { content: counter(step) ". "; color: #AE2012; }
+.act-tut-step span { grid-column: 2; font-size: 13px; color: var(--muted); }
+.act-tut-icon {
+  grid-row: span 2; width: 3rem; height: 3rem; padding: 0.35rem;
+  background: #F5F0E4; border: 1px solid #CFC7B6;
+  fill: none; stroke: #15110C; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round;
+}
+.act-tut-icon * { transform-box: fill-box; transform-origin: center; }
+
+@keyframes act-step {
+  0%, 26% { opacity: 1; transform: translateX(4px); }
+  31%, 100% { opacity: 0.62; transform: translateX(0); }
+}
+
+.act-tut-step .act-bounce, .act-tut-step .act-ring, .act-tut-step .act-wave,
+.act-tut-step .act-draw, .act-tut-step .act-strike, .act-tut-step .act-scribble, .act-tut-step .act-fly,
+.act-tut-step .act-fan-l, .act-tut-step .act-fan-r {
+  animation-duration: 12s; animation-iteration-count: infinite; animation-delay: calc(var(--i) * 3s); animation-fill-mode: both;
+}
+.act-bounce { animation-name: act-bounce; }
+.act-ring { animation-name: act-ring; }
+.act-wave { animation-name: act-wave; stroke: #AE2012; }
+.act-draw { stroke-dasharray: 1; animation-name: act-draw; }
+.act-strike { stroke-dasharray: 1; animation-name: act-draw; stroke: #AE2012; }
+.act-scribble { animation-name: act-scribble; }
+.act-fly { animation-name: act-fly; }
+/* One letter fans into a copy for each: at rest, and with motion reduced,
+   the three sit fanned; the loop stacks them and deals them out. */
+.act-sheet { fill: #F5F0E4; }
+.act-fan-l { transform: translate(-9px, 4px) rotate(-12deg); animation-name: act-fan-l; }
+.act-fan-r { transform: translate(9px, 4px) rotate(12deg); animation-name: act-fan-r; }
+
+@keyframes act-bounce { 0% { transform: translateY(0); } 4% { transform: translateY(-6px); } 8%, 100% { transform: translateY(0); } }
+@keyframes act-ring {
+  0% { transform: rotate(0); } 3% { transform: rotate(-12deg); } 6% { transform: rotate(12deg); }
+  9% { transform: rotate(-12deg); } 12% { transform: rotate(10deg); } 15%, 100% { transform: rotate(0); }
+}
+@keyframes act-wave { 0%, 2% { opacity: 0; } 6%, 22% { opacity: 1; } 27%, 100% { opacity: 0.25; } }
+@keyframes act-draw { 0% { stroke-dashoffset: 1; } 18%, 100% { stroke-dashoffset: 0; } }
+@keyframes act-scribble {
+  0% { transform: translate(0, 0); } 6% { transform: translate(-3px, 3px); } 12% { transform: translate(3px, -2px); }
+  18% { transform: translate(-2px, 2px); } 24%, 100% { transform: translate(0, 0); }
+}
+@keyframes act-fly {
+  0%, 4% { transform: translate(0, 0); opacity: 1; } 16% { transform: translate(14px, -12px) rotate(-8deg); opacity: 0; }
+  17% { transform: translate(-10px, 6px); opacity: 0; } 26%, 100% { transform: translate(0, 0); opacity: 1; }
+}
+@keyframes act-fan-l {
+  0%, 3% { transform: translate(0, 0) rotate(0); } 10%, 24% { transform: translate(-9px, 4px) rotate(-12deg); }
+  30%, 100% { transform: translate(0, 0) rotate(0); }
+}
+@keyframes act-fan-r {
+  0%, 5% { transform: translate(0, 0) rotate(0); } 12%, 24% { transform: translate(9px, 4px) rotate(12deg); }
+  30%, 100% { transform: translate(0, 0) rotate(0); }
+}
+
+/* Reduced motion: no loop, no wiggle, every step lit and every line drawn. */
+@media (prefers-reduced-motion: reduce) {
+  .act-tut *, .act-tut-step { animation: none !important; }
+  .act-tut-step { opacity: 1; transform: none; }
+  .act-draw, .act-strike { stroke-dashoffset: 0; }
+  .act-wave { opacity: 1; }
+  .act-map-county, .act-btn, .act-chip { transition: none; }
+}

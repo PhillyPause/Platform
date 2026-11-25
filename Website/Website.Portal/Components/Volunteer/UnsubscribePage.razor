@@ -9,12 +9,16 @@
 <PageMeta Title="Unsubscribe" Description="Stop PhillyPause emails." NoIndex="true" />
 
 
-<div class="wrap page-head">
-    <h1>@(_done ? "You are unsubscribed" : "Stop the emails?")</h1>
+<div class="wrap">
+    <header class="mh-page-head">
+        <div>
+            <h1>@(_done ? "You are unsubscribed" : "Stop the emails?")</h1>
+        </div>
+    </header>
 </div>
 
-<div class="wrap vol-body">
-    <section class="vol-card vol-narrow">
+<div class="wrap">
+    <section class="mh-panel mh-narrow">
         @if (_done)
         {
             <p>
@@ -25,8 +29,8 @@
         else
         {
             <p>You will not hear from us again unless you ask for a sign-in link.</p>
-            <EditForm Model="Input" FormName="unsubscribe" OnSubmit="UnsubscribeAsync" class="vol-form">
-                <button class="btn" type="submit">Unsubscribe me</button>
+            <EditForm Model="Input" FormName="unsubscribe" OnSubmit="UnsubscribeAsync" class="mh-form">
+                <button class="mh-btn mh-btn-primary" type="submit">Unsubscribe me</button>
             </EditForm>
         }
     </section>

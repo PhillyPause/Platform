@@ -1,0 +1,18 @@
+@* Whether the seat is theirs yet. Nothing here, or anywhere a reader looks,
+   says whether anybody has checked the entry: that is the editors' business,
+   done before the directory goes live. *@
+
+@if (Official.Status == OfficialStatus.MemberElect && (Official.TermStarts is null || Official.TermStarts > Today))
+{
+    <p class="act-status act-status-elect">Elected; takes office @(Official.TermStarts is { } start ? start.ToString("MMMM d, yyyy", System.Globalization.CultureInfo.InvariantCulture) : "soon")</p>
+}
+else if (Official.Status == OfficialStatus.Departing)
+{
+    <p class="act-status act-status-leaving">Leaving office@(Official.TermEnds is { } end ? " " + end.ToString("MMMM d, yyyy", System.Globalization.CultureInfo.InvariantCulture) : "")</p>
+}
+
+@code {
+    [Parameter, EditorRequired] public required Official Official { get; set; }
+
+    private static DateOnly Today => DateOnly.FromDateTime(DateTime.UtcNow);
+}

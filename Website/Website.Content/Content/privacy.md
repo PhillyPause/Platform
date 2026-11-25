@@ -2,7 +2,7 @@
 title: Privacy
 description: What this site collects, which is almost nothing, and what happens to your details if you join us.
 order: 93
-updated: 2026-10-18
+updated: 2026-11-20
 ---
 
 Short, because there is not much to say.
@@ -21,6 +21,24 @@ Short, because there is not much to say.
   does not open on you twice. It stays on your device and is never sent to us.
 - **Server logs** record requests, as every web server does. They are kept
   only as long as needed to run the site and diagnose faults.
+
+## Contacting your representatives
+
+The [action centre](/act) needs to know a little about you to help, and
+keeps none of it:
+
+- **Your address**, if you type it to find who represents you, goes to the
+  US Census Bureau's geocoder, which returns your districts. Only the
+  district numbers come back to you, in the page's address. We do not keep
+  the address or write it to our logs. You can pick your districts by hand
+  instead.
+- **Your name, where you live and why it matters to you**, if you ask for a
+  draft message or call script, are used to write it and then forgotten.
+  When the page says an AI model is helping, they go to
+  [DeepInfra](https://deepinfra.com/privacy), which runs the model, to shape
+  the draft.
+- **The message itself** you send from your own email or the office's own
+  form. It never passes through us.
 
 That is the complete list for the site itself.
 

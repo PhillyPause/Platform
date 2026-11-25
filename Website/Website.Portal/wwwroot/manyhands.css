@@ -1,0 +1,615 @@
+/* ManyHands' back end: the organizers' team pages and a member's own pages,
+   as one tool. One set of parts for both, in the front page's ink, cream and
+   red (broadsheet.css), so moving between them never changes the look.
+
+   Loaded by TeamShell and VolunteerLayout on static pages, and in the head
+   of the organizers' app (App.razor); never on a public page. Everything is
+   under .mh, the class on both areas' outermost element, so nothing here
+   reaches the site around it or Syncfusion's grid.
+
+   Light only, like the front page and the printed card it comes from.
+
+   Contrast, checked against the grounds each is used on:
+     ink        on cream     17.7:1   body text
+     muted      on cream      5.7:1   secondary text (6.0:1 on paper)
+     red        on paper      7.0:1   links, the primary button's ground
+     red        on red-wash   6.0:1
+     green      on its wash   5.6:1   badges: amber 6.6, blue 7.3, muted 6.0
+     edge       on paper      3.8:1   field borders (3:1 is the bar)
+     cream-dim  on ink       12.3:1   the app bar's quieter words */
+
+:root {
+  --mh-ink: #15110C;
+  --mh-ink-soft: #4A443A;
+  --mh-muted: #6A6254;
+  --mh-cream: #FBF8F1;
+  --mh-cream-dim: #D9D0BE;
+  --mh-paper: #FFFFFF;
+  --mh-sand: #F3EEE3;
+  --mh-line: #E4DDCF;
+  --mh-edge: #8C8273;
+  --mh-red: #AE2012;
+  --mh-red-deep: #8E190E;
+  --mh-red-wash: #FBEAE7;
+  --mh-navy: #043464;
+  --mh-green: #1E6B30;
+  --mh-green-wash: #E4F1E6;
+  --mh-amber: #7A4A00;
+  --mh-amber-wash: #FCEFD4;
+  --mh-blue: #1F4E79;
+  --mh-blue-wash: #E3EDF7;
+  --mh-grey: #5E574A;
+  --mh-grey-wash: #EFEBE3;
+  /* The site's focus colour (app.css), so a keyboard user sees one ring everywhere. */
+  --mh-focus: #FF5A1F;
+
+  --mh-display: "Playfair Display", Georgia, "Times New Roman", serif;
+  --mh-sans: Archivo, "Segoe UI", -apple-system, BlinkMacSystemFont, Arial, sans-serif;
+
+  /* One type scale: captions, small, body, lead, section, page. */
+  --mh-text-xs: 0.75rem;
+  --mh-text-sm: 0.875rem;
+  --mh-text: 1rem;
+  --mh-text-lg: 1.125rem;
+  --mh-text-h2: 1.25rem;
+  --mh-text-h1: clamp(1.6rem, 1.25rem + 1.2vw, 2.1rem);
+
+  /* One spacing scale. */
+  --mh-1: 4px;
+  --mh-2: 8px;
+  --mh-3: 12px;
+  --mh-4: 16px;
+  --mh-5: 24px;
+  --mh-6: 32px;
+  --mh-7: 48px;
+
+  --mh-radius: 8px;
+  --mh-radius-sm: 6px;
+  --mh-bar: 56px;
+  --mh-side: 240px;
+}
+
+/* A back-end page is light from edge to edge: the site's own header and
+   footer around a member's pages included, whatever the reader's system
+   prefers. These are tokens.css's light values. */
+:root:has(.mh) {
+  color-scheme: light;
+  --bg: var(--mh-cream);
+  --surface: #FFFFFF;
+  --ink: #1B1B1B;
+  --heading: #043464;
+  --muted: #5B6470;
+  --line: #DDD8CC;
+  --rule: #C9C2B2;
+  --alarm-ink: #C9400F;
+  --ground: #043464;
+}
+
+.mh {
+  color: var(--mh-ink);
+  font-family: var(--mh-sans);
+  font-size: var(--mh-text);
+  line-height: 1.5;
+}
+.mh h1, .mh h2, .mh h3 { color: var(--mh-ink); }
+.mh h2 { font-size: var(--mh-text-h2); font-weight: 700; letter-spacing: -0.005em; margin: 0 0 var(--mh-3); }
+.mh h3 { font-size: var(--mh-text); font-weight: 700; margin: 0 0 var(--mh-2); }
+.mh p { margin: 0 0 var(--mh-3); }
+.mh p:last-child { margin-bottom: 0; }
+.mh a { color: var(--mh-red); text-decoration: underline; text-underline-offset: 2px; text-decoration-thickness: 1px; }
+.mh a:hover { color: var(--mh-ink); }
+.mh code { font-size: 0.92em; background: var(--mh-sand); padding: 1px 5px; border-radius: 4px; }
+.mh :focus-visible { outline: 3px solid var(--mh-focus); outline-offset: 2px; }
+.mh [id] { scroll-margin-top: calc(var(--mh-bar) + var(--mh-4)); }
+
+/* Read by screen readers, not shown. */
+.mh-sr {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden;
+  clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+}
+
+/* --- the team frame (TeamShell) ------------------------------------------ */
+
+html:has(.mh-app), html:has(.mh-app) body { background: var(--mh-cream); }
+
+.mh-app { position: relative; min-height: 100vh; display: flex; flex-direction: column; }
+
+.mh-skip {
+  position: absolute; left: -9999px; top: 0; z-index: 100;
+  background: var(--mh-red); color: #fff !important; padding: 12px 16px; font-weight: 700; text-decoration: none !important;
+}
+.mh-skip:focus { left: 0; }
+
+.mh-appbar {
+  position: sticky; top: 0; z-index: 30;
+  display: flex; align-items: center; gap: var(--mh-3) var(--mh-5);
+  min-height: var(--mh-bar); padding: 0 var(--mh-5);
+  background: var(--mh-ink); color: var(--mh-cream);
+}
+.mh-app .mh-brand {
+  display: inline-flex; align-items: center; gap: 10px; white-space: nowrap;
+  color: var(--mh-cream); text-decoration: none;
+  font-family: var(--mh-display); font-weight: 800; font-size: 1.3rem; letter-spacing: -0.01em;
+}
+.mh-app .mh-brand:hover { color: var(--mh-cream); }
+.mh-product {
+  font-family: var(--mh-sans); font-size: 0.6875rem; font-weight: 700; letter-spacing: 0.18em;
+  text-transform: uppercase; background: var(--mh-red); color: #fff; padding: 3px 8px;
+}
+.mh-appbar-end { margin-left: auto; display: flex; align-items: center; gap: var(--mh-1) var(--mh-5); min-width: 0; }
+.mh-who { font-size: 0.8125rem; color: var(--mh-cream-dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mh-who strong { color: var(--mh-cream); font-weight: 700; }
+.mh-app .mh-appbar-link {
+  color: var(--mh-cream); font-size: var(--mh-text-xs); font-weight: 600; letter-spacing: 0.08em;
+  text-transform: uppercase; text-decoration: none; white-space: nowrap; padding: 10px 0;
+}
+.mh-app .mh-appbar-link:hover { color: var(--mh-cream); text-decoration: underline; }
+
+/* The menu: a checkbox, its label as the button, and CSS. Shown on phones
+   and tablets only; from 960px the sidebar is always there. The checkbox
+   stays focusable, and its ring is drawn on the button. */
+.mh-menu-toggle { position: absolute; top: 0; left: 0; width: 1px; height: 1px; margin: 0; opacity: 0; }
+.mh-menu-button { display: none; }
+.mh-scrim { display: none; }
+
+.mh-frame { flex: 1; display: flex; min-height: 0; }
+
+.mh-sidebar {
+  flex: none; width: var(--mh-side); padding: var(--mh-3) 0 var(--mh-6);
+  background: var(--mh-paper); border-right: 1px solid var(--mh-line);
+}
+.mh-nav-section + .mh-nav-section { margin-top: var(--mh-2); }
+.mh-nav-heading {
+  display: block; padding: var(--mh-3) var(--mh-5) 6px;
+  font-size: 0.6875rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--mh-red);
+}
+.mh-nav-list { list-style: none; margin: 0; padding: 0; }
+.mh-app .mh-nav-link {
+  display: flex; align-items: center; gap: var(--mh-3);
+  padding: 8px var(--mh-5) 8px 21px; border-left: 3px solid transparent;
+  color: var(--mh-ink); text-decoration: none; font-size: 0.9375rem;
+}
+.mh-nav-link .material-symbols-rounded { flex: none; width: 20px; overflow: hidden; font-size: 20px; color: var(--mh-muted); }
+.mh-app .mh-nav-link:hover { background: var(--mh-sand); color: var(--mh-ink); }
+/* Inside the link: the sidebar scrolls, and would clip a ring drawn outside it. */
+.mh-app .mh-nav-link:focus-visible { outline-offset: -3px; }
+/* Where you are: a bar, bold words and a red icon, never the colour alone. */
+.mh-app .mh-nav-link[aria-current="page"] { border-left-color: var(--mh-red); background: var(--mh-sand); font-weight: 700; }
+.mh-nav-link[aria-current="page"] .material-symbols-rounded { color: var(--mh-red); }
+
+.mh-main { flex: 1; min-width: 0; padding: var(--mh-6) var(--mh-6) var(--mh-7); }
+.mh-main:focus { outline: none; }
+/* Wide screens: a measure for the whole page, so a table never runs to 2000px. */
+.mh-main > * { max-width: 78rem; }
+
+/* A laptop: a slimmer sidebar and margins, so a wide grid keeps its room. */
+@media (min-width: 960px) and (max-width: 1279px) {
+  .mh-app { --mh-side: 216px; }
+  .mh-main { padding-inline: var(--mh-5); }
+}
+
+@media (min-width: 960px) {
+  .mh-menu-toggle { display: none; }
+  .mh-sidebar { position: sticky; top: var(--mh-bar); height: calc(100vh - var(--mh-bar)); overflow-y: auto; }
+}
+
+@media (max-width: 959px) {
+  .mh-appbar { padding-inline: var(--mh-2) var(--mh-4); gap: var(--mh-2) var(--mh-4); }
+  .mh-menu-button { display: inline-grid; place-items: center; width: 44px; height: 44px; flex: none; cursor: pointer; border-radius: 4px; }
+  .mh-menu-toggle:focus-visible ~ .mh-appbar .mh-menu-button { outline: 3px solid var(--mh-focus); outline-offset: -2px; }
+  .mh-burger, .mh-burger::before, .mh-burger::after {
+    display: block; width: 20px; height: 2px; background: var(--mh-cream); border-radius: 1px;
+    transition: transform 160ms ease, background 160ms ease;
+  }
+  .mh-burger { position: relative; }
+  .mh-burger::before, .mh-burger::after { content: ""; position: absolute; left: 0; }
+  .mh-burger::before { top: -6px; }
+  .mh-burger::after { top: 6px; }
+  .mh-menu-toggle:checked ~ .mh-appbar .mh-burger { background: transparent; }
+  .mh-menu-toggle:checked ~ .mh-appbar .mh-burger::before { transform: translateY(6px) rotate(45deg); }
+  .mh-menu-toggle:checked ~ .mh-appbar .mh-burger::after { transform: translateY(-6px) rotate(-45deg); }
+
+  /* Shut, the menu is hidden as well as moved, so Tab never walks into it. */
+  .mh-sidebar {
+    position: fixed; top: var(--mh-bar); bottom: 0; left: 0; z-index: 25;
+    width: min(280px, 86vw); overflow-y: auto;
+    transform: translateX(-100%); visibility: hidden;
+    transition: transform 180ms ease, visibility 180ms;
+    box-shadow: 4px 0 24px rgb(21 17 12 / 0.18);
+  }
+  .mh-menu-toggle:checked ~ .mh-frame .mh-sidebar { transform: none; visibility: visible; }
+  .mh-menu-toggle:checked ~ .mh-frame .mh-scrim {
+    display: block; position: fixed; inset: var(--mh-bar) 0 0 0; z-index: 20; background: rgb(21 17 12 / 0.45);
+  }
+  .mh-main { padding: var(--mh-5) var(--mh-5) var(--mh-7); }
+}
+
+@media (max-width: 639px) {
+  .mh-main { padding: var(--mh-5) var(--mh-4) var(--mh-7); }
+  /* The name stays, so a phone still says who is signed in. */
+  .mh-who-label, .mh-appbar-me, .mh-product { display: none; }
+  .mh-who { max-width: 38vw; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mh-sidebar, .mh-burger, .mh-burger::before, .mh-burger::after { transition: none; }
+}
+
+/* --- a member's pages (VolunteerLayout) ----------------------------------- */
+
+.mh-member { padding-bottom: var(--mh-7); }
+.mh-member-nav { border-bottom: 1px solid var(--mh-line); margin-bottom: var(--mh-6); }
+.mh-member-nav ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0 var(--mh-5); }
+.mh-member-nav li.mh-aside { margin-left: auto; }
+.mh .mh-member-nav a {
+  display: inline-block; padding: var(--mh-3) 0 10px; border-bottom: 3px solid transparent;
+  font-size: var(--mh-text-xs); font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--mh-ink); text-decoration: none;
+}
+.mh .mh-member-nav a:hover { color: var(--mh-red); }
+.mh .mh-member-nav a[aria-current="page"] { border-bottom-color: var(--mh-red); }
+
+/* --- the page header ------------------------------------------------------ */
+/* Title, one line saying what is here, and the page's main actions. The
+   team-* names are the members page's, which shares this header. */
+
+.mh-page-head, .team-page-head {
+  display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between;
+  gap: var(--mh-3) var(--mh-5); margin: 0 0 var(--mh-5); padding-bottom: var(--mh-5);
+  border-bottom: 1px solid var(--mh-line);
+}
+.mh-page-head h1, .team-page-head h1 {
+  font-family: var(--mh-display); font-weight: 800; font-size: var(--mh-text-h1);
+  line-height: 1.15; letter-spacing: -0.012em; text-transform: none; margin: 0; max-width: none;
+}
+.mh-title-row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--mh-2) var(--mh-3); }
+.mh-summary, .team-stats { margin: 6px 0 0 !important; color: var(--mh-muted); max-width: 68ch; font-size: var(--mh-text); }
+.mh-crumb { margin: 0 0 6px !important; font-size: 0.8125rem; font-weight: 600; }
+.mh .mh-crumb a { color: var(--mh-muted); text-decoration: none; }
+.mh .mh-crumb a::before { content: "\2190\00a0"; }
+.mh .mh-crumb a:hover { color: var(--mh-red); text-decoration: underline; }
+.mh-page-actions, .team-actions { display: flex; flex-wrap: wrap; gap: var(--mh-2); align-items: center; }
+.mh-page-actions form, .mh-form-actions form { display: contents; }
+
+/* A line of facts: each item separated by a gap, never by colour. */
+.mh-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 2px var(--mh-4); margin: 6px 0 0; color: var(--mh-muted); font-size: var(--mh-text-sm); }
+.mh-meta-lead { font-size: var(--mh-text); color: var(--mh-ink-soft); }
+.mh-small { font-size: var(--mh-text-sm); color: var(--mh-muted); }
+
+/* --- sections, panels and layout ----------------------------------------- */
+
+.mh-stack > * + * { margin-top: var(--mh-5); }
+.mh-section { margin-top: var(--mh-6); }
+.mh-section-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: var(--mh-2) var(--mh-4); margin-bottom: var(--mh-3); }
+.mh-section-head h2 { margin: 0; }
+
+.mh-panel {
+  background: var(--mh-paper); border: 1px solid var(--mh-line); border-radius: var(--mh-radius);
+  padding: var(--mh-5);
+}
+.mh-panel-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: var(--mh-1) var(--mh-4); margin-bottom: var(--mh-4); }
+.mh-panel-head h2, .mh-panel-head h3 { margin: 0; }
+.mh-panel-head p { margin: 0; color: var(--mh-muted); font-size: var(--mh-text-sm); }
+.mh-panel > h2 + p, .mh-panel-head + p { color: var(--mh-ink-soft); }
+.mh-panel-foot { margin-top: var(--mh-4); padding-top: var(--mh-4); border-top: 1px solid var(--mh-line); }
+.mh .mh-panel-sub { margin-top: var(--mh-5); }
+.mh-narrow { max-width: 32rem; }
+
+/* A main column and a narrower one beside it; stacked below 1100px. */
+.mh-columns { display: grid; gap: var(--mh-5); align-items: start; }
+.mh-columns > * { min-width: 0; }
+@media (min-width: 1100px) { .mh-columns { grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); } }
+.mh-columns-even { display: grid; gap: var(--mh-5); align-items: start; }
+@media (min-width: 900px) { .mh-columns-even { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
+
+@media (max-width: 639px) { .mh-panel { padding: var(--mh-4); } }
+
+/* --- at a glance: cards with one figure each ------------------------------ */
+
+.mh-cards { display: grid; gap: var(--mh-4); grid-template-columns: repeat(auto-fill, minmax(min(100%, 12.5rem), 1fr)); }
+.mh-card {
+  display: flex; flex-direction: column; gap: var(--mh-1); min-width: 0;
+  padding: var(--mh-4) 18px; background: var(--mh-paper);
+  border: 1px solid var(--mh-line); border-top: 3px solid var(--mh-ink); border-radius: var(--mh-radius);
+}
+.mh-card-wide { grid-column: 1 / -1; }
+@media (min-width: 900px) { .mh-card-wide { grid-column: span 2; } }
+.mh-card h3, .mh-card-label {
+  margin: 0; font-size: var(--mh-text-xs); font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--mh-muted);
+}
+.mh-card-figure {
+  margin: 2px 0 0; font-family: var(--mh-display); font-weight: 800; font-size: 2.25rem; line-height: 1;
+  font-variant-numeric: lining-nums tabular-nums; color: var(--mh-ink);
+}
+.mh-card-text { margin: 0; font-size: var(--mh-text-sm); color: var(--mh-ink-soft); }
+.mh-card-word { font-size: 1.6rem; line-height: 1.15; }
+.mh-card-link { margin-top: auto; padding-top: var(--mh-2); font-size: var(--mh-text-sm); font-weight: 600; }
+.mh-card-foot { margin: auto 0 0 !important; padding-top: var(--mh-3); font-size: var(--mh-text-sm); color: var(--mh-ink-soft); }
+.mh-card .mh-list { margin-top: var(--mh-2); }
+.mh-card .mh-list .mh-list-main > a { font-weight: 600; }
+/* A row of plain figures: two abreast on a phone rather than a tall stack. */
+@media (max-width: 639px) {
+  .mh-cards-compact { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--mh-3); }
+  .mh-cards-compact .mh-card { padding: var(--mh-3); }
+  .mh-cards-compact .mh-card-figure { font-size: 1.75rem; }
+  .mh-cards-compact .mh-card-word { font-size: 1.3rem; }
+}
+/* Something waiting on someone: a red top rule and a word saying so. */
+.mh-card-attention { border-top-color: var(--mh-red); }
+
+/* How full an activity is: the words carry it, the bar repeats them. */
+.mh-fill { display: block; height: 6px; margin-top: 6px; background: var(--mh-sand); border-radius: 3px; overflow: hidden; }
+.mh-fill > span { display: block; height: 100%; width: var(--fill, 0%); background: var(--mh-ink); border-radius: 3px; }
+.mh-fill-full > span { background: var(--mh-red); }
+
+/* --- lists: one row a thing, divided by hairlines ------------------------ */
+
+.mh-list { list-style: none; margin: 0; padding: 0; }
+.mh-list > li { display: flex; flex-wrap: wrap; align-items: center; gap: var(--mh-1) var(--mh-4); padding: var(--mh-3) 0; border-top: 1px solid var(--mh-line); }
+.mh-list > li:first-child { border-top: 0; padding-top: 0; }
+.mh-list > li:last-child { padding-bottom: 0; }
+.mh-list-main { flex: 1 1 16rem; min-width: 0; }
+.mh-list-main > strong, .mh-list-main > a { display: inline-block; font-weight: 600; }
+.mh-list-main .mh-meta { margin-top: 2px; }
+.mh-list-end { margin-left: auto; display: flex; flex-wrap: wrap; gap: var(--mh-2); align-items: center; }
+.mh-list form { display: contents; }
+
+/* --- tables --------------------------------------------------------------- */
+
+.mh-table-wrap { overflow-x: auto; background: var(--mh-paper); border: 1px solid var(--mh-line); border-radius: var(--mh-radius); }
+.mh-table { width: 100%; border-collapse: collapse; font-size: 0.9375rem; }
+.mh-table th {
+  text-align: left; white-space: nowrap; padding: 10px var(--mh-4);
+  font-size: var(--mh-text-xs); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--mh-muted); background: var(--mh-sand); border-bottom: 1px solid var(--mh-line);
+}
+.mh-table td { padding: var(--mh-3) var(--mh-4); vertical-align: top; border-bottom: 1px solid var(--mh-line); }
+.mh-table tbody tr:last-child td { border-bottom: 0; }
+.mh-table tbody tr:hover { background: #FDFBF7; }
+.mh-table .mh-num { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.mh-table .mh-end { text-align: right; white-space: nowrap; }
+.mh .mh-table td > a:first-child, .mh .mh-table td > strong:first-child { font-weight: 600; color: var(--mh-ink); }
+.mh .mh-table td > a:first-child:hover { color: var(--mh-red); }
+.mh-table td .mh-small { display: block; margin-top: 2px; }
+
+/* On a phone a row becomes a card, each cell with its heading beside it. */
+@media (max-width: 639px) {
+  .mh-table-stack thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); }
+  .mh-table-stack tr { display: block; padding: var(--mh-3) var(--mh-4); border-bottom: 1px solid var(--mh-line); }
+  .mh-table-stack tbody tr:last-child { border-bottom: 0; }
+  .mh-table-stack td { display: block; padding: 2px 0; border: 0; text-align: left !important; }
+  .mh-table-stack td[data-label]::before {
+    content: attr(data-label) "\00a0\00b7\00a0"; font-size: var(--mh-text-xs); font-weight: 700;
+    letter-spacing: 0.06em; text-transform: uppercase; color: var(--mh-muted);
+  }
+}
+
+/* --- badges: a state in a word, tinted ------------------------------------ */
+
+.mh-badge {
+  display: inline-flex; align-items: center; gap: 4px; padding: 2px 9px; border-radius: 999px;
+  font-size: var(--mh-text-xs); font-weight: 700; line-height: 1.5; letter-spacing: 0.02em; white-space: nowrap;
+  background: var(--mh-grey-wash); color: var(--mh-grey);
+}
+.mh-badge-ok { background: var(--mh-green-wash); color: var(--mh-green); }
+.mh-badge-warn { background: var(--mh-amber-wash); color: var(--mh-amber); }
+.mh-badge-info { background: var(--mh-blue-wash); color: var(--mh-blue); }
+.mh-badge-danger { background: var(--mh-red-wash); color: var(--mh-red-deep); }
+.mh-badge-strong { background: var(--mh-ink); color: var(--mh-cream); }
+
+/* --- buttons: primary, secondary, danger, and a quiet one for rows ------- */
+
+.mh .mh-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: var(--mh-2);
+  min-height: 40px; padding: 8px var(--mh-4); margin: 0;
+  border: 1px solid transparent; border-radius: var(--mh-radius-sm);
+  font: inherit; font-size: 0.9375rem; font-weight: 600; line-height: 1.2; text-align: center;
+  text-decoration: none; cursor: pointer;
+}
+.mh .mh-btn-primary { background: var(--mh-red); border-color: var(--mh-red); color: #fff; }
+.mh .mh-btn-primary:hover { background: var(--mh-red-deep); border-color: var(--mh-red-deep); color: #fff; }
+.mh .mh-btn-secondary { background: var(--mh-paper); border-color: var(--mh-edge); color: var(--mh-ink); }
+.mh .mh-btn-secondary:hover { background: var(--mh-sand); border-color: var(--mh-ink); color: var(--mh-ink); }
+.mh .mh-btn-danger { background: var(--mh-paper); border-color: var(--mh-red); color: var(--mh-red-deep); }
+.mh .mh-btn-danger:hover { background: var(--mh-red); color: #fff; }
+.mh .mh-btn-quiet {
+  min-height: 32px; padding: 4px 8px; background: transparent; color: var(--mh-red);
+  text-decoration: underline; text-underline-offset: 2px; font-size: var(--mh-text-sm);
+}
+.mh .mh-btn-quiet:hover { background: var(--mh-sand); color: var(--mh-ink); }
+.mh .mh-btn-small { min-height: 32px; padding: 4px 10px; font-size: 0.8125rem; }
+@media (pointer: coarse) {
+  .mh .mh-btn { min-height: 44px; }
+  .mh .mh-btn-quiet, .mh .mh-btn-small { min-height: 40px; }
+}
+
+/* --- forms: a label above every field, help beneath it -------------------- */
+
+.mh-form { display: grid; gap: 18px; max-width: 40rem; }
+.mh-panel.mh-form { max-width: none; }
+.mh-panel.mh-form > h2 { margin: 0; }
+/* A long form in panels, one per part, with its buttons under the last. */
+.mh-editor { display: grid; gap: var(--mh-5); max-width: 46rem; }
+.mh-form-wide { max-width: none; }
+.mh-field { display: grid; gap: 6px; min-width: 0; }
+.mh-label { font-weight: 600; font-size: 0.9375rem; }
+.mh-optional { font-weight: 400; color: var(--mh-muted); }
+.mh-help { margin: 0; font-size: 0.8125rem; color: var(--mh-muted); }
+.mh-form input:not([type="checkbox"]):not([type="radio"]),
+.mh-form select,
+.mh-form textarea {
+  width: 100%; min-height: 42px; padding: 8px var(--mh-3);
+  font: inherit; font-size: var(--mh-text); color: var(--mh-ink);
+  background: var(--mh-paper); border: 1px solid var(--mh-edge); border-radius: var(--mh-radius-sm);
+}
+.mh-form textarea { min-height: 6rem; line-height: 1.5; resize: vertical; }
+.mh-form input:hover, .mh-form select:hover, .mh-form textarea:hover { border-color: var(--mh-ink-soft); }
+.mh-form input:focus-visible, .mh-form select:focus-visible, .mh-form textarea:focus-visible { border-color: var(--mh-ink); outline-offset: 1px; }
+/* Blazor marks a field that failed validation; the message beneath says why. */
+.mh-form .invalid { border-color: var(--mh-red) !important; border-width: 2px !important; }
+.mh .validation-message, .mh-error { margin: 0; color: var(--mh-red-deep); font-weight: 600; font-size: var(--mh-text-sm); }
+.mh-form-actions { display: flex; flex-wrap: wrap; gap: var(--mh-2) var(--mh-3); align-items: center; }
+/* A button straight in a form keeps its own width rather than the column's. */
+.mh-form > .mh-btn { justify-self: start; }
+.mh-form .mh-notice { margin: 0; }
+.mh-pair { display: grid; gap: 18px; }
+@media (min-width: 36rem) { .mh-pair { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
+
+/* A row of fields that sit side by side and wrap: quick add, log, reply. */
+.mh-inline-form { display: flex; flex-wrap: wrap; gap: var(--mh-3); align-items: flex-end; max-width: none; }
+.mh-inline-form .mh-field { flex: 1 1 11rem; }
+.mh-inline-form .mh-field-wide { flex: 3 1 18rem; }
+.mh-inline-form .validation-message { flex-basis: 100%; }
+.mh-inline-form textarea { min-height: 42px; }
+
+/* Choices: radios and checkboxes, the label beside each. InterestChoices
+   is the front page's too, so it keeps its own class there. */
+.mh-choices, .mh .vol-interests { border: 0; margin: 0; padding: 0; display: grid; gap: var(--mh-2); min-width: 0; }
+@media (min-width: 30rem) { .mh .vol-interests { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.mh-choices legend, .mh .vol-interests legend { font-weight: 600; font-size: 0.9375rem; margin-bottom: var(--mh-2); padding: 0; }
+.mh-choices label, .mh .vol-interests label, .mh-check { display: flex; gap: 10px; align-items: flex-start; font-weight: 400; }
+.mh-choices input, .mh .vol-interests input, .mh-check input {
+  flex: none; width: 18px; height: 18px; margin: 3px 0 0; accent-color: var(--mh-red);
+}
+
+/* --- notices, empty states and the danger zone ---------------------------- */
+
+.mh-notice {
+  margin: 0 0 var(--mh-5); padding: var(--mh-3) var(--mh-4); max-width: 60rem;
+  background: var(--mh-green-wash); border: 1px solid #B9D8BF; border-left: 4px solid var(--mh-green); border-radius: var(--mh-radius-sm);
+}
+.mh-notice-info { background: var(--mh-blue-wash); border-color: #B9CDE3; border-left-color: var(--mh-blue); }
+.mh-alert { background: var(--mh-red-wash); border-color: #EBC2BB; border-left-color: var(--mh-red); }
+.mh-notice-warn { background: var(--mh-amber-wash); border-color: #E8D3A6; border-left-color: var(--mh-amber); }
+/* The members page's notice, in the same form. */
+.team-notice { margin: 0 0 var(--mh-4); padding: var(--mh-3) var(--mh-4); background: var(--mh-green-wash); border: 1px solid #B9D8BF; border-left: 4px solid var(--mh-green); border-radius: var(--mh-radius-sm); }
+
+/* Nothing here yet: what that means, and what to do about it. */
+.mh-empty {
+  padding: var(--mh-5); text-align: left;
+  background: var(--mh-paper); border: 1px dashed var(--mh-edge); border-radius: var(--mh-radius);
+}
+.mh-panel .mh-empty { background: #FDFBF7; }
+.mh-empty-title { margin: 0 0 var(--mh-1) !important; font-weight: 700; }
+.mh-empty p { color: var(--mh-ink-soft); }
+.mh-empty .mh-btn { margin-top: var(--mh-2); }
+
+.mh-danger-zone { margin-top: var(--mh-5); padding: var(--mh-4) var(--mh-5); background: #FFF8F6; border: 1px solid #EBC2BB; border-radius: var(--mh-radius); }
+.mh-danger-zone h3 { color: var(--mh-red-deep); }
+
+/* --- filters: one choice of several, as pills ---------------------------- */
+
+.mh-filter { display: flex; flex-wrap: wrap; align-items: center; gap: var(--mh-2); margin: 0 0 var(--mh-4); }
+.mh .mh-filter a {
+  display: inline-flex; align-items: center; min-height: 34px; padding: 4px 14px;
+  border: 1px solid var(--mh-edge); border-radius: 999px; background: var(--mh-paper);
+  font-size: var(--mh-text-sm); font-weight: 600; color: var(--mh-ink); text-decoration: none;
+}
+.mh .mh-filter a:hover { border-color: var(--mh-ink); color: var(--mh-ink); background: var(--mh-sand); }
+/* The one in force is filled, not only another colour. */
+.mh .mh-filter a[aria-current="page"] { background: var(--mh-ink); border-color: var(--mh-ink); color: var(--mh-cream); }
+.mh-filter-label { font-size: var(--mh-text-sm); font-weight: 600; color: var(--mh-muted); margin-right: var(--mh-1); }
+
+/* --- the copyable things: a link, a code ---------------------------------- */
+
+.mh-code {
+  display: block; padding: 10px var(--mh-3); font-family: ui-monospace, Consolas, monospace; font-size: 0.9rem;
+  word-break: break-all; background: var(--mh-sand); border: 1px solid var(--mh-line); border-radius: var(--mh-radius-sm);
+}
+.mh-quote { margin: 0 0 var(--mh-4); padding-left: var(--mh-4); border-left: 3px solid var(--mh-red); font-style: italic; color: var(--mh-ink-soft); }
+
+/* --- the door: a roster you press, and the QR code ------------------------ */
+
+.mh-roster { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--mh-2); }
+.mh-roster button {
+  width: 100%; display: flex; gap: var(--mh-3); align-items: center; text-align: left;
+  min-height: 56px; padding: 10px 14px; font: inherit; color: var(--mh-ink); cursor: pointer;
+  background: var(--mh-paper); border: 1px solid var(--mh-line); border-radius: var(--mh-radius-sm);
+}
+.mh-roster button:hover { border-color: var(--mh-ink); }
+.mh-roster strong { display: block; }
+.mh-roster .mh-small { display: block; }
+.mh-tick {
+  flex: none; display: grid; place-items: center; width: 28px; height: 28px;
+  border: 2px solid var(--mh-edge); border-radius: 50%; font-weight: 700; color: #fff;
+}
+.mh-roster .is-in button { border-color: var(--mh-green); background: #F6FBF7; }
+.mh-roster .is-in .mh-tick { background: var(--mh-green); border-color: var(--mh-green); }
+.mh-in-word { margin-left: auto; }
+
+.mh-qr { display: grid; gap: var(--mh-4); justify-items: start; }
+.mh-qr-code { width: min(26rem, 100%); background: #fff; padding: var(--mh-4); border: 1px solid var(--mh-line); border-radius: var(--mh-radius); }
+.mh-qr-code svg { display: block; width: 100%; height: auto; }
+/* In a panel beside other things (a partner's link), a code to scan, not a poster. */
+.mh-panel .mh-qr-code { width: min(10rem, 100%); padding: var(--mh-2); }
+
+/* --- the CRM: tasks, timeline, pipeline ----------------------------------- */
+
+.mh-timeline { list-style: none; margin: var(--mh-5) 0 0; padding: 0; }
+.mh-timeline > li { position: relative; padding: 0 0 var(--mh-4) 22px; border-left: 2px solid var(--mh-line); margin-left: 5px; }
+.mh-timeline > li:last-child { padding-bottom: 0; }
+.mh-timeline > li::before {
+  content: ""; position: absolute; left: -7px; top: 4px; width: 12px; height: 12px;
+  border-radius: 50%; background: var(--mh-paper); border: 2px solid var(--mh-ink);
+}
+.mh-timeline p { margin: 4px 0 0; }
+
+.mh-board { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(15rem, 1fr); gap: var(--mh-4); overflow-x: auto; padding-bottom: var(--mh-3); align-items: start; }
+.mh-column { background: var(--mh-sand); border-radius: var(--mh-radius); padding: var(--mh-3); min-height: 9rem; }
+.mh-column-head { display: flex; align-items: center; justify-content: space-between; gap: var(--mh-2); margin: 2px 2px var(--mh-3); }
+.mh-column-head h2 { margin: 0; font-size: 0.8125rem; letter-spacing: 0.08em; text-transform: uppercase; }
+.mh-board-card {
+  background: var(--mh-paper); border: 1px solid var(--mh-line); border-radius: var(--mh-radius-sm);
+  padding: 10px var(--mh-3); margin-bottom: var(--mh-2); box-shadow: 0 1px 2px rgb(21 17 12 / 0.06);
+}
+.mh .mh-board-card > a { font-weight: 600; color: var(--mh-ink); }
+.mh-board-moves { display: flex; justify-content: space-between; gap: var(--mh-2); margin-top: 6px; }
+.mh-board-empty { margin: var(--mh-2); font-size: var(--mh-text-sm); color: var(--mh-muted); }
+
+/* --- the inbox: a conversation -------------------------------------------- */
+
+.mh-editor-panel { max-width: 50rem; }
+.mh-triage { max-width: 50rem; border-left: 4px solid var(--mh-amber); }
+
+.mh-thread { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--mh-3); max-width: 50rem; }
+.mh-message { padding: 14px 18px; background: var(--mh-paper); border: 1px solid var(--mh-line); border-radius: var(--mh-radius); }
+.mh-message-in { margin-right: var(--mh-6); border-left: 4px solid var(--mh-amber); }
+.mh-message-out { margin-left: var(--mh-6); border-left: 4px solid var(--mh-navy); background: #FAFCFE; }
+.mh-message-head { display: flex; flex-wrap: wrap; align-items: center; gap: var(--mh-1) var(--mh-3); margin: 0 0 var(--mh-2) !important; font-size: 0.8125rem; color: var(--mh-muted); }
+.mh-message p { margin: 0 0 var(--mh-2); }
+@media (max-width: 639px) { .mh-message-in, .mh-message-out { margin-inline: 0; } }
+
+/* --- a member's own page -------------------------------------------------- */
+
+.mh-me { display: grid; gap: var(--mh-5); align-items: start; margin-top: var(--mh-5); }
+@media (min-width: 60rem) { .mh-me { grid-template-columns: 12.5rem minmax(0, 1fr); } }
+.mh-toc { font-size: var(--mh-text-sm); }
+.mh-toc h2 { font-size: var(--mh-text-xs); letter-spacing: 0.1em; text-transform: uppercase; color: var(--mh-muted); margin: 0 0 var(--mh-2); }
+.mh-toc ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: var(--mh-2); }
+.mh .mh-toc a { display: inline-block; padding: 4px 12px; border: 1px solid var(--mh-edge); border-radius: 999px; color: var(--mh-ink); text-decoration: none; font-weight: 600; background: var(--mh-paper); }
+.mh .mh-toc a:hover { border-color: var(--mh-ink); background: var(--mh-sand); }
+@media (min-width: 60rem) {
+  .mh-toc { position: sticky; top: var(--mh-4); }
+  .mh-toc ul { display: grid; gap: 0; border-left: 2px solid var(--mh-line); }
+  .mh .mh-toc a { display: block; padding: 6px 0 6px 14px; margin-left: -2px; border: 0; border-left: 2px solid transparent; border-radius: 0; background: none; font-weight: 500; }
+  .mh .mh-toc a:hover { border-left-color: var(--mh-red); background: none; color: var(--mh-red); }
+}
+.mh-signups { list-style: none; margin: 0; padding: 0; }
+.mh-signups > li { display: flex; flex-wrap: wrap; align-items: center; gap: var(--mh-2) var(--mh-4); padding: var(--mh-4) 0; border-top: 1px solid var(--mh-line); }
+.mh-signups > li:first-child { border-top: 0; padding-top: 0; }
+.mh-signups h4 { margin: 0; font-size: var(--mh-text-lg); }
+.mh .mh-signups h4 a { color: var(--mh-ink); }
+.mh .mh-signups h4 a:hover { color: var(--mh-red); }
+.mh-past { list-style: none; margin: 0; padding: 0; }
+.mh-past > li { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 2px var(--mh-4); padding: var(--mh-2) 0; border-top: 1px solid var(--mh-line); }
+.mh-past > li:first-child { border-top: 0; }
+
+/* --- an activity's public page -------------------------------------------- */
+
+.mh-split { display: grid; gap: var(--mh-5); align-items: start; }
+@media (min-width: 52rem) { .mh-split { grid-template-columns: minmax(0, 1fr) 23rem; } }
+.mh-room { margin: 0 0 var(--mh-3) !important; font-weight: 700; color: var(--mh-red-deep); }
+/* The signup card is narrow: one interest a line. */
+.mh-split .mh-panel .vol-interests { grid-template-columns: minmax(0, 1fr); }
+.mh-prose { max-width: 38rem; font-size: 1.0625rem; line-height: 1.6; }
+.mh-prose p { margin: 0 0 1em; }

@@ -1,34 +1,42 @@
 @inherits LayoutComponentBase
 @layout MainLayout
+@inject NavigationManager Navigation
 
 @* Every volunteer page: the site's own header and footer, plus the places a
-   volunteer moves between. Its stylesheet loads here and nowhere else, so the
-   rest of the site never pays for it. In the body rather than a <HeadContent>,
+   volunteer moves between, in the team pages' parts (manyhands.css). Its
+   stylesheet loads here and nowhere else on the public side, so the rest of
+   the site never pays for it. In the body rather than a <HeadContent>,
    because only the last <HeadContent> on a page is shown and PageMeta's is
    that one; a stylesheet link is valid in the body. *@
 
-<link rel="stylesheet" href="@Assets["volunteer.css"]" />
+<link rel="stylesheet" href="@Assets["manyhands.css"]" />
 
-<nav class="vol-nav" aria-label="Volunteering">
-    <div class="wrap">
-        <a href="@ManyHandsPaths.Events" data-enhance-nav="false">Events</a>
-        @if (_me is not null)
-        {
-            <a href="@ManyHandsPaths.Me">My page</a>
-            @if (_me.IsAtLeast(VolunteerRole.Organizer))
-            {
-                <a class="vol-nav-aside" href="@ManyHandsPaths.Team" data-enhance-nav="false">Team</a>
-            }
-        }
-        else
-        {
-            @* Sign in is in the account bar above, on every page. *@
-            <a href="@ManyHandsPaths.Join" data-enhance-nav="false">Join</a>
-        }
-    </div>
-</nav>
+<div class="mh mh-member">
+    <nav class="mh-member-nav" aria-label="Volunteering">
+        <div class="wrap">
+            <ul>
+                <li><a href="@ManyHandsPaths.Events" data-enhance-nav="false">Events</a></li>
+                @if (_me is not null)
+                {
+                    <li><a href="@ManyHandsPaths.Me" aria-current="@(IsHere(ManyHandsPaths.Me) ? "page" : null)">My page</a></li>
+                    <li><a href="@ManyHandsPaths.MyOutreach" aria-current="@(IsHere(ManyHandsPaths.MyOutreach) ? "page" : null)">My outreach</a></li>
+                    <li><a href="/act" data-enhance-nav="false">Act</a></li>
+                    @if (_me.IsAtLeast(VolunteerRole.Organizer))
+                    {
+                        <li class="mh-aside"><a href="@ManyHandsPaths.Team" data-enhance-nav="false">Team</a></li>
+                    }
+                }
+                else
+                {
+                    @* Sign in is in the account bar above, on every page. *@
+                    <li><a href="@ManyHandsPaths.Join" data-enhance-nav="false">Join</a></li>
+                }
+            </ul>
+        </div>
+    </nav>
 
-@Body
+    @Body
+</div>
 
 @code {
     [CascadingParameter] private HttpContext? HttpContext { get; set; }
@@ -42,4 +50,7 @@
               && await Volunteers.GetByIdAsync(id) is { IsDeleted: false } volunteer
             ? volunteer
             : null;
+
+    private bool IsHere(string path) =>
+        string.Equals("/" + Navigation.ToBaseRelativePath(Navigation.Uri).Split('?', '#')[0], path, StringComparison.OrdinalIgnoreCase);
 }

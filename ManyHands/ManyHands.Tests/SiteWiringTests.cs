@@ -80,7 +80,7 @@ public sealed class SiteWiringTests(DatabaseFixture db) : IAsyncLifetime
             .And.Contain("aria-current=\"page\">Protests &amp; rallies</a>");
     }
 
-    /// <summary>What we keep opens over Join us, with the privacy page's own text, ManyHands' part included.</summary>
+    /// <summary>What we keep opens over Join, with the privacy page's own text, ManyHands' part included.</summary>
     [Fact]
     public async Task What_we_keep_is_a_dialog_over_join_us_with_the_privacy_page_in_it()
     {

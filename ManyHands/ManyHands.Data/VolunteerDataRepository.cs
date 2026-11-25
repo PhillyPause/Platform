@@ -1,4 +1,5 @@
 using Dapper;
+using ManyHands.Core;
 using Npgsql;
 
 namespace ManyHands.Data;
@@ -18,7 +19,11 @@ public sealed record VolunteerExport(
     DateTimeOffset? UnsubscribedAt,
     IReadOnlyList<string> Interests,
     IReadOnlyList<ExportedSignup> Signups,
-    IReadOnlyList<ExportedMessage> EmailsReceived);
+    IReadOnlyList<ExportedMessage> EmailsReceived,
+    IReadOnlyList<ExportedOutreach> Outreach);
+
+/// <summary>One time they contacted an official from the action centre.</summary>
+public sealed record ExportedOutreach(string Official, string Channel, string? Outcome, string? Note, DateTimeOffset OccurredAt);
 
 public sealed record ExportedSignup(
     string Activity,
@@ -86,11 +91,16 @@ public sealed class VolunteerDataRepository(NpgsqlDataSource db)
             """,
             new { volunteerId }, cancellationToken: ct))).AsList();
 
+        var outreach = (await new OutreachRepository(db).ForVolunteerAsync(volunteerId, ct))
+            .Select(o => new ExportedOutreach(o.OfficialName, o.Channel.Label(), o.Outcome?.Label(), o.Note, o.OccurredAt))
+            .Reverse()
+            .ToArray();
+
         return new VolunteerExport(
             volunteer.Id, volunteer.DisplayName, volunteer.Email, volunteer.DiscordUserId?.ToString(),
             ((Core.VolunteerRole)volunteer.Role).ToString(), volunteer.CreatedAt, volunteer.Source,
             volunteer.EmailOptIn, volunteer.UnsubscribedAt,
-            interests, signups, messages);
+            interests, signups, messages, outreach);
     }
 
     /// <summary>
@@ -148,6 +158,10 @@ public sealed class VolunteerDataRepository(NpgsqlDataSource db)
             WHERE volunteer_id = @volunteerId
             """,
             new { volunteerId }, tx, cancellationToken: ct));
+
+        // Officials they contacted: still counted, as signups are, but nothing
+        // they wrote in a note stays.
+        await OutreachRepository.ForgetNotesAsync(conn, tx, volunteerId, ct);
 
         await tx.CommitAsync(ct);
         return true;

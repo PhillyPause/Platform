@@ -2,20 +2,24 @@
 
 @if (Entries.Count == 0)
 {
-    <p class="vol-empty">Nothing logged yet.</p>
+    <div class="mh-empty">
+        <p class="mh-empty-title">Nothing logged yet</p>
+        <p>After a call, a meeting or an email, say what happened above, so whoever picks this up next knows.</p>
+    </div>
 }
 else
 {
-    <ol class="vol-timeline">
+    <ol class="mh-timeline">
         @foreach (var entry in Entries)
         {
             <li>
-                <span class="vol-small">
-                    @Show.Stamp(entry.OccurredAt) · @Show.Words(entry.Kind)
-                    @if (entry.ContactName is { } who) { <text> · @who</text> }
-                    @if (entry.EngagementTitle is { } what) { <text> · @what</text> }
-                    @if (entry.LoggedByName is { } by) { <text> · by @by</text> }
-                </span>
+                <div class="mh-meta">
+                    <span><strong>@Show.Words(entry.Kind)</strong></span>
+                    <span>@Show.Stamp(entry.OccurredAt)</span>
+                    @if (entry.ContactName is { } who) { <span>@who</span> }
+                    @if (entry.EngagementTitle is { } what) { <span>@what</span> }
+                    @if (entry.LoggedByName is { } by) { <span>by @by</span> }
+                </div>
                 @foreach (var paragraph in Show.Paragraphs(entry.Body))
                 {
                     <p>@paragraph</p>

@@ -1,0 +1,196 @@
+@page "/team/outreach"
+@inject OutreachRepository Outreach
+@inject Website.Content.OfficialsStore Officials
+
+@* The outreach CRM: who is contacting which officials from the action
+   centre, how, and who nobody has reached. Read-only; the log fills from
+   the "I called" and "I sent it" buttons on /act. *@
+
+<PageMeta Title="Outreach" Description="Members contacting their officials: totals, by official, by member, and the latest." NoIndex="true" />
+
+<header class="mh-page-head">
+    <div>
+        <h1>Outreach</h1>
+        <p class="mh-summary">
+            Calls and messages members and visitors have told us about from <a href="/act" target="_top">the action centre</a>.
+            Only that they happened, to whom and how; never what was said.
+        </p>
+    </div>
+    <div class="mh-page-actions">
+        <a class="mh-btn mh-btn-secondary" href="@ManyHandsPaths.TeamOutreachCsv" target="_top">Download the log (CSV)</a>
+    </div>
+</header>
+
+<section aria-labelledby="numbers-head">
+    <h2 id="numbers-head" class="mh-sr">The numbers</h2>
+    <div class="mh-cards mh-cards-compact">
+        <article class="mh-card">
+            <span class="mh-card-label">This week</span>
+            <p class="mh-card-figure">@_totals.ThisWeek</p>
+            <p class="mh-card-text">calls and messages in the last seven days</p>
+        </article>
+        <article class="mh-card">
+            <span class="mh-card-label">Last 30 days</span>
+            <p class="mh-card-figure">@_totals.Last30Days</p>
+            <p class="mh-card-text">@_totals.AnonymousLast30Days of them by people not signed in</p>
+        </article>
+        <article class="mh-card">
+            <span class="mh-card-label">Members acting</span>
+            <p class="mh-card-figure">@_totals.PeopleLast30Days</p>
+            <p class="mh-card-text">signed-in members who did something in 30 days</p>
+        </article>
+        <article class="mh-card@(_unreached.Count > 0 ? " mh-card-attention" : "")">
+            <span class="mh-card-label">Officials reached</span>
+            <p class="mh-card-figure">@_totals.OfficialsLast30Days</p>
+            <p class="mh-card-text">in 30 days; @_totals.AllTime @(_totals.AllTime == 1 ? "action" : "actions") all time</p>
+        </article>
+    </div>
+</section>
+
+<div class="mh-columns-even mh-section">
+    <section class="mh-panel" aria-labelledby="officials-head">
+        <div class="mh-panel-head">
+            <h2 id="officials-head">By official</h2>
+            <p>Most contacted first</p>
+        </div>
+        @if (_byOfficial.Count == 0)
+        {
+            <div class="mh-empty">
+                <p class="mh-empty-title">Nobody has logged a call or message yet</p>
+                <p>Share <a href="/act" target="_top">phillypause.org/act</a> at the next event, and ask people to press "I called" afterwards.</p>
+            </div>
+        }
+        else
+        {
+            <div class="mh-table-wrap">
+                <table class="mh-table mh-table-stack">
+                    <thead><tr><th scope="col">Official</th><th scope="col" class="mh-end">Calls</th><th scope="col" class="mh-end">Messages</th><th scope="col" class="mh-end">People</th><th scope="col">Last</th></tr></thead>
+                    <tbody>
+                        @foreach (var row in _byOfficial)
+                        {
+                            <tr>
+                                <td><a href="/act/officials/@row.OfficialKey" target="_top">@row.OfficialName</a></td>
+                                <td data-label="Calls" class="mh-end">@row.Calls</td>
+                                <td data-label="Messages" class="mh-end">@row.Emails</td>
+                                <td data-label="People" class="mh-end">@row.People</td>
+                                <td data-label="Last" class="mh-small">@LocalTime.FormatShort(row.LastAt)</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </section>
+
+    <section class="mh-panel" aria-labelledby="people-head">
+        <div class="mh-panel-head">
+            <h2 id="people-head">Most active</h2>
+            <p>Last 90 days</p>
+        </div>
+        @if (_byVolunteer.Count == 0)
+        {
+            <div class="mh-empty">
+                <p class="mh-empty-title">No signed-in member has logged anything in 90 days</p>
+                <p>Actions by people who are not signed in are counted above, with nobody's name on them.</p>
+            </div>
+        }
+        else
+        {
+            <div class="mh-table-wrap">
+                <table class="mh-table mh-table-stack">
+                    <thead><tr><th scope="col">Member</th><th scope="col" class="mh-end">Actions</th><th scope="col" class="mh-end">Officials</th><th scope="col">Last</th></tr></thead>
+                    <tbody>
+                        @foreach (var row in _byVolunteer)
+                        {
+                            <tr>
+                                <td>@row.VolunteerName</td>
+                                <td data-label="Actions" class="mh-end">@row.Actions</td>
+                                <td data-label="Officials" class="mh-end">@row.Officials</td>
+                                <td data-label="Last" class="mh-small">@LocalTime.FormatShort(row.LastAt)</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </section>
+</div>
+
+<section class="mh-section mh-panel" aria-labelledby="unreached-head">
+    <div class="mh-panel-head">
+        <h2 id="unreached-head">Nobody has reached these yet</h2>
+        <p>Congress first: it is where a pause would be decided</p>
+    </div>
+    @if (_unreached.Count == 0)
+    {
+        <p>Everyone in Washington has heard from at least one of us.</p>
+    }
+    else
+    {
+        <ul class="mh-list">
+            @foreach (var official in _unreached)
+            {
+                <li><div class="mh-list-main"><a href="/act/officials/@official.Key" target="_top">@official.Name</a> <span class="mh-small">@official.Office</span></div></li>
+            }
+        </ul>
+    }
+</section>
+
+<section class="mh-section" aria-labelledby="recent-head">
+    <div class="mh-section-head"><h2 id="recent-head">Latest</h2></div>
+    @if (_recent.Count == 0)
+    {
+        <div class="mh-empty"><p class="mh-empty-title">Nothing yet</p></div>
+    }
+    else
+    {
+        <ol class="mh-timeline">
+            @foreach (var action in _recent)
+            {
+                <li>
+                    <div class="mh-meta">
+                        <span><strong>@(action.VolunteerName ?? "Someone not signed in")</strong></span>
+                        <span>@Verb(action.Channel) <a href="/act/officials/@action.OfficialKey" target="_top">@action.OfficialName</a></span>
+                        <span>@LocalTime.FormatShort(action.OccurredAt)</span>
+                        @if (action.Channel == OutreachChannel.Call && action.Outcome is { } outcome)
+                        {
+                            <span>@outcome.Label()</span>
+                        }
+                    </div>
+                    @if (action.Note is not null)
+                    {
+                        <p>@action.Note</p>
+                    }
+                </li>
+            }
+        </ol>
+    }
+</section>
+
+@code {
+    private OutreachTotals _totals = new(0, 0, 0, 0, 0, 0);
+    private IReadOnlyList<OutreachByOfficial> _byOfficial = [];
+    private IReadOnlyList<OutreachByVolunteer> _byVolunteer = [];
+    private IReadOnlyList<OutreachAction> _recent = [];
+    private IReadOnlyList<Website.Content.Official> _unreached = [];
+
+    protected override async Task OnInitializedAsync()
+    {
+        _totals = await Outreach.TotalsAsync();
+        _byOfficial = await Outreach.ByOfficialAsync();
+        _byVolunteer = await Outreach.ByVolunteerAsync();
+        _recent = await Outreach.RecentAsync(40);
+
+        var reached = _byOfficial.Select(r => r.OfficialKey).ToHashSet(StringComparer.OrdinalIgnoreCase);
+        _unreached = Officials.Current(DateOnly.FromDateTime(DateTime.UtcNow))
+            .Where(o => o.Level == Website.Content.OfficialLevel.Federal && !reached.Contains(o.Key))
+            .ToArray();
+    }
+
+    private static string Verb(OutreachChannel channel) => channel switch
+    {
+        OutreachChannel.Call => "called",
+        OutreachChannel.Meeting => "met",
+        _ => "wrote to"
+    };
+}

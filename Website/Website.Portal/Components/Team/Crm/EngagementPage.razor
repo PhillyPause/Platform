@@ -10,92 +10,118 @@
     return;
 }
 
-<div class="wrap page-head">
-    <h1>@_engagement.Title</h1>
-    <p class="vol-meta vol-meta-lead">
-        <span class="vol-status">@Show.Words(_engagement.Status)</span>
-        @if (_organization is not null) { <span><a href="@ManyHandsPaths.CrmOrganization(_organization.Id)">@_organization.Name</a></span> }
-        @if (_engagement.ScheduledAt is { } at) { <span>@LocalTime.Format(at)</span> }
-    </p>
-</div>
+<header class="mh-page-head">
+    <div>
+        <p class="mh-crumb"><a href="@ManyHandsPaths.CrmPipeline">Pipeline</a></p>
+        <div class="mh-title-row">
+            <h1>@_engagement.Title</h1>
+            <span class="mh-badge mh-badge-info">@Show.Words(_engagement.Status)</span>
+        </div>
+        <p class="mh-meta">
+            @if (_organization is not null) { <span><a href="@ManyHandsPaths.CrmOrganization(_organization.Id)">@_organization.Name</a></span> }
+            @if (_engagement.ScheduledAt is { } at) { <span>@LocalTime.Format(at)</span> }
+        </p>
+    </div>
+</header>
 
-<div class="wrap vol-body vol-stack">
-    @if (_notice is not null)
-    {
-        <p class="vol-notice" role="status">@_notice</p>
-    }
+@if (_notice is not null)
+{
+    <p class="mh-notice" role="status">@_notice</p>
+}
 
-    <section aria-labelledby="todo-head">
-        <h2 id="todo-head">Still to do</h2>
-        <TaskList Tasks="_tasks" />
-        <EditForm Model="NewTask" FormName="task" OnValidSubmit="AddTaskAsync" class="vol-form vol-inline-form">
-            <DataAnnotationsValidator />
-            <label><span>Task</span><InputText @bind-Value="NewTask!.Title" placeholder="Confirm the room" /></label>
-            <label><span>By</span><InputDate @bind-Value="NewTask!.DueOn" /></label>
-            <label>
-                <span>Who</span>
-                <InputSelect @bind-Value="NewTask!.AssignedTo">
-                    <option value="">Nobody yet</option>
-                    @foreach (var person in _organizers) { <option value="@person.Id">@person.DisplayName</option> }
-                </InputSelect>
-            </label>
-            <ValidationMessage For="() => NewTask!.Title" />
-            <button class="btn btn-ghost" type="submit">Add</button>
-        </EditForm>
-    </section>
+<div class="mh-columns">
+    <div class="mh-stack">
+        <section class="mh-panel" aria-labelledby="todo-head">
+            <h2 id="todo-head">Still to do</h2>
+            @if (_tasks.Count == 0)
+            {
+                <p class="mh-small">Nothing open. Add the next step, who is on it and by when.</p>
+            }
+            @* Always there, empty or not: its Done buttons post to it. *@
+            <TaskList Tasks="_tasks" />
+            <div class="mh-panel-foot">
+                <EditForm Model="NewTask" FormName="task" OnValidSubmit="AddTaskAsync" class="mh-form mh-inline-form">
+                    <DataAnnotationsValidator />
+                    <label class="mh-field mh-field-wide"><span class="mh-label">Task</span><InputText @bind-Value="NewTask!.Title" placeholder="Confirm the room" /></label>
+                    <label class="mh-field"><span class="mh-label">By</span><InputDate @bind-Value="NewTask!.DueOn" /></label>
+                    <label class="mh-field">
+                        <span class="mh-label">Who</span>
+                        <InputSelect @bind-Value="NewTask!.AssignedTo">
+                            <option value="">Nobody yet</option>
+                            @foreach (var person in _organizers) { <option value="@person.Id">@person.DisplayName</option> }
+                        </InputSelect>
+                    </label>
+                    <ValidationMessage For="() => NewTask!.Title" />
+                    <button class="mh-btn mh-btn-secondary" type="submit">Add</button>
+                </EditForm>
+            </div>
+        </section>
 
-    <section aria-labelledby="timeline-head">
-        <h2 id="timeline-head">What has happened</h2>
-        <LogInteraction OrganizationId="_engagement.OrganizationId" EngagementId="Id" OnLogged="ReloadAsync" />
-        <Timeline Entries="_timeline" />
-    </section>
+        <section class="mh-panel" aria-labelledby="timeline-head">
+            <h2 id="timeline-head">What has happened</h2>
+            <LogInteraction OrganizationId="_engagement.OrganizationId" EngagementId="Id" OnLogged="ReloadAsync" />
+            <Timeline Entries="_timeline" />
+        </section>
+    </div>
 
-    <section aria-labelledby="details-head">
-        <h2 id="details-head">Details</h2>
-        <EditForm Model="Details" FormName="details" OnValidSubmit="SaveAsync" class="vol-form vol-editor">
-            <DataAnnotationsValidator />
-            <label><span>Title</span><InputText @bind-Value="Details!.Title" /><ValidationMessage For="() => Details!.Title" /></label>
-            <div class="vol-pair">
-                <label>
-                    <span>Where it stands</span>
-                    <InputSelect @bind-Value="Details!.Status">
-                        @foreach (var status in Enum.GetValues<EngagementStatus>()) { <option value="@status">@Show.Words(status)</option> }
+    <aside class="mh-stack" aria-label="About this engagement">
+        <section class="mh-panel" aria-labelledby="details-head">
+            <h2 id="details-head">Details</h2>
+            <EditForm Model="Details" FormName="details" OnValidSubmit="SaveAsync" class="mh-form">
+                <DataAnnotationsValidator />
+                <label class="mh-field"><span class="mh-label">Title</span><InputText @bind-Value="Details!.Title" /><ValidationMessage For="() => Details!.Title" /></label>
+                <div class="mh-pair">
+                    <label class="mh-field">
+                        <span class="mh-label">Where it stands</span>
+                        <InputSelect @bind-Value="Details!.Status">
+                            @foreach (var status in Enum.GetValues<EngagementStatus>()) { <option value="@status">@Show.Words(status)</option> }
+                        </InputSelect>
+                    </label>
+                    <label class="mh-field">
+                        <span class="mh-label">Category, for reporting</span>
+                        <InputSelect @bind-Value="Details!.Category">
+                            <option value="">Not set</option>
+                            @foreach (var category in Enum.GetValues<ActivityCategory>()) { <option value="@category">@Show.Words(category)</option> }
+                        </InputSelect>
+                    </label>
+                </div>
+                <label class="mh-field">
+                    <span class="mh-label">Organization</span>
+                    <InputSelect @bind-Value="Details!.OrganizationId">
+                        <option value="">None</option>
+                        @foreach (var org in _organizations) { <option value="@org.Id">@org.Name</option> }
                     </InputSelect>
                 </label>
-                <label>
-                    <span>Category, for reporting</span>
-                    <InputSelect @bind-Value="Details!.Category">
-                        <option value="">Not set</option>
-                        @foreach (var category in Enum.GetValues<ActivityCategory>()) { <option value="@category">@Show.Words(category)</option> }
+                <label class="mh-field">
+                    <span class="mh-label">Whose it is</span>
+                    <InputSelect @bind-Value="Details!.OwnerId">
+                        <option value="">Nobody yet</option>
+                        @foreach (var person in _organizers) { <option value="@person.Id">@person.DisplayName</option> }
                     </InputSelect>
                 </label>
-            </div>
-            <label>
-                <span>Organization</span>
-                <InputSelect @bind-Value="Details!.OrganizationId">
-                    <option value="">None</option>
-                    @foreach (var org in _organizations) { <option value="@org.Id">@org.Name</option> }
-                </InputSelect>
-            </label>
-            <label>
-                <span>Whose it is</span>
-                <InputSelect @bind-Value="Details!.OwnerId">
-                    <option value="">Nobody yet</option>
-                    @foreach (var person in _organizers) { <option value="@person.Id">@person.DisplayName</option> }
-                </InputSelect>
-            </label>
-            <div class="vol-pair">
-                <label><span>When (Philadelphia time)</span><InputDate Type="InputDateType.DateTimeLocal" @bind-Value="Details!.ScheduledAt" /></label>
-                <label><span>Where</span><InputText @bind-Value="Details!.Location" /></label>
-            </div>
-            <label><span>Online meeting link</span><InputText @bind-Value="Details!.MeetingUrl" type="url" /></label>
-            <label><span>Summary</span><InputTextArea @bind-Value="Details!.Summary" rows="4" /></label>
-            <button class="btn" type="submit">Save</button>
-        </EditForm>
-        <EditForm Model="Remove" FormName="remove" OnSubmit="RemoveAsync" class="vol-danger">
-            <button class="btn btn-ghost" type="submit">Remove this engagement</button>
-        </EditForm>
-    </section>
+                <label class="mh-field"><span class="mh-label">When (Philadelphia time)</span><InputDate Type="InputDateType.DateTimeLocal" @bind-Value="Details!.ScheduledAt" /></label>
+                <label class="mh-field"><span class="mh-label">Where</span><InputText @bind-Value="Details!.Location" /></label>
+                <label class="mh-field">
+                    <span class="mh-label">Online meeting link</span>
+                    <InputText @bind-Value="Details!.MeetingUrl" type="url" />
+                    <span class="mh-help">A full https:// address.</span>
+                    <ValidationMessage For="() => Details!.MeetingUrl" />
+                </label>
+                <label class="mh-field"><span class="mh-label">Summary</span><InputTextArea @bind-Value="Details!.Summary" rows="4" /></label>
+                <div class="mh-form-actions">
+                    <button class="mh-btn mh-btn-primary" type="submit">Save</button>
+                </div>
+            </EditForm>
+        </section>
+
+        <section class="mh-danger-zone" aria-labelledby="remove-head">
+            <h3 id="remove-head">Not going ahead?</h3>
+            <p class="mh-small">Set Where it stands to Declined to keep it on the Pipeline. Removing hides it; its history stays.</p>
+            <EditForm Model="Remove" FormName="remove" OnSubmit="RemoveAsync">
+                <button class="mh-btn mh-btn-danger" type="submit">Remove this engagement</button>
+            </EditForm>
+        </section>
+    </aside>
 </div>
 
 @code {

@@ -2,32 +2,24 @@
 @inject CrmRepository Crm
 @inject NavigationManager Navigation
 
-<PageMeta Title="CRM" Description="The offices and people PhillyPause works with." NoIndex="true" />
+<PageMeta Title="Organizations" Description="The offices and people PhillyPause works with." NoIndex="true" />
 
-<div class="wrap page-head">
-    <h1>CRM</h1>
-    <p class="lead">The offices, venues, partners and press we work with, what we have said to them, and what is still to do.</p>
-</div>
+<header class="mh-page-head">
+    <div>
+        <h1>Organizations</h1>
+        <p class="mh-summary">The offices, venues, partners and press we work with, what we have said to them, and what is still to do.</p>
+    </div>
+    <div class="mh-page-actions">
+        <a class="mh-btn mh-btn-primary" href="@($"{Here}#new-org-head")">Add an organization</a>
+        <a class="mh-btn mh-btn-secondary" href="@ManyHandsPaths.CrmOfficials">Import a member of Congress</a>
+    </div>
+</header>
 
-<div class="wrap vol-body vol-stack">
-    <p class="vol-actions">
-        <a class="btn btn-ghost" href="@ManyHandsPaths.CrmPipeline">Pipeline</a>
-        <a class="btn btn-ghost" href="@ManyHandsPaths.CrmOfficials">Members of Congress</a>
-        <a class="btn btn-ghost" href="@ManyHandsPaths.Inbox">Inbox</a>
-    </p>
-
-    @if (_tasks.Count > 0)
-    {
-        <section aria-labelledby="tasks-head">
-            <h2 id="tasks-head">Still to do</h2>
-            <TaskList Tasks="_tasks" />
-        </section>
-    }
-
+<div class="mh-columns">
     <section aria-labelledby="orgs-head">
-        <h2 id="orgs-head">Organizations</h2>
+        <h2 id="orgs-head" class="mh-sr">Organizations</h2>
 
-        <nav class="vol-filter" aria-label="Filter by kind">
+        <nav class="mh-filter" aria-label="Filter by kind">
             <a href="@ManyHandsPaths.Crm" aria-current="@(Kind is null ? "page" : null)">Everything</a>
             @foreach (var kind in Enum.GetValues<OrganizationKind>())
             {
@@ -37,51 +29,87 @@
 
         @if (_organizations.Count == 0)
         {
-            <p class="vol-empty">None yet. Add one below, or import a member of Congress.</p>
+            <div class="mh-empty">
+                @if (Kind is { } kind)
+                {
+                    <p class="mh-empty-title">No @Show.Words(kind).ToLowerInvariant() yet</p>
+                    <p>Add one with the form on this page, or <a href="@ManyHandsPaths.Crm">see everything</a>.</p>
+                }
+                else
+                {
+                    <p class="mh-empty-title">No organizations yet</p>
+                    <p>Add one with the form on this page, or import a member of Congress from <a href="@ManyHandsPaths.CrmOfficials">Officials</a>.</p>
+                }
+            </div>
         }
         else
         {
-            <table class="vol-table">
-                <thead><tr><th scope="col">Name</th><th scope="col">Kind</th><th scope="col" class="num">People</th><th scope="col">Last contact</th></tr></thead>
-                <tbody>
-                    @foreach (var org in _organizations)
-                    {
-                        <tr>
-                            <td>
-                                <a href="@ManyHandsPaths.CrmOrganization(org.Id)">@org.Name</a>
-                                @if (org.OpenEngagementCount > 0) { <div class="vol-small">@org.OpenEngagementCount open</div> }
-                            </td>
-                            <td>@Show.Words(org.Kind)@(org.State is { } st ? $" · {st}{(org.District is { } d ? "-" + d : "")}" : "")</td>
-                            <td class="num">@org.ContactCount</td>
-                            <td>@(org.LastInteractionAt is { } last ? Show.Stamp(last) : "never")</td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
+            <div class="mh-table-wrap">
+                <table class="mh-table mh-table-stack">
+                    <thead><tr><th scope="col">Name</th><th scope="col">Kind</th><th scope="col" class="mh-num">People</th><th scope="col">Last contact</th></tr></thead>
+                    <tbody>
+                        @foreach (var org in _organizations)
+                        {
+                            <tr>
+                                <td>
+                                    <a href="@ManyHandsPaths.CrmOrganization(org.Id)">@org.Name</a>
+                                    @if (org.OpenEngagementCount > 0) { <span class="mh-small">@org.OpenEngagementCount open</span> }
+                                </td>
+                                <td data-label="Kind">@Show.Words(org.Kind)@(org.State is { } st ? $" · {st}{(org.District is { } d ? "-" + d : "")}" : "")</td>
+                                <td data-label="People" class="mh-num">@org.ContactCount</td>
+                                <td data-label="Last contact">@(org.LastInteractionAt is { } last ? Show.Stamp(last) : "never")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
         }
     </section>
 
-    <section aria-labelledby="new-org-head">
-        <h2 id="new-org-head">Add an organization</h2>
-        <EditForm Model="Input" FormName="organization" OnValidSubmit="CreateAsync" class="vol-form vol-narrow">
-            <DataAnnotationsValidator />
-            <label>
-                <span>Name</span>
-                <InputText @bind-Value="Input!.Name" />
-                <ValidationMessage For="() => Input!.Name" />
-            </label>
-            <label>
-                <span>Kind</span>
-                <InputSelect @bind-Value="Input!.Kind">
-                    @foreach (var kind in Enum.GetValues<OrganizationKind>())
-                    {
-                        <option value="@kind">@Show.Words(kind)</option>
-                    }
-                </InputSelect>
-            </label>
-            <button class="btn" type="submit">Add</button>
-        </EditForm>
-    </section>
+    <div class="mh-stack">
+        <section class="mh-panel" aria-labelledby="tasks-head">
+            <div class="mh-panel-head">
+                <h2 id="tasks-head">Still to do</h2>
+                @if (_tasks.Count > 0) { <p>@_tasks.Count open</p> }
+            </div>
+            @if (_tasks.Count == 0)
+            {
+                <div class="mh-empty">
+                    <p class="mh-empty-title">Nothing open</p>
+                    <p>Add a task on an organization or an engagement, and it waits here until someone marks it done.</p>
+                </div>
+            }
+            else
+            {
+                <TaskList Tasks="_tasks" />
+            }
+        </section>
+
+        <section class="mh-panel" aria-labelledby="new-org-head">
+            <h2 id="new-org-head">Add an organization</h2>
+            <EditForm Model="Input" FormName="organization" OnValidSubmit="CreateAsync" class="mh-form">
+                <DataAnnotationsValidator />
+                <label class="mh-field">
+                    <span class="mh-label">Name</span>
+                    <InputText @bind-Value="Input!.Name" />
+                    <ValidationMessage For="() => Input!.Name" />
+                </label>
+                <label class="mh-field">
+                    <span class="mh-label">Kind</span>
+                    <InputSelect @bind-Value="Input!.Kind">
+                        @foreach (var kind in Enum.GetValues<OrganizationKind>())
+                        {
+                            <option value="@kind">@Show.Words(kind)</option>
+                        }
+                    </InputSelect>
+                    <span class="mh-help">The rest, people and details, goes on its own page next.</span>
+                </label>
+                <div class="mh-form-actions">
+                    <button class="mh-btn mh-btn-primary" type="submit">Add</button>
+                </div>
+            </EditForm>
+        </section>
+    </div>
 </div>
 
 @code {
@@ -91,6 +119,10 @@
     [SupplyParameterFromQuery(Name = "kind")] private string? KindName { get; set; }
 
     private OrganizationKind? Kind => Enum.TryParse<OrganizationKind>(KindName, out var kind) ? kind : null;
+
+    // This page's own address, filter and all: under <base href="/"> a bare
+    // "#..." link would be the front page's.
+    private string Here => "/" + Navigation.ToBaseRelativePath(Navigation.Uri).Split('#')[0];
 
     [SupplyParameterFromForm(FormName = "organization")] private NewOrganization? Input { get; set; }
 

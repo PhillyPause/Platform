@@ -6,7 +6,7 @@ namespace Website.Tests;
 
 /// <summary>
 /// <c>/join</c> is the address printed on posters: the front page, with the
-/// Join us dialog already open. It is the same page, so it names <c>/</c> as
+/// Join dialog already open. It is the same page, so it names <c>/</c> as
 /// canonical, and the plain front page opens nothing.
 /// </summary>
 public partial class JoinLinkTests(WebApplicationFactory<Program> factory)

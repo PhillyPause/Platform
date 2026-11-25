@@ -1,0 +1,160 @@
+@page "/act/call/{Key}"
+@inject OfficialsStore Officials
+@inject NavigationManager Navigation
+@inject IMessageDrafter Drafter
+@inject ActThrottle Throttle
+
+@* Call one official, in the Act dialog: the numbers, a script that works as
+   it stands, and the option of one with the reader's own name and reason in
+   it. Then "I called". *@
+
+@if (_official is { } o)
+{
+    <PageMeta Title="@($"Call {o.Name}")" Description="@($"Call {o.Name} about AI: the number, a thirty-second script, and what to expect.")" NoIndex="true" />
+
+    <Home>
+        <ActView>
+            <header class="act-task-head">
+                <OfficialAvatar Official="o" Size="sm" />
+                <div>
+                    <h2>Call @TheAsk.Salutation(o)</h2>
+                    <p class="act-lead">@o.Office. Five minutes. A staffer answers; they will ask for your zip code, not your credentials.</p>
+                    <p class="act-small"><a href="/act/officials/@o.Key">About @o.Name</a></p>
+                </div>
+            </header>
+
+            <div class="act-task">
+                <div class="act-task-main">
+                    <section class="act-panel" aria-labelledby="numbers-head">
+                        <h3 id="numbers-head">The number</h3>
+                        <ul class="act-phones act-phones-big">
+                            @foreach (var phone in o.Phones)
+                            {
+                                <li><span>@phone.Label</span> <a class="act-btn" href="@phone.TelHref">@phone.Number</a></li>
+                            }
+                        </ul>
+                        <p class="act-small">
+                            @if (o.Level == OfficialLevel.Federal)
+                            {
+                                <text>The Washington office is the one that tallies calls. If it is busy, a district office passes the message on just the same.</text>
+                            }
+                            else
+                            {
+                                <text>Offices are usually staffed 9 to 5 on weekdays. After hours, leave a voicemail: they are listened to.</text>
+                            }
+                        </p>
+                    </section>
+
+                    <section class="act-panel act-script" aria-labelledby="script-head">
+                        <h3 id="script-head">What to say</h3>
+                        <blockquote id="call-script" class="act-script-text">@_script.Body</blockquote>
+                        <p class="act-send">
+                            <button class="act-btn act-btn-ghost" type="button" data-copy="#call-script">Copy the script</button>
+                        </p>
+                        @if (_script.AiAssisted)
+                        {
+                            <p class="act-small act-ai-note">Shaped with help from an AI model. Say it your way; you do not have to read it word for word.</p>
+                        }
+
+                        <details class="act-personalise" open="@(_personalised)">
+                            <summary>Put your own name and reason in it</summary>
+                            <EditForm Model="Input" FormName="script" OnValidSubmit="PersonaliseAsync" class="act-form">
+                                <DataAnnotationsValidator />
+                                <div class="act-pair">
+                                    <label>
+                                        <span>Your name</span>
+                                        <InputText @bind-Value="Input!.Name" autocomplete="name" />
+                                        <ValidationMessage For="() => Input!.Name" />
+                                    </label>
+                                    <label>
+                                        <span>Where you live</span>
+                                        <InputText @bind-Value="Input!.Place" placeholder="Germantown, 19144" />
+                                        <ValidationMessage For="() => Input!.Place" />
+                                    </label>
+                                </div>
+                                <label>
+                                    <span>Why it matters to you <span class="act-small">Optional. One sentence is plenty on the phone.</span></span>
+                                    <InputTextArea @bind-Value="Input!.Story" rows="2" maxlength="@DraftInput.StoryLimit" />
+                                    <ValidationMessage For="() => Input!.Story" />
+                                </label>
+                                @if (Drafter.UsesAi)
+                                {
+                                    <p class="act-small act-ai-note">An AI model helps shape the script. What you type goes to DeepInfra, which runs it, and is not kept by us.</p>
+                                }
+                                @if (_refused is not null)
+                                {
+                                    <p class="act-error" role="alert">@_refused</p>
+                                }
+                                <button class="act-btn" type="submit">Make my script</button>
+                            </EditForm>
+                        </details>
+                    </section>
+
+                    <LogAction Official="o" Kind="DraftKind.Call" />
+                </div>
+
+                <aside class="act-task-side">
+                    <HowToCall />
+                    <section class="act-panel">
+                        <h3>If they ask&hellip;</h3>
+                        <dl class="act-faq">
+                            <dt>&ldquo;What is your address?&rdquo;</dt>
+                            <dd>They are checking you are a constituent. Your zip code is usually enough.</dd>
+                            <dt>&ldquo;Is there a bill number?&rdquo;</dt>
+                            <dd>&ldquo;Not yet. I want to know where they stand.&rdquo; That is a fine answer.</dd>
+                            <dt>A question you cannot answer</dt>
+                            <dd>&ldquo;I don&rsquo;t know, but I would like a reply in writing.&rdquo; Then give your email.</dd>
+                        </dl>
+                        <p class="act-small"><a href="/act/learn/calling">More on what happens when you call</a></p>
+                    </section>
+                </aside>
+            </div>
+        </ActView>
+    </Home>
+}
+
+@code {
+    [CascadingParameter] private HttpContext? HttpContext { get; set; }
+
+    [Parameter] public string? Key { get; set; }
+
+    [SupplyParameterFromForm(FormName = "script")] private DraftInput? Input { get; set; }
+
+    private Official? _official;
+    private Draft _script = new(null, "", false);
+    private bool _personalised;
+    private string? _refused;
+
+    protected override void OnParametersSet()
+    {
+        _official = Officials.Find(Key);
+        if (_official is null || _official.Phones.Count == 0)
+        {
+            if (HttpContext is not null) Navigation.NotFound();
+            _official = null;
+            return;
+        }
+
+        Input ??= new DraftInput();
+
+        // A script that works as it stands, with the gaps marked.
+        _script = TemplateDrafter.Write(new DraftRequest(
+            _official, DraftKind.Call, "[your name]", "[your neighbourhood and zip code]", null, DraftTone.Plain));
+    }
+
+    private async Task PersonaliseAsync()
+    {
+        if (_official is null || HttpContext is null) return;
+        _personalised = true;
+
+        if (!Throttle.AllowDraft(HttpContext))
+        {
+            _refused = "That is a lot of scripts in a short time. The one above works as it is: just say your own name.";
+            return;
+        }
+
+        _script = await Drafter.DraftAsync(
+            new DraftRequest(_official, DraftKind.Call, Input!.Name.Trim(), Input.Place.Trim(), Input.Story, DraftTone.Personal),
+            HttpContext.RequestAborted);
+    }
+}

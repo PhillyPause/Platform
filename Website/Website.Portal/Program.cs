@@ -1,6 +1,7 @@
 using ManyHands.Data;
 using Syncfusion.Blazor;
 using Microsoft.AspNetCore.HttpOverrides;
+using Website.Portal.Act;
 using Website.Portal.Components;
 using Website.Portal.Volunteer;
 using Website.Content;
@@ -29,8 +30,14 @@ if (builder.Configuration["SYNCFUSION_LICENSE_KEY"] is { Length: > 0 } syncfusio
 
 // Content is read and rendered once, at startup. A request never touches the
 // disk or the Markdown parser (PLAN.md 2.3).
-builder.Services.AddSingleton(new ContentStore(
-    Path.Combine(AppContext.BaseDirectory, "Content")));
+var contentRoot = Path.Combine(AppContext.BaseDirectory, "Content");
+builder.Services.AddSingleton(new ContentStore(contentRoot));
+
+// The action centre (/act): the officials directory, read once like the
+// content, and its address lookup and drafting help, each off until an
+// environment configures it. It needs no database; with ManyHands on it
+// also keeps a log of who contacted whom (Docs/Website/ACT.md).
+builder.Services.AddAct(builder.Configuration, contentRoot);
 
 // ManyHands, the volunteer system, is off unless ManyHands:Enabled is set.
 // Off, nothing of it is registered and the site needs no database; the home

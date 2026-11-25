@@ -1,29 +1,45 @@
 namespace Website.Portal.Volunteer;
 
 /// <summary>
-/// The Material Symbols (Apache 2.0) the organizers' app draws, and the one
+/// The Material Symbols (Apache 2.0) the team pages draw, and the one
 /// stylesheet that fetches only those glyphs. The font draws a glyph from its
 /// name, and a name it was not asked for prints as the word itself, so every
-/// icon in the app is one of these constants and the URL is built from them.
+/// icon on the team pages is one of these constants and the URL is built from
+/// them.
 /// </summary>
 public static class Symbols
 {
+    public const string AccountBalance = "account_balance";
+    public const string Apartment = "apartment";
     public const string ArrowDownward = "arrow_downward";
     public const string ArrowUpward = "arrow_upward";
     public const string Badge = "badge";
+    public const string Campaign = "campaign";
     public const string CheckCircle = "check_circle";
     public const string Delete = "delete";
+    public const string Description = "description";
     public const string DoNotDisturb = "do_not_disturb_on";
+    public const string Edit = "edit";
+    public const string Event = "event";
+    public const string Group = "group";
+    public const string Handshake = "handshake";
+    public const string Home = "home";
+    public const string Inbox = "inbox";
     public const string Person = "person";
+    public const string PersonAdd = "person_add";
+    public const string Public = "public";
     public const string Schedule = "schedule";
     public const string Send = "send";
     public const string ShieldPerson = "shield_person";
     public const string Unsubscribe = "unsubscribe";
+    public const string UploadFile = "upload_file";
+    public const string ViewKanban = "view_kanban";
 
     public static IReadOnlyList<string> All { get; } =
     [
-        ArrowDownward, ArrowUpward, Badge, CheckCircle, Delete, DoNotDisturb,
-        Person, Schedule, Send, ShieldPerson, Unsubscribe
+        AccountBalance, Apartment, ArrowDownward, ArrowUpward, Badge, Campaign, CheckCircle, Delete, Description,
+        DoNotDisturb, Edit, Event, Group, Handshake, Home, Inbox, Person, PersonAdd, Public, Schedule, Send,
+        ShieldPerson, Unsubscribe, UploadFile, ViewKanban
     ];
 
     /// <summary>

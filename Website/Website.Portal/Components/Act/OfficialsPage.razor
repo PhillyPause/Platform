@@ -1,0 +1,131 @@
+@page "/act/officials"
+@inject OfficialsStore Officials
+
+@* Greater Philadelphia's officials, in the Act dialog, behind a filter: which
+   government, which county, a name or a district number (DirectoryFilter).
+   Nobody is listed until something is chosen, and never more than a dozen at
+   once; each chip says how many it would show. Every state is an address:
+   the county map's links land here with ?county=. *@
+
+<PageMeta Title="@Heading()"
+          Description="Pennsylvania's senators, the House members, statewide officers, the General Assembly, the City of Philadelphia and the collar counties, with their numbers." />
+
+<Home>
+    <ActView>
+        <header class="act-intro">
+            <h2>@Heading()</h2>
+            <p class="act-lead">@_all.Count people, from Washington to City Hall. Narrow them down, or <a href="@ActPaths.Start">find your own</a> by address.</p>
+        </header>
+
+        <div class="act-filter">
+            <FilterChips Id="f-body" Label="Government" Toggle="true" Chips="@BodyChips()" />
+            <FilterChips Id="f-county" Label="County" Toggle="true" Chips="@CountyChips()" />
+            <form method="get" action="@ActPaths.Directory" class="act-filter-search" role="search">
+                <label for="f-q" class="act-chiprow-label">Name or district</label>
+                <span class="act-filter-box">
+                    <input id="f-q" name="q" type="search" value="@_filter.Query" placeholder="Fetterman, or 182" maxlength="60" autocomplete="off" />
+                    @if (_filter.Body is { } body)
+                    {
+                        <input type="hidden" name="body" value="@body" />
+                    }
+                    @if (_filter.County is { } county)
+                    {
+                        <input type="hidden" name="county" value="@county" />
+                    }
+                    <button type="submit" class="act-btn act-btn-small">Search</button>
+                </span>
+            </form>
+        </div>
+
+        <p class="act-filter-count" role="status">
+            @if (_filter.IsEmpty)
+            {
+                <text>Choose a government or a county, or search for a name or a district number.</text>
+            }
+            else if (_matches.Count == 0)
+            {
+                <text>Nobody matches that.</text>
+                @if (_filter.Query is not null && Widened() is { } wider)
+                {
+                    <text> </text><a href="@wider.Href">Search all @_all.Count for &ldquo;@_filter.Query&rdquo;</a><text>.</text>
+                }
+                <text> </text><a href="@ActPaths.Directory">Start again</a><text>.</text>
+            }
+            else if (_matches.Count <= DirectoryFilter.Shown)
+            {
+                @People(_matches.Count)<text>. </text><a href="@ActPaths.Directory">Clear</a>
+            }
+            else
+            {
+                <text>@_matches.Count people match, so here are the first @DirectoryFilter.Shown. @Narrow() to see the rest. </text>
+                <a href="@ActPaths.Directory">Clear</a>
+            }
+        </p>
+
+        @if (!_filter.IsEmpty && _matches.Count > 0)
+        {
+            <ul class="act-cards">
+                @foreach (var official in _matches.Take(DirectoryFilter.Shown))
+                {
+                    <OfficialCard Official="official" />
+                }
+            </ul>
+        }
+    </ActView>
+</Home>
+
+@code {
+    [SupplyParameterFromQuery(Name = "body")] private string? Body { get; set; }
+    [SupplyParameterFromQuery(Name = "county")] private string? County { get; set; }
+    [SupplyParameterFromQuery(Name = "q")] private string? Query { get; set; }
+
+    private DirectoryFilter _filter = DirectoryFilter.None;
+    private IReadOnlyList<Official> _all = [];
+    private IReadOnlyList<Official> _matches = [];
+
+    protected override void OnParametersSet()
+    {
+        _filter = DirectoryFilter.From(Body, County, Query);
+        _all = Officials.Current(DateOnly.FromDateTime(DateTime.UtcNow)).ToArray();
+        _matches = _all.Where(_filter.Matches).ToArray();
+    }
+
+    private IReadOnlyList<FilterChips.Chip> BodyChips() =>
+        DirectoryFilter.Bodies.Select(choice =>
+        {
+            var on = _filter.Body == choice.Key;
+            var with = _filter with { Body = choice.Key };
+            return new FilterChips.Chip(choice.Label, _all.Count(with.Matches), on ? (_filter with { Body = null }).Href : with.Href, on);
+        }).ToArray();
+
+    private IReadOnlyList<FilterChips.Chip> CountyChips() =>
+        OfficialsStore.Counties.Select(county =>
+        {
+            var on = _filter.County == county;
+            var with = _filter with { County = county };
+            return new FilterChips.Chip(county, _all.Count(with.Matches), on ? (_filter with { County = null }).Href : with.Href, on);
+        }).ToArray();
+
+    // The same search without the chips, when the chips are what hid them.
+    private DirectoryFilter? Widened()
+    {
+        var wider = DirectoryFilter.None with { Query = _filter.Query };
+        return wider != _filter && _all.Any(wider.Matches) ? wider : null;
+    }
+
+    private string Narrow()
+    {
+        var choose = new List<string>();
+        if (_filter.Body is null) choose.Add("a government");
+        if (_filter.County is null) choose.Add("a county");
+        var search = "search for a name or a district number";
+        return choose.Count == 0 ? char.ToUpperInvariant(search[0]) + search[1..] : $"Choose {string.Join(" or ", choose)}, or {search},";
+    }
+
+    private static string People(int n) => n == 1 ? "1 person" : $"{n} people";
+
+    private string Heading() =>
+        _filter.County is { } county ? $"{Place(county)}’s officials" : "Greater Philadelphia’s officials";
+
+    private static string Place(string county) => county == "Philadelphia" ? "Philadelphia" : $"{county} County";
+}

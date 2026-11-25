@@ -1,0 +1,122 @@
+@* The top of /team: what is coming up and how full it is, then what is
+   waiting on someone, each with the way to it. Read only: the activities
+   the page has already loaded, and ReportingRepository's counts. *@
+
+<section class="mh-glance" aria-labelledby="glance-head">
+    <h2 id="glance-head" class="mh-sr">At a glance</h2>
+    <div class="mh-cards">
+        <article class="mh-card mh-card-wide">
+            <h3>Next up</h3>
+            @if (_next.Count == 0)
+            {
+                <p class="mh-card-text">Nothing published is coming up. Write one, publish it, and the people who like that kind of thing hear about it.</p>
+                <a class="mh-card-link" href="@ManyHandsPaths.TeamNewActivity" target="_top">New activity</a>
+            }
+            else
+            {
+                <ul class="mh-list">
+                    @foreach (var activity in _next)
+                    {
+                        <li>
+                            <div class="mh-list-main">
+                                <a href="@ManyHandsPaths.TeamActivity(activity.Id)" target="_top">@activity.Title</a>
+                                <div class="mh-meta">
+                                    <span>@Stamp(activity.StartsAt!.Value)</span>
+                                    <span>@Fill(activity)</span>
+                                </div>
+                                @if (activity.Capacity is > 0 and var cap)
+                                {
+                                    var percent = Math.Min(100, activity.SignupCount * 100 / cap);
+                                    <span class="mh-fill@(activity.SignupCount >= cap ? " mh-fill-full" : "")" style="--fill: @(percent)%" aria-hidden="true"><span></span></span>
+                                }
+                            </div>
+                        </li>
+                    }
+                </ul>
+            }
+            @if (_drafts > 0)
+            {
+                <p class="mh-card-foot">
+                    <span class="mh-badge">@(_drafts == 1 ? "1 draft" : $"{_drafts} drafts")</span>
+                    not published yet, so nobody has been told
+                </p>
+            }
+        </article>
+
+        <article class="mh-card">
+            <h3>New this week</h3>
+            <p class="mh-card-figure">@Overview.JoinedThisWeek</p>
+            <p class="mh-card-text">@(Overview.JoinedThisWeek == 1 ? "person" : "people") joined in the last seven days</p>
+            <a class="mh-card-link" href="@ManyHandsPaths.TeamMembers" target="@Target(ManyHandsPaths.TeamMembers)">See members</a>
+        </article>
+
+        <article class="mh-card@(Overview.NotConfirmed > 0 ? " mh-card-attention" : "")">
+            <h3>Not confirmed</h3>
+            <p class="mh-card-figure">@Overview.NotConfirmed</p>
+            <p class="mh-card-text">
+                have not clicked the link in their joining email, so they hear about nothing new
+            </p>
+            <a class="mh-card-link" href="@ManyHandsPaths.TeamMembers" target="@Target(ManyHandsPaths.TeamMembers)">Send it again from Members</a>
+        </article>
+
+        <article class="mh-card@(Overview.OverdueTasks > 0 ? " mh-card-attention" : "")">
+            <h3>Open tasks</h3>
+            <p class="mh-card-figure">@Overview.OpenTasks</p>
+            <p class="mh-card-text">
+                @if (Overview.OverdueTasks > 0)
+                {
+                    <span class="mh-badge mh-badge-danger">@Overview.OverdueTasks overdue</span>
+                }
+                else
+                {
+                    <text>still to do in lobbying, none overdue</text>
+                }
+            </p>
+            <a class="mh-card-link" href="@ManyHandsPaths.Crm" target="@Target(ManyHandsPaths.Crm)">See them in Organizations</a>
+        </article>
+
+        <article class="mh-card@(Overview.ThreadsToTriage > 0 ? " mh-card-attention" : "")">
+            <h3>Who is this?</h3>
+            <p class="mh-card-figure">@Overview.ThreadsToTriage</p>
+            <p class="mh-card-text">
+                @(Overview.ThreadsToTriage == 1 ? "conversation" : "conversations") in the inbox from someone nobody has identified yet
+            </p>
+            <a class="mh-card-link" href="@($"{ManyHandsPaths.Inbox}?triage=true")" target="_top">Sort out the inbox</a>
+        </article>
+    </div>
+</section>
+
+@code {
+    /// <summary>Every activity, as the page below lists them.</summary>
+    [Parameter, EditorRequired] public required IReadOnlyList<ActivityAdminRow> Activities { get; set; }
+
+    [Parameter, EditorRequired] public required TeamOverview Overview { get; set; }
+
+    private List<ActivityAdminRow> _next = [];
+    private int _drafts;
+
+    protected override void OnParametersSet()
+    {
+        var now = DateTimeOffset.UtcNow;
+        _next = Activities
+            .Where(a => a.IsPublished && a.StartsAt > now)
+            .OrderBy(a => a.StartsAt)
+            .Take(3)
+            .ToList();
+        _drafts = Activities.Count(a => !a.IsPublished && (a.StartsAt is null || a.StartsAt > now));
+    }
+
+    // This sits in the organizers' app: a page outside it loads in full.
+    private static string? Target(string path) => TeamApp.IsAppPage(path) ? null : "_top";
+
+    /// <summary>"Thu, Oct 22 · 1:00 PM", on Philadelphia's clock like the grid.</summary>
+    private static string Stamp(DateTimeOffset startsAt) =>
+        LocalTime.ToLocal(startsAt).ToString("ddd, MMM d · h:mm tt", System.Globalization.CultureInfo.InvariantCulture);
+
+    private static string Fill(ActivityAdminRow a)
+    {
+        var going = a.Capacity is { } cap ? $"{a.SignupCount} of {cap} going" : $"{a.SignupCount} going";
+        if (a.Capacity is { } full && a.SignupCount >= full) going += ", full";
+        return a.WaitlistCount > 0 ? $"{going} · {a.WaitlistCount} waiting" : going;
+    }
+}

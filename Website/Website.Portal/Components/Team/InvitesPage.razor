@@ -5,86 +5,106 @@
 
 <PageMeta Title="Invites" Description="Invite people to join PhillyPause." NoIndex="true" />
 
-<div class="wrap page-head">
-    <h1>Invite people</h1>
-    <p class="lead">Two ways in: a link anyone can use, or a personal invitation by email.</p>
-</div>
+<header class="mh-page-head">
+    <div>
+        <h1>Invite people</h1>
+        <p class="mh-summary">Two ways in: a link anyone can use, or a personal invitation by email.</p>
+    </div>
+</header>
 
-<div class="wrap vol-body vol-stack">
-    @if (_notice is not null)
-    {
-        <p class="vol-notice" role="status">@_notice</p>
-    }
+@if (_notice is not null)
+{
+    <p class="mh-notice" role="status">@_notice</p>
+}
 
-    <section aria-labelledby="link-head">
-        <h2 id="link-head">The join link</h2>
-        <p>
-            Anyone with it can join and say what they like doing. Put it on a card, in a group
-            chat or on a QR code at the table; there is nothing to send.
-        </p>
-        <p><code class="vol-code">@Links.Link(ManyHandsPaths.Join)</code></p>
-    </section>
-
-    <section aria-labelledby="email-head">
-        <h2 id="email-head">Invite by email</h2>
-        <EditForm Model="Send" FormName="invite" OnValidSubmit="SendAsync" class="vol-form vol-narrow">
+<div class="mh-columns">
+    <section class="mh-panel" aria-labelledby="email-head">
+        <div class="mh-panel-head">
+            <h2 id="email-head">Invite by email</h2>
+        </div>
+        <EditForm Model="Send" FormName="invite" OnValidSubmit="SendAsync" class="mh-form">
             <DataAnnotationsValidator />
-            <label>
-                <span>Email addresses</span>
+            <label class="mh-field">
+                <span class="mh-label">Email addresses</span>
                 <InputTextArea @bind-Value="Send!.Addresses" rows="5" placeholder="sam@example.org&#10;dana@example.org" />
-                <span class="vol-small">
+                <span class="mh-help">
                     One per line, or pasted from a spreadsheet. People who already joined are skipped,
                     so an old list is safe. At most @InviteRepository.MaxPerRequest at a time.
                 </span>
                 <ValidationMessage For="() => Send!.Addresses" />
             </label>
-            <label>
-                <span>A note from you, if you like</span>
+            <label class="mh-field">
+                <span class="mh-label">A note from you <span class="mh-optional">(optional)</span></span>
                 <InputTextArea @bind-Value="Send!.Note" rows="3" placeholder="Great meeting you at the market on Saturday!" />
+                <span class="mh-help">It goes into the invitation, just after your name.</span>
             </label>
-            <button class="btn" type="submit">Send the invites</button>
+            <div class="mh-form-actions">
+                <button class="mh-btn mh-btn-primary" type="submit">Send the invites</button>
+            </div>
         </EditForm>
     </section>
 
-    <section aria-labelledby="sent-head">
+    <section class="mh-panel" aria-labelledby="link-head">
+        <div class="mh-panel-head">
+            <h2 id="link-head">The join link</h2>
+        </div>
+        <p>
+            Anyone with it can join and say what they like doing. Put it on a card, in a group
+            chat or on a QR code at the table; there is nothing to send.
+        </p>
+        <code class="mh-code">@Links.Link(ManyHandsPaths.Join)</code>
+    </section>
+</div>
+
+<section class="mh-section" aria-labelledby="sent-head">
+    <div class="mh-section-head">
         <h2 id="sent-head">Already invited</h2>
-        @if (_invites.Count == 0)
+        @if (_invites.Count > 0)
         {
-            <p class="vol-empty">Nobody yet.</p>
+            <p class="mh-small">@_invites.Count(i => i.StateAt(DateTimeOffset.UtcNow) == InviteState.Accepted) of @_invites.Count joined</p>
         }
-        else
-        {
-            <EditForm Model="Act" FormName="invite-action" OnSubmit="ActAsync">
-                <table class="vol-table">
-                    <thead><tr><th scope="col">Who</th><th scope="col">State</th><th scope="col"><span class="vol-sr">Actions</span></th></tr></thead>
+    </div>
+    @if (_invites.Count == 0)
+    {
+        <div class="mh-empty">
+            <p class="mh-empty-title">Nobody invited yet</p>
+            <p>Paste a few addresses into Invite by email, and each person gets their own link. They show up here, with whether they joined.</p>
+        </div>
+    }
+    else
+    {
+        <EditForm Model="Act" FormName="invite-action" OnSubmit="ActAsync">
+            <div class="mh-table-wrap">
+                <table class="mh-table mh-table-stack">
+                    <thead><tr><th scope="col">Who</th><th scope="col">State</th><th scope="col" class="mh-end"><span class="mh-sr">Actions</span></th></tr></thead>
                     <tbody>
                         @foreach (var invite in _invites)
                         {
                             var state = invite.StateAt(DateTimeOffset.UtcNow);
                             <tr>
                                 <td>
-                                    @invite.Email
-                                    @if (invite.InvitedByName is not null) { <div class="vol-small">from @invite.InvitedByName</div> }
+                                    <strong>@invite.Email</strong>
+                                    @if (invite.InvitedByName is not null) { <span class="mh-small">from @invite.InvitedByName</span> }
                                 </td>
-                                <td>@Describe(invite, state)</td>
-                                <td>
+                                <td data-label="State"><span class="mh-badge @Badge(state)">@Describe(invite, state)</span></td>
+                                <td class="mh-end">
                                     @if (state is InviteState.Sent or InviteState.Expired or InviteState.Queued)
                                     {
-                                        <button class="vol-link-button" type="submit" name="Act.Value" value="@($"resend:{invite.Id}")">Send again</button>
+                                        <button class="mh-btn mh-btn-quiet" type="submit" name="Act.Value" value="@($"resend:{invite.Id}")">Send again</button>
                                     }
                                     @if (state is InviteState.Sent or InviteState.Queued)
                                     {
-                                        <button class="vol-link-button" type="submit" name="Act.Value" value="@($"revoke:{invite.Id}")">Cancel</button>
+                                        <button class="mh-btn mh-btn-quiet" type="submit" name="Act.Value" value="@($"revoke:{invite.Id}")">Cancel</button>
                                     }
                                 </td>
                             </tr>
                         }
                     </tbody>
                 </table>
-            </EditForm>
-        }
-    </section>
-</div>
+            </div>
+        </EditForm>
+    }
+</section>
 
 @code {
     [CascadingParameter] private HttpContext HttpContext { get; set; } = default!;
@@ -145,6 +165,14 @@
         if (result.Rejected > 0) parts.Add($"{result.Rejected} did not look like email addresses");
         return string.Join(" · ", parts) + ".";
     }
+
+    private static string Badge(InviteState state) => state switch
+    {
+        InviteState.Accepted => "mh-badge-ok",
+        InviteState.Queued or InviteState.Sent => "mh-badge-info",
+        InviteState.Expired => "mh-badge-warn",
+        _ => string.Empty
+    };
 
     private static string Describe(Invite invite, InviteState state) => state switch
     {

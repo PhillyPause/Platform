@@ -4,20 +4,25 @@
    show tasks without wiring the buttons itself; one per page. *@
 
 <EditForm Model="Done" FormName="task-done" OnSubmit="CompleteAsync">
-    <ul class="vol-tasks">
+    <ul class="mh-list mh-tasks">
         @foreach (var task in Tasks.Where(t => !_completed.Contains(t.Id)))
         {
-            <li class="@(task.IsOverdueOn(_today) ? "is-late" : null)">
-                <button class="vol-link-button" type="submit" name="Done.TaskId" value="@task.Id">Done</button>
-                <span>
+            var late = task.IsOverdueOn(_today);
+            <li>
+                <div class="mh-list-main">
                     <strong>@task.Title</strong>
-                    <span class="vol-small">
-                        @(task.DueOn is { } due ? $"due {due:MMM d}" : "no date")
-                        @if (task.AssignedToName is { } who) { <text> · @who</text> }
-                        @if (task.OrganizationId is { } org) { <text> · <a href="@ManyHandsPaths.CrmOrganization(org)">@task.OrganizationName</a></text> }
-                        @if (task.EngagementId is { } eng) { <text> · <a href="@ManyHandsPaths.CrmEngagement(eng)">@task.EngagementTitle</a></text> }
-                    </span>
-                </span>
+                    @if (late) { <span class="mh-badge mh-badge-danger">Overdue</span> }
+                    <div class="mh-meta">
+                        <span>@(task.DueOn is { } due ? $"due {due:MMM d}" : "no date")</span>
+                        @if (task.AssignedToName is { } who) { <span>@who</span> }
+                        @if (task.OrganizationId is { } org) { <span><a href="@ManyHandsPaths.CrmOrganization(org)">@task.OrganizationName</a></span> }
+                        @if (task.EngagementId is { } eng) { <span><a href="@ManyHandsPaths.CrmEngagement(eng)">@task.EngagementTitle</a></span> }
+                    </div>
+                </div>
+                <div class="mh-list-end">
+                    <button class="mh-btn mh-btn-secondary mh-btn-small" type="submit" name="Done.TaskId" value="@task.Id"
+                            aria-label="@($"Done: {task.Title}")">Done</button>
+                </div>
             </li>
         }
     </ul>

@@ -1,0 +1,177 @@
+@page "/act/yours"
+@inject OfficialsStore Officials
+
+@* The officials for a set of districts, in the Act dialog. The districts are
+   in the query string (ActPaths.Yours), never the address. One place at a
+   time, Washington first, chosen by chips that say how many each holds; a
+   Philadelphian's City Hall is the citywide officials plus the member for
+   the council district they choose (cc=), which the Census geocoder cannot
+   tell us. *@
+
+<PageMeta Title="Your officials" Description="Your officials in Washington, Harrisburg and Greater Philadelphia, with their numbers and a script." NoIndex="true" />
+
+<Home>
+    <ActView>
+        <header class="act-intro">
+            <h2>Your officials</h2>
+            <p class="act-lead">
+                @if (_match.IsEmpty)
+                {
+                    <text>Tell us your districts and we will show you who to call.</text>
+                }
+                else
+                {
+                    @Describe(_match)
+                }
+            </p>
+        </header>
+
+        @if (_match.IsEmpty)
+        {
+            <DistrictPicker />
+        }
+        else
+        {
+            <div class="act-filter">
+                <FilterChips Id="f-arena" Label="Show" Chips="@ArenaChips()" />
+                @if (IsPhiladelphia && _arena == Local)
+                {
+                    <FilterChips Id="f-council" Label="Your council district" Toggle="true" Chips="@CouncilChips()" />
+                    @if (_council is null)
+                    {
+                        <p class="act-small">Choose yours to add your district&rsquo;s member. Not sure? <a href="https://phlcouncil.com/" target="_blank" rel="noopener">City Council</a> will tell you.</p>
+                    }
+                }
+            </div>
+
+            <section class="act-group" aria-labelledby="group-head">
+                <h3 id="group-head" class="act-section-head">@ArenaLabel(_arena)</h3>
+                @if (Intro() is { } intro)
+                {
+                    <p class="act-small">@intro</p>
+                }
+                @if (People(_arena) is { Count: > 0 } people)
+                {
+                    <ul class="act-cards">
+                        @foreach (var official in people)
+                        {
+                            <OfficialCard Official="official" />
+                        }
+                    </ul>
+                    @if (Writable(people) is { Count: > 1 } writable)
+                    {
+                        <p class="act-merge-cta">
+                            <a class="act-btn" href="@ActPaths.WriteTo(writable)">Write to all @writable.Count at once</a>
+                            <span class="act-small">One message, a copy to each, with their names filled in.</span>
+                        </p>
+                    }
+                }
+                else
+                {
+                    <p class="act-empty">Nobody here yet for your districts. <a href="@ActPaths.Directory">Search the directory</a> or <a href="#by-district">change your districts</a>.</p>
+                }
+            </section>
+
+            <DistrictPicker />
+        }
+    </ActView>
+</Home>
+
+@code {
+    private const string Washington = "washington";
+    private const string Harrisburg = "harrisburg";
+    private const string Local = "local";
+
+    [SupplyParameterFromQuery(Name = "cd")] private string? Congressional { get; set; }
+    [SupplyParameterFromQuery(Name = "ss")] private string? StateSenate { get; set; }
+    [SupplyParameterFromQuery(Name = "sh")] private string? StateHouse { get; set; }
+    [SupplyParameterFromQuery(Name = "county")] private string? County { get; set; }
+    [SupplyParameterFromQuery(Name = "in")] private string? Arena { get; set; }
+    [SupplyParameterFromQuery(Name = "cc")] private string? Council { get; set; }
+
+    private DistrictMatch _match = new(null, null, null, null);
+    private IReadOnlyList<Official> _found = [];
+    private string _arena = Washington;
+    private string? _council;
+
+    private bool IsPhiladelphia => _match.County == "Philadelphia";
+
+    protected override void OnParametersSet()
+    {
+        _match = new DistrictMatch(
+            DistrictMatch.Normalise(Congressional),
+            DistrictMatch.Normalise(StateSenate),
+            DistrictMatch.Normalise(StateHouse),
+            DistrictMatch.NormaliseCounty(County));
+        _found = _match.IsEmpty ? [] : Officials.For(_match, DateOnly.FromDateTime(DateTime.UtcNow));
+        _arena = Arena?.Trim().ToLowerInvariant() switch
+        {
+            Harrisburg => Harrisburg,
+            Local when _match.County is not null => Local,
+            _ => Washington
+        };
+        var council = DistrictMatch.Normalise(Council);
+        _council = IsPhiladelphia && council is not null && CouncilDistricts().Contains(council) ? council : null;
+    }
+
+    private IReadOnlyList<Official> People(string arena) => arena switch
+    {
+        Washington => _found.Where(o => o.Arena == "Washington").ToArray(),
+        Harrisburg => _found.Where(o => o.Arena == "Harrisburg").ToArray(),
+        // Every Philadelphian has the citywide officials; of the district
+        // members, only the one for the district they chose.
+        _ => _found.Where(o => o.Arena == "Local" && (o.Level != OfficialLevel.City || o.District is null || o.District == _council)).ToArray()
+    };
+
+    // Everyone in this place who takes a message, but not someone leaving
+    // office: a merge goes to the people who will still be there to act.
+    private static IReadOnlyList<Official> Writable(IReadOnlyList<Official> people) =>
+        people.Where(o => o.CanEmail && o.Status != OfficialStatus.Departing).Take(MailMerge.Most).ToArray();
+
+    private IReadOnlyList<FilterChips.Chip> ArenaChips()
+    {
+        var arenas = _match.County is null ? new[] { Washington, Harrisburg } : [Washington, Harrisburg, Local];
+        return arenas.Select(a => new FilterChips.Chip(ArenaLabel(a), People(a).Count,
+            ActPaths.Yours(_match, a == Washington ? null : a, _council), a == _arena)).ToArray();
+    }
+
+    private IReadOnlyList<FilterChips.Chip> CouncilChips() =>
+        CouncilDistricts().Select(d => new FilterChips.Chip(d, null,
+            ActPaths.Yours(_match, Local, d == _council ? null : d), d == _council)).ToArray();
+
+    private IReadOnlyList<string> CouncilDistricts() =>
+        Officials.Current(DateOnly.FromDateTime(DateTime.UtcNow))
+            .Where(o => o.Level == OfficialLevel.City && o.District is not null)
+            .Select(o => o.District!)
+            .Distinct()
+            .OrderBy(d => int.Parse(d, System.Globalization.CultureInfo.InvariantCulture))
+            .ToArray();
+
+    private string ArenaLabel(string arena) => arena switch
+    {
+        Washington => "Washington",
+        Harrisburg => "Harrisburg",
+        _ => IsPhiladelphia ? "City Hall" : $"{_match.County} County"
+    };
+
+    private string? Intro() => _arena switch
+    {
+        Washington when _match.Congressional is null =>
+            "Your two senators. Add your US House district to see your representative.",
+        Washington => "Start here: Congress is where a pause would be decided. Then Harrisburg, then home.",
+        Harrisburg when _match.StateSenate is null || _match.StateHouse is null =>
+            "The statewide officers. Add your State Senate and State House districts to see your own legislators.",
+        Local when IsPhiladelphia => "Every Philadelphian has the Mayor, the District Attorney and seven at-large members of City Council, plus one district member.",
+        _ => null
+    };
+
+    private static string Describe(DistrictMatch m)
+    {
+        var bits = new List<string>();
+        if (m.County is not null) bits.Add(m.County == "Philadelphia" ? "Philadelphia" : $"{m.County} County");
+        if (m.Congressional is not null) bits.Add($"PA-{m.Congressional}");
+        if (m.StateSenate is not null) bits.Add($"State Senate {m.StateSenate}");
+        if (m.StateHouse is not null) bits.Add($"State House {m.StateHouse}");
+        return $"For {string.Join(", ", bits)}. Call first if you can: it takes five minutes.";
+    }
+}

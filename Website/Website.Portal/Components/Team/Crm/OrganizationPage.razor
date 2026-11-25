@@ -12,241 +12,302 @@
     return;
 }
 
-<div class="wrap page-head">
-    <h1>@_org.Name</h1>
-    <p class="vol-meta vol-meta-lead">
-        <span>@Show.Words(_org.Kind)</span>
-        @if (_org.State is { } state) { <span>@state@(_org.District is { } d ? $"-{d}" : "")</span> }
-        @if (Show.SafeLink(_org.Website) is { } site) { <span><a href="@site" target="_blank" rel="noopener">Website</a></span> }
-    </p>
-</div>
+<header class="mh-page-head">
+    <div>
+        <p class="mh-crumb"><a href="@ManyHandsPaths.Crm">Organizations</a></p>
+        <div class="mh-title-row">
+            <h1>@_org.Name</h1>
+            <span class="mh-badge">@Show.Words(_org.Kind)</span>
+        </div>
+        <p class="mh-meta">
+            @if (_org.State is { } state) { <span>@state@(_org.District is { } d ? $"-{d}" : "")</span> }
+            @if (Show.SafeLink(_org.Website) is { } site) { <span><a href="@site" target="_blank" rel="noopener">Website</a></span> }
+            <span>@_contacts.Count @(_contacts.Count == 1 ? "person" : "people")</span>
+            <span>@_tasks.Count still to do</span>
+        </p>
+    </div>
+</header>
 
-<div class="wrap vol-body vol-stack">
-    @if (_notice is not null)
-    {
-        <p class="vol-notice" role="status">@_notice</p>
-    }
+@if (_notice is not null)
+{
+    <p class="mh-notice" role="status">@_notice</p>
+}
 
-    @* Partner outreach (the Outreach Kit): where it stands, the link they
-       share and who it has brought, and how they know other organizations. *@
-    <section aria-labelledby="outreach-head">
-        <h2 id="outreach-head">Outreach</h2>
-        @if (NeverContact.Matches(_org.Name, _org.Website))
-        {
-            <p>PhillyPause does not contact this organisation.</p>
-        }
-        else
-        {
-            @if (_partner?.OutreachStatus is { } status)
+<div class="mh-columns">
+    <div class="mh-stack">
+        @* Partner outreach (the Outreach Kit): where it stands, the link they
+           share and who it has brought, and how they know other organizations. *@
+        <section class="mh-panel" aria-labelledby="outreach-head">
+            <h2 id="outreach-head">Outreach</h2>
+            @if (NeverContact.Matches(_org.Name, _org.Website))
             {
-                <p class="vol-meta">
-                    <span>@PartnerText.Status(status)</span>
-                    @if (_partner.Priority is { } priority) { <span>Priority @priority</span> }
-                    @if (_partner.AskRung is { } rung) { <span>Said yes to: @PartnerText.Rung(rung)</span> }
-                    @if (PartnerText.NextStep(status, _partner.FirstContactedAt, DateTimeOffset.UtcNow) is { Length: > 0 } next) { <span>Next: @next</span> }
-                </p>
-                @if (_partner.WhyTheyFit is { } why)
+                <p class="mh-small">PhillyPause does not contact this organisation.</p>
+            }
+            else
+            {
+                @if (_partner?.OutreachStatus is { } status)
                 {
-                    <p>@why</p>
-                }
-                @if (_partner.TrackingCode is { } code)
-                {
-                    <div class="vol-qr">
-                        <div class="vol-qr-code">@((MarkupString)CheckInLinks.QrSvg(PartnerUrl(code)))</div>
-                        <p>
-                            Their link: <a href="@PartnerUrl(code)" target="_blank" rel="noopener">@PartnerUrl(code)</a><br />
-                            <span class="vol-small">Put it in every email to them, and the code on flyers for their events.</span>
-                        </p>
-                    </div>
-                    <p>
-                        <strong>@_referred.Count</strong> @(_referred.Count == 1 ? "person has" : "people have") joined through it,
-                        @_referred.Count(r => r.Confirmed) confirmed.
+                    <p class="mh-meta mh-meta-lead">
+                        <span>@PartnerText.Status(status)</span>
+                        @if (_partner.Priority is { } priority) { <span>Priority @priority</span> }
+                        @if (_partner.AskRung is { } rung) { <span>Said yes to: @PartnerText.Rung(rung)</span> }
+                        @if (PartnerText.NextStep(status, _partner.FirstContactedAt, DateTimeOffset.UtcNow) is { Length: > 0 } next) { <span>Next: @next</span> }
                     </p>
-                    @if (_referred.Count > 0)
+                    @if (_partner.WhyTheyFit is { } why)
                     {
-                        <ul class="vol-people">
-                            @foreach (var person in _referred.Take(20))
-                            {
-                                <li><span>@person.DisplayName</span> <span class="vol-small">@Show.Stamp(person.JoinedAt)@(person.Confirmed ? "" : " · not confirmed yet")</span></li>
-                            }
-                        </ul>
+                        <p>@why</p>
+                    }
+                    @if (_partner.TrackingCode is { } code)
+                    {
+                        <div class="mh-qr">
+                            <div class="mh-qr-code">@((MarkupString)CheckInLinks.QrSvg(PartnerUrl(code)))</div>
+                            <p>
+                                Their link: <a href="@PartnerUrl(code)" target="_blank" rel="noopener">@PartnerUrl(code)</a><br />
+                                <span class="mh-small">Put it in every email to them, and the code on flyers for their events.</span>
+                            </p>
+                        </div>
+                        <p>
+                            <strong>@_referred.Count</strong> @(_referred.Count == 1 ? "person has" : "people have") joined through it,
+                            @_referred.Count(r => r.Confirmed) confirmed.
+                        </p>
+                        @if (_referred.Count > 0)
+                        {
+                            <ul class="mh-list">
+                                @foreach (var person in _referred.Take(20))
+                                {
+                                    <li>
+                                        <div class="mh-list-main">
+                                            @person.DisplayName
+                                            <div class="mh-meta"><span>@Show.Stamp(person.JoinedAt)</span>@if (!person.Confirmed) { <span>not confirmed yet</span> }</div>
+                                        </div>
+                                    </li>
+                                }
+                            </ul>
+                        }
                     }
                 }
+
+                <div class="mh-panel-foot">
+                    <EditForm Model="Partner" FormName="partner" OnValidSubmit="SavePartnerAsync" class="mh-form">
+                        <DataAnnotationsValidator />
+                        <div class="mh-pair">
+                            <label class="mh-field">
+                                <span class="mh-label">Status</span>
+                                <InputSelect @bind-Value="Partner!.Status">
+                                    @foreach (var s in Enum.GetValues<OutreachStatus>()) { <option value="@s">@PartnerText.Status(s)</option> }
+                                </InputSelect>
+                            </label>
+                            <label class="mh-field">
+                                <span class="mh-label">Priority</span>
+                                <InputSelect @bind-Value="Partner!.Priority">
+                                    <option value="">None</option>
+                                    <option value="A">A: already agree with us</option>
+                                    <option value="B">B: a live AI fight of their own</option>
+                                    <option value="C">C: broader civic, tech, media</option>
+                                </InputSelect>
+                            </label>
+                        </div>
+                        <div class="mh-pair">
+                            <label class="mh-field">
+                                <span class="mh-label">Audience (picks the email template)</span>
+                                <InputSelect @bind-Value="Partner!.Audience">
+                                    @foreach (var a in Enum.GetValues<Audience>()) { <option value="@a">@PartnerText.Audience(a)</option> }
+                                </InputSelect>
+                            </label>
+                            <label class="mh-field">
+                                <span class="mh-label">Highest rung they have said yes to</span>
+                                <InputSelect @bind-Value="Partner!.AskRung">
+                                    <option value="">None yet</option>
+                                    @foreach (var r in Enum.GetValues<AskRung>()) { <option value="@r">@PartnerText.Rung(r)</option> }
+                                </InputSelect>
+                            </label>
+                        </div>
+                        <div class="mh-pair">
+                            <label class="mh-field"><span class="mh-label">Tracking code</span><InputText @bind-Value="Partner!.TrackingCode" placeholder="newsguild" /><ValidationMessage For="() => Partner!.TrackingCode" /></label>
+                            <label class="mh-field"><span class="mh-label">Category</span><InputText @bind-Value="Partner!.Category" placeholder="Labor / journalism" /></label>
+                        </div>
+                        <label class="mh-field"><span class="mh-label">How to reach them</span><InputText @bind-Value="Partner!.ContactChannel" placeholder="Contact form on website" /></label>
+                        <label class="mh-field"><span class="mh-label">Why they fit</span><InputTextArea @bind-Value="Partner!.WhyTheyFit" rows="2" /></label>
+                        <label class="mh-field"><span class="mh-label">Found via</span><InputText @bind-Value="Partner!.FoundVia" placeholder="Pen & Pencil Club" /></label>
+                        <button class="mh-btn mh-btn-primary" type="submit">@(_partner?.OutreachStatus is null ? "Make them a partner" : "Save outreach")</button>
+                    </EditForm>
+                </div>
             }
 
-            <EditForm Model="Partner" FormName="partner" OnValidSubmit="SavePartnerAsync" class="vol-form vol-editor">
-                <DataAnnotationsValidator />
-                <div class="vol-pair">
-                    <label>
-                        <span>Status</span>
-                        <InputSelect @bind-Value="Partner!.Status">
-                            @foreach (var s in Enum.GetValues<OutreachStatus>()) { <option value="@s">@PartnerText.Status(s)</option> }
-                        </InputSelect>
-                    </label>
-                    <label>
-                        <span>Priority</span>
-                        <InputSelect @bind-Value="Partner!.Priority">
-                            <option value="">None</option>
-                            <option value="A">A: already agree with us</option>
-                            <option value="B">B: a live AI fight of their own</option>
-                            <option value="C">C: broader civic, tech, media</option>
-                        </InputSelect>
-                    </label>
-                </div>
-                <div class="vol-pair">
-                    <label>
-                        <span>Audience (picks the email template)</span>
-                        <InputSelect @bind-Value="Partner!.Audience">
-                            @foreach (var a in Enum.GetValues<Audience>()) { <option value="@a">@PartnerText.Audience(a)</option> }
-                        </InputSelect>
-                    </label>
-                    <label>
-                        <span>Highest rung they have said yes to</span>
-                        <InputSelect @bind-Value="Partner!.AskRung">
-                            <option value="">None yet</option>
-                            @foreach (var r in Enum.GetValues<AskRung>()) { <option value="@r">@PartnerText.Rung(r)</option> }
-                        </InputSelect>
-                    </label>
-                </div>
-                <div class="vol-pair">
-                    <label><span>Tracking code</span><InputText @bind-Value="Partner!.TrackingCode" placeholder="newsguild" /><ValidationMessage For="() => Partner!.TrackingCode" /></label>
-                    <label><span>Category</span><InputText @bind-Value="Partner!.Category" placeholder="Labor / journalism" /></label>
-                </div>
-                <label><span>How to reach them</span><InputText @bind-Value="Partner!.ContactChannel" placeholder="Contact form on website" /></label>
-                <label><span>Why they fit</span><InputTextArea @bind-Value="Partner!.WhyTheyFit" rows="2" /></label>
-                <label><span>Found via</span><InputText @bind-Value="Partner!.FoundVia" placeholder="Pen & Pencil Club" /></label>
-                <button class="btn" type="submit">@(_partner?.OutreachStatus is null ? "Make them a partner" : "Save outreach")</button>
-            </EditForm>
-        }
-
-        @if (_links.Count > 0)
-        {
-            <h3>How they connect</h3>
-            <ul class="vol-people">
-                @foreach (var link in _links)
-                {
-                    <li>
-                        <span>
-                            @if (link.Outgoing) { <text>@_org.Name @link.Connection </text> }
-                            @if (link.OtherId is Guid other) { <a href="@ManyHandsPaths.CrmOrganization(other)">@link.OtherName</a> } else { @link.OtherName }
-                            @if (!link.Outgoing) { <text> @link.Connection @_org.Name</text> }
-                        </span>
-                        @if (Show.SafeLink(link.SourceUrl) is { } source) { <a class="vol-small" href="@source" target="_blank" rel="noopener">source</a> }
-                    </li>
-                }
-            </ul>
-        }
-    </section>
-
-    <section aria-labelledby="people-head">
-        <h2 id="people-head">People</h2>
-        @if (_contacts.Count > 0)
-        {
-            <EditForm Model="RemoveContact" FormName="contact-remove" OnSubmit="RemoveContactAsync">
-                <ul class="vol-people">
-                    @foreach (var contact in _contacts)
+            @if (_links.Count > 0)
+            {
+                <h3 class="mh-panel-sub">How they connect</h3>
+                <ul class="mh-list">
+                    @foreach (var link in _links)
                     {
                         <li>
-                            <span><strong>@contact.FullName</strong>@(contact.RoleTitle is { } role ? $", {role}" : "")</span>
-                            <span class="vol-small">
-                                @if (contact.Email is { } email) { <a href="@($"{ManyHandsPaths.InboxCompose}?contact={contact.Id}")">@email</a> }
-                                @if (contact.Phone is { } phone) { <text> · @phone</text> }
-                            </span>
-                            <button class="vol-link-button" type="submit" name="RemoveContact.Id" value="@contact.Id">Remove</button>
+                            <div class="mh-list-main">
+                                @if (link.Outgoing) { <text>@_org.Name @link.Connection </text> }
+                                @if (link.OtherId is Guid other) { <a href="@ManyHandsPaths.CrmOrganization(other)">@link.OtherName</a> } else { @link.OtherName }
+                                @if (!link.Outgoing) { <text> @link.Connection @_org.Name</text> }
+                            </div>
+                            @if (Show.SafeLink(link.SourceUrl) is { } source)
+                            {
+                                <div class="mh-list-end"><a class="mh-small" href="@source" target="_blank" rel="noopener">source</a></div>
+                            }
                         </li>
                     }
                 </ul>
-            </EditForm>
-        }
-        <EditForm Model="NewContact" FormName="contact" OnValidSubmit="AddContactAsync" class="vol-form vol-inline-form">
-            <DataAnnotationsValidator />
-            <label><span>Name</span><InputText @bind-Value="NewContact!.FullName" /></label>
-            <label><span>Role</span><InputText @bind-Value="NewContact!.RoleTitle" placeholder="Chief of staff" /></label>
-            <label><span>Email</span><InputText @bind-Value="NewContact!.Email" type="email" /></label>
-            <label><span>Phone</span><InputText @bind-Value="NewContact!.Phone" /></label>
-            <ValidationMessage For="() => NewContact!.FullName" />
-            <button class="btn btn-ghost" type="submit">Add a person</button>
-        </EditForm>
-    </section>
+            }
+        </section>
 
-    <section aria-labelledby="work-head">
-        <h2 id="work-head">Engagements</h2>
-        @if (_engagements.Count > 0)
-        {
-            <ul class="vol-people">
-                @foreach (var engagement in _engagements)
-                {
-                    <li>
-                        <a href="@ManyHandsPaths.CrmEngagement(engagement.Id)">@engagement.Title</a>
-                        <span class="vol-small">@Show.Words(engagement.Status)@(engagement.ScheduledAt is { } at ? $" · {Show.Stamp(at)}" : "")</span>
-                    </li>
-                }
-            </ul>
-        }
-        <EditForm Model="NewEngagement" FormName="engagement" OnValidSubmit="AddEngagementAsync" class="vol-form vol-inline-form">
-            <DataAnnotationsValidator />
-            <label><span>A new effort with them</span><InputText @bind-Value="NewEngagement!.Title" placeholder="Meeting about the AI bill" /></label>
-            <ValidationMessage For="() => NewEngagement!.Title" />
-            <button class="btn btn-ghost" type="submit">Start it</button>
-        </EditForm>
-    </section>
-
-    <section aria-labelledby="todo-head">
-        <h2 id="todo-head">Still to do</h2>
-        <TaskList Tasks="_tasks" />
-        <EditForm Model="NewTask" FormName="task" OnValidSubmit="AddTaskAsync" class="vol-form vol-inline-form">
-            <DataAnnotationsValidator />
-            <label><span>Task</span><InputText @bind-Value="NewTask!.Title" placeholder="Send the follow-up letter" /></label>
-            <label><span>By</span><InputDate @bind-Value="NewTask!.DueOn" /></label>
-            <ValidationMessage For="() => NewTask!.Title" />
-            <button class="btn btn-ghost" type="submit">Add</button>
-        </EditForm>
-    </section>
-
-    <section aria-labelledby="timeline-head">
-        <h2 id="timeline-head">What has happened</h2>
-        <LogInteraction OrganizationId="Id" OnLogged="ReloadAsync" />
-        <Timeline Entries="_timeline" />
-        @if (_emails.Count > 0)
-        {
-            <h3>Mail</h3>
-            <ul class="vol-people">
-                @foreach (var email in _emails)
-                {
-                    <li>
-                        <a href="@ManyHandsPaths.InboxThread(email.ConversationId)">@email.Subject</a>
-                        <span class="vol-small">@(email.Direction == EmailDirection.Inbound ? "from" : "to") @(email.Direction == EmailDirection.Inbound ? email.FromAddress : email.ToAddress) · @Show.Stamp(email.OccurredAt)</span>
-                    </li>
-                }
-            </ul>
-        }
-    </section>
-
-    <section aria-labelledby="details-head">
-        <h2 id="details-head">Details</h2>
-        <EditForm Model="Details" FormName="details" OnValidSubmit="SaveDetailsAsync" class="vol-form vol-editor">
-            <DataAnnotationsValidator />
-            <label><span>Name</span><InputText @bind-Value="Details!.Name" /><ValidationMessage For="() => Details!.Name" /></label>
-            <label>
-                <span>Kind</span>
-                <InputSelect @bind-Value="Details!.Kind">
-                    @foreach (var kind in Enum.GetValues<OrganizationKind>()) { <option value="@kind">@Show.Words(kind)</option> }
-                </InputSelect>
-            </label>
-            <label><span>About them</span><InputTextArea @bind-Value="Details!.Description" rows="3" /></label>
-            <label><span>Website</span><InputText @bind-Value="Details!.Website" type="url" /></label>
-            <label><span>Address</span><InputText @bind-Value="Details!.Address" /></label>
-            <div class="vol-pair">
-                <label><span>State</span><InputText @bind-Value="Details!.State" maxlength="2" /><ValidationMessage For="() => Details!.State" /></label>
-                <label><span>District</span><InputText @bind-Value="Details!.District" /></label>
+        <section class="mh-panel" aria-labelledby="people-head">
+            <h2 id="people-head">People</h2>
+            @if (_contacts.Count == 0)
+            {
+                <p class="mh-small">Nobody yet. Add the person you deal with there, so mail to and from them files itself here.</p>
+            }
+            else
+            {
+                <EditForm Model="RemoveContact" FormName="contact-remove" OnSubmit="RemoveContactAsync">
+                    <ul class="mh-list">
+                        @foreach (var contact in _contacts)
+                        {
+                            <li>
+                                <div class="mh-list-main">
+                                    <strong>@contact.FullName</strong>@(contact.RoleTitle is { } role ? $", {role}" : "")
+                                    <div class="mh-meta">
+                                        @if (contact.Email is { } email) { <span><a href="@($"{ManyHandsPaths.InboxCompose}?contact={contact.Id}")">@email</a></span> }
+                                        @if (contact.Phone is { } phone) { <span>@phone</span> }
+                                    </div>
+                                </div>
+                                <div class="mh-list-end">
+                                    <button class="mh-btn mh-btn-quiet" type="submit" name="RemoveContact.Id" value="@contact.Id"
+                                            aria-label="@($"Remove {contact.FullName}")">Remove</button>
+                                </div>
+                            </li>
+                        }
+                    </ul>
+                </EditForm>
+            }
+            <div class="mh-panel-foot">
+                <EditForm Model="NewContact" FormName="contact" OnValidSubmit="AddContactAsync" class="mh-form mh-inline-form">
+                    <DataAnnotationsValidator />
+                    <label class="mh-field"><span class="mh-label">Name</span><InputText @bind-Value="NewContact!.FullName" /></label>
+                    <label class="mh-field"><span class="mh-label">Role</span><InputText @bind-Value="NewContact!.RoleTitle" placeholder="Chief of staff" /></label>
+                    <label class="mh-field"><span class="mh-label">Email</span><InputText @bind-Value="NewContact!.Email" type="email" /></label>
+                    <label class="mh-field"><span class="mh-label">Phone</span><InputText @bind-Value="NewContact!.Phone" /></label>
+                    <ValidationMessage For="() => NewContact!.FullName" />
+                    <button class="mh-btn mh-btn-secondary" type="submit">Add a person</button>
+                </EditForm>
             </div>
-            <button class="btn" type="submit">Save</button>
-        </EditForm>
-        <EditForm Model="Remove" FormName="remove" OnSubmit="RemoveAsync" class="vol-danger">
-            <button class="btn btn-ghost" type="submit">Remove this organization</button>
-            <span class="vol-small">It is hidden, not destroyed: its history stays.</span>
-        </EditForm>
-    </section>
+        </section>
+
+        <section class="mh-panel" aria-labelledby="work-head">
+            <h2 id="work-head">Engagements</h2>
+            @if (_engagements.Count == 0)
+            {
+                <p class="mh-small">No effort with them yet. Start one for a meeting, a letter or an ask, and follow it on the Pipeline.</p>
+            }
+            else
+            {
+                <ul class="mh-list">
+                    @foreach (var engagement in _engagements)
+                    {
+                        <li>
+                            <div class="mh-list-main">
+                                <a href="@ManyHandsPaths.CrmEngagement(engagement.Id)">@engagement.Title</a>
+                                @if (engagement.ScheduledAt is { } at) { <div class="mh-meta"><span>@Show.Stamp(at)</span></div> }
+                            </div>
+                            <div class="mh-list-end"><span class="mh-badge mh-badge-info">@Show.Words(engagement.Status)</span></div>
+                        </li>
+                    }
+                </ul>
+            }
+            <div class="mh-panel-foot">
+                <EditForm Model="NewEngagement" FormName="engagement" OnValidSubmit="AddEngagementAsync" class="mh-form mh-inline-form">
+                    <DataAnnotationsValidator />
+                    <label class="mh-field mh-field-wide"><span class="mh-label">A new effort with them</span><InputText @bind-Value="NewEngagement!.Title" placeholder="Meeting about the AI bill" /></label>
+                    <ValidationMessage For="() => NewEngagement!.Title" />
+                    <button class="mh-btn mh-btn-secondary" type="submit">Start it</button>
+                </EditForm>
+            </div>
+        </section>
+
+        <section class="mh-panel" aria-labelledby="todo-head">
+            <h2 id="todo-head">Still to do</h2>
+            @if (_tasks.Count == 0)
+            {
+                <p class="mh-small">Nothing open for them. Add what needs doing next, with a day if it has one.</p>
+            }
+            @* Always there, empty or not: its Done buttons post to it. *@
+            <TaskList Tasks="_tasks" />
+            <div class="mh-panel-foot">
+                <EditForm Model="NewTask" FormName="task" OnValidSubmit="AddTaskAsync" class="mh-form mh-inline-form">
+                    <DataAnnotationsValidator />
+                    <label class="mh-field mh-field-wide"><span class="mh-label">Task</span><InputText @bind-Value="NewTask!.Title" placeholder="Send the follow-up letter" /></label>
+                    <label class="mh-field"><span class="mh-label">By</span><InputDate @bind-Value="NewTask!.DueOn" /></label>
+                    <ValidationMessage For="() => NewTask!.Title" />
+                    <button class="mh-btn mh-btn-secondary" type="submit">Add</button>
+                </EditForm>
+            </div>
+        </section>
+
+        <section class="mh-panel" aria-labelledby="timeline-head">
+            <h2 id="timeline-head">What has happened</h2>
+            <LogInteraction OrganizationId="Id" OnLogged="ReloadAsync" />
+            <Timeline Entries="_timeline" />
+            @if (_emails.Count > 0)
+            {
+                <div class="mh-panel-sub">
+                    <h3>Mail</h3>
+                    <ul class="mh-list">
+                        @foreach (var email in _emails)
+                        {
+                            <li>
+                                <div class="mh-list-main">
+                                    <a href="@ManyHandsPaths.InboxThread(email.ConversationId)">@email.Subject</a>
+                                    <div class="mh-meta">
+                                        <span>@(email.Direction == EmailDirection.Inbound ? "from" : "to") @(email.Direction == EmailDirection.Inbound ? email.FromAddress : email.ToAddress)</span>
+                                        <span>@Show.Stamp(email.OccurredAt)</span>
+                                    </div>
+                                </div>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            }
+        </section>
+    </div>
+
+    <aside class="mh-stack" aria-label="About them">
+        <section class="mh-panel" aria-labelledby="details-head">
+            <h2 id="details-head">Details</h2>
+            <EditForm Model="Details" FormName="details" OnValidSubmit="SaveDetailsAsync" class="mh-form">
+                <DataAnnotationsValidator />
+                <label class="mh-field"><span class="mh-label">Name</span><InputText @bind-Value="Details!.Name" /><ValidationMessage For="() => Details!.Name" /></label>
+                <label class="mh-field">
+                    <span class="mh-label">Kind</span>
+                    <InputSelect @bind-Value="Details!.Kind">
+                        @foreach (var kind in Enum.GetValues<OrganizationKind>()) { <option value="@kind">@Show.Words(kind)</option> }
+                    </InputSelect>
+                </label>
+                <label class="mh-field"><span class="mh-label">About them</span><InputTextArea @bind-Value="Details!.Description" rows="3" /></label>
+                <label class="mh-field"><span class="mh-label">Website</span><InputText @bind-Value="Details!.Website" type="url" /></label>
+                <label class="mh-field"><span class="mh-label">Address</span><InputText @bind-Value="Details!.Address" /></label>
+                <div class="mh-pair">
+                    <label class="mh-field"><span class="mh-label">State</span><InputText @bind-Value="Details!.State" maxlength="2" /><ValidationMessage For="() => Details!.State" /></label>
+                    <label class="mh-field"><span class="mh-label">District</span><InputText @bind-Value="Details!.District" /></label>
+                </div>
+                <div class="mh-form-actions">
+                    <button class="mh-btn mh-btn-primary" type="submit">Save</button>
+                </div>
+            </EditForm>
+        </section>
+
+        <section class="mh-danger-zone" aria-labelledby="remove-head">
+            <h3 id="remove-head">No longer working with them?</h3>
+            <p class="mh-small">It is hidden, not destroyed: its history stays.</p>
+            <EditForm Model="Remove" FormName="remove" OnSubmit="RemoveAsync">
+                <button class="mh-btn mh-btn-danger" type="submit">Remove this organization</button>
+            </EditForm>
+        </section>
+    </aside>
 </div>
 
 @code {

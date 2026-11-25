@@ -1,0 +1,185 @@
+@page "/act/write"
+@inject OfficialsStore Officials
+@inject NavigationManager Navigation
+@inject IMessageDrafter Drafter
+@inject ActThrottle Throttle
+
+@* One message to several officials, a copy each (MailMerge), in the Act
+   dialog. Your officials' "Write to all of them" lands here; who it goes to is
+   the address (?to=key&to=key), and each chip's cross is the address without
+   them. The page is its own walkthrough: three numbered steps, the next ones
+   named before they are reached, and the last a row per official, ticked off
+   as each copy is opened (act.js). Nothing is sent from here, and nothing
+   typed is kept. One official is the ordinary write page. *@
+
+@if (_to.Count > 1)
+{
+    <PageMeta Title="@($"Write to {_to.Count} of your officials")" Description="One message about AI, a copy to each of your officials, in your own words." NoIndex="true" />
+
+    <Home>
+        <ActView>
+            <header class="act-intro">
+                <h2>Write to all @_to.Count at once</h2>
+                <p class="act-lead">One message, a copy for each with their own name and their office&rsquo;s ask filled in. You send every one yourself.</p>
+            </header>
+
+            <div class="act-filter">
+                <FilterChips Id="f-to" Label="To" Toggle="true" Chips="@ToChips()" />
+            </div>
+
+            <div class="act-task">
+                <div class="act-task-main">
+                <ol class="act-steps">
+                    @if (_draft is null)
+                    {
+                        <li class="act-panel act-step" aria-labelledby="you-head">
+                            <h3 id="you-head">About you</h3>
+                            <EditForm Model="Input" FormName="draft" OnValidSubmit="DraftAsync" class="act-form">
+                                <DataAnnotationsValidator />
+                                <AboutYou Input="Input!" UsesAi="Drafter.UsesAi" />
+                                @if (_refused is not null)
+                                {
+                                    <p class="act-error" role="alert">@_refused</p>
+                                }
+                                <button class="act-btn" type="submit">Write my draft</button>
+                            </EditForm>
+                        </li>
+                        <li class="act-step is-ahead"><h3>Your message</h3><p class="act-small">One draft for all @_to.Count, to change as you like.</p></li>
+                        <li class="act-step is-ahead"><h3>Send each one</h3><p class="act-small">A copy to each, from your own email or their form.</p></li>
+                    }
+                    else
+                    {
+                        <li class="act-step is-done">
+                            <h3>About you</h3>
+                            <p class="act-small">@Input!.Name, @Input.Place. <a href="@ActPaths.WriteTo(_to)">Start again</a></p>
+                        </li>
+                        <li class="act-panel act-step act-draft" aria-labelledby="draft-head">
+                            <h3 id="draft-head">Your message. Make it yours</h3>
+                            @if (_draft.AiAssisted)
+                            {
+                                <p class="act-small act-ai-note">Drafted with help from an AI model. Read it through: change anything that is not how you would say it.</p>
+                            }
+                            <p class="act-small act-merge-key">
+                                The words in braces are filled in for each of them.
+                                <code>@MailMerge.Salutation</code> becomes each one&rsquo;s form of address (@Examples()), and <code>@MailMerge.Ask</code> becomes what we ask of their office.
+                                Change anything else.
+                            </p>
+                            <label class="act-field">
+                                <span>Subject</span>
+                                <input id="draft-subject" type="text" value="@_draft.Subject" />
+                            </label>
+                            <label class="act-field">
+                                <span>Message</span>
+                                <textarea id="draft-body" rows="16">@_draft.Body</textarea>
+                            </label>
+                        </li>
+                        <li class="act-panel act-step" aria-labelledby="send-head">
+                            <h3 id="send-head">Send each one</h3>
+                            <p class="act-small">Each button opens a separate message in your own email, with their name and their ask filled in from the message above. Send it, come back, and open the next.</p>
+                            <ul class="act-merge">
+                                @foreach (var o in _to)
+                                {
+                                    <li class="act-merge-row" data-merge-row data-merge-name="@TheAsk.Salutation(o)">
+                                        <OfficialAvatar Official="o" Size="sm" />
+                                        <div class="act-merge-who">
+                                            <strong>@o.Name</strong>
+                                            <span>@o.Office</span>
+                                        </div>
+                                        <div class="act-merge-do">
+                                            @if (o.Email is { } email)
+                                            {
+                                                <a class="act-btn act-btn-small" data-mailto="@email" data-fill="@MailMerge.Values(o)" href="@MailTo(email, o)">Email @TheAsk.Salutation(o)</a>
+                                            }
+                                            else if (o.ContactForm is { } form)
+                                            {
+                                                <button class="act-btn act-btn-small" type="button" data-copy="#draft-body" data-fill="@MailMerge.Values(o)">Copy theirs</button>
+                                                <a class="act-btn act-btn-small act-btn-ghost" href="@form" target="_blank" rel="noopener">Open their form</a>
+                                            }
+                                            <span class="act-merge-done">Opened</span>
+                                        </div>
+                                    </li>
+                                }
+                            </ul>
+                            <p class="act-merge-progress" data-merge-progress role="status"></p>
+                            @if (_to.Any(o => o.Email is null))
+                            {
+                                <p class="act-small">A form asks for your address so the office knows you are a constituent; that goes to them, not to us. Paste the message into the form&rsquo;s message box.</p>
+                            }
+                        </li>
+                    }
+                </ol>
+
+                <LogMany Officials="_to" />
+                </div>
+
+                <WritingTips Merge="true" />
+            </div>
+        </ActView>
+    </Home>
+}
+
+@code {
+    [CascadingParameter] private HttpContext? HttpContext { get; set; }
+
+    [SupplyParameterFromQuery(Name = "to")] private string[]? To { get; set; }
+
+    [SupplyParameterFromForm(FormName = "draft")] private DraftInput? Input { get; set; }
+
+    private IReadOnlyList<Official> _to = [];
+    private Draft? _draft;
+    private string? _refused;
+
+    protected override void OnParametersSet()
+    {
+        _to = (To ?? [])
+            .Select(key => Officials.Find(key?.Trim()))
+            .OfType<Official>()
+            .Where(o => o.CanEmail)
+            .DistinctBy(o => o.Key)
+            .Take(MailMerge.Most)
+            .ToArray();
+
+        if (_to.Count == 1)
+        {
+            Navigation.NavigateTo($"/act/write/{_to[0].Key}");
+            return;
+        }
+        if (_to.Count == 0)
+        {
+            if (HttpContext is not null) Navigation.NotFound();
+            return;
+        }
+
+        Input ??= new DraftInput();
+    }
+
+    private async Task DraftAsync()
+    {
+        if (_to.Count < 2 || HttpContext is null) return;
+
+        if (!Throttle.AllowDraft(HttpContext))
+        {
+            _refused = "That is a lot of drafts in a short time. Wait ten minutes, or write it yourself: name, where you live, why, one ask.";
+            return;
+        }
+
+        _draft = await Drafter.DraftAsync(
+            new DraftRequest(_to[0], DraftKind.Email, Input!.Name.Trim(), Input.Place.Trim(), Input.Story, Input.Tone) { Recipients = _to },
+            HttpContext.RequestAborted);
+    }
+
+    // Each chip's cross takes that official off; the address is the list.
+    private IReadOnlyList<FilterChips.Chip> ToChips() =>
+        _to.Select(o => new FilterChips.Chip(o.Name, null, ActPaths.WriteTo(_to.Where(other => other != o)), Selected: true)).ToArray();
+
+    private string Examples()
+    {
+        var names = _to.Select(TheAsk.Salutation).Distinct().ToArray();
+        return string.Join(", ", names.Take(3)) + (names.Length > 3 ? ", …" : "");
+    }
+
+    // Without script, each link carries the draft as it was written, filled
+    // for its official; act.js rebuilds it from the edited fields on click.
+    private string MailTo(string email, Official o) =>
+        $"mailto:{email}?subject={Uri.EscapeDataString(MailMerge.Fill(_draft!.Subject ?? "From a constituent", o))}&body={Uri.EscapeDataString(MailMerge.Fill(_draft.Body, o))}";
+}
