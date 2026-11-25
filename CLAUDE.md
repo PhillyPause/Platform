@@ -213,6 +213,10 @@ the next.
 - **Windows PowerShell 5.1 drops an empty `''` argument** to a native command,
   so `git config key ''` becomes a read and changes nothing, silently. Pass it
   through the stop-parsing token: `git --% config key ""`.
+- **The .NET version waits for App Platform.** Its buildpack has no .NET 11
+  SDK, so a move to `net11.0` passes CI and then fails to deploy, leaving the
+  live site behind. Move only once DigitalOcean's buildpack page lists the
+  SDK (HOSTING.md, "No Dockerfile").
 - `TreatWarningsAsErrors` is on. A warning is a build break, by choice.
 - Central package management is on: versions go in `Directory.Packages.props`,
   never in a `.csproj`. A version attribute on a `PackageReference` is NU1008.

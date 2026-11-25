@@ -5,8 +5,7 @@
 #   doctl apps update <app-id> --spec Deploy/digitalocean/app.yaml
 #
 # No Dockerfile: App Platform's native .NET buildpack detects Platform.slnx
-# and handles the SDK and the publish, choosing the SDK from the projects'
-# TargetFramework (net11.0). HOSTING.md has what that depends on.
+# and handles the SDK and the publish. It supports .NET 10 on Ubuntu 22.
 #
 # This file is the record of what is deployed. Change it here and apply it,
 # rather than editing the app in the control panel, or the two drift and the
