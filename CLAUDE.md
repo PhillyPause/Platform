@@ -216,7 +216,10 @@ the next.
 - **The .NET version waits for App Platform.** Its buildpack has no .NET 11
   SDK, so a move to `net11.0` passes CI and then fails to deploy, leaving the
   live site behind. Move only once DigitalOcean's buildpack page lists the
-  SDK (HOSTING.md, "No Dockerfile").
+  SDK (HOSTING.md, "No Dockerfile"). CI pins the SDK the buildpack uses
+  (10.0.201), whose Razor is stricter than a newer SDK's: a local build on
+  `dotnet`'s default SDK can pass where the deploy fails. Never name a Razor
+  variable after a directive (`section`, `page`, `code`, `layout`...).
 - `TreatWarningsAsErrors` is on. A warning is a build break, by choice.
 - Central package management is on: versions go in `Directory.Packages.props`,
   never in a `.csproj`. A version attribute on a `PackageReference` is NU1008.
