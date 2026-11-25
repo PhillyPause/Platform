@@ -1,38 +1,28 @@
-@page "/volunteer/sign-in/{Token}"
 @inject AuthTokenRepository Tokens
 @inject AdminBootstrap Admins
 @inject VolunteerRepository Volunteers
 @inject NavigationManager Navigation
 
-@* Opening the link does not sign anyone in; pressing the button does. Mail
+@* What the link in a sign-in email opens: the front page, with this in a
+   dialog. Opening it signs nobody in; pressing the button does. Mail
    scanners open every link in a message to check it, and a link spent on
    arrival would be spent by the scanner, leaving the volunteer an "expired"
-   page and no idea why. Signed in, they land on the front page, not their
-   own: the volunteer pages are not ready for readers yet, and organizers
-   reach theirs from Team in the account bar. *@
+   message and no idea why. Signed in, they land on the front page. *@
 
-<PageMeta Title="Sign in" Description="Finish signing in to PhillyPause." NoIndex="true" />
+<h2>One more click</h2>
+<p class="joinlede">This signs you in on this device, and keeps you signed in for a month.</p>
 
-
-<div class="wrap">
-    <header class="mh-page-head">
-        <div>
-            <h1>One more click</h1>
-            <p class="mh-summary">This signs you in on this device, and keeps you signed in for a month.</p>
+<div class="joinform">
+    <EditForm Model="Input" FormName="redeem" OnSubmit="RedeemAsync" class="signup">
+        <div class="signuprow">
+            <button type="submit">Sign me in</button>
+            <label class="signupalt confirm-alt" for="dlg-none">Not now</label>
         </div>
-    </header>
-</div>
-
-<div class="wrap">
-    <section class="mh-panel mh-narrow">
-        <EditForm Model="Input" FormName="redeem" OnSubmit="RedeemAsync" class="mh-form">
-            <button class="mh-btn mh-btn-primary" type="submit">Sign me in</button>
-        </EditForm>
-    </section>
+    </EditForm>
 </div>
 
 @code {
-    [Parameter] public string Token { get; set; } = string.Empty;
+    [Parameter, EditorRequired] public required string Token { get; set; }
 
     [CascadingParameter] private HttpContext HttpContext { get; set; } = default!;
 

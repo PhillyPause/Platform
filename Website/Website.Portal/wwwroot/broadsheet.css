@@ -354,6 +354,8 @@ html:has(.dlgtoggle:checked:not(#dlg-none)) { overflow: hidden; }
 #welcome-open:checked ~ .paneldlg.d-welcome { display: grid; }
 #remove-open:checked ~ .paneldlg.d-remove { display: grid; }
 #check-open:checked ~ .paneldlg.d-check { display: grid; }
+#signin-open:checked ~ .paneldlg.d-signin { display: grid; }
+#signinlink-open:checked ~ .paneldlg.d-signinlink { display: grid; }
 #notfound-open:checked ~ .paneldlg.d-notfound { display: grid; }
 /* What we keep is a checkbox, not one of the radios, so it opens over Join
    and closing it leaves Join where it was. Later in the DOM and one

@@ -21,8 +21,13 @@ public static class EmailTemplates
 
     private const string ConfirmButton = "Confirm my email";
 
+    /// <summary>
+    /// A link and a code in one email: the link for whoever reads mail where
+    /// they asked, the code for whoever asked from an installed app, which
+    /// keeps its own cookies and so would not be signed in by the link.
+    /// </summary>
     public static (string Subject, string Body) MagicLink(
-        string displayName, string linkUrl, TimeSpan validFor)
+        string displayName, string linkUrl, string code, TimeSpan validFor)
     {
         var body =
             $"""
@@ -32,11 +37,15 @@ public static class EmailTemplates
 
              {linkUrl}
 
-             It works once and expires in {(int)validFor.TotalMinutes} minutes. If you did
-             not ask to sign in, ignore this email — nothing has changed.
+             Or type this code where you asked to sign in:
+
+             {SignInCode.Show(code)}
+
+             Either works once and expires in {(int)validFor.TotalMinutes} minutes. If you
+             did not ask to sign in, ignore this email — nothing has changed.
              """;
 
-        return ($"Your {Org} sign-in link", body);
+        return ($"Your {Org} sign-in link and code", body);
     }
 
     public static (string Subject, string Body) SignupConfirmation(
