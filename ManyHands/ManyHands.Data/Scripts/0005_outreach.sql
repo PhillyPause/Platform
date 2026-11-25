@@ -2,7 +2,7 @@
 -- action centre (/act), so a member can see what they have done and
 -- organizers can see who is being reached, by whom and how.
 --
--- A new script because 0001 has run in production and is frozen.
+-- A new script because 0001 to 0004 have run in production and are frozen.
 --
 -- The official is named by the action centre's key (the Markdown file in
 -- Content/_officials) and by name as it was then, so a record still reads

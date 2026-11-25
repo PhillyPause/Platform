@@ -435,7 +435,7 @@ Postgres, one schema (`public`), defined by
 | `external_publications`, `activity_pings`, `discord_role_grants` | What has been announced, who has been pinged, which Discord roles the bot granted |
 | `crm_*` | The CRM and outreach mail. A partner's outreach lives on its `crm_organizations` row (`outreach_status`, `priority`, `audience`, `ask_rung`, `tracking_code`, unique among live rows), and `crm_organization_links` holds how organisations know each other |
 | `federal_officials`, `sync_runs` | The officials directory and its refreshes |
-| `outreach_actions` | Who contacted which official from `/act`, how and when (`0002_outreach.sql`) |
+| `outreach_actions` | Who contacted which official from `/act`, how and when (`0005_outreach.sql`) |
 
 ### The outbox
 
