@@ -1,0 +1,21 @@
+@* The basic route's invitation: what joining adds, and the way back to
+   ACT's first screen, where joining and signing in are. With ManyHands off
+   there is nothing to join, so this renders nothing (CLAUDE.md). *@
+
+@if (Configuration.IsManyHandsEnabled())
+{
+    <aside class="act-invite" aria-label="Join">
+        <p>
+            <strong>@Lead</strong>
+            Members are walked through it: who to start with, when to follow up, and a meeting with
+            your neighbours when enough of you ask.
+        </p>
+        <a class="act-btn act-btn-small" href="@ActPaths.Start">Join or sign in</a>
+    </aside>
+}
+
+@code {
+    [Inject] private IConfiguration Configuration { get; set; } = default!;
+
+    [Parameter] public string Lead { get; set; } = "Rather not do this alone?";
+}

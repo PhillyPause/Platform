@@ -110,7 +110,7 @@ their own pages. Helpers that are not components live in
 | `/volunteer/me` | A summary at the top (coming up, done, what they like, how news reaches them), then a section each, listed at the side: My signups (coming up, with cancelling, and done), What I like doing, Email and notifications (one form with the interests, so either Save saves both), Discord unlink, Calendar feed, My data (export, delete). Sign out and Events head the page |
 | `/volunteer/check-email` | The front page with the Check your email dialog, where joining redirects someone not yet confirmed: what the email looks like, and what to do if it does not come. `?again=true` when it was sent again |
 | `/volunteer/confirm/{token}` | Not a page here: the front page with the Finish joining dialog, where the link in a joining email lands. It greets them by name; **pressing** "Yes, that's me" confirms the address and signs them in, and "That's not me" is a link to removal |
-| `/volunteer/welcome` | The front page with the Welcome dialog, where confirming redirects: what happens now, the primer, back to the front page. It does not link to their page yet |
+| `/volunteer/welcome` | The front page with the Welcome dialog, where confirming redirects: what happens now, ACT, the primer, back to the front page. It does not link to their page yet |
 | `/volunteer/remove/{key}` | The front page with the Leave the list dialog: "Not you, or changed your mind?" Asks, then deletes them, as the button on their page does, and signs this device out if it was them. Never an organizer |
 | `/volunteer/unsubscribe/{key}` | Asks, then unsubscribes |
 | `/volunteer/link-discord/{token}` | Where `/link` in Discord sends someone: signed in, one press links the account |
@@ -408,6 +408,7 @@ it; `ManyHandsGateTests` holds that, and `SiteWiringTests` the flag-on side.
 | The account bar, top of every page | Signed out: Events, Join, **Sign in**. Signed in: "Signed in as *name*", My page, Events, **Team** for organizers, Sign out. Events, Join and Sign in load the page in full (`data-enhance-nav="false"`): enhanced navigation would leave the dialog shut | Not rendered |
 | Sign in dialog, front page | Email, then the code; Join and Sign in point at each other | Not rendered, and `/volunteer/sign-in` is a 404 |
 | Join dialog, front page | The signup form itself (`JoinForm`): name, email, interests. Pressing Join first checks the connection (`join.js`), and without one keeps the form and says so. It posts to `/join`; someone new is redirected to Check your email, a member already confirmed is answered in the dialog; if the database is unreachable it says so | No form and no email signup: the dialog says what joining means |
+| ACT's first screen, `/act` | Sign in or join (`ActGate`): the same `JoinForm`, in a `FormMappingScope` named `act` because the front page can hold both, posting to `/act` and answering there (`/act?joined=true`); Sign in opens the Sign in dialog with `?ReturnUrl=/act`. A signed-in member gets the guided path instead (ACT.md) | The basic route, as ACT has always been |
 | Events dialog, front page | What is coming up; if the database is unreachable it says so | Not rendered, and `/events` is a 404 |
 | I can help | Opens Events | Opens Join |
 | Small Print, cookies | Adds the sign-in cookie | One cookie |

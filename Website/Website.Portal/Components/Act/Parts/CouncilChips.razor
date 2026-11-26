@@ -1,0 +1,25 @@
+@inject OfficialsStore Officials
+
+@* A Philadelphian's council district, as chips: the Census geocoder does
+   not know council districts, so they choose theirs, and their district's
+   councilmember joins their officials. Renders nothing outside the city. *@
+
+@if (Six.IsPhiladelphia)
+{
+    <div class="act-filter act-council">
+        <FilterChips Id="f-council" Label="Your council district" Toggle="true" Chips="@Chips()" />
+        @if (Six.NeedsCouncil)
+        {
+            <p class="act-small">Choose yours to add your district&rsquo;s councilmember. Not sure? <a href="https://phlcouncil.com/" target="_blank" rel="noopener">City Council</a> will tell you.</p>
+        }
+    </div>
+}
+
+@code {
+    [Parameter, EditorRequired] public required YourSix Six { get; set; }
+
+    private IReadOnlyList<FilterChips.Chip> Chips() =>
+        YourSix.CouncilDistricts(Officials, DateOnly.FromDateTime(DateTime.UtcNow))
+            .Select(d => new FilterChips.Chip(d, null, ActPaths.Yours(Six.Match, d == Six.Council ? null : d), d == Six.Council))
+            .ToArray();
+}

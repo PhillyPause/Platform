@@ -10,10 +10,19 @@
    the question was: the anchor scrolls the dialog to the reply, or to what
    needs fixing. Someone new is redirected to the Check your email dialog
    instead, since opening that email is the one thing left to do. Only
-   rendered with ManyHands on. *@
+   rendered with ManyHands on.
+
+   ACT's first screen holds the same form, inside a FormMappingScope of its
+   own because the front page can hold both: it posts to /act and answers
+   there (Action, CheckEmail, AlreadyIn), so joining is part of ACT and there
+   is still one signup form. *@
 
 <div id="@Anchor">
-@if (_joined is not null)
+@if (_joined is not null && AlreadyIn is not null)
+{
+    @AlreadyIn
+}
+else if (_joined is not null)
 {
     <div class="joindone" role="status">
         <p class="joindone-head">You are already one of us</p>
@@ -30,7 +39,7 @@ else
 {
     @* The tracking code rides on the form's own address, so the post carries
        whichever link brought the reader here (?src=newsguild). No cookie. *@
-    <EditForm Model="Input" FormName="join" OnValidSubmit="JoinAsync" action="@(TrackingCode.Append(ManyHandsPaths.Join, Source) + "#" + Anchor)" class="signup joinfields">
+    <EditForm Model="Input" FormName="join" OnValidSubmit="JoinAsync" action="@(TrackingCode.Append(Action, Source) + "#" + Anchor)" class="signup joinfields">
         <DataAnnotationsValidator />
         <label>
             <span>Your name</span>
@@ -60,7 +69,17 @@ else
 </div>
 
 @code {
-    private const string Anchor = "join-form";
+    /// <summary>Where the form posts: the page that shows it, so the answer lands there.</summary>
+    [Parameter] public string Action { get; set; } = ManyHandsPaths.Join;
+
+    /// <summary>The element the form's address scrolls to; one per form on a page.</summary>
+    [Parameter] public string Anchor { get; set; } = "join-form";
+
+    /// <summary>Where someone new is sent, to be told to open their email.</summary>
+    [Parameter] public string CheckEmail { get; set; } = ManyHandsPaths.CheckEmail;
+
+    /// <summary>What a confirmed member who joins again sees instead of the default.</summary>
+    [Parameter] public RenderFragment? AlreadyIn { get; set; }
 
     [CascadingParameter] private HttpContext HttpContext { get; set; } = default!;
 
@@ -102,7 +121,7 @@ else
             Input!.DisplayName, Input.Email, InterestChoices.Read(HttpContext), Source);
 
         if (result is JoinResult.Ok { Confirmed: false } pending)
-            Navigation.NavigateTo(pending.AlreadyMember ? $"{ManyHandsPaths.CheckEmail}?again=true" : ManyHandsPaths.CheckEmail);
+            Navigation.NavigateTo(pending.AlreadyMember ? CheckEmail + (CheckEmail.Contains('?') ? '&' : '?') + "again=true" : CheckEmail);
         else if (result is JoinResult.Ok ok) _joined = ok;
         else _refused = "That does not look like an email address.";
     }

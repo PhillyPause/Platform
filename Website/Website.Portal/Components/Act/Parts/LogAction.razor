@@ -4,11 +4,14 @@
 @inject IConfiguration Configuration
 @inject IServiceProvider Services
 @inject ActThrottle Throttle
+@inject NavigationManager Navigation
 
 @* "I did it": the outreach log, with ManyHands on. Off, this renders nothing
    and nothing on the page mentions it (CLAUDE.md). Signed in, the action is
    theirs, on their own page; not signed in, it is counted with nobody's name
-   on it. The message itself is never sent here. *@
+   on it. The message itself is never sent here. Reached from Your six
+   (Six), it then offers the next of the reader's officials, the path's
+   last step; past the last, it asks them to bring a friend. *@
 
 @if (_outreach is not null)
 {
@@ -22,9 +25,30 @@
             }
             else
             {
-                <p>We counted it, with nobody&rsquo;s name on it. <label class="act-link" for="join-open">Join us</label> and we will keep a record you can see, and tell you when there is something worth calling about.</p>
+                <p>We counted it, with nobody&rsquo;s name on it. <a href="@ActPaths.Start">Join us</a> and we will walk you through what comes next: when to follow up, and a meeting with your neighbours.</p>
             }
-            <p><a class="act-btn act-btn-ghost" href="/act">Contact someone else</a></p>
+            @if (Six?.After(Official) is { } next)
+            {
+                <div class="act-next">
+                    <h4 class="act-kicker">Next of yours</h4>
+                    <ul class="act-cards">
+                        <OfficialCard Official="next" Six="Six" />
+                    </ul>
+                    <p class="act-small"><a href="@Six.Back">All of your officials</a></p>
+                </div>
+            }
+            else if (Six is not null)
+            {
+                <p>That is everyone on your list. Five minutes each, and you have done more than almost anyone.</p>
+                <p>
+                    <a class="act-btn" href="@FriendMail">Ask a friend to do the same</a>
+                    <a class="act-btn act-btn-ghost" href="@Six.Back">Back to your officials</a>
+                </p>
+            }
+            else
+            {
+                <p><a class="act-btn act-btn-ghost" href="@ActPaths.Start">Contact someone else</a></p>
+            }
         }
         else
         {
@@ -81,6 +105,17 @@
     [Parameter, EditorRequired] public required Official Official { get; set; }
 
     [Parameter, EditorRequired] public required DraftKind Kind { get; set; }
+
+    /// <summary>The reader's officials, when this page was reached from Your six.</summary>
+    [Parameter] public YourSix? Six { get; set; }
+
+    // An email for the reader to send a friend themselves, from their own
+    // mail: nothing goes from here, and we never see who it went to.
+    private string FriendMail =>
+        "mailto:?subject=" + Uri.EscapeDataString("Five minutes on AI")
+        + "&body=" + Uri.EscapeDataString(
+            "I just called the people who represent us about AI. It took five minutes, with a script. "
+            + "Will you do the same? " + Navigation.BaseUri.TrimEnd('/') + ActPaths.Start);
 
     /// <summary>One per page: the write page logs a message, the call page a call.</summary>
     [SupplyParameterFromForm(FormName = "log")] private LogInput? Input { get; set; }

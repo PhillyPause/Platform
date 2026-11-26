@@ -1,0 +1,67 @@
+@* The path a member is walked along, as a motion tutorial: six steps, each
+   lit in turn on an eighteen-second loop, as HowToCall lights four in
+   twelve. CSS does all of it (act.css, .act-path), and with
+   prefers-reduced-motion every step simply shows, still (PLAN.md section 6).
+   Shown on ACT's first screen, to members at Learn, and to everyone else
+   before they find their officials. *@
+
+<figure class="act-tut act-path" aria-labelledby="tut-path-title">
+    <figcaption id="tut-path-title" class="act-tut-title">@Title <span>@Note</span></figcaption>
+    <ol class="act-tut-steps">
+        <li class="act-tut-step" style="--i: 0">
+            <svg class="act-tut-icon" viewBox="0 0 64 64" aria-hidden="true">
+                <path d="M32 16c-6-4-14-5-22-4v36c8-1 16 0 22 4 6-4 14-5 22-4V12c-8-1-16 0-22 4zM32 16v36" />
+                <path class="act-draw" pathLength="1" d="M16 22h10M16 30h10M38 22h10M38 30h10" />
+            </svg>
+            <strong>Learn the ask</strong>
+            <span>Two minutes: what we ask for, and why one constituent counts.</span>
+        </li>
+        <li class="act-tut-step" style="--i: 1">
+            <svg class="act-tut-icon" viewBox="0 0 64 64" aria-hidden="true">
+                <g class="act-bounce"><path d="M32 58s-16-17-16-30a16 16 0 0 1 32 0c0 13-16 30-16 30z" /><circle cx="32" cy="28" r="6" /></g>
+            </svg>
+            <strong>Find your six</strong>
+            <span>Your address, once. Washington, Harrisburg, and here at home.</span>
+        </li>
+        <li class="act-tut-step" style="--i: 2">
+            <svg class="act-tut-icon" viewBox="0 0 64 64" aria-hidden="true">
+                <g class="act-ring"><path d="M18 10h8l4 12-6 4a32 32 0 0 0 14 14l4-6 12 4v8a4 4 0 0 1-4 4C30 50 14 34 14 14a4 4 0 0 1 4-4z" /></g>
+                <path class="act-wave" d="M42 14a10 10 0 0 1 8 8M42 6a18 18 0 0 1 16 16" />
+            </svg>
+            <strong>Call or write</strong>
+            <span>Your US Representative first. A script or a draft, in your own words.</span>
+        </li>
+        <li class="act-tut-step" style="--i: 3">
+            <svg class="act-tut-icon" viewBox="0 0 64 64" aria-hidden="true">
+                <rect x="10" y="14" width="44" height="40" rx="3" />
+                <path d="M10 24h44M22 8v10M42 8v10" />
+                <path class="act-strike" pathLength="1" d="M22 39l7 7 13-13" />
+            </svg>
+            <strong>Follow up</strong>
+            <span>No answer in a week? Call again. An answer? Say thank you.</span>
+        </li>
+        <li class="act-tut-step" style="--i: 4">
+            <svg class="act-tut-icon" viewBox="0 0 64 64" aria-hidden="true">
+                <circle cx="16" cy="26" r="6" /><path d="M6 50c0-8 4-14 10-14s10 6 10 14" />
+                <circle cx="48" cy="26" r="6" /><path d="M38 50c0-8 4-14 10-14s10 6 10 14" />
+                <g class="act-bounce"><circle cx="32" cy="20" r="7" /><path d="M20 50c0-10 5-17 12-17s12 7 12 17" /></g>
+            </svg>
+            <strong>Meet them, with us</strong>
+            <span>When enough neighbours ask, we ask for a meeting and go together.</span>
+        </li>
+        <li class="act-tut-step" style="--i: 5">
+            <svg class="act-tut-icon" viewBox="0 0 64 64" aria-hidden="true">
+                <path d="M10 12h44v30H30l-12 10V42h-8z" />
+                <path class="act-draw" pathLength="1" d="M18 22h28M18 31h18" />
+            </svg>
+            <strong>Tell us what they said</strong>
+            <span>Where they stand, so the next person who calls knows.</span>
+        </li>
+    </ol>
+</figure>
+
+@code {
+    [Parameter] public string Title { get; set; } = "The path, in six steps";
+
+    [Parameter] public string Note { get; set; } = "a member's, start to finish";
+}

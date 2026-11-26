@@ -1,0 +1,27 @@
+@* What we ask each level of government for, in three short columns: on the
+   plain start, at a member's Learn step, and under a reader's officials.
+   TheAsk.cs words the same asks for every script and draft; change both
+   together (ACT.md). *@
+
+<section class="act-ask" aria-labelledby="ask-head">
+    <h3 id="ask-head" class="act-section-head">@Heading</h3>
+    <div class="act-ask-grid">
+        <div>
+            <h4>In Washington</h4>
+            <p>An international pause on building ever more powerful AI systems until they can be shown to be safe, and no federal ban on states passing their own AI safety laws.</p>
+        </div>
+        <div>
+            <h4>In Harrisburg</h4>
+            <p>Binding safety rules in Pennsylvania for the companies building the most powerful systems, and a clear word to our delegation in Washington.</p>
+        </div>
+        <div>
+            <h4>Here at home</h4>
+            <p>AI safety on the public record: a resolution calling on Congress to pause, and questions put to the people who represent us there.</p>
+        </div>
+    </div>
+    <p class="act-small"><a href="/act/learn/the-ask">Why these, and how to say them &rarr;</a></p>
+</section>
+
+@code {
+    [Parameter] public string Heading { get; set; } = "What we are asking for";
+}

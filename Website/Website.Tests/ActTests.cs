@@ -235,9 +235,8 @@ public partial class ActTests(WebApplicationFactory<Program> factory) : IClassFi
         var pages = new TheoryData<string>
         {
             "/act", "/act/officials", "/act/officials?county=Bucks", "/act/officials?body=state-house&county=Philadelphia&q=smith",
-            "/act/yours", "/act/yours?cd=3&ss=1&sh=182&county=Philadelphia",
-            "/act/yours?cd=3&ss=1&sh=182&county=Philadelphia&in=harrisburg",
-            "/act/yours?cd=3&ss=1&sh=182&county=Philadelphia&in=local&cc=5",
+            "/act/find", "/act/yours", "/act/yours?cd=3&ss=1&sh=182&county=Philadelphia",
+            "/act/yours?cd=3&ss=1&sh=182&county=Philadelphia&cc=5", "/act/yours?cd=1&ss=6&sh=18&county=Bucks",
             "/act/learn",
             ActPaths.WriteTo(Store.All.Where(o => o.CanEmail).Take(3))
         };

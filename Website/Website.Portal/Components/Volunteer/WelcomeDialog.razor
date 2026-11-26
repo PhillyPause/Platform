@@ -1,3 +1,4 @@
+@using Website.Portal.Act
 @inject VolunteerRepository Volunteers
 @inject ActivityTypeRepository Types
 @inject ILogger<WelcomeDialog> Logger
@@ -33,6 +34,13 @@
     <div class="joinway">
         <div class="joinway-k">You come to one thing</div>
         <p>Our next event is always in the box at the top of the front page. Come to that one, or pick anything from Events, and decide afterwards.</p>
+    </div>
+    <div class="joinway">
+        <div class="joinway-k">Tell the people who represent you</div>
+        <p>
+            ACT walks you through it: who to start with, what to say, and what comes next. Five minutes
+            for a first call. <a href="@ActPaths.Start" data-enhance-nav="false">Start in ACT</a>.
+        </p>
     </div>
     <div class="joinway">
         <div class="joinway-k">Learn as you go</div>

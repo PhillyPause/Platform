@@ -3,6 +3,7 @@
 @inject NavigationManager Navigation
 @inject IMessageDrafter Drafter
 @inject ActThrottle Throttle
+@inject IConfiguration Configuration
 
 @* Call one official, in the Act dialog: the numbers, a script that works as
    it stands, and the option of one with the reader's own name and reason in
@@ -14,12 +15,19 @@
 
     <Home>
         <ActView>
+            @if (Member)
+            {
+                <PathSteps Current="3" />
+            }
             <header class="act-task-head">
                 <OfficialAvatar Official="o" Size="sm" />
                 <div>
                     <h2>Call @TheAsk.Salutation(o)</h2>
                     <p class="act-lead">@o.Office. Five minutes. A staffer answers; they will ask for your zip code, not your credentials.</p>
-                    <p class="act-small"><a href="/act/officials/@o.Key">About @o.Name</a></p>
+                    <p class="act-small"><a href="/act/officials/@o.Key">About @o.Name</a>@if (_six is not null)
+                    {
+                        <text> &middot; </text><a href="@_six.Back">Back to your officials</a>
+                    }</p>
                 </div>
             </header>
 
@@ -90,7 +98,7 @@
                         </details>
                     </section>
 
-                    <LogAction Official="o" Kind="DraftKind.Call" />
+                    <LogAction Official="o" Kind="DraftKind.Call" Six="_six" />
                 </div>
 
                 <aside class="act-task-side">
@@ -125,6 +133,17 @@
     private bool _personalised;
     private string? _refused;
 
+    // The districts, when this page was reached from Your six (YourSix.Carried).
+    [SupplyParameterFromQuery(Name = "cd")] private string? Cd { get; set; }
+    [SupplyParameterFromQuery(Name = "ss")] private string? Ss { get; set; }
+    [SupplyParameterFromQuery(Name = "sh")] private string? Sh { get; set; }
+    [SupplyParameterFromQuery(Name = "county")] private string? County { get; set; }
+    [SupplyParameterFromQuery(Name = "cc")] private string? Cc { get; set; }
+
+    private YourSix? _six;
+
+    private bool Member => _six is not null && Configuration.IsManyHandsEnabled() && HttpContext?.User.VolunteerId() is not null;
+
     protected override void OnParametersSet()
     {
         _official = Officials.Find(Key);
@@ -135,6 +154,7 @@
             return;
         }
 
+        _six = YourSix.Carried(Officials, _official, Cd, Ss, Sh, County, Cc, DateOnly.FromDateTime(DateTime.UtcNow));
         Input ??= new DraftInput();
 
         // A script that works as it stands, with the gaps marked.

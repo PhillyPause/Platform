@@ -10,8 +10,9 @@ namespace Website.Tests;
 /// <summary>
 /// Nobody reads a list of dozens, so the action centre never shows one: the
 /// directory is a filter that lists nobody until something is chosen and no
-/// more than a dozen at once, and "Your officials" shows one place at a
-/// time. Chips say how many they hold; every state is an address.
+/// more than a dozen at once, and "Your officials" shows the reader's own
+/// (YourSix), not everyone who represents their county. Chips say how many
+/// they hold; every state is an address.
 /// </summary>
 public partial class ActFilterTests(WebApplicationFactory<Program> factory) : IClassFixture<WebApplicationFactory<Program>>
 {
@@ -109,30 +110,59 @@ public partial class ActFilterTests(WebApplicationFactory<Program> factory) : IC
     private const string Philadelphian = "/act/yours?cd=3&ss=1&sh=182&county=Philadelphia";
 
     [Fact]
-    public async Task Your_officials_start_with_Washington_alone()
+    public async Task Your_officials_are_your_own_in_the_paths_order()
     {
-        var washington = Current.Count(o => o.IsSenator || (o.Level == OfficialLevel.Federal && o.District == "3"));
+        var page = await factory.CreateClient().GetStringAsync(Philadelphian + "&cc=5");
+        var six = YourSix.For(Store, new DistrictMatch("3", "1", "182", "Philadelphia"), "5", DateOnly.FromDateTime(DateTime.UtcNow));
 
-        var page = await factory.CreateClient().GetStringAsync(Philadelphian);
-
-        Cards(page).Should().Be(washington, "the two senators and PA-3's member, or members while the seat changes hands");
-        page.Should().Contain("href=\"/act/yours?cd=3&amp;ss=1&amp;sh=182&amp;county=Philadelphia&amp;in=harrisburg\"")
-            .And.Contain("county=Philadelphia&amp;in=local\"", "City Hall is a chip away");
+        Cards(page).Should().Be(six.People.Count);
+        six.People.Select(o => o.Level).Should().ContainInOrder(
+            OfficialLevel.Federal, OfficialLevel.Federal, OfficialLevel.Federal,
+            OfficialLevel.StateSenate, OfficialLevel.StateHouse, OfficialLevel.City);
+        six.StartHere!.IsSenator.Should().BeFalse("the US Representative is Start here");
+        var at = six.People.Select(o => page.IndexOf(o.Name, StringComparison.Ordinal)).ToArray();
+        at.Should().BeInAscendingOrder("the cards follow the path");
+        page.Should().NotContain(Current.First(o => o.Office.StartsWith("Governor", StringComparison.OrdinalIgnoreCase)).Name,
+            "everyone's officials are in the directory, not on a reader's own list");
     }
 
     [Fact]
-    public async Task A_Philadelphian_sees_the_citywide_officials_and_only_their_own_district_member()
+    public async Task A_Philadelphian_chooses_their_council_district_and_their_member_joins_the_list()
     {
-        var citywide = Current.Count(o => o.Level == OfficialLevel.City && o.District is null);
         var member = Current.First(o => o.Level == OfficialLevel.City && o.District == "5");
 
-        var without = await factory.CreateClient().GetStringAsync(Philadelphian + "&in=local");
-        var with = await factory.CreateClient().GetStringAsync(Philadelphian + "&in=local&cc=5");
+        var without = await factory.CreateClient().GetStringAsync(Philadelphian);
+        var with = await factory.CreateClient().GetStringAsync(Philadelphian + "&cc=5");
 
-        Cards(without).Should().Be(citywide);
         without.Should().Contain("Choose yours to add your district").And.NotContain(member.Name);
-        Cards(with).Should().Be(citywide + 1);
-        with.Should().Contain(member.Name);
+        without.Should().Contain("href=\"/act/yours?cd=3&amp;ss=1&amp;sh=182&amp;county=Philadelphia&amp;cc=5\"");
+        Cards(with).Should().Be(Cards(without) + 1);
+        with.Should().Contain(member.Name).And.NotContain("Choose yours to add your district");
+    }
+
+    [Fact]
+    public void Outside_the_city_home_is_the_county_commissioners()
+    {
+        var six = YourSix.For(Store, new DistrictMatch("1", "6", "18", "Bucks"), null, DateOnly.FromDateTime(DateTime.UtcNow));
+        var commissioners = Current.Where(o => o.Level == OfficialLevel.County && o.Counties.Contains("Bucks")).ToArray();
+
+        commissioners.Should().NotBeEmpty();
+        six.People.Should().Contain(commissioners).And.NotContain(o => o.Level == OfficialLevel.City);
+        six.NeedsCouncil.Should().BeFalse();
+    }
+
+    [Fact]
+    public void Next_is_the_one_after_and_the_last_has_none()
+    {
+        var six = YourSix.For(Store, new DistrictMatch("3", "1", "182", "Philadelphia"), "5", DateOnly.FromDateTime(DateTime.UtcNow));
+        var outsider = Current.First(o => !six.Includes(o));
+
+        six.After(six.People[0]).Should().Be(six.People[1]);
+        six.After(six.People[^1]).Should().BeNull();
+        six.After(outsider).Should().BeNull();
+        YourSix.Carried(Store, outsider, "3", "1", "182", "Philadelphia", "5", DateOnly.FromDateTime(DateTime.UtcNow))
+            .Should().BeNull("a page reached from the directory has no list to go on with");
+        six.CallPath(six.People[1]).Should().Be($"/act/call/{six.People[1].Key}?cd=3&ss=1&sh=182&county=Philadelphia&cc=5");
     }
 
     private static int Cards(string page) => Card().Matches(page).Count;

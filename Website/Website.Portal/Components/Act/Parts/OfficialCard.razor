@@ -1,6 +1,8 @@
-@* One official in a list: who, what seat, and the two things to do. *@
+@* One official in a list: who, what seat, and the two things to do. On Your
+   six, Six carries the reader's districts into the call and write links, so
+   that page can say who comes next; Featured is a member's Start here. *@
 
-<li class="act-card">
+<li class="act-card@(Featured ? " act-card-start" : null)">
     <OfficialAvatar Official="Official" />
     <div class="act-card-body">
         <h4 class="act-card-name"><a href="/act/officials/@Official.Key">@Official.Name</a></h4>
@@ -15,11 +17,11 @@
         <p class="act-card-actions">
             @if (Official.MainPhone is { } phone)
             {
-                <a class="act-btn act-btn-small" href="/act/call/@Official.Key">Call</a>
+                <a class="act-btn act-btn-small" href="@CallPath">Call</a>
             }
             @if (Official.CanEmail)
             {
-                <a class="act-btn act-btn-small act-btn-ghost" href="/act/write/@Official.Key">Write</a>
+                <a class="act-btn act-btn-small act-btn-ghost" href="@WritePath">Write</a>
             }
             @if (Official.MainPhone is { } main)
             {
@@ -31,4 +33,12 @@
 
 @code {
     [Parameter, EditorRequired] public required Official Official { get; set; }
+
+    [Parameter] public YourSix? Six { get; set; }
+
+    [Parameter] public bool Featured { get; set; }
+
+    private string CallPath => Six?.CallPath(Official) ?? $"/act/call/{Official.Key}";
+
+    private string WritePath => Six?.WritePath(Official) ?? $"/act/write/{Official.Key}";
 }
