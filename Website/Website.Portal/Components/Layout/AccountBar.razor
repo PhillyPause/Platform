@@ -9,7 +9,7 @@
    Everything here comes from the sign-in cookie, so it costs no database
    call; VolunteerSession keeps the name and role in it current. Off, it
    renders nothing: no page mentions ManyHands before it exists.
-   Events and Join open front-page dialogs, so their links load the page in
+   Events, Join and Sign in open front-page dialogs, so their links load the page in
    full: enhanced navigation patches the radios' checked attribute, which a
    radio the reader has already clicked ignores, and the dialog stays shut. *@
 
@@ -38,7 +38,7 @@
                 <span class="account-links">
                     <a href="@ManyHandsPaths.Events" data-enhance-nav="false">Events</a>
                     <a href="@ManyHandsPaths.Join" data-enhance-nav="false">Join</a>
-                    <a class="account-primary" href="@ManyHandsPaths.SignIn">Sign in</a>
+                    <a class="account-primary" href="@ManyHandsPaths.SignIn" data-enhance-nav="false">Sign in</a>
                 </span>
             }
         </div>

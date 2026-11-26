@@ -34,14 +34,14 @@ public sealed class EmailTextTests
             .Should().Be(LocalTime.Format(AugustSaturday));
 
     [Fact]
-    public void The_sign_in_email_carries_the_link_and_its_lifetime_and_no_unsubscribe()
+    public void The_sign_in_email_carries_the_link_the_code_and_their_lifetime_and_no_unsubscribe()
     {
         const string link = "https://example.test/volunteer/sign-in/xyz";
 
-        var (subject, body) = EmailTemplates.MagicLink("Maya", link, TimeSpan.FromMinutes(20));
+        var (subject, body) = EmailTemplates.MagicLink("Maya", link, "042917", TimeSpan.FromMinutes(20));
 
-        subject.Should().Contain("sign-in").And.Contain("PhillyPause");
-        body.Should().Contain(link).And.Contain("20 minutes").And.Contain("Maya");
+        subject.Should().Contain("sign-in").And.Contain("code").And.Contain("PhillyPause");
+        body.Should().Contain(link).And.Contain("042 917").And.Contain("20 minutes").And.Contain("Maya");
         // Requested by the recipient: an unsubscribe here would let someone
         // opt out of their own sign-in.
         body.Should().NotContainEquivalentOf("unsubscribe");

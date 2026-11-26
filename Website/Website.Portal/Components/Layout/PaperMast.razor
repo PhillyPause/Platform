@@ -1,0 +1,46 @@
+@using ManyHands.Core
+@using Website.Portal.Volunteer
+@inject NavigationManager Navigation
+
+@* The front page's masthead and nav band, small, for the pages a member
+   moves between: the same paper, the same bell, the same double rule and
+   the same Join and Act buttons, so leaving the front page never feels like
+   leaving the site. The links that open a front-page dialog (Events, Join,
+   Act) load the page in full, as everywhere: enhanced navigation would patch
+   the dialog's radio, which a radio already clicked ignores. *@
+
+<header class="paper-mast">
+    <a class="paper-brand" href="/" aria-label="PhillyPause, the front page">
+        <span class="mark paper-mark" aria-hidden="true">
+            <img src="@Assets["phillypause-logo.svg"]" alt="">
+        </span>
+        <span class="paper-title">Stop the AI death race!</span>
+    </a>
+</header>
+
+<nav class="navband paper-nav" aria-label="Sections">
+    <a class="navlink" href="/" data-enhance-nav="false">Front page</a>
+    <a class="navlink" href="@ManyHandsPaths.Events" data-enhance-nav="false">Events</a>
+    @if (Me is not null)
+    {
+        <a class="navlink" href="@ManyHandsPaths.Me" aria-current="@(IsHere(ManyHandsPaths.Me) ? "page" : null)">My page</a>
+        <a class="navlink" href="@ManyHandsPaths.MyOutreach" aria-current="@(IsHere(ManyHandsPaths.MyOutreach) ? "page" : null)">My outreach</a>
+        @if (Me.IsAtLeast(VolunteerRole.Organizer))
+        {
+            <a class="navlink" href="@ManyHandsPaths.Team" data-enhance-nav="false">Team</a>
+        }
+    }
+    else
+    {
+        <a class="joinbtn" href="@ManyHandsPaths.Join" data-enhance-nav="false">Join</a>
+    }
+    <a class="actbtn @(Me is not null ? "paper-push" : null)" href="/act" data-enhance-nav="false"><svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1z"></path></svg> Act</a>
+</nav>
+
+@code {
+    /// <summary>The signed-in volunteer, or null for a reader who is not.</summary>
+    [Parameter] public Volunteer? Me { get; set; }
+
+    private bool IsHere(string path) =>
+        string.Equals("/" + Navigation.ToBaseRelativePath(Navigation.Uri).Split('?', '#')[0], path, StringComparison.OrdinalIgnoreCase);
+}

@@ -5,6 +5,8 @@
 @page "/volunteer/welcome"
 @page "/volunteer/check-email"
 @page "/volunteer/remove/{RemoveKey:guid}"
+@page "/volunteer/sign-in"
+@page "/volunteer/sign-in/{SignInToken}"
 @layout BroadsheetLayout
 @using ManyHands.Core
 @using ManyHands.Data
@@ -39,7 +41,7 @@ else
   <PageMeta Title="Stop the AI death race"
             Description="In July 2026, 700 AI agents broke out of their sandboxes to cheat on a test. PhillyPause is an independent, volunteer-run Philadelphia organisation working to stop the AI death race."
             NoIndex="@Framed"
-            Canonical="@(Framed || JoinOpen || EventsOpen || ConfirmOpen || WelcomeOpen || RemoveOpen || CheckEmailOpen ? Navigation.BaseUri : null)" />
+            Canonical="@(Framed || JoinOpen || EventsOpen || ConfirmOpen || WelcomeOpen || RemoveOpen || CheckEmailOpen || SignInOpen || SignInLinkOpen ? Navigation.BaseUri : null)" />
 }
 
 
@@ -54,7 +56,7 @@ else
      reader on the front page. Every /act address is one too: the action
      centre is the Act dialog, and each of its pages opens it on a view of
      its own. *@
-  <input type="radio" name="dlg" id="dlg-none" class="dlgtoggle" checked="@(!NotFound && !JoinOpen && !EventsOpen && !ConfirmOpen && !WelcomeOpen && !RemoveOpen && !CheckEmailOpen && !ActOpen)" aria-label="No panel open">
+  <input type="radio" name="dlg" id="dlg-none" class="dlgtoggle" checked="@(!NotFound && !JoinOpen && !EventsOpen && !ConfirmOpen && !WelcomeOpen && !RemoveOpen && !CheckEmailOpen && !SignInOpen && !SignInLinkOpen && !ActOpen)" aria-label="No panel open">
   <input type="radio" name="dlg" id="watch-open" class="dlgtoggle" aria-label="Watch">
   <input type="radio" name="dlg" id="panel-open" class="dlgtoggle" aria-label="Who is speaking">
   <input type="radio" name="dlg" id="past-open" class="dlgtoggle" aria-label="Past events">
@@ -78,6 +80,10 @@ else
     <input type="radio" name="dlg" id="welcome-open" class="dlgtoggle" checked="@WelcomeOpen" aria-label="Welcome">
     <input type="radio" name="dlg" id="check-open" class="dlgtoggle" checked="@CheckEmailOpen" aria-label="Check your email">
     <input type="radio" name="dlg" id="remove-open" class="dlgtoggle" checked="@RemoveOpen" aria-label="Leave the list">
+    @* Signing in is a dialog too: /volunteer/sign-in opens it, and so does
+       the link in a sign-in email. *@
+    <input type="radio" name="dlg" id="signin-open" class="dlgtoggle" checked="@SignInOpen" aria-label="Sign in">
+    <input type="radio" name="dlg" id="signinlink-open" class="dlgtoggle" checked="@SignInLinkOpen" aria-label="Finish signing in">
   }
 
   @* Who is signed in, and the way into the volunteer and team pages, above
@@ -480,6 +486,7 @@ else
         @if (ManyHandsOn)
         {
           <div class="joinform">
+            <p class="joinform-ask">Already one of us? <a class="joinnote-link" href="@ManyHandsPaths.SignIn" data-enhance-nav="false">Sign in</a> instead.</p>
             <Website.Portal.Components.Volunteer.JoinForm />
           </div>
         }
@@ -554,6 +561,36 @@ else
           </div>
           <div class="paneldlg-body joinbody">
             <Website.Portal.Components.Volunteer.WelcomeDialog />
+          </div>
+        </div>
+      </div>
+    }
+    @if (SignInOpen)
+    {
+      <div class="paneldlg d-signin">
+        <label class="paneldlg-scrim" for="dlg-none" aria-label="Close"></label>
+        <div class="paneldlg-box" role="dialog" aria-modal="true" aria-labelledby="signindlg-title">
+          <div class="paneldlg-head">
+            <span id="signindlg-title">Sign in</span>
+            <label class="paneldlg-x" for="dlg-none" aria-label="Close">&times;</label>
+          </div>
+          <div class="paneldlg-body joinbody">
+            <Website.Portal.Components.Volunteer.SignInDialog />
+          </div>
+        </div>
+      </div>
+    }
+    @if (SignInLinkOpen)
+    {
+      <div class="paneldlg d-signinlink">
+        <label class="paneldlg-scrim" for="dlg-none" aria-label="Close"></label>
+        <div class="paneldlg-box" role="dialog" aria-modal="true" aria-labelledby="signinlinkdlg-title">
+          <div class="paneldlg-head">
+            <span id="signinlinkdlg-title">Sign in</span>
+            <label class="paneldlg-x" for="dlg-none" aria-label="Close">&times;</label>
+          </div>
+          <div class="paneldlg-body joinbody">
+            <Website.Portal.Components.Volunteer.SignInLinkDialog Token="@(SignInToken!)" />
           </div>
         </div>
       </div>
@@ -892,6 +929,13 @@ else
     private bool RemoveOpen => ManyHandsOn && RemoveKey is not null;
 
     private bool CheckEmailOpen => ManyHandsOn && IsAt(ManyHandsPaths.CheckEmail);
+
+    // Set from /volunteer/sign-in/{token}, the link in a sign-in email.
+    [Parameter] public string? SignInToken { get; set; }
+
+    private bool SignInOpen => ManyHandsOn && IsAt(ManyHandsPaths.SignIn);
+
+    private bool SignInLinkOpen => ManyHandsOn && SignInToken is not null;
 
     private bool IsAt(string path) =>
         ("/" + Navigation.ToBaseRelativePath(Navigation.Uri).Split('?', '#')[0])

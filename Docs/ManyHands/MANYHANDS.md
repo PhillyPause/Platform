@@ -17,7 +17,7 @@ Simplicity is the point: nothing here exists to serve a second organisation.
 |---|---|
 | Activities | Browse what is coming up without an account; filter by type |
 | Signup | Sign up with a name, an email and the kinds of thing they like doing; capacity and a waitlist, and a freed place goes to the next person in line |
-| Sign-in | Passwordless: a link by email |
+| Sign-in | Passwordless: one email with a link and a six-digit code, either of which signs in once |
 | Joining | Name, email and interests; then one email asking them to confirm the address is theirs, with a link that removes them just as easily (Joining, below) |
 | Mail | Confirmation, a reminder the day before, "you are in" off the waitlist, a welcome, one-click unsubscribe |
 | Self-service | See and cancel their signups, change interests, export everything held about them, delete themselves |
@@ -92,9 +92,12 @@ registered.
 ### The volunteer pages
 
 Static SSR Razor components in `Website/Website.Portal/Components/Volunteer`, on
-`VolunteerLayout`: the site's own header and footer, the area's nav, and the
-same parts as the team pages (`manyhands.css`, below). Helpers that are not
-components live in `Website/Website.Portal/Volunteer`.
+`VolunteerLayout`: the front page's paper, the account bar, the masthead and
+nav band made small (`PaperMast`: Front page, Events, My page, My outreach,
+Team for organizers, and Join or Act), and the same parts as the team pages
+(`manyhands.css`, below). A member never leaves the front page's look for
+their own pages. Helpers that are not components live in
+`Website/Website.Portal/Volunteer`.
 
 | Route | Page |
 |---|---|
@@ -102,8 +105,8 @@ components live in `Website/Website.Portal/Volunteer`.
 | `/events/{slug}` | One activity and its signup form, at its readable address (`/events/philly-says-pause`). The slug comes from the title, gets the date added when the title's is taken, follows the title while a draft (or takes one an organizer types in the editor), and is frozen from the first publish, since emails and posters carry it. The database keeps the rule (`0004_activity_slugs.sql`); `ActivitySlug.From` mirrors it so the editor can show the address |
 | `/volunteer/activity/{id}` | Where activities lived before slugs. It answers with a permanent redirect to `/events/{slug}`, keeping `?src=`, because emails and Discord posts already sent carry it. A draft or unknown id is a 404 |
 | `/join` | Joining is not a page here: it is the front page's Join us dialog (On the site, below). Every Join link goes to it |
-| `/volunteer/sign-in` | Ask for a sign-in link |
-| `/volunteer/sign-in/{token}` | Opening the link shows a button; **pressing it** spends the token and lands on the front page, not `/volunteer/me`, until the volunteer pages are ready for readers |
+| `/volunteer/sign-in` | Not a page here: the front page with the Sign in dialog (`SignInDialog`), as `/join` is with Join, and where any page that needs a sign-in sends the reader, with `?ReturnUrl=`. It emails a link and a six-digit code, then asks for the code. The code is for a site installed to a phone's home screen, which keeps its own cookies, so the link would sign in the browser instead; a right code goes back to `ReturnUrl`, only ever within the site |
+| `/volunteer/sign-in/{token}` | The front page with a second dialog (`SignInLinkDialog`): opening the link shows a button, and **pressing it** spends the token and lands on the front page |
 | `/volunteer/me` | A summary at the top (coming up, done, what they like, how news reaches them), then a section each, listed at the side: My signups (coming up, with cancelling, and done), What I like doing, Email and notifications (one form with the interests, so either Save saves both), Discord unlink, Calendar feed, My data (export, delete). Sign out and Events head the page |
 | `/volunteer/check-email` | The front page with the Check your email dialog, where joining redirects someone not yet confirmed: what the email looks like, and what to do if it does not come. `?again=true` when it was sent again |
 | `/volunteer/confirm/{token}` | Not a page here: the front page with the Finish joining dialog, where the link in a joining email lands. It greets them by name; **pressing** "Yes, that's me" confirms the address and signs them in, and "That's not me" is a link to removal |
@@ -219,8 +222,9 @@ request.
   badges that say a state in a word, primary, secondary and danger buttons,
   labelled fields with help, and empty states that say what to do next.
   Light only, in the front page's ink, cream and red, checked for contrast in
-  its header. `team-app.css` gives Syncfusion's grid and dialogs the same
-  look, on the app's pages only.
+  its header. Panels and fields are the front page's paper, ruled off in its
+  rule colour rather than lifted off it in white. `team-app.css` gives
+  Syncfusion's grid and dialogs the same look, on the app's pages only.
 
 | Route | Page | Who |
 |---|---|---|
@@ -350,9 +354,13 @@ from an address no contact has is kept and marked for triage, never dropped;
 the same Message-ID delivered twice is stored once.
 
 The anonymous forms that send mail are throttled per address, on the submit
-rather than the page view: five sign-in links in fifteen minutes, twenty
-signups or joins in five. The address is Cloudflare's `CF-Connecting-IP`;
-behind it every reader would otherwise share one.
+rather than the page view: five sign-in links or codes in fifteen minutes,
+twenty signups or joins in five. The address is Cloudflare's
+`CF-Connecting-IP`; behind it every reader would otherwise share one. A
+sign-in code is also capped per person, because guessing at one inbox from
+many addresses is what a per-address limit cannot see: five wrong codes and
+that person's code is thrown away (`SignInCodeAttempts`), so a code that is
+one in a million to guess gets five tries.
 
 ### Discord
 
@@ -397,7 +405,8 @@ it; `ManyHandsGateTests` holds that, and `SiteWiringTests` the flag-on side.
 
 | Where | On | Off |
 |---|---|---|
-| The account bar, top of every page | Signed out: Events, Join, **Sign in**. Signed in: "Signed in as *name*", My page, Events, **Team** for organizers, Sign out. Events and Join load the page in full (`data-enhance-nav="false"`): enhanced navigation would leave the dialog shut | Not rendered |
+| The account bar, top of every page | Signed out: Events, Join, **Sign in**. Signed in: "Signed in as *name*", My page, Events, **Team** for organizers, Sign out. Events, Join and Sign in load the page in full (`data-enhance-nav="false"`): enhanced navigation would leave the dialog shut | Not rendered |
+| Sign in dialog, front page | Email, then the code; Join and Sign in point at each other | Not rendered, and `/volunteer/sign-in` is a 404 |
 | Join dialog, front page | The signup form itself (`JoinForm`): name, email, interests. Pressing Join first checks the connection (`join.js`), and without one keeps the form and says so. It posts to `/join`; someone new is redirected to Check your email, a member already confirmed is answered in the dialog; if the database is unreachable it says so | No form and no email signup: the dialog says what joining means |
 | Events dialog, front page | What is coming up; if the database is unreachable it says so | Not rendered, and `/events` is a 404 |
 | I can help | Opens Events | Opens Join |
@@ -427,7 +436,7 @@ Postgres, one schema (`public`), defined by
 | `activities`, `activity_tags` | What needs doing, and which types each is. `slug` is its readable address and `published_at` when it was first published, which freezes the slug |
 | `volunteer_interests` | What each person likes doing |
 | `signups` | Who said they would come, their status, whether they checked in, and the tracking code on the link they used (`referral`) |
-| `auth_tokens` | Sign-in link hashes |
+| `auth_tokens` | Sign-in link and code hashes (a code is hashed with its volunteer's id, `purpose` `sign-in-code`), and joining confirmations |
 | `invites`, `invite_tokens` | Emailed invitations, and their link hashes, apart |
 | `outbox` | Everything waiting to be sent |
 | `email_messages` | Volunteers' transactional mail, as sent |
@@ -543,9 +552,9 @@ another matter (section 7). It seeds **no activities**: an invented event reads
 as a real one, so the Events list starts empty, and every event on it is one
 an organizer made at `/team/activity/new`.
 
-Mail is only logged locally. To sign in, ask for a link on
-`/volunteer/sign-in`: in development, with no mail provider, the page shows
-the link it logged. Emails are in the dashboard's logs for `website`,
+Mail is only logged locally. To sign in, ask on `/volunteer/sign-in`: in
+development, with no mail provider, the dialog shows the link and the code
+it logged. Emails are in the dashboard's logs for `website`,
 among them the joining email with its confirm and removal links: join on
 <http://localhost:5203/join>, then find "One click to finish joining" there.
 Signed in as `organizer@example.test`, `/team/members` shows the newcomer.

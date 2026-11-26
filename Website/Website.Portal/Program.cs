@@ -47,6 +47,7 @@ if (manyHandsEnabled)
 {
     builder.Services.AddManyHands(builder.Configuration);
     builder.Services.AddSingleton<FormThrottle>();
+    builder.Services.AddSingleton<SignInCodeAttempts>();
     builder.Services.AddSingleton<CheckInLinks>();
     builder.Services.AddSingleton<AdminBootstrap>();
     builder.Services.AddSingleton<Microsoft.AspNetCore.Authorization.IAuthorizationHandler, TeamRoleHandler>();

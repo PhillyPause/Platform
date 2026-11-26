@@ -119,6 +119,47 @@ public sealed class VolunteerPagesTests(DatabaseFixture db) : IAsyncLifetime
     }
 
     [Fact]
+    public async Task Signing_in_is_the_front_page_with_its_dialog_open()
+    {
+        var page = await _portal.Browser().GetStringAsync(ManyHandsPaths.SignIn);
+
+        Assert.Contains("id=\"signin-open\" class=\"dlgtoggle\" checked", page);
+        Assert.Contains("Welcome back", page);
+    }
+
+    [Fact]
+    public async Task The_code_from_the_email_signs_in_and_goes_back_where_it_was_asked()
+    {
+        var email = TestData.NewEmail();
+        var volunteerId = await new VolunteerRepository(db.DataSource).UpsertByEmailAsync(email, "Coded");
+        var code = await new AuthTokenRepository(db.DataSource).IssueCodeAsync(volunteerId);
+        var person = _portal.Browser();
+
+        var signedIn = await Forms.SubmitAsync(person, $"{ManyHandsPaths.SignIn}?ReturnUrl=%2Fvolunteer%2Fme", "sign-in-code",
+            ("Code.Email", email), ("Code.Digits", SignInCode.Show(code)));
+
+        Assert.Equal(HttpStatusCode.Redirect, signedIn.StatusCode);
+        Assert.Equal(ManyHandsPaths.Me, signedIn.Headers.Location?.PathAndQuery);
+        Assert.Contains("Hello, Coded", await person.GetStringAsync(ManyHandsPaths.Me));
+    }
+
+    [Fact]
+    public async Task A_wrong_code_says_so_and_signs_nobody_in()
+    {
+        var email = TestData.NewEmail();
+        var volunteerId = await new VolunteerRepository(db.DataSource).UpsertByEmailAsync(email, "Wrong");
+        var code = await new AuthTokenRepository(db.DataSource).IssueCodeAsync(volunteerId);
+        var wrong = code == "000000" ? "000001" : "000000";
+        var person = _portal.Browser();
+
+        var response = await Forms.SubmitAsync(person, ManyHandsPaths.SignIn, "sign-in-code",
+            ("Code.Email", email), ("Code.Digits", wrong));
+
+        Assert.Contains("That code is not right", await response.Content.ReadAsStringAsync());
+        Assert.Equal(HttpStatusCode.Redirect, (await person.GetAsync(ManyHandsPaths.Me)).StatusCode);
+    }
+
+    [Fact]
     public async Task Opening_an_unsubscribe_link_asks_and_the_button_unsubscribes()
     {
         var volunteers = new VolunteerRepository(db.DataSource);

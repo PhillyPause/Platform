@@ -1,0 +1,220 @@
+@inject VolunteerRepository Volunteers
+@inject AuthTokenRepository Tokens
+@inject AdminBootstrap Admins
+@inject ManyHands.Data.Email.EmailDispatcher Email
+@inject ManyHands.Data.Email.IEmailSender Sender
+@inject FormThrottle Throttle
+@inject SignInCodeAttempts Attempts
+@inject NavigationManager Navigation
+@inject IWebHostEnvironment Environment
+
+@* Signing in, as a dialog on the front page like Join: /volunteer/sign-in is
+   the front page with this open, and both forms post back there, so the
+   answer lands in the dialog. No password: an email with a link and a
+   six-digit code, either of which signs you in once. The code is for a site
+   installed to a phone, which keeps its own cookies, so the link would sign
+   in the browser instead. A page that needed signing in sent the reader here
+   with ?ReturnUrl=, and the code takes them back to it. *@
+
+@if (_sentTo is null)
+{
+    <h2>Welcome back</h2>
+    <p class="joinlede">No password. Give us your email and we send you a link and a code; either one signs you in.</p>
+
+    @if (Expired)
+    {
+        <p class="joinerror" role="alert">That link has expired or was already used. Ask for a fresh one.</p>
+    }
+
+    <div class="joinform">
+        <EditForm Model="Input" FormName="sign-in" OnValidSubmit="SendAsync" class="signup joinfields">
+            <DataAnnotationsValidator />
+            <label>
+                <span>Email</span>
+                <InputText @bind-Value="Input!.Email" type="email" autocomplete="email" required maxlength="254" />
+                <ValidationMessage For="() => Input!.Email" />
+            </label>
+            @if (_refused is not null)
+            {
+                <p class="joinerror" role="alert">@_refused</p>
+            }
+            <div class="signuprow">
+                <button type="submit">Send the link</button>
+                <span class="joinnote">New here? <a class="joinnote-link" href="@ManyHandsPaths.Join" data-enhance-nav="false">Join us</a> instead.</span>
+            </div>
+        </EditForm>
+    </div>
+}
+else
+{
+    <h2>Check your email</h2>
+    <p class="joinlede">
+        If that address is right, a link and a six-digit code are on their way. Either works once,
+        for @((int)AuthTokenRepository.Lifetime.TotalMinutes) minutes. Nothing there? Look in spam, then try again.
+    </p>
+
+    @if (_devLink is not null)
+    {
+        <p class="joinnote" role="note">
+            Development only: mail goes to the console here, so here are the link and the code.
+            <a class="joinnote-link" href="@_devLink" data-enhance-nav="false">Open the link</a> or type <b>@_devCode</b>.
+        </p>
+    }
+
+    <div class="joinform">
+        <EditForm Model="Code" FormName="sign-in-code" OnValidSubmit="SignInWithCodeAsync" class="signup joinfields">
+            <DataAnnotationsValidator />
+            <InputText @bind-Value="Code!.Email" type="hidden" />
+            <label>
+                <span>The code from the email</span>
+                <InputText @bind-Value="Code!.Digits" inputmode="numeric" autocomplete="one-time-code" required maxlength="9" />
+                <ValidationMessage For="() => Code!.Digits" />
+            </label>
+            @if (_codeRefused is not null)
+            {
+                <p class="joinerror" role="alert">@_codeRefused</p>
+            }
+            <div class="signuprow">
+                <button type="submit">Sign in</button>
+                <a class="signupalt" href="@ManyHandsPaths.SignIn" data-enhance-nav="false">Use another address</a>
+            </div>
+        </EditForm>
+    </div>
+}
+
+@code {
+    [CascadingParameter] private HttpContext HttpContext { get; set; } = default!;
+
+    [SupplyParameterFromQuery(Name = "expired")] private bool Expired { get; set; }
+
+    [SupplyParameterFromQuery(Name = "ReturnUrl")] private string? ReturnUrl { get; set; }
+
+    [SupplyParameterFromForm(FormName = "sign-in")] private SignInInput? Input { get; set; }
+
+    [SupplyParameterFromForm(FormName = "sign-in-code")] private CodeInput? Code { get; set; }
+
+    private string? _sentTo;
+    private string? _refused;
+    private string? _codeRefused;
+    private string? _devLink;
+    private string? _devCode;
+
+    protected override void OnInitialized()
+    {
+        Input ??= new();
+        Code ??= new();
+
+        // A code that was posted keeps the dialog on the code, right or wrong.
+        if (!string.IsNullOrWhiteSpace(Code.Email))
+            _sentTo = Code.Email;
+    }
+
+    private async Task SendAsync()
+    {
+        if (!Throttle.AllowSignIn(HttpContext))
+        {
+            _refused = "That is a lot of links in a short time. Wait a quarter of an hour and try again.";
+            return;
+        }
+
+        var address = Input!.Email.Trim();
+        if (!EmailAddress.LooksValid(address))
+        {
+            _refused = "That does not look like an email address.";
+            return;
+        }
+
+        // Asking for a link is joining, as it always has been: the address is
+        // the identity, and whoever can read its mail is its owner.
+        var volunteerId = await Volunteers.UpsertByEmailAsync(address, displayName: null);
+
+        if (await Volunteers.GetByIdAsync(volunteerId) is { IsDeleted: false } volunteer)
+        {
+            var token = await Tokens.IssueAsync(volunteerId);
+            var code = await Tokens.IssueCodeAsync(volunteerId);
+            Attempts.Clear(volunteerId);
+
+            var (subject, body) = ManyHands.Data.Email.EmailTemplates.MagicLink(
+                volunteer.DisplayName, Email.Link(ManyHandsPaths.RedeemSignIn(token)), code, AuthTokenRepository.Lifetime);
+
+            // Requested by the person themselves, so it goes even to someone who
+            // unsubscribed from everything else.
+            await Email.SendAsync(volunteer, subject, body, "magic-link", bypassOptIn: true);
+
+            // Locally no mail leaves the machine, and digging the link out of
+            // the console is the wrong way to try the site. Never in production,
+            // and never once a real mail provider is set: there, showing them
+            // would sign in whoever typed the address.
+            if (Environment.IsDevelopment() && !Sender.IsLive)
+            {
+                _devLink = ManyHandsPaths.RedeemSignIn(token);
+                _devCode = SignInCode.Show(code);
+            }
+        }
+
+        // The same answer whether or not the address was known: whether someone
+        // is on file is not something a stranger gets to find out here.
+        _sentTo = address;
+        Code = new CodeInput { Email = address };
+    }
+
+    private async Task SignInWithCodeAsync()
+    {
+        if (!Throttle.AllowSignIn(HttpContext))
+        {
+            _codeRefused = "That is a lot of tries in a short time. Wait a quarter of an hour and try again.";
+            return;
+        }
+
+        var address = Code!.Email.Trim();
+        var volunteer = EmailAddress.LooksValid(address) ? await Volunteers.GetByEmailAsync(address) : null;
+
+        if (volunteer is { IsDeleted: false }
+            && await Tokens.RedeemCodeAsync(volunteer.Id, Code.Digits) is MagicLinkResult.Ok ok)
+        {
+            Attempts.Clear(volunteer.Id);
+            await Admins.ApplyAsync(ok.VolunteerId);
+
+            // Read after the bootstrap, so a new admin's first cookie says so.
+            if (await Volunteers.GetByIdAsync(ok.VolunteerId) is { IsDeleted: false } signedIn)
+            {
+                await VolunteerSession.SignInAsync(HttpContext, signedIn);
+                Navigation.NavigateTo(SafeReturn(ReturnUrl));
+                return;
+            }
+        }
+
+        if (volunteer is not null && Attempts.Wrong(volunteer.Id))
+        {
+            await Tokens.ForgetCodeAsync(volunteer.Id);
+            _codeRefused = "That is too many wrong codes, so that one no longer works. Ask for a fresh email.";
+            return;
+        }
+
+        _codeRefused = "That code is not right, or it has expired. Check the email, or ask for a fresh one.";
+    }
+
+    /// <summary>
+    /// Back to the page that asked for a sign-in, but only on this site: a
+    /// ReturnUrl is in an address anyone can write, and must not send a
+    /// freshly signed-in reader somewhere else.
+    /// </summary>
+    public static string SafeReturn(string? returnUrl) =>
+        returnUrl is { Length: > 1 } url && url[0] == '/' && url[1] is not ('/' or '\\') ? url : "/";
+
+    private sealed class SignInInput
+    {
+        [Required(ErrorMessage = "Enter the email address you use with us.")]
+        [StringLength(254)]
+        public string Email { get; set; } = string.Empty;
+    }
+
+    private sealed class CodeInput
+    {
+        public string Email { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Type the six digits from the email.")]
+        [StringLength(9)]
+        public string Digits { get; set; } = string.Empty;
+    }
+}

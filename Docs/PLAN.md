@@ -321,8 +321,9 @@ Every touchpoint has a real fallback, not an error:
 | Small Print and `/privacy` | Say nothing of ManyHands; on, they add what it sets and holds |
 
 A prerender must never fail because ManyHands is absent, and this is tested
-with the flag both ways. Until ManyHands is enabled in production, no page
-links to it.
+with the flag both ways. ManyHands is on in production, and part of the site
+rather than a product beside it: its pages take the front page's paper and
+parts, and signing in is a front-page dialog like Join.
 
 ## 6. Motion graphics
 
@@ -395,13 +396,10 @@ P2 is the long pole. P1 is a day. P0 is a conversation.
 - **Who writes the adapted content.** The engine is a week; condensing 20
   PauseAI pages into 6 good ones is the actual work, and it is editorial, not
   technical.
-- **When ManyHands is switched on in production.** It needs a managed
-  Postgres, a mail provider and, for Discord, a bot token; `/act` is thinner
-  until then.
-
 Resolved by §0 and no longer open: localisation, asking PauseAI US about the
 mark, whether the site or ManyHands goes first, and whether ManyHands keeps
 its multi-chapter design (it does not).
 
-Resolved by shipping: where the domain points. `phillypause.org` is on App
+Resolved by shipping: where the domain points, and when ManyHands is
+switched on (it is). `phillypause.org` is on App
 Platform behind Cloudflare — [`HOSTING.md`](Platform/HOSTING.md).
