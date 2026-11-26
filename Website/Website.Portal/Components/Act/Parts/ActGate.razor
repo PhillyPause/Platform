@@ -1,0 +1,73 @@
+@using Website.Portal.Components.Volunteer
+
+@* ACT's first screen for anyone not signed in, with ManyHands on: join, or
+   sign in, or neither. Members are walked along the path (ThePath); someone
+   who chooses neither gets the basic route, Find, where nothing is saved and
+   nothing follows up. Joining is the Join dialog's own form, posting here,
+   so there is one signup form; signing in is the front page's Sign in
+   dialog, which brings them back here. *@
+
+<header class="act-intro">
+    <h2>Tell the people who represent you</h2>
+    <p class="act-lead">
+        Offices count every constituent who gets in touch. On AI, almost nobody has, so yours is not one
+        of thousands. It is one of a handful. Join us, and we walk you through it, from a first call to a
+        meeting with your neighbours.
+    </p>
+</header>
+
+@if (Joined)
+{
+    <section class="act-panel act-gate-sent" role="status" aria-labelledby="gate-sent-head">
+        <h3 id="gate-sent-head">Check your email</h3>
+        <p>
+            @(Again ? "We have sent it again" : "We have sent one email") to the address you gave. Click the link
+            in it, so we know the address is yours, and you are in, signed in on this device. Then come back to
+            ACT and we start.
+        </p>
+        <p class="act-small">Not there in a few minutes? Look in spam or, in Gmail, the Promotions tab.</p>
+        <p><a class="act-btn act-btn-ghost" href="@ActPaths.Find">Meanwhile, find your officials</a></p>
+    </section>
+}
+else
+{
+    <div class="act-gate">
+        <section class="act-panel act-gate-join" aria-labelledby="gate-join-head">
+            <h3 id="gate-join-head">New here? Join us</h3>
+            <p class="act-small">Your name and email. Then we take you through it: who to start with, what to say, and when to follow up.</p>
+            <FormMappingScope Name="act">
+                <JoinForm Action="@ActPaths.Start" Anchor="act-join" CheckEmail="@($"{ActPaths.Start}?joined=true")">
+                    <AlreadyIn>
+                        <div class="joindone" role="status">
+                            <p class="joindone-head">You are already one of us</p>
+                            <p>We have saved what you ticked. Sign in, and we start.</p>
+                            <a class="act-btn" href="@SignIn" data-enhance-nav="false">Sign in</a>
+                        </div>
+                    </AlreadyIn>
+                </JoinForm>
+            </FormMappingScope>
+        </section>
+        <section class="act-panel act-gate-in" aria-labelledby="gate-in-head">
+            <h3 id="gate-in-head">One of us already?</h3>
+            <p class="act-small">We email you a link and a code. No password.</p>
+            <p><a class="act-btn" href="@SignIn" data-enhance-nav="false">Sign in</a></p>
+        </section>
+    </div>
+    <p class="act-gate-out">
+        Not now? <a href="@ActPaths.Find">Just show me who to contact</a>. Their numbers and what to say;
+        nothing is saved and nobody follows up.
+    </p>
+}
+
+<ThePath />
+
+@code {
+    /// <summary>Just joined here: the one thing left is to open the email.</summary>
+    [Parameter] public bool Joined { get; set; }
+
+    /// <summary>Joined again with an address already waiting to be confirmed.</summary>
+    [Parameter] public bool Again { get; set; }
+
+    // The Sign in dialog, which returns here once the code is right.
+    private static string SignIn => $"{ManyHandsPaths.SignIn}?ReturnUrl={Uri.EscapeDataString(ActPaths.Start)}";
+}

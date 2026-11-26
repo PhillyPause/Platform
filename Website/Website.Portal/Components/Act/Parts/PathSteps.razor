@@ -1,0 +1,25 @@
+@* Where a member is on the path: the six steps ThePath animates, as a strip
+   across the top of each of the path's views, the ones behind them ticked
+   and the one they are on marked. Static: nothing here moves. *@
+
+<ol class="act-steps" aria-label="Your path">
+    @for (var i = 0; i < Steps.Length; i++)
+    {
+        var step = i + 1;
+        <li class="@(step < Current ? "act-step-done" : step == Current ? "act-step-now" : null)" aria-current="@(step == Current ? "step" : null)">
+            <span class="act-step-n" aria-hidden="true">@(step < Current ? "✓" : step.ToString(System.Globalization.CultureInfo.InvariantCulture))</span>
+            <span class="act-step-name">@Steps[i]</span>@if (step < Current)
+            {
+                <span class="act-sr"> (done)</span>
+            }
+        </li>
+    }
+</ol>
+
+@code {
+    /// <summary>The steps, in order; the same six as <see cref="ThePath"/>.</summary>
+    public static readonly string[] Steps = ["Learn", "Find", "Call or write", "Follow up", "Meet", "Report back"];
+
+    /// <summary>The step the member is on, from 1.</summary>
+    [Parameter, EditorRequired] public required int Current { get; set; }
+}

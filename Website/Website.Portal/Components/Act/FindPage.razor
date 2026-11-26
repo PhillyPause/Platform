@@ -1,0 +1,35 @@
+@page "/act/find"
+@inject IConfiguration Configuration
+
+@* Find your officials. A signed-in member's second step, with the path
+   across the top; for everyone else, the basic route's start, where someone
+   who chose not to sign in or join on ACT's first screen lands. Either way
+   the address goes no further than the Census Bureau, and the districts
+   come back in the address bar. *@
+
+<PageMeta Title="Find your officials"
+          Description="Find your officials in Washington, Harrisburg and Greater Philadelphia from your address, and call or write to them about AI." />
+
+<Home>
+    <ActView>
+        @if (Member)
+        {
+            <PathSteps Current="2" />
+            <header class="act-intro">
+                <h2>Where do you live?</h2>
+                <p class="act-lead">Your address finds all six of your officials at once, from Washington to here at home.</p>
+            </header>
+            <FindForm Action="@ActPaths.Find" Heading="Your address" />
+        }
+        else
+        {
+            <BasicStart Action="@ActPaths.Find" />
+        }
+    </ActView>
+</Home>
+
+@code {
+    [CascadingParameter] private HttpContext? HttpContext { get; set; }
+
+    private bool Member => Configuration.IsManyHandsEnabled() && HttpContext?.User.VolunteerId() is not null;
+}

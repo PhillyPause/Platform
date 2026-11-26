@@ -13,6 +13,12 @@ public static class ActPaths
     public const string Directory = "/act/officials";
     public const string Learn = "/act/learn";
 
+    /// <summary>
+    /// Finding your officials by address: a member's second step, and where
+    /// everyone else starts once they have chosen not to sign in.
+    /// </summary>
+    public const string Find = "/act/find";
+
     /// <summary>A set of districts' officials, before its query string (<see cref="Yours(DistrictMatch)"/>).</summary>
     public const string YoursBase = "/act/yours";
 
@@ -23,27 +29,15 @@ public static class ActPaths
     public static string WriteTo(IEnumerable<Official> officials) =>
         WriteMany + "?" + string.Join('&', officials.Select(o => "to=" + Uri.EscapeDataString(o.Key)));
 
-    /// <summary>The officials for a match, as the address lookup redirects to them.</summary>
+    /// <summary>Your six for a match, as the address lookup redirects to them (<see cref="YourSix"/>).</summary>
     /// <remarks>
     /// The districts go in the query string (?cd=3&amp;ss=1&amp;sh=182&amp;county=Philadelphia),
     /// never the address, so a result can be sent to a neighbour without
     /// saying where anyone lives.
     /// </remarks>
-    public static string Yours(DistrictMatch match) => Yours(match, null, null);
+    public static string Yours(DistrictMatch match) => Yours(match, null);
 
-    /// <summary>
-    /// The same, showing one of the three places (<c>in=harrisburg</c>; Washington
-    /// when unset) and, for a Philadelphian, their council district (<c>cc=</c>).
-    /// </summary>
-    public static string Yours(DistrictMatch match, string? arena, string? council)
-    {
-        var parts = new List<string>();
-        if (match.Congressional is { } cd) parts.Add($"cd={cd}");
-        if (match.StateSenate is { } ss) parts.Add($"ss={ss}");
-        if (match.StateHouse is { } sh) parts.Add($"sh={sh}");
-        if (match.County is { } county) parts.Add($"county={Uri.EscapeDataString(county)}");
-        if (arena is not null) parts.Add($"in={Uri.EscapeDataString(arena)}");
-        if (council is not null) parts.Add($"cc={Uri.EscapeDataString(council)}");
-        return YoursBase + (parts.Count == 0 ? "" : "?" + string.Join('&', parts));
-    }
+    /// <summary>The same, with a Philadelphian's council district (<c>cc=</c>), which the geocoder cannot tell us.</summary>
+    public static string Yours(DistrictMatch match, string? council) =>
+        YourSix.QueryFor(match, council) is { Length: > 0 } query ? YoursBase + "?" + query : YoursBase;
 }

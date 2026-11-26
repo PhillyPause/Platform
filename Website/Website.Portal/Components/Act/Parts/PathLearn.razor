@@ -1,0 +1,41 @@
+@* The path's first step, for a signed-in member: two minutes on the ask,
+   why one constituent counts and what a call sounds like, then "I'm ready",
+   which goes on to Find. Nothing is saved yet, so a member who has done
+   this before skips it with a link rather than by being remembered. *@
+
+<PathSteps Current="1" />
+
+<header class="act-intro">
+    <h2>Two minutes before you start</h2>
+    <p class="act-lead">
+        What we ask for, why your voice counts, and what a call sounds like. Then we find your six
+        officials and take them one at a time.
+    </p>
+    <p class="act-small">Done this before? <a href="@ActPaths.Find">Skip to finding your officials</a>.</p>
+</header>
+
+<div class="act-primer">
+    <section aria-labelledby="why-head">
+        <h3 id="why-head" class="act-section-head">Why you</h3>
+        <p>
+            Offices count every constituent who gets in touch, and a constituent is the one voice they cannot
+            wave away: you vote for them. On AI almost nobody has called, so you are not one of thousands.
+            You are one of a handful, and they notice.
+        </p>
+    </section>
+    <section aria-labelledby="sounds-head">
+        <h3 id="sounds-head" class="act-section-head">What a call sounds like</h3>
+        @* One line: the script's style keeps line breaks, as a script's own do. *@
+        <blockquote class="act-script-text">Hello, my name is Sam, and I live in Fishtown, zip code 19125. I am calling about AI. I would like the Representative to back an international pause on building ever more powerful AI systems until they can be shown to be safe. Where do they stand? Thank you.</blockquote>
+        <p class="act-small">That is the whole call. A staffer writes it down; nobody quizzes you.</p>
+    </section>
+</div>
+
+<AskGrid />
+
+<ThePath />
+
+<p class="act-ready">
+    <a class="act-btn" href="@ActPaths.Find">I&rsquo;m ready</a>
+    <span class="act-small">Next: find your officials.</span>
+</p>

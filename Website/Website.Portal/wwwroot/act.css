@@ -334,6 +334,69 @@
 .act-merge-progress:empty { display: none; }
 .act-merge-cta { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem 0.8rem; margin: 0.9rem 0 0; }
 
+/* ---------------------------------------------------------------- the path
+   ACT's first screen (sign in or join), a member's steps across the top of
+   each of the path's views, Start here, and what comes next. */
+
+/* Sign in or join: two panels side by side when the dialog is wide, the way
+   out under them. */
+.act-gate { display: grid; gap: 1rem; }
+@container (min-width: 44rem) { .act-gate { grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); align-items: start; } }
+.act-gate .act-panel > .act-small { margin-bottom: 0.9rem; }
+.act-gate .joinfields { grid-template-columns: 1fr; }
+.act-gate .joinfields .vol-interests { grid-template-columns: repeat(auto-fill, minmax(min(100%, 11rem), 1fr)); }
+.act-gate .joinnote { display: block; font-size: 12.5px; color: var(--muted); }
+.act-gate-out { margin: 0; font-size: 15px; }
+.act-gate-out a { font-weight: 700; }
+.act-gate-sent p:last-child { margin-top: 0.9rem; }
+
+/* The basic route's invitation to join. */
+.act-invite {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.6rem 1rem;
+  padding: 12px 16px; background: #15110C; color: #FBF8F1;
+}
+.act-invite p { margin: 0; max-width: 46rem; font-size: 14.5px; }
+.act-invite strong { color: #FBF8F1; }
+.actbody .act-invite .act-btn { background: #AE2012; border-color: #AE2012; color: #FBF8F1; }
+.actbody .act-invite .act-btn:hover, .actbody .act-invite .act-btn:focus-visible { background: #FBF8F1; border-color: #FBF8F1; color: #15110C; }
+
+/* Where a member is: six steps in a row, wrapping on a phone. */
+.act-steps {
+  list-style: none; margin: 0; padding: 0 0 10px;
+  display: flex; flex-wrap: wrap; gap: 6px 14px;
+  border-bottom: 1px solid var(--line);
+  font-size: 12.5px; color: var(--muted);
+}
+.act-steps li { display: inline-flex; align-items: center; gap: 6px; }
+.act-step-n {
+  display: inline-grid; place-items: center; width: 20px; height: 20px; border-radius: 50%;
+  border: 1px solid var(--line); font-size: 11px; font-weight: 700; line-height: 1;
+}
+.act-step-done { color: #15110C; }
+.act-step-done .act-step-n { background: #15110C; border-color: #15110C; color: #FBF8F1; }
+.act-step-now { color: #15110C; font-weight: 700; }
+.act-step-now .act-step-n { background: #AE2012; border-color: #AE2012; color: #FBF8F1; }
+
+/* Learn: two short pieces side by side, then the ask, the path and go. */
+.act-primer { display: grid; gap: 1.25rem; }
+@container (min-width: 44rem) { .act-primer { grid-template-columns: 1fr 1fr; } }
+.act-primer p { font-family: 'Source Serif 4', Georgia, serif; font-size: 15.5px; }
+.act-ready { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 1rem; }
+
+/* Start here: the one card that matters most, ruled in ink. */
+.act-start-here { display: grid; gap: 0.5rem; }
+.act-start-here .act-cards { grid-template-columns: minmax(0, 28rem); }
+.act-card-start { border: 2px solid #15110C; }
+
+/* After a contact: the next of theirs. */
+.act-next { display: grid; gap: 0.5rem; margin-top: 0.9rem; }
+.act-next .act-cards { grid-template-columns: minmax(0, 28rem); }
+
+/* The basic route's three lines each. */
+.act-howto ol { margin: 0; padding-left: 1.2rem; font-size: 15px; }
+.act-howto li + li { margin-top: 0.25rem; }
+.act-yours-more { margin: 0; }
+
 /* ---------------------------------------------------------------- tutorials
    Four steps light in turn on a twelve-second loop, and each icon does one
    small thing while its step is lit. Every value is a transform, an opacity
@@ -405,6 +468,19 @@
 @keyframes act-fan-r {
   0%, 5% { transform: translate(0, 0) rotate(0); } 12%, 24% { transform: translate(9px, 4px) rotate(12deg); }
   30%, 100% { transform: translate(0, 0) rotate(0); }
+}
+
+/* The path: six steps on an eighteen-second loop, three seconds each, as
+   the tutorials light four in twelve. */
+.act-path .act-tut-steps { grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr)); column-gap: 1.25rem; }
+.act-path .act-tut-step { animation-name: act-step-six; }
+.act-path .act-tut-step, .act-path .act-tut-step .act-bounce, .act-path .act-tut-step .act-ring,
+.act-path .act-tut-step .act-wave, .act-path .act-tut-step .act-draw, .act-path .act-tut-step .act-strike {
+  animation-duration: 18s;
+}
+@keyframes act-step-six {
+  0%, 15% { opacity: 1; transform: translateX(4px); }
+  19%, 100% { opacity: 0.62; transform: translateX(0); }
 }
 
 /* Reduced motion: no loop, no wiggle, every step lit and every line drawn. */

@@ -1,0 +1,88 @@
+@inject OfficialsStore Officials
+@inject IMessageDrafter Drafter
+@inject IConfiguration Configuration
+
+@* The basic route's first view: find your officials, how a call and a
+   letter go, the ask, and the directory. It is all of ACT with ManyHands
+   off, and with it on it is where someone lands who chose not to sign in
+   or join on ACT's first screen (ActGate): nothing is saved, nothing
+   follows up, and an invitation to join leads back. *@
+
+<header class="act-intro">
+    <h2>Tell the people who represent you</h2>
+    <p class="act-lead">
+        Offices count every constituent who gets in touch. On AI, almost nobody has, so yours is not one
+        of thousands. It is one of a handful. Fifteen minutes, a phone or an email, and your address.
+    </p>
+</header>
+
+<JoinInvite />
+
+<FindForm Action="@Action" />
+
+<section class="act-ways" aria-labelledby="ways-head">
+    <h3 id="ways-head" class="act-section-head">Three ways in, smallest first</h3>
+    <ul class="act-ways-list">
+        <li>
+            <h4>Call</h4>
+            <p>Five minutes with a script. A staffer answers, writes down your name and what you asked, and adds it to the count the member sees.</p>
+        </li>
+        <li>
+            <h4>Write</h4>
+            <p>
+                Ten minutes. Tell us in a sentence why it matters to you and we lay out a first draft in your words,
+                for you to change and send yourself@(Drafter.UsesAi ? ", with help from an AI model if you want it" : "").
+            </p>
+        </li>
+        <li>
+            <h4>Meet</h4>
+            <p>An hour, and you will not be on your own. One of us has taken this to Congress more than seventy-five times.
+                @if (Configuration.IsManyHandsEnabled())
+                {
+                    <a href="@ActPaths.Start">Join us</a>
+                }
+                else
+                {
+                    <label class="act-link" for="join-open">Join us</label>
+                }
+                and come along.
+            </p>
+        </li>
+    </ul>
+</section>
+
+<div class="act-tuts">
+    <HowToCall />
+    <HowToWrite />
+</div>
+
+<AskGrid />
+
+<section class="act-browse" aria-labelledby="browse-head">
+    <div>
+        <h3 id="browse-head" class="act-section-head">Anyone else</h3>
+        <p>
+            @Officials.All.Count people in the directory: Pennsylvania&rsquo;s senators and the House members for the
+            five counties, the governor and statewide officers, the General Assembly, the City of Philadelphia
+            and the collar counties&rsquo; commissioners. Narrow them by government, county, name or district.
+        </p>
+        <p><a class="act-btn act-btn-ghost" href="@ActPaths.Directory">Search the directory</a></p>
+    </div>
+    <CountyMap />
+</section>
+
+<section class="act-learn" aria-labelledby="learn-head">
+    <h3 id="learn-head" class="act-section-head">Before you pick up the phone</h3>
+    <ul class="act-learn-list">
+        <li><a href="/act/learn/calling">What happens when you call</a><span>Who answers, what they write down, and what to do about voicemail.</span></li>
+        <li><a href="/act/learn/writing">Writing that gets read</a><span>Short, local, one ask. Why your own words beat a perfect letter.</span></li>
+        <li><a href="/act/learn/who-does-what">Who does what on AI</a><span>Congress, Harrisburg, City Hall and the counties, and what each can actually do.</span></li>
+        <li><a href="/act/learn/bills">AI bills to watch</a><span>What is moving in Washington and Harrisburg, and where your officials stand.</span></li>
+        <li><a href="/act/learn/meeting">Meeting them in person</a><span>How to ask for a meeting, what to bring, and how to follow up.</span></li>
+    </ul>
+</section>
+
+@code {
+    /// <summary>Where the address form posts: the address of the view that shows this.</summary>
+    [Parameter, EditorRequired] public required string Action { get; set; }
+}

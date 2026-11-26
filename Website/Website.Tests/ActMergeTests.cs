@@ -115,16 +115,16 @@ public partial class ActMergeTests(WebApplicationFactory<Program> factory) : ICl
     }
 
     [Fact]
-    public async Task Your_officials_offers_to_write_to_everyone_in_a_place_at_once()
+    public async Task Your_officials_offers_to_write_to_all_of_them_at_once()
     {
         var match = new DistrictMatch("3", "1", "182", "Philadelphia");
-        var harrisburg = Store.For(match, Today)
-            .Where(o => o.Arena == "Harrisburg" && o.CanEmail && o.Status != OfficialStatus.Departing).ToArray();
-        harrisburg.Should().HaveCountGreaterThan(1, "the test needs a place with more than one to write to");
+        var writable = YourSix.For(Store, match, "5", Today).People
+            .Where(o => o.CanEmail && o.Status != OfficialStatus.Departing).Take(MailMerge.Most).ToArray();
+        writable.Should().HaveCountGreaterThan(1, "the test needs more than one to write to");
 
-        var page = await factory.CreateClient().GetStringAsync(ActPaths.Yours(match, "harrisburg", null));
+        var page = await factory.CreateClient().GetStringAsync(ActPaths.Yours(match, "5"));
 
-        page.Should().Contain($"<a class=\"act-btn\" href=\"{ActPaths.WriteTo(harrisburg).Replace("&", "&amp;")}\">Write to all {harrisburg.Length} at once</a>");
+        page.Should().Contain($"<a class=\"act-btn\" href=\"{ActPaths.WriteTo(writable).Replace("&", "&amp;")}\">Write to all {writable.Length} at once</a>");
     }
 
     private static DraftRequest Merge(string? story) =>

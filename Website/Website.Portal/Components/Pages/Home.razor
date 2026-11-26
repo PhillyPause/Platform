@@ -911,7 +911,7 @@ else
     // ACT always opens on Your officials (ActTrigger): in place when the
     // dialog holds nothing yet or one of Your officials' views, and by
     // loading /act from any other.
-    private bool ActInPlace => ActView is null || IsAt(ActPaths.Start) || IsAt(ActPaths.YoursBase);
+    private bool ActInPlace => ActView is null || IsAt(ActPaths.Start) || IsAt(ActPaths.Find) || IsAt(ActPaths.YoursBase);
 
     // A handset, drawn here so the nav band and the call to action share it.
     private static readonly RenderFragment PhoneGlyph = @<svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1z"></path></svg>;

@@ -9,7 +9,34 @@ Montgomery counties. Anyone outside them is sent to ControlAI's
 
 It needs no database. With ManyHands on, it also keeps a log of who
 contacted whom, which is ManyHands' (below, and
-[`MANYHANDS.md`](../ManyHands/MANYHANDS.md)).
+[`MANYHANDS.md`](../ManyHands/MANYHANDS.md)), and it walks members along a
+path while everyone else takes the basic route.
+
+## Two routes
+
+With ManyHands on, ACT's first screen is **sign in or join** (`ActGate`):
+the Join dialog's own form, posting to `/act`, and Sign in, which opens the
+front page's Sign in dialog and comes back to `/act`. Under them, "Not now?
+Just show me who to contact" leads to the basic route. With ManyHands off
+there is nothing to join, and ACT is the basic route.
+
+- **The path**, for a signed-in member: Learn (`PathLearn`: why one
+  constituent counts, what a call sounds like, the ask, then "I'm ready"),
+  Find (`/act/find`, the address), Your six with one marked Start here, then
+  a call or a letter, after which the page offers the next of their six. A
+  strip across the top of each view (`PathSteps`) says where they are:
+  Learn, Find, Call or write, Follow up, Meet, Report back. Nothing about the
+  path is saved yet, so a member who has done Learn before skips it with a
+  link; the steps after Call or write are what a member does next, and are
+  not yet walked through.
+- **The basic route**, for everyone else: Find (`BasicStart`: the finder,
+  the two motion tutorials, the ask, the directory), then all of their
+  officials at once, with how a call and an email go in three lines each
+  and the ask for each level. An invitation to join (`JoinInvite`) heads
+  both, and leads back to the first screen. "I called" and "I sent it"
+  still count, with nobody's name.
+
+`ThePath`, the six steps lit in turn, is on the first screen and at Learn.
 
 ## A dialog on the front page
 
@@ -25,7 +52,8 @@ prominent:
 - **Act** in the header of every inner page, and in a member's nav,
   as links to `/act`.
 
-On the plain front page the dialog holds its first view (`ActStart`). Every
+On the plain front page the dialog holds its first view (`ActStart`), which
+is the first screen, Learn, or the basic route's start, by who is reading. Every
 address below is the front page with the dialog open on a view of its own:
 each page passes its markup to `Home` as `ActView` and renders its own
 `PageMeta`, as `NotFound.razor` does for Not found. Links between views load
@@ -43,8 +71,8 @@ queries) rather than the window's.
 **Never a list of dozens.** Nobody reads one, so the officials are reached
 by filter chips instead (`FilterChips`): each is a link to the view with
 that choice made and says how many it would show, the chosen one is ink, and
-one that would show nobody is not a link. "Your officials" shows one
-place at a time, Washington first; the directory lists nobody until
+one that would show nobody is not a link. "Your officials" shows the reader's own, about six (`YourSix`), and
+never everyone who represents their county; the directory lists nobody until
 something is chosen, and never more than a dozen (`DirectoryFilter.Shown`),
 past which it says how many matched and asks for one more choice. Every
 state is an address, so the chips are plain links and the search a GET form.
@@ -56,12 +84,13 @@ and `Website/Website.Portal/Act`; the addresses are in `ActPaths`.
 
 | Route | View |
 |---|---|
-| `/act` | Find your officials (an address, or districts picked by hand), the three ways in, the two motion tutorials, the ask, the county map, the explainers. The address form posts here from wherever it was shown, so a problem with the address comes back with the dialog open. An address outside the five counties, in Pennsylvania or not, comes back with a button to ControlAI's action page instead of a list, and a line under the finder points anyone outside them there before they type |
-| `/act/yours?cd=&ss=&sh=&county=` | The officials for those districts, one place at a time: Washington, then `in=harrisburg` or `in=local`, each a chip with its count. A Philadelphian's City Hall is the citywide officials plus the member for the council district they choose (`cc=`). District numbers in the address bar, never the address |
+| `/act` | The first screen: sign in or join, or, signed in, Learn (Two routes, above). With ManyHands off, the basic route's start: find your officials (an address, or districts picked by hand), the three ways in, the two motion tutorials, the ask, the county map, the explainers. The address form (`FindForm`) posts to the address of the view that shows it, so a problem with the address comes back with the dialog open. An address outside the five counties, in Pennsylvania or not, comes back with a button to ControlAI's action page instead of a list, and a line under the finder points anyone outside them there before they type |
+| `/act/find` | A member's Find step; for anyone else, the basic route's start, as `/act` is with ManyHands off |
+| `/act/yours?cd=&ss=&sh=&county=&cc=` | Your six (`YourSix`), in the path's order: their US Representative, both Senators, their State Senator and State Representative, then, for a Philadelphian, the councilmember for the council district they choose (`cc=`), or the county's commissioners or council anywhere else. A member sees the first marked Start here and the rest "one at a time"; anyone else sees them all, with how to call and write and a mail merge to all of them. Every Call and Write link carries the districts. District numbers in the address bar, never the address |
 | `/act/officials?body=&county=&q=` | The directory behind a filter (`DirectoryFilter`): a government (Congress, Statewide, State Senate, State House, City Hall, County), a county, and a name or a district number. A bare number is a district, so `182` is House district 182; names match without accents or punctuation. The county map's links land here with `?county=` |
 | `/act/officials/{key}` | One official: contacts, bio, AI record with sources, committees |
-| `/act/call/{key}` | The numbers, a script that works as it stands, one with the reader's own name and reason, and "I called" |
-| `/act/write/{key}` | A draft to change and send from the reader's own email or the office's form, and "I sent it" |
+| `/act/call/{key}` | The numbers, a script that works as it stands, one with the reader's own name and reason, and "I called". Reached from Your six, with its districts, it links back, and after "I called" offers the next of theirs; after the last, an email for the reader to send a friend themselves |
+| `/act/write/{key}` | A draft to change and send from the reader's own email or the office's form, and "I sent it", carrying the districts as the call page does |
 | `/act/write?to=&to=` | One message to several, a copy each (`WriteManyPage`): reached from "Write to all of them" on each place in Your officials. Each recipient is a chip whose cross drops them; one left is the ordinary write page |
 | `/act/learn`, `/act/learn/{page}` | The explainers: Markdown in `Content/act/learn` |
 
@@ -126,12 +155,16 @@ record item is shown and in production an unchecked one is left out,
 unmarked either way. Contact details are shown regardless, so check them
 first.
 
-**Matching.** The senators and statewide officers represent every
+**Matching.** `OfficialsStore.For` is everyone who represents an address;
+`YourSix` is the reader's own among them, without the statewide and citywide
+officers everyone shares (they are in the directory), and without anyone
+elected but not yet sworn in. Start here is the first: the US
+Representative, or the first known without a House district. The senators and statewide officers represent every
 Pennsylvania address; a House or General Assembly member matches on the
 district number; the city and counties match on the county. The Census
 geocoder does not know Philadelphia's council districts, so a Philadelphian
-chooses theirs from chips, with a link to City Council's site for anyone
-unsure; until they do, City Hall shows the citywide officials alone.
+chooses theirs from chips (`CouncilChips`), with a link to City Council's
+site for anyone unsure; until they do, their list has no councilmember.
 
 **Seats change in January.** A member-elect is shown with "takes office";
 someone departing drops out of the directory the day after `term_ends`.
@@ -203,7 +236,8 @@ which every draft and script uses, and in words on
 
 ## Motion
 
-`HowToCall` and `HowToWrite`: four steps each, lit in turn on a twelve-second
+`ThePath`: the path's six steps, lit in turn on an eighteen-second loop,
+three seconds each, on the first screen and at Learn. `HowToCall` and `HowToWrite`: four steps each, lit in turn on a twelve-second
 loop, each icon doing one small thing; on the page that writes to several,
 `HowToWrite`'s last step fans one letter into three. Hand-drawn SVG and CSS keyframes in
 `act.css`, transforms, opacity and stroke offsets only. Under
@@ -214,7 +248,9 @@ holds that.
 
 The call and write pages end with "I called" / "I sent it" (`LogAction`).
 Signed in, the action is the member's, at `/volunteer/outreach`; not signed
-in, it is counted with nobody's name and the reader is invited to join.
+in, it is counted with nobody's name and the reader is invited to join, on
+ACT's first screen. Reached from Your six, either way, it then offers the
+next of theirs.
 Organizers see everything at `/team/outreach`, with a CSV. It keeps that an
 action happened, to whom, how, and an optional note, never the message.
 Off, none of it renders and no act page mentions it.
@@ -223,7 +259,7 @@ Off, none of it renders and no act page mentions it.
 
 | Key | Default | Means |
 |---|---|---|
-| `Act:LookupEnabled` | `false` | Look addresses up with the Census geocoder. Off, readers pick their districts |
+| `Act:LookupEnabled` | `false`; `true` in production (`app.yaml`) | Look addresses up with the Census geocoder. Off, readers pick their districts |
 | `Act:GeocoderUrl`, `Act:Benchmark`, `Act:Vintage` | the Census geocoder, `Public_AR_Current`, `Current_Current` | Where and against which maps |
 | `Act:ShowUnverified` | `false` (true in Development) | Show AI record items nobody has checked. Never marked |
 | `DeepInfra:ApiKey` | — | Secret. Set, drafts are written with the model's help |

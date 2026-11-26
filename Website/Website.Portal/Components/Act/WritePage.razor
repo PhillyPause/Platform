@@ -3,6 +3,7 @@
 @inject NavigationManager Navigation
 @inject IMessageDrafter Drafter
 @inject ActThrottle Throttle
+@inject IConfiguration Configuration
 
 @* Write to one official, in the Act dialog: the reader says who they are and
    why it matters to them, gets a draft to change, and sends it themselves,
@@ -16,12 +17,19 @@
 
     <Home>
         <ActView>
+            @if (Member)
+            {
+                <PathSteps Current="3" />
+            }
             <header class="act-task-head">
                 <OfficialAvatar Official="o" Size="sm" />
                 <div>
                     <h2>Write to @TheAsk.Salutation(o)</h2>
                     <p class="act-lead">@o.Office. Ten minutes: say why it matters to you, take the draft, make it yours, send it yourself.</p>
-                    <p class="act-small"><a href="/act/officials/@o.Key">About @o.Name</a></p>
+                    <p class="act-small"><a href="/act/officials/@o.Key">About @o.Name</a>@if (_six is not null)
+                    {
+                        <text> &middot; </text><a href="@_six.Back">Back to your officials</a>
+                    }</p>
                 </div>
             </header>
 
@@ -83,7 +91,7 @@
                         </section>
                     }
 
-                    <LogAction Official="o" Kind="DraftKind.Email" />
+                    <LogAction Official="o" Kind="DraftKind.Email" Six="_six" />
                 </div>
 
                 <WritingTips />
@@ -103,6 +111,17 @@
     private Draft? _draft;
     private string? _refused;
 
+    // The districts, when this page was reached from Your six (YourSix.Carried).
+    [SupplyParameterFromQuery(Name = "cd")] private string? Cd { get; set; }
+    [SupplyParameterFromQuery(Name = "ss")] private string? Ss { get; set; }
+    [SupplyParameterFromQuery(Name = "sh")] private string? Sh { get; set; }
+    [SupplyParameterFromQuery(Name = "county")] private string? County { get; set; }
+    [SupplyParameterFromQuery(Name = "cc")] private string? Cc { get; set; }
+
+    private YourSix? _six;
+
+    private bool Member => _six is not null && Configuration.IsManyHandsEnabled() && HttpContext?.User.VolunteerId() is not null;
+
     protected override void OnParametersSet()
     {
         _official = Officials.Find(Key);
@@ -113,6 +132,7 @@
             return;
         }
 
+        _six = YourSix.Carried(Officials, _official, Cd, Ss, Sh, County, Cc, DateOnly.FromDateTime(DateTime.UtcNow));
         Input ??= new DraftInput();
     }
 

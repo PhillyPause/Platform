@@ -69,6 +69,7 @@ public partial class ActDialogTests(WebApplicationFactory<Program> factory) : IC
 
     [Theory]
     [InlineData("/act")]
+    [InlineData("/act/find")]
     [InlineData("/act/yours?cd=3&ss=1&sh=182&county=Philadelphia")]
     public async Task On_Your_officials_ACT_reopens_the_dialog_where_it_was(string path)
     {

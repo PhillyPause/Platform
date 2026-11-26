@@ -133,7 +133,8 @@ public sealed class OutreachTests(DatabaseFixture db) : IAsyncLifetime
             ("Input.Outcome", nameof(OutreachOutcome.LeftVoicemail)));
 
         var page = await response.Content.ReadAsStringAsync();
-        page.Should().Contain("with nobody&rsquo;s name on it").And.Contain("href=\"/join\"");
+        WebUtility.HtmlDecode(page).Should().Contain("with nobody’s name on it");
+        page.Should().Contain("<a href=\"/act\">Join us</a>", "joining is part of ACT");
         (await Repo.TotalsAsync()).AllTime.Should().Be(before + 1);
     }
 

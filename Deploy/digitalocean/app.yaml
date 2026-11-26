@@ -78,6 +78,12 @@ services:
         scope: RUN_TIME
         value: https://phillypause.org
 
+      # ACT finds a reader's officials from their address (Docs/Website/ACT.md):
+      # it goes to the US Census Bureau's geocoder and is never kept.
+      - key: Act__LookupEnabled
+        scope: RUN_TIME
+        value: "true"
+
       # The first admin: an admin the first time they sign in.
       - key: ManyHands__Admins__0
         scope: RUN_TIME
