@@ -166,7 +166,11 @@ environment variable in `app.yaml`, applied with `doctl apps update`
 
 ## Tokens
 
-`doctl` needs an App Platform token with `app:create`, `app:read` and
-`app:update`. No `domain:*` scopes: DNS lives at Cloudflare, not DigitalOcean.
+`doctl` needs a token with `app:create`, `app:read`, `app:update` and
+`database:read`. The last is because the app has a database attached:
+`doctl apps update` reads it, and fails with "missing the required
+permission database:read" without it. No `domain:*` scopes: DNS lives at
+Cloudflare, not DigitalOcean. Each PC keeps its own token, in doctl's
+`phillypause` context (`doctl auth init --context phillypause`).
 Generate it inside the team that owns the app — a token is scoped to its team,
 and apps do not move between teams.
